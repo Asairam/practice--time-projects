@@ -1,0 +1,888 @@
+body{
+	margin:0px;
+	padding: 0px;
+}
+.container-fluid{
+	width: 100%;
+}
+.container{
+	width: 100%;
+}
+.gg li a{
+margin:10px 0px 0px 30px;
+}
+/*banner*/
+@keyframes slidy {
+0% { left: 0%; }
+20% { left: 0%; }
+25% { left: -100%; }
+45% { left: -100%; }
+50% { left: -200%; }
+70% { left: -200%; }
+75% { left: -300%; }
+95% { left: -300%; }
+100% { left: -400%; }
+}
+
+body { margin: 0; } 
+div#slider { overflow: hidden; margin-top: -15px;}
+div#slider figure img { width: 20%; float: left; }
+div#slider figure { 
+  position: relative;
+  width: 500%;
+  margin: 0;
+  left: 0;
+  text-align: left;
+  font-size: 0;
+  animation: 20s slidy infinite; 
+}
+.shop{
+  width: 120px;
+  height: 40px;
+  margin-top: 10px;
+}
+.make{
+  width: 120px;
+  height: 40px;
+  margin-top: 10px;
+}
+.shopdiv p{
+	color: gray;
+	font-size: 12px;
+	text-align: center;
+	padding-right: 10px;
+}
+.makediv p{
+	color: gray;
+	font-size: 12px;
+	text-align: center;
+	padding-right: 10px;
+}
+/*Everyone's a Maker*/
+.marker{
+	width: 100%;
+	height: auto;
+}
+.markercon{
+	width: 100%;
+	height: 150px;
+	margin-top: 40px;
+}
+.markercon h1{
+  color:#2196f3;
+  font-size: 20px;
+  text-align: center;
+  margin-top:7px 
+  font-style:Times New Roman;
+
+}
+.markercon p{
+  color: #795548;
+  font-size: 16px;
+  text-align: center;
+  margin-top:7px 
+  font-style:verdana;
+}
+.markercon1{
+	width: 95%;
+	height: 500px;
+	margin-left:10px;
+	margin-top:60px;
+	border-style:double; 
+	border-radius:10px;
+}
+
+.markercon1 img{
+	height: 320px;
+	border-radius: 100%;
+	box-shadow: 0px 8px 5px #888888;
+	margin-top: 20px;
+}
+.markercon1 h1{
+	  color:#08a3e9;
+    font-size: 35px;
+  text-align: center;
+  margin-top:7px 
+
+  font-style:Times New Roman;
+}
+.markercon1 h1:hover{
+  color: #4caf50;
+}
+.markercon1 p{
+  color: gray;
+  font-size: 18px;
+  text-align: center;
+  margin-top:7px 
+  font-style:verdana;
+}
+/*gallery*/
+.gall{
+	margin-top: 55px;
+}
+.gallright{
+	width: 100%;
+	height: 500px;
+	background-color:rgba(0, 128, 128,0.3);
+}
+.gallleft{
+	width: 100%;
+	height: auto;
+	background-color:;
+}
+.gallright h1{
+	color: white;
+	text-shadow: 0px 6px 5px gray;
+	font-size: 45px;
+	margin-top: 40px;
+	margin-left: 40px;
+}
+.gallright p{
+	color:black;
+	font-size: 28px;
+	margin-top: 30px;
+	text-align: center;
+}
+.scale img{
+	transition: all 0.3s ease 0s;
+	opacity: 0.6;
+	width: 100%;
+}
+.scale img:hover{
+	transform: scale(0.9);
+	border-radius: 15px;
+	box-shadow: 0px 10px 5px gray;
+	opacity: 1;
+}
+.scale h1{
+	color:black;
+	font-size: 40px;
+	text-align: center;
+	margin-top: -50px;
+}
+.acc h1{
+	color:black;
+	font-size: 40px;
+	text-align: center;
+	margin-top: -54px;
+}
+
+/* 3d */
+.print-gall{
+	width:100%;
+	height:1750px;
+	margin-top:7%;
+}
+.print{
+	 width:100%;
+	 height:250px;	 
+ }
+ .print1{
+	 width:100%;
+	 height:345px;
+	 background-color:#f5f7f8;
+	 margin-top:20px;
+ }
+ .print2{
+	 width:100%;
+	 height:345px;
+	 background-color:#f5f7f8;
+	  margin-top:20px;
+ }
+.print h2{
+	color:#445258;
+	font-size:3.429rem;
+    text-align:center;
+	-webkit-font-smoothing: antialiased;
+	zoom:1;
+}
+.print p{
+	color:black;
+	font-size: 18px;
+	text-align: center;
+}
+.aluminum h2{
+	color:red;
+	font-size:25px;
+	text-align:center;
+	margin-top:0px;
+}
+.aluminum p{
+	color:gray;
+	font-size: 18px;
+	text-align: center;
+}
+.metals h2{
+	color:red;
+	font-size:25px;
+	text-align:center;
+	margin-top:0px;
+}
+.metals p{
+	color:gray;
+	font-size: 18px;
+	text-align: center;
+}
+.Plastics h2{
+	color:red;
+	font-size:25px;
+	text-align:center;
+	margin-top:0px;
+}
+.Plastics p{
+	color:gray;
+	font-size: 18px;
+	text-align: center;
+}
+.Porcelain h2{
+	color:red;
+	font-size:25px;
+	text-align:center;
+	margin-top:0px;
+}
+.Porcelain p{
+	color:gray;
+	font-size: 18px;
+	text-align: center;
+}
+/* Material */
+.Material-gall{
+	width:100%;
+	height:1770px;
+}
+.Material-head{
+	width:100%;
+	height:120px;
+}
+.Material-head h1{
+	color:#a1887f;
+	font-size:35px;
+	margin-top:0px;
+	text-align:center;
+	font-family:Times New Roman;
+}
+.Material-head h5{
+	color:#9e9e9e;
+	font-size:20px;
+	text-align:center;
+	font-family:verdana;
+}
+.Material{
+	width:100%;
+	height:500px;
+	margin-top:30px;
+	border:2px inset;
+	border-top-right-radius:20px;
+	border-bottom-left-radius:50px;
+	box-shadow:0px 7px 10px #e0e0e0;
+}
+.Material h2{
+	color:#795548;
+	font-size:35px;
+	text-align:center;
+	font-family:sample;
+}
+.Material p{
+	color:black;
+	font-size:25px;
+	text-align:center;
+}
+/* hand */
+.hand-right{
+	width:100%;
+	height:650px;
+	background-color:#edeff0;
+}
+.hand-left{
+	width:100%;
+	height:500px;
+}
+.hand-right img{
+	border-radius:100%;
+	margin:80px;
+}
+.hand-right p{
+	color:black;
+	font-size:20px;
+	text-align:center;
+	margin-top:-50px;
+}
+.hand-right h3{
+	color:gray;
+	font-size:22px;
+	text-align:center;
+}
+.hand-right h3:hover{
+	color:blue;
+}
+.hand-left img{
+	width:100%;
+	height:500px;
+}
+.email{
+	width:100%;
+	height:150px;
+	background-color: #4fc9ff;
+}
+.email h2{
+	color: white;
+	font-size: 18px;
+	text-align: center;
+}
+.input{
+	width: 200px;
+	height: 34px;
+}
+.footer{
+	width: 100%;
+	height: 150px;
+}
+
+.foot{
+	width: 100%;
+	height: 150px;
+	background-color: #80cbc4;
+}
+.foot h3{
+	color: black;
+	font-size: 18px;
+	text-align: center;
+}
+.foot img{
+	width: 68px;
+	height: 68px;
+	margin-left: 10px;
+	opacity: 0.9;
+}
+.foot a{
+	text-decoration: none;
+}
+.foot img:hover{
+	opacity: 1;
+}
+.sai{
+	color:maroon ;
+	font-size: 20px;
+	font-family: verdana;
+}
+
+
+
+
+
+@media(min-width: 768px){
+ .container-fluid{
+	width: 100%;
+}
+.container{
+	width: 750px;
+	margin:0px auto;
+}
+.search{
+	margin:17px 0px 0px -100px;
+}
+/*banner*/
+.shopdiv p{
+	color: gray;
+	font-size: 14px;
+	margin-left:-20px;
+	
+}
+.shop{
+	margin-left: 100px;
+}
+.make{
+	margin-left: 100px;
+}
+
+.markercon h1{
+  font-size: 28px;
+}
+.markercon p{
+  font-size: 19px;
+}
+
+
+.markercon1 img{
+	height: 300px;
+	border-radius:10%;
+	margin:0px auto;
+	margin-top: 15px;
+}
+.markercon1 h1{
+	font-size: 50px;
+}
+.markercon1{
+	height: 450px;
+	margin-top: 15px;
+}
+/*gallery*/
+.gallright h1{
+	font-size: 55px;
+	text-align: center;
+}
+.gallright{
+	height: 370px;
+}
+.scale h1{
+	margin-top: -70px;
+}
+.acc h1{
+	margin-top: -55px;
+}
+
+/* 3d */
+.print-gall{
+	height:2720px;
+}
+.aluminum img{
+	 width:100%;
+ }
+ .Plastics img{
+	 width:100%;
+ }
+ .Porcelain img{
+	 width:100%;
+ }
+ .metals img{
+	 width:100%;
+ }
+ .print1{
+	 width:100%;
+	 height:570px;
+	 margin-top:30px;
+ }
+ .print2{
+	 width:100%;
+	 height:570px;
+	 margin-top:30px;
+ }
+ .print h2{
+	font-size:5.429rem;
+    text-align:center;
+}
+.print p{
+	color:black;
+	font-size: 3rem;
+}
+.aluminum h2{
+	font-size:45px;
+}
+.aluminum p{
+	font-size: 20px;
+}
+.metals h2{
+	font-size:45px;
+}
+.metals p{
+	font-size: 20px;
+}
+.Plastics h2{
+	font-size:45px;
+}
+.Plastics p{
+	font-size: 20px;
+}
+.Porcelain h2{
+	font-size:45px;
+}
+.Porcelain p{
+	font-size: 20px;
+}
+
+/* Material */
+.msm{
+	width:31%;
+	height:380px;
+	margin-left:15px;
+}
+.Material-gall{
+	height:600px;
+}
+.Material h2{
+	font-size:30px;
+}
+.Material p{
+	font-size:20px;
+}
+.Material-head h1{
+	font-size:45px;
+}
+.Material-head h5{
+	font-size:30px;
+}
+/* hand */
+.hand-right{
+	width:50%;
+	height:700px;
+}
+.hand-left{
+	width:50%;
+	height:700px;
+}
+.hand-left img{
+	width:100%;
+	height:700px;
+}
+.email{
+	width:100%;
+	height:80px;
+	background-color: #4fc9ff;
+}
+.email h2{
+	color: white;
+	font-size: 22px;
+	float:left;
+}
+.input{
+	width: 200px;
+	height: 34px;
+	float:left;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.email button{
+	margin-top: 20px;
+	margin-left: 10px;
+}
+.foot{
+	width: 100%;
+	height: 140px;
+	background-color: #80cbc4;
+}
+.foot h3{
+	color: black;
+	font-size: 20px;
+	text-align: center;
+}
+.foot img{
+	width: 70px;
+	height: 70px;
+	
+}
+.footimg{
+	margin-left: 25%;
+}
+.sai{
+	color:olive ;
+	font-size: 22px;
+	font-family: verdana;
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media(min-width: 992px){
+ .container-fluid{
+	width: 100%;
+}
+.container{
+	width: 980px;
+	margin:0px auto;
+}
+.search{
+	margin:17px 0px 0px 130px;
+}
+/*banner*/
+.shopdiv p{
+	font-size: 17px;
+	margin-left:-140px;
+}
+.makediv p{
+	font-size: 17px;
+	margin-left:-140px;
+}
+
+.markercon h1{
+  font-size: 30px;
+}
+.markercon p{
+  font-size: 20px;
+}
+
+.markercon1{
+	width: 31%;
+	height: 400px;
+	margin-left: 16px;
+	margin-top: 20px;
+}
+.markercon1 img{
+	height: 300px;
+	height: 200px;
+	margin-top: 30px;
+}
+.markercon1 h1{
+	font-size: 35px;
+}
+.markercon1 p{
+  font-size: 20px;
+}
+/*gallery*/
+.gallright{
+	width: 30%;
+	height: 600px;
+}
+.gallleft{
+	width: 70%;
+	height: auto;
+}
+.gallright h1{
+	font-size: 40px;
+	text-align: center;
+	padding-top: 80px;
+}
+.gallright p{
+	font-size: 25px;
+}
+
+/* 3d */
+
+.print-gall{
+	height:1070px;
+	margin-top:7%;
+}
+.print{
+	 width:100%;
+	 height:200px;	 
+ }
+ .print h2{
+	font-size:4.442rem;
+}
+.print p{
+	font-size: 2.60rem;
+}
+ .print1{
+	 width:46%;
+	 height:400px;
+	 margin-left:20px;
+	 margin-top:20px;
+ }
+ .print2{
+	 width:46%;
+	 height:400px;
+	 margin-left:20px;
+	  margin-top:20px;
+ }
+ .aluminum img{
+	 width:640px;
+ }
+ .Plastics img{
+	 width:640px;
+ }
+ .Porcelain img{
+	 width:640px;
+ }
+ .metals img{
+	 width:640px;
+ }
+ .metals p{
+	font-size: 17px;
+}
+.aluminum p{
+	font-size: 17px;
+}
+.Plastics p{
+	font-size: 17px;
+}
+.Porcelain p{
+	font-size: 17px;
+}
+/*metals*/
+.msm{
+	width:32%;
+	height:430px;
+	margin-left:12px;
+}
+.Material-gall{
+	height:650px;
+}
+/*hand*/
+.hand-right img{
+	margin:140px;
+}
+.hand-right p{
+	font-size:25px;
+	margin-top:-90px;
+}
+.email h2{
+	font-size: 25px;
+}
+.input{
+	width: 350px;
+}
+.foot{
+	width: 100%;
+	height: 100px;
+}
+.foot h3{
+	color: black;
+	font-size: 22px;
+	float: left;
+	margin-top: 40px;
+	margin-right: 30px;
+}
+.foot img{
+	width: 68px;
+	height: 68px;
+	float: left;
+	margin-top: 20px;
+}
+.sai{
+	color:maroon ;
+	font-size: 20px;
+	font-family: verdana;
+	margin-top: 20px;
+}
+
+}
+
+
+
+
+
+@media(min-width: 1280px){
+ .container-fluid{
+	width: 100%;
+}
+.container{
+	width: 1270px;
+	margin:0px auto;
+}
+.search{
+	margin:17px 0px 0px 65px;
+}
+/*banner*/
+.shop{
+  width: 140px;
+  height: 50px;
+}
+.make{
+  width: 140px;
+  height: 50px;
+  margin-top: 10px;
+}
+.shopdiv p{
+	font-size: 20px;
+	margin-left:-280px;
+}
+.makediv p{
+	font-size: 20px;
+	margin-left:-280px;
+}
+
+.markercon h1{
+  font-size: 45px;
+}
+.markercon p{
+  font-size: 25px;
+}
+.markercon1{
+	width: 32%;
+	height: 500px;
+	margin-top: 40px;
+}
+
+
+.markercon1 img{
+	height: 400px;
+	height: 300px;
+	margin-top: 15px;
+}
+.markercon1 h1{
+	font-size: 35px;
+}
+/*gallery*/
+.gallright{
+	width: 30%;
+	height: 840px;
+}
+.gallright h1{
+	font-size: 55px;
+	text-align: center;
+	padding-top:170px;
+}
+.gallright p{
+  font-size: 30px;
+}
+.g6 img{
+	height: 280px;
+}
+/* 3d */
+.print-gall{
+	height:1350px;
+}
+ .print{
+	 width:100%;
+	 height:200px;
+ }
+ .print1{
+	 width:45%;
+	 height:480px;
+	 margin-left:35px;
+ }
+ .print2{
+	 width:45%;
+	 height:480px;
+	 margin-left:35px;
+ }
+ .pri-mar{
+	 margin-top:30px;
+ }
+ .aluminum img{
+	 width:640px;
+ }
+ .Plastics img{
+	 width:640px;
+ }
+ .Porcelain img{
+	 width:640px;
+ }
+ .metals img{
+	 width:640px;
+ }
+ 
+ /*metals*/
+ .Material img{
+	 margin:0px auto;
+ }
+ .Material-gall{
+	height:700px;
+}
+.msm{
+	width:32%;
+	height:460px;
+	margin-left:16px;
+	border-top-right-radius:50px;
+	border-bottom-left-radius:50px;
+}
+/*hand*/
+.hand-right img{
+	margin:0px auto;
+	margin-top:150px;
+}
+.hand-right p{
+	margin-top:50px;
+}
+.email h2{
+	margin-left: 15%;
+}
+.foot h3{
+  margin-left: 180px;
+  margin-right: 60px;
+}
+.sai{
+	font-size: 25px;
+}
+}

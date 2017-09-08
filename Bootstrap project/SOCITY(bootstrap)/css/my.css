@@ -1,0 +1,1437 @@
+body{
+	margin: 0px;
+	padding: 0px;
+}
+.container-fluid{
+	width:100%;
+}
+.container{
+   width: 100%;
+}
+          /*header*/
+
+.head{
+	background:rgba(0,0,0,0.8);
+}
+.head1{
+	width:80%;
+	height: auto;
+	margin: 0px auto;
+	
+}
+.logo1 h2{
+   font-size: 80px;
+   color: white;
+   font-family: Kunstler Script;
+   margin-top: 6px;
+}
+.logo2{
+	width: 37%;
+	height: 100px;
+}
+.logo3{
+	width: 33%;
+	height: 100px;
+}
+
+.logo1{
+	width: 30%;
+	height: 100px;
+}
+.logo2 p{
+   font-size: 13px;
+   color: gray;
+   font-family: verdana;
+ margin-top: 40px; 
+ margin-left:-10px; 
+}
+.logo3 form{
+	margin-top: 30px;
+	float:left; 
+}
+.maker{
+	margin-top: 100px;
+	background-color: #3db2e1;
+}
+.buto{
+	width: 100px;
+	height: 34px;
+	border-radius:5px;
+	background-color: teal;
+	text-align: center;
+	float:right; 
+	margin-left: -12px;
+
+}
+.buto a{
+	color: white;
+	font-size: 22px;
+}
+.buto a:hover{
+	color:yellow;
+}
+
+   /*gallery*/
+.parts{
+   margin-top: 20px;
+ }
+.part1{
+	height: 470px;
+	width: 380px;
+	background-color:white; 
+	border-radius:5px;
+	box-shadow: 0px 3px 8px 0px grey;
+}
+.part2{
+	height: 470px; 
+	width: 380px;
+	background-color:white;
+	border-radius:5px;
+	box-shadow: 0px 3px 8px 0px grey;
+}
+.part3{
+	height: 470px;
+	width: 380px;
+	background-color:white;
+	border-radius:5px;
+	box-shadow: 0px 3px 8px 0px grey;
+}
+
+.caro1{
+	width: 360px;
+	height: 450px;
+	 margin:10px 0px 0px 12px;
+	 position: absolute;
+	}
+.caro2{
+	width: 360px;
+	height: 450px;
+	 margin:10px 0px 0px 12px;
+	 position: absolute;
+	}
+  .caro3{
+	width: 360px;
+	height: 450px;
+	 margin:10px 0px 0px 12px;
+	 position: absolute;
+	}
+   .caro1 h2{
+   	 color:#2ECC71;
+   	 font-size: 27px;
+	 margin-top:20px;
+   }
+   .caro1 p{
+   	 color:black;
+   	 font-size: 15px;
+   }
+   .caro1 button{
+   	width: 100px;
+   	height: 30px;
+   	margin-top: 20px;
+   	margin-left: 70px;
+   	background-color: #5656ff;
+   }
+   .read h2{
+   	 color:white;
+   	 font-size: 18px;
+     margin: -8px 0px 0px -70px;
+   }
+   .caro2 h2{
+   	 color:#2ECC71;
+   	 font-size: 27px;
+	 margin-top:20px;
+   }
+   .caro2 p{
+   	 color:black;
+   	 font-size: 15px;
+   }
+   .caro2 button{
+   	width: 100px;
+   	height: 30px;
+   	margin-top: 20px;
+   	margin-left: 70px;
+   	background-color: #5656ff;
+   }
+   .read2 h2{
+   	 color:white;
+   	 font-size: 18px;
+     margin: -8px 0px 0px -70px;
+   }
+
+   .caro3 h2{
+   	 color:#2ECC71;
+   	 font-size: 27px;
+	 margin-top:20px;
+   }
+   .caro3 p{
+   	 color:black;
+   	 font-size: 15px;
+   }
+   .caro3 button{
+   	width: 100px;
+   	height: 30px;
+   	margin-top: 20px;
+   	margin-left: 70px;
+   	background-color: #5656ff;
+   }
+   .read3 h2{
+   	 color:white;
+   	 font-size: 18px;
+     margin: -8px 0px 0px -70px;
+   }
+   
+      /*projects*/
+	.project{
+		width:100%;
+	    height:auto;
+		background-color:white;
+		margin-top:20px;
+		border:1px solid gray;
+		box-shadow:0px 6px 10px 0px grey;
+	}
+   /*INDIA*/
+   .ind1 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+	.ind2 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+	.ind3 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+   .india img{
+   transition:all 0.5s ease 0s;
+    }
+   .india img:hover{
+   transform: scale(1.5);
+   }
+   .ind1{
+   	margin-top: 20px;
+   }
+   .ind2{
+   	margin-top: 20px
+   }
+    .ind3{
+   	margin-top: 20px;
+   }
+   .pro{
+   	width: 60%;
+   	height: 150px;
+   	margin-top:20px; 
+   }
+
+   /*USA*/
+   .us1 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+	.us2 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+	.us3 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+   .usa img{
+   transition:all 0.5s ease 0s;
+
+    }
+   .usa img:hover{
+   transform: scale(1.5);
+   }
+   .us1{
+   	margin-top: 20px;
+   }
+   .us2{
+   	margin-top: 20px;
+   }
+    .us3{
+   	margin-top: 20px;
+   }
+
+   /*CHINA*/
+   .chi1 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+	.chi2 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+	.chi3 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px grey;
+	}
+   .china img{
+   transition:all 0.5s ease 0s;
+
+    }
+   .china img:hover{
+   transform: scale(1.5);
+   }
+   .chi1{
+   	margin-top: 20px;
+   }
+   .chi2{
+   	margin-top: 20px;
+   }
+    .chi3{
+   	margin-top: 20px;
+   }
+
+   /*DUBAI*/
+   .dub1 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px black;
+	}
+	.dub2 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px black;
+	}
+	.dub3 img{
+		border:1px solid ;
+		border-radius:8px;
+		box-shadow:0px 3px 8px 0px black;
+	}
+   .dubai img{
+   transition:all 0.5s ease 0s;
+
+    }
+   .dubai img:hover{
+   transform: scale(1.5);
+   }
+   .dub1{
+   	margin-top: 20px;
+   }
+   .dub2{
+   	margin-top: 20px;
+   }
+    .dub3{
+   	margin-top: 20px;
+   }
+   .sym{
+   	width: 30%;
+   	height: 100px;
+   margin-top: 10px;
+   }
+   .sym button{
+   	 width: 70px;
+   	 height: 70px;
+     margin-top: 15px;
+   }
+   /*about*/
+   .aboutgall{
+	   background-color:#eae8dc;
+	   margin-top:40px;
+	   
+   }
+   .about{
+	   width:95%;
+	   height:auto;
+	   margin:0px auto;
+	   margin-top:60px;
+   }
+   .leftabout{
+	   width:50%;
+	   height:auto;
+   }
+   .rightabout{
+	   width:50%;
+	   height:auto;
+   }
+   .leftstep1{
+	   width:100%;
+	   height:80px;
+   }
+   .dotted{
+	    border-bottom:3px solid blue;
+       margin:0px 500px 0px -5px;
+   }
+   .leftstep2{
+	   width:100%;
+	   height:90px;
+   }
+   .leftstep3{
+	   width:100%;
+	   height:200px;
+   }
+   .leftstep4{
+	   width:100%;
+	   height:40px;
+   }
+   .leftstep5{
+	   width:100%;
+	   height:170px;
+	   background-color:#bde3f8;
+   }
+   .rightstep1{
+	   width:100%;
+	   height:80px;
+   }
+   .rightstep2{
+	   width:100%;
+	   height:400px;
+	   margin-top:50px;
+   }
+   
+   .leftstep1 h2{
+	   color:black;
+	   font-style:verdana;
+	   font-size:30px;
+	   line-height:80px;
+   }
+   .leftstep2 p{
+	   color:gray;
+	   font-style:verdana;
+	   font-size:23px;
+	   line-height:28px;
+   }
+   .leftstep3 p{
+	   color:black;
+	   font-style:verdana;
+	   font-size:20px;
+	   line-height:33px;
+   }
+   .leftstep4 h2{
+	    color:black;
+	   font-style:verdana;
+	   font-size:25px;
+	   line-height:40px;
+   }
+   .leftstep5 p{
+	  color:gray;
+	   font-style:verdana;
+	   font-size:20px;
+	   line-height:33px;
+      text-align:center;
+      margin-top:20px;	  
+   }
+   .rightstep1 h2{
+	    color:black;
+	   font-style:verdana;
+	   font-size:35px;
+	   line-height:80px;
+   }
+   /*team*/
+  .team{
+	  width:100%;
+	  height:630px;
+	  margin-top:30px;
+  }  
+   /*map*/  
+   .mapback{
+	   width:100%;
+	   height:850px;
+	   background-image:url(../img/globe.jpg);
+	   background-repeat:no-repeat;
+   }
+  .map{
+  width:60%;
+  height:750px;
+ border-radius:100%;
+ margin-top:50px;
+ box-shadow:0px 3px 20px 0px black;
+ 
+}
+
+  .map iframe{
+  width:105%;
+  height:750px;
+  margin-left:-15px;
+ border-radius:100%;
+}
+ /*forms*/
+ .forms{
+	 width:100%;
+	 height:700px;
+	 margin:0px auto;
+	 margin-top:50px;
+	 background-color:rgba(195,89,39,0.5);
+ }
+ .form1{
+	 width:100%;
+	 height:150px;
+	 margin-top:50px;
+	 
+ } 
+ .form2{
+	 width:100%;
+	 height:100px; 
+ } 
+ .form3{
+	 width:100%;
+	 height:350px; 
+ } 
+ .formtop{
+	 width:65%;
+	 height:150px;
+ }
+ .formleft{
+	 width:33%;
+	 height:100px;
+ }
+ .formcenter{
+	 width:34%;
+	 height:100px;
+ }
+ .formright{
+	 width:33%;
+	 height:100px;
+ }
+ .formtop h3{
+	text-align: center;
+  font-size: 3.7em;
+  color:white;
+  margin: 0em 0em 0.2em 0em;
+  font-family: 'RobotoSlab-Regular';
+ }
+ .formtop p {
+  font-size:20px;
+  color:black;
+  font-style:varadana;
+  text-align:center;
+ }
+ .formleft input{
+	 width:370px;
+	 height:47px;
+	 border-radius:6px;
+	 margin-left:15px;
+	 margin-top:30px;
+	 color:black;
+	 
+ }
+ .formleft input:hover{
+	 box-shadow:0px 10px 10px 0px gray;
+	  
+ }
+ .formcenter input{
+	 width:370px;
+	 height:47px;
+	 border-radius:6px;
+	 margin-left:15px;
+	 margin-top:30px;
+	 color:black;
+ }
+ .formcenter input:hover{
+	 box-shadow:0px 10px 10px 0px gray;
+	  
+ }
+ .formright input{
+	 width:385px;
+	 height:47px;
+	 border-radius:6px;
+	 margin-left:4px;
+	 margin-top:30px;
+	 color:black;
+ }
+ .formright input:hover{
+	 box-shadow:0px 10px 10px 0px gray;
+	  
+ }
+ .form3 textarea{
+	 width:100%;
+	 height:300px;
+	 border-radius:7px;
+ }
+ .form3 input{
+	 width:90px;
+	 height:40px;
+	 background-color:#76b852;
+	 color:#fff;
+	 font-size:20px;
+	  outline: none;
+	 text-align:center;
+	 border-top-left-radius: 10px;
+	 float:right;
+	 margin-top:10px;
+	 border-bottom-right-radius: 10px;
+ }
+ .form3 input:hover{
+	 background:#000;
+ } 
+   /*footer*/
+  .footer{
+	  width:100%;
+	  height:160px;
+	  background-color:black;
+	  margin-top:40px;
+  }
+  .footerun{
+	   width:60%;
+	  height:160px;
+  }
+  
+  
+  
+   
+   
+   
+   
+   
+
+
+
+
+@media(max-width: 992px){
+	.logo1 h2{
+		font-size: 65px;
+		margin-left: -15px;
+	}
+	.logo1 h2{
+       margin-top: 10px;
+     }
+    .logo2 p{
+       font-size: 9px;
+       margin-top: 50px; 
+     }
+     .logo3 form{
+	     margin-top: 20px;
+	     width: 100px;
+	     
+     }
+      .logo3 button{
+      	margin-left:50px; 
+     }
+     /*gallery*/
+    .part1{
+	height: 470px;
+	width: 320px;
+	margin-left: -40px;
+	}
+	.part2{
+		height: 470px; 
+		width: 320px;
+		margin-left: -20px;
+	}
+	.part3{
+		height: 470px;
+		width: 320px;
+		margin-left: 0px;
+	}
+
+    .caro1{
+	 width: 100%;
+	  height: 450px;
+	 margin:10px 0px 0px 6px;
+	 position: absolute;
+	}
+    .caro2{
+	width: 100%;
+	height: 450px;
+	 margin:10px 0px 0px 6px;
+	 position: absolute;
+	}
+  .caro3{
+	width: 100%;
+	height: 450px;
+	 margin:10px 0px 0px 6px;
+	 position: absolute;
+	}
+    .caro1 h2{
+   	 color:navy;
+   	 font-size: 22px;
+   	 margin-top: 20px;
+    text-align: center;
+   }
+  .read h2{
+   	 color:white;
+   	 font-size: 17px;
+     margin: -8px 0px 0px -70px;
+   }
+   .caro1 button{
+   	 margin-top: 30px;
+   }
+    .buto{
+   	margin-right: -65px;
+   	margin-top: 2px;
+   }
+    .caro2 h2{
+   	 color:navy;
+   	 font-size: 22px;
+   	 margin-top: 20px;
+    text-align: center;
+   }
+   .caro2 button{
+   	 margin-top: 30px;
+   }
+   .read2 h2{
+   	 color:white;
+   	 font-size: 17px;
+     margin: -8px 0px 0px -70px;
+   }
+    .caro3 h2{
+   	 color:navy;
+   	 font-size: 22px;
+   	 margin-top: 20px;
+    text-align: center;
+   }
+   .caro3 button{
+   	 margin-top: 30px;
+   }
+   .read3 h2{
+   	 color:white;
+   	 font-size: 17px;
+     margin: -8px 0px 0px -70px;
+   }
+   /*projects*/
+   .india{
+   	height: 430px;
+   }
+   .usa{
+   	height: 430px;
+   }
+   .china{
+   	height: 430px;
+   }
+   .dubai{
+   	height: 430px;
+   }
+
+   .sym{
+   	width: 40%;
+   }
+  /*about*/
+ .leftstep2 p{
+	   font-size:20px;
+	   line-height:28px;
+   }
+ .leftstep3 p{
+	   font-size:20px;
+	   line-height:23px;
+	   margin-top:20px;
+   }
+  .leftstep5 p{
+	   font-size:20px;
+	   line-height:30px;
+      text-align:center;
+      margin-top:10px;	  
+   }
+   /*team*/
+  .team{
+	  width:100%;
+	  height:470px;
+	  margin-top:30px;
+  } 
+  /*map*/
+ .map{
+  width:80%;
+  height:750px;
+ }
+ /*form*/
+ .formleft input{
+	 width:285px;
+	 height:47px;
+ }
+ .formcenter input{
+	 width:285px;
+	 height:47px;
+	 margin-left:10px;
+ }
+ .formright input{
+	 width:285px;
+	 height:47px;
+ }
+ /*footer*/
+ .footer{
+	width:100%;
+	height:130px;
+ }
+ .footerun{
+ width:100%;
+ height:130px;
+ margin:0px auto;
+ }
+ .footerun img{
+	 width:60%;
+	 margin:0px auto;
+	
+ }
+ 
+ 
+ 
+ 
+ 
+}
+
+
+
+
+
+
+
+@media(max-width: 768px){
+	.logo1 h2{
+		font-size: 90px;
+		margin-left:100px;
+		margin-top: -5px;
+	}
+	.logo2{
+	width: 100%;
+	height: 100px;
+   }
+	.logo3{
+		width: 100%;
+		height: 100px;
+	}
+
+	.logo1{
+		width: 100%;
+		height: 100px;
+	}
+    .logo2 p{
+       font-size: 22px;
+       margin-top: 40px; 
+       margin-left: 10px; 
+     }
+     .logo3 form{
+	     margin-top: 20px;
+	     width: 400px;
+	     margin-left: 100px;
+	     
+     }
+      .logo3 button{
+      	margin-left:50px; 
+      }
+
+     .maker{
+	    margin-top: 300px;
+      }  
+       .buto{
+	   	margin-right:80px;
+	   	margin-top: -1px;
+	   }
+
+   /* gallery*/
+    .part1{
+	height: 420px;
+	width: 250px;
+	
+	
+	}
+	.part2{
+		height: 420px; 
+		width: 250px;
+		
+		
+	}
+	.part3{
+		height: 420px;
+		width: 250px;
+		
+		
+	}
+   
+   .caro1{
+	 width: 100%;
+	  height: 400px;
+	 position: absolute;
+	}
+    .caro2{
+	width: 100%;
+	height: 400px;
+	 position: absolute;
+	}
+  .caro3{
+	width: 100%;
+	height: 400px;
+	 position: absolute;
+	}
+    .caro1 h2{
+   	 color:teal;
+   	 font-size: 17px;
+    text-align: center;
+   }
+   .read h2{
+   	 color:white;
+   	 font-size: 17px;
+     margin: -8px 0px 0px -70px;
+   }
+   .caro1 button{
+   	 margin-left: 40px;
+   	 margin-top: 20px;
+   }
+
+   .caro2 h2{
+   	 color:teal;
+   	 font-size: 17px;
+    text-align: center;
+   }
+   .read2 h2{
+   	 color:white;
+   	 font-size: 17px;
+     margin: -8px 0px 0px -70px;
+   }
+   .caro2 button{
+   	 margin-left: 40px;
+   	 margin-top: 20px;
+   }
+
+   .caro3 h2{
+   	 color:teal;
+   	 font-size: 17px;
+    text-align: center;
+   }
+   .read3 h2{
+   	 color:white;
+   	 font-size: 17px;
+     margin: -8px 0px 0px -70px;
+   }
+   .caro3 button{
+   	 margin-left: 40px;
+   	 margin-top: 20px;
+   }
+   /*projectsy*/
+   .india{
+   	margin-top:20px;
+   	height: 350px;
+   }
+   .usa{
+   	margin-top: 20px;
+   	height: 350px;
+   }
+   .china{
+   	margin-top: 20px;
+   	height: 350px;
+   }
+   .dubai{
+   	margin-top: 20px;
+   	height: 350px;
+   }
+   .sym{
+   	width: 50%;
+   }
+   /*team*/
+   .teamb img{
+	   width:100%;
+   }
+   /*about*/
+ .leftstep2 p{
+	   font-size:16px;
+	   line-height:28px;
+   }
+ .leftstep3 p{
+	   font-size:17px;
+	   line-height:23px;
+	   margin-top:15px;
+   }
+  .leftstep5 p{
+	   font-size:20px;
+	   line-height:23px;
+      text-align:center;
+      margin-top:5px;	  
+   } 
+  .rightstep1 h2{
+	  font-size:27px;
+  }
+/*team*/
+  .team{
+	  width:100%;
+	  height:380px;
+	  margin-top:30px;
+  } 
+ /*map*/
+ .map{
+  width:100%;
+  height:750px;
+ margin-left:-5px;
+}
+ /*forms*/
+ .forms{
+	 width:100%;
+	 height:700px;
+ }
+ .form1{
+	 width:100%;
+	 height:150px;
+ } 
+ .form2{
+	 width:100%;
+	 height:100px;
+ } 
+ .form3{
+	 width:100%;
+	 height:350px;
+ } 
+ .formtop{
+	 width:65%;
+	 height:150px;
+ }
+ .formleft{
+	 width:33%;
+	 height:100px;
+ }
+ .formcenter{
+	 width:34%;
+	 height:100px;
+ }
+ .formright{
+	 width:33%;
+	 height:100px;
+ }
+
+ .formleft input{
+	 width:225px;
+	 height:45px;
+ }
+ .formcenter input{
+	 width:225px;
+	 height:45px;
+	 margin-left:12px;
+ }
+ .formright input{
+	 width:220px;
+	 height:45px;
+ }
+/*footer*/
+.footer{
+	width:100%;
+	height:100px;
+ }
+ .footerun{
+ width:100%;
+ height:100px;
+ margin:0px auto;
+ }
+ .footerun img{
+	 width:60%;
+	 margin:0px auto;
+ }
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+@media(max-width: 360px){
+	.logo2{
+	width: 100%;
+	height: 100px;
+   }
+	.logo3{
+	
+		width: 100%;
+		height: 100px;
+	}
+
+	.logo1{
+		width: 100%;
+		height: 100px;
+	}
+	.logo1 h2{
+		font-size: 60px;
+		margin-left: 25px;
+		margin-top: 15px;
+	}
+    .logo2 p{
+       font-size: 16px;
+       margin-top: 30px; 
+     }
+    .logo3 form{
+	     margin-top: 5px;
+	     width: 200px;
+	     margin-left: 0px;
+	     
+     }
+      .logo3 button{
+      	margin-left:50px; 
+      }
+       .buto{
+	   	margin-right:40px;
+	   	margin-top: -1px;
+	   }
+    
+   /* gallery*/
+   .caro1 h2{
+   	 font-size: 22px;
+    text-align: center;
+   }
+   .part1{
+	height: 420px;
+	width: 315px;
+	
+	margin-left:-13px;
+	margin-top: 15px;
+	}
+	.part2{
+		height: 420px; 
+		width: 315px;
+		
+		margin-left:-13px;
+		margin-top: 15px;
+	}
+	.part3{
+		height: 420px;
+		width: 315px;
+		
+		margin-left:-13px;
+		margin-top: 15px;
+	}
+    .read h2{
+   	 color:white;
+   	 font-size: 16px;
+     margin: -8px 0px 0px -70px;
+   }
+    .caro1 button{
+   	 margin-left: 40px;
+   	  margin-top: 20px;
+   }
+    .read2 h2{
+   	 color:white;
+   	 font-size: 16px;
+     margin: -8px 0px 0px -70px;
+   }
+    .caro2 button{
+   	 margin-left: 40px;
+   	 margin-top: 20px;
+   }
+   .read3 h2{
+   	 color:white;
+   	 font-size: 16px;
+     margin: -8px 0px 0px -70px;
+   }
+    .caro3 button{
+   	 margin-left: 40px;
+   	 margin-top: 20px;
+   }
+       /*projects*/
+
+   /*INDIA*/
+   .india{
+   	 width:100%;
+   	height: auto;
+   	
+   }
+   .india img{
+   	margin-top: 20px;
+   }
+   .india img:hover{
+     transform: scale(1.3);
+   }
+   .pro{
+   	width: 100%;
+   	height: 100px;
+   	 margin:0px auto;
+   	 margin-bottom: 20px;
+   	 margin-top: 15px;
+   }
+
+   /*USA*/
+   .usa{
+   	 width:100%;
+   	height: auto;
+   
+   }
+   .usa img{
+   	margin-top: 20px;
+   }
+   .usa img:hover{
+     transform: scale(1.3);
+   }
+
+   /*CHINA*/
+   .china{
+   	 width:100%;
+   	height: auto;
+   }
+   .china img{
+   	margin-top: 20px;
+   }
+   .china img:hover{
+     transform: scale(1.3);
+   }
+   /*DUBAI*/
+   .dubai{
+   	 width:100%;
+   	height: auto;
+   }
+   .dubai img{
+   	margin-top: 20px;
+   }
+   .dubai img:hover{
+     transform: scale(1.3);
+   }
+   .sym{
+   	width: 100%;
+   	height: 100px;
+   margin-top: 15px;
+   margin-left: -20px;
+   }
+   .sym button{
+   	 width: 60px;
+   	 height: 60px;
+     margin-top: 15px;
+
+   }
+   .sym img{
+   	margin-top: 3px;
+   }
+   /*team*/
+   .teamb img{
+	   width:100%;
+   }
+ /*about*/
+	 .rightabout{
+		 width:100%;
+	 }
+	 .leftabout{
+		 width:100%;
+	 }
+    .leftstep1 h2{
+	   font-size:25px;
+	   line-height:80px;
+   }
+   .leftstep2 p{
+	   color:gray;
+	   font-style:verdana;
+	   font-size:17px;
+	   line-height:20px;
+   }
+   .leftstep3{
+	   height:270px;
+   }
+   .leftstep3 p{
+	   font-size:20px;
+	   line-height:25px;
+	   margin-top:5px;
+   }
+   .leftstep4 h2{
+	    color:black;
+	   font-style:verdana;
+	   font-size:25px;
+	   line-height:40px;
+   }
+   .leftstep5{
+	   height:290px;
+   }
+   .leftstep5 p{
+	  color:gray;
+	   font-style:verdana;
+	   font-size:20px;
+	   line-height:33px;
+      text-align:center;
+      margin-top:20px;	  
+   }
+   .rightabout{
+	  margin-top:30px;
+   }
+   .rightstep1 h2{
+	   font-size:22px;
+	   line-height:80px;
+   }
+   /*team*/
+  .teampart1{
+	  width:100%;
+  }
+  .teampart2{
+	  width:100%;
+  }
+  .teampart3{
+	  width:100%;
+  }
+  .teampart4{
+	  width:100%;
+  }
+  /*team*/
+ .team{
+	  width:100%;
+	  height:200px;
+	  margin-top:30px;
+  } 
+   /*map*/  
+   .mapback{
+	   width:100%;
+	   height:400px;
+   }
+  .map{
+  width:95%;
+  height:300px;
+}
+  .map iframe{
+  width:113%;
+  height:300px;
+
+}
+ /*forms*/
+ .forms{
+	 width:100%;
+	 height:750px;
+ }
+ .form1{
+	 width:100%;
+	 height:auto;
+ } 
+ .form2{
+	 width:100%;
+	 height:auto;
+ } 
+ .formtop{
+	 width:100%;
+	 height:150px;
+ }
+ .formleft{
+	 width:100%;
+	 height:100px;
+ }
+ .formcenter{
+	 width:100%;
+	 height:100px;
+ }
+ .formright{
+	 width:100%;
+	 height:100px;
+ }
+ .form3{
+	 width:100%;
+	 height:200px;
+ }
+ .formtop p {
+  font-size:18px;
+ }
+ .formleft input{
+	 width:283px;
+	 height:45px;
+	 margin-left:3%;
+ }
+ .formcenter input{
+	 width:283px;
+	 height:45px;
+	 margin-left:3%;
+ }
+ .formright input{
+	width:283px;
+	 height:45px;
+	 margin-left:3%;
+ }
+ .form3 textarea{
+	 width:290px;
+	 height:150px;
+	 margin-left:-9px;
+ }
+ .form3 input{
+	width:275px;
+	
+ }
+ /*footer*/
+ .footer{
+	width:100%;
+	height:80px;
+ }
+ .footerun{
+ width:100%;
+ height:80px;
+ margin:0px auto;
+ }
+ .footerun img{
+	 width:90%;
+	margin:0px auto;
+ }
+ 
+   
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

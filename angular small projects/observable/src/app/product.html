@@ -1,0 +1,15 @@
+<input type="radio" [(ngModel)]="All" (ngModelChange)="onChange(all)" value="all" name="gender">All({{all}})
+<input type="radio" [(ngModel)]="Male" (ngModelChange)="onChange(male)"  value="male" name="gender">Male({{male}})
+<input type="radio" [(ngModel)]="Female" (ngModelChange)="onChange(female)" value="female"  name="gender">Female({{female}})
+<table border="1">
+    <tr>
+        <td><b>ProductID</b></td>
+        <td><b>ProductName</b></td>
+        <td><b>Gender</b></td>
+    </tr>
+    <tr *ngFor="let item of iproducts">
+        <td>{{item.ProductID}}</td>
+        <td>{{item.ProductName | productGenderPipe:item.gender}}</td>
+        <td>{{item.gender}}</td>
+    </tr>
+</table>

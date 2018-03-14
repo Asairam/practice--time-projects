@@ -1,0 +1,29 @@
+[
+        {
+        "ProductID": 1,
+        "ProductName": "sairam",
+        "gender":"male"
+        },
+
+        {
+        "ProductID": 2,
+        "ProductName": "sita",
+        "gender":"female"
+        },{
+        "ProductID": 3,
+        "ProductName": "jai",
+        "gender":"male"
+        },{
+        "ProductID": 4,
+        "ProductName": "kisan",
+        "gender":"male"
+        },{
+        "ProductID": 5,
+        "ProductName": "gita",
+        "gender":"female"
+        },{
+        "ProductID": 6,
+        "ProductName": "rita",
+        "gender":"female"
+        }
+]

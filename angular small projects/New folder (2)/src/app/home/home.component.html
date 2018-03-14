@@ -1,0 +1,11 @@
+<p>{{mess}}</p>
+{{my}}
+  {{viewMes}}
+ <input type="text" [(ngModel)]="shareProduct">
+<a routerLink="/Service">Service</a>
+<input type="text" [(ngModel)]="numbers">
+<button (click)="numberCli(numbers)">click</button>
+
+
+<app-product [shareProduct]="shareProduct" (message)="recive($event)"></app-product>
+

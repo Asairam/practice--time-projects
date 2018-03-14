@@ -1,0 +1,15 @@
+<table border="1">
+    <tr>
+        <th>Name</th>
+       <th>Images</th>
+    </tr>
+    <tr *ngFor="let x of applist">
+        <td>{{x.name}}</td>
+        <td>
+            <img src="{{x.url}}">
+        </td>
+    </tr>
+</table>
+<ul>
+    <li *ngFor="let x of result">{{x.name}}</li>
+</ul>

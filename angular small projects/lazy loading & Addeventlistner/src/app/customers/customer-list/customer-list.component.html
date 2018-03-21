@@ -1,0 +1,24 @@
+
+<p>
+  customer-list works!
+</p>
+<br>
+<div #filtercontainer >
+<button (click)="isPopup=true;">Add Event Listener</button>
+  
+<div class="popup" *ngIf="isPopup">
+  <form [formGroup]="sampleForm" novalidate>
+  Gender:-
+  <input type="radio"  [formControl]="sampleForm.controls['gender']" value="male" name="gen">Male
+  <input type="radio"  [formControl]="sampleForm.controls['gender']" value="female" name="gen">Female
+  <br>
+  Hobby:-
+  <span *ngFor="let item of myhobby">
+  <input type="checkbox" (change)="hobbyCheck($event,item.id)"   [formControl]="sampleForm.controls['hobby']"> {{item.hname}}    
+  </span>
+  <br>
+  </form>
+  <button (click)="isPopup=false;">cancel</button>
+</div>
+</div>
+<div class="overlay" *ngIf="isPopup"></div>

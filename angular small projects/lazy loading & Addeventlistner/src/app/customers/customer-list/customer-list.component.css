@@ -1,0 +1,20 @@
+.popup{
+    width: 500px;
+    height: 200px;
+    background-color: gray;
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    z-index: 5;
+}
+.overlay{
+        position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    transition: opacity 500ms;
+    display: block;
+    z-index: 2;
+}

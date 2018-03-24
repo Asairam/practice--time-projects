@@ -23,6 +23,13 @@ var UserService = (function () {
             return JSON.parse(res[key]);
         });
     };
+    UserService.prototype.Postuser = function (fd) {
+        return this.http.post('http://localhost:8080/appPost', fd)
+            .map(function (res) {
+            var key = '_body';
+            return JSON.parse(res[key]);
+        });
+    };
     UserService.prototype.getMongoData = function () {
         return this.http.get("http://localhost:8080/mongodb").map(function (res1) { return res1.json(); });
     };

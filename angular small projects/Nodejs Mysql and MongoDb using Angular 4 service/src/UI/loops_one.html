@@ -1,9 +1,39 @@
 <!--<h1 style="color: green">{{profile | json}}</h1>-->
-<h1 style="color: red">{{mongo | json}}</h1>
-
+<!--<h1 style="color: red">{{mongo | json}}</h1>-->
+<h2>Mysql Get List</h2>
 <table border="">
-    <tr *ngFor="let item of profile">
+    <tr *ngFor="let item of profile | slice:0:10">
         <td>{{item.ename}}</td>
         <td>{{item.esalary}}</td>
     </tr>
 </table>
+<h2>Mongodb Get List</h2>
+<table border="">
+    <tr *ngFor="let item of mongo |slice:0:10">
+        <td>{{item.name}}</td>
+        <td>{{item.class}}</td>
+    </tr>
+</table>
+<h2>Mysql Insert Data</h2>
+<form [formGroup]="frmsub" novalidate>
+<table border="">
+    <tr>
+        <td>Name</td>
+        <td>
+            <input type="text" [formControl]="frmsub.controls['name']">
+        </td>
+    </tr>
+    <tr>
+        <td>Salary</td>
+        <td>
+            <input type="number" [formControl]="frmsub.controls['salary']">
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <input type="submit" (click)="tablesub()">
+        </td>
+    </tr>
+</table>
+</form>

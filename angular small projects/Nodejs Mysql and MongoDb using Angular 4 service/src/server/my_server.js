@@ -4,7 +4,9 @@ var express = require("express");
 var mysql = require("mysql");
 //create server
 var app = express();
-
+var bodyParser=require("body-parser");
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 //cross origin issue resolve.
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -35,14 +37,32 @@ var mongodb = require("mongodb");
 //create the MongoClient
 var nareshIT = mongodb.MongoClient;
 //create the Rest API.
-// app.get("/mongodb",function(req,res){
-//     nareshIT.connect("mongodb://localhost:27017/node",function(err,db){
-//         db.collection("emp").find().toArray(function(err,array){
-//             res.send(array);
-//         });
-//     });
-// });
+app.get("/mongodb",function(req,res){
+    nareshIT.connect("mongodb://localhost:27017/my_db",function(err,db){
+        db.collection("om").find().toArray(function(err,array){
+            res.send(array);
+        });
+    });
+});
 
+app.post("/appPost",function(req,res){
+	 var postData  = req.body;	
+	connection.query('INSERT INTO emp SET ?',postData,function(error, results, fields){
+		if (error) {
+			res.json({
+				status:false,
+				message:'there are some error with query'
+			})
+		  }else{
+			  
+			  res.json({
+				status:true,
+				data:results,
+				message:'Insert sucessfully'
+			})
+		  }
+	})
+});
 
 
 

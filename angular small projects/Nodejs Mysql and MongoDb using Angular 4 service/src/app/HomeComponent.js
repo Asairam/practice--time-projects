@@ -10,18 +10,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var forms_1 = require("@angular/forms");
 var UserService_1 = require("./UserService");
+var http_1 = require("@angular/http");
 var HomeComponent = (function () {
-    function HomeComponent(userService) {
+    function HomeComponent(userService, builder, http) {
         var _this = this;
         this.userService = userService;
-        this.profile = [];
-        this.mongo = {};
+        this.builder = builder;
+        this.http = http;
+        this.frmsub = this.builder.group({
+            name: new forms_1.FormControl(''),
+            salary: new forms_1.FormControl('')
+        });
         this.userService.getMongoData().subscribe(function (response) { return _this.mongo = response; });
     }
     HomeComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.userService.getUser().subscribe(function (data) { _this.profile = data; console.log(_this.profile); });
+    };
+    HomeComponent.prototype.tablesub = function () {
+        var _this = this;
+        var datas = {
+            "ename": this.frmsub.value.name,
+            "esalary": this.frmsub.value.salary
+        };
+        console.log(this.frmsub.value);
+        this.userService.Postuser(datas).subscribe(function (data) { _this.profilesub = data; console.log(_this.profilesub); });
     };
     return HomeComponent;
 }());
@@ -31,7 +46,7 @@ HomeComponent = __decorate([
         templateUrl: "UI/loops_one.html",
         providers: [UserService_1.UserService]
     }),
-    __metadata("design:paramtypes", [UserService_1.UserService])
+    __metadata("design:paramtypes", [UserService_1.UserService, forms_1.FormBuilder, http_1.Http])
 ], HomeComponent);
 exports.HomeComponent = HomeComponent;
 //# sourceMappingURL=HomeComponent.js.map

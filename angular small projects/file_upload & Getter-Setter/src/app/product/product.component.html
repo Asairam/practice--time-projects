@@ -1,0 +1,21 @@
+<p>
+  product works!
+  {{shareProduct}}
+
+</p>
+Gettervalue:- {{getSetterValue}}
+<br>
+<button (click)="prod()">Call to Product</button>
+<br>
+<br>
+<input type="file" #fileinput (change)="fileup()" multiple>
+<table>
+        <tr>
+            <td *ngFor="let xyz of imagesrc;let i=index;">
+                <input type="checkbox" (change)="oncheck($event,i)">
+                <img src="{{xyz}}" width="60" height="60" style="margin-left: 5px;" alt="">
+                <button (click)="delete(i)">delete</button>
+            </td>
+        </tr>
+    </table>
+    <button (click)="subimg()">Submit images</button>

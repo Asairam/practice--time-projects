@@ -1,0 +1,20 @@
+<h1 *ngFor="let x of data;let index=index;let first=first;let last=last;let even=even;let odd=odd">
+    {{x}}...{{index}}...{{first}}...{{last}}...{{even}}...{{odd}}
+</h1>
+
+<p style="color:red" *ngFor="let x of data_one">
+    {{x}}
+</p>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>City</th>
+        <th>Country</th>
+    </tr>
+    <tr *ngFor="let x of data_two.records">
+        <td>{{x.Name}}</td>
+        <td>{{x.City}}</td>
+        <td>{{x.Country}}</td>
+    </tr>
+</table>

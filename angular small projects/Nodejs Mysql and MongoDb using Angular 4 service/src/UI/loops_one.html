@@ -1,0 +1,9 @@
+<!--<h1 style="color: green">{{profile | json}}</h1>-->
+<h1 style="color: red">{{mongo | json}}</h1>
+
+<table border="">
+    <tr *ngFor="let item of profile">
+        <td>{{item.ename}}</td>
+        <td>{{item.esalary}}</td>
+    </tr>
+</table>

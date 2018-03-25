@@ -17,15 +17,29 @@ export class UserService {
      
     });
   }
-  Postuser(fd){
-    return this.http.post('http://localhost:8080/appPost',fd)
+
+  Postuser(datas:any){
+   
+    return this.http.post('http://localhost:8080/appPost',datas)
     .map((res:Response)=>{
       const key = '_body';
       return JSON.parse(res[key]);
     })
   }
+ 
+ Filterlist(id){
+   var uid={
+     "id":id
+   }
+    return this.http.post('http://localhost:8080/empFilter',uid)
+    .map((res:Response)=>{
+      const key = '_body';
+      return JSON.parse(res[key]);
+    })
+ }
+
   getMongoData(){
     return this.http.get("http://localhost:8080/mongodb").map((res1:Response)=>res1.json());
   }
-
+   
 }

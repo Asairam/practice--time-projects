@@ -23,8 +23,18 @@ var UserService = (function () {
             return JSON.parse(res[key]);
         });
     };
-    UserService.prototype.Postuser = function (fd) {
-        return this.http.post('http://localhost:8080/appPost', fd)
+    UserService.prototype.Postuser = function (datas) {
+        return this.http.post('http://localhost:8080/appPost', datas)
+            .map(function (res) {
+            var key = '_body';
+            return JSON.parse(res[key]);
+        });
+    };
+    UserService.prototype.Filterlist = function (id) {
+        var uid = {
+            "id": id
+        };
+        return this.http.post('http://localhost:8080/empFilter', uid)
             .map(function (res) {
             var key = '_body';
             return JSON.parse(res[key]);

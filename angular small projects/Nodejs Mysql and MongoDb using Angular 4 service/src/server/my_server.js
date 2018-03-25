@@ -64,7 +64,24 @@ app.post("/appPost",function(req,res){
 	})
 });
 
-
+app.post("/empFilter",function(req,res){
+    var uid  = req.body.id;	
+    connection.query(`select * from emp where id=${uid}`,function(error, results, fields){
+        if (error) {
+			res.json({
+				status:false,
+				message:'there are some error with query'
+			})
+		  }else{
+			  
+			  res.json({
+				status:true,
+				data:results,
+				message:'filter sucessfully'
+			})
+		  }
+    })
+})
 
 //Assign the Port No.
 app.listen(8080);

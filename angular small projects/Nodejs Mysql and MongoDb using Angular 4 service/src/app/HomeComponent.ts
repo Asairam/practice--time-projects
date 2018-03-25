@@ -12,6 +12,8 @@ export class HomeComponent implements OnInit {
   profile:any[];
   profilesub:any[];
   mongo:any[];
+ alert:string;
+ filterdata:any[];
   frmsub:FormGroup=this.builder.group({
     name:new FormControl(''),
     salary:new FormControl('')
@@ -28,7 +30,26 @@ tablesub(){
     "ename":this.frmsub.value.name,
     "esalary":this.frmsub.value.salary
   }
-  console.log(this.frmsub.value);
-  this.userService.Postuser(datas).subscribe((data:any) =>{ this.profilesub = data;console.log(this.profilesub)});
+  console.log(datas);
+  this.userService.Postuser(datas).subscribe((data:any) =>{ 
+    this.profilesub = data;
+   this.frmsub.reset();
+    console.log(this.profilesub)
+  },(err)=>{
+    console.log(err);
+  },()=>{
+ this.alert=this.profilesub.message;
+  });
+}
+empfull(id){
+  console.log(id);
+  this.userService.Filterlist(id).subscribe((data:any) =>{ 
+    this.filterdata = data.data;
+    console.log(this.filterdata)
+  },(err)=>{
+    console.log(err);
+  },()=>{
+ 
+  });
 }
 }

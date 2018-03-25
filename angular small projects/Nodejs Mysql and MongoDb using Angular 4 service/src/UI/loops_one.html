@@ -1,12 +1,28 @@
 <!--<h1 style="color: green">{{profile | json}}</h1>-->
 <!--<h1 style="color: red">{{mongo | json}}</h1>-->
 <h2>Mysql Get List</h2>
+<div style="height:260px;">
+<span style="float:left;">
 <table border="">
     <tr *ngFor="let item of profile | slice:0:10">
-        <td>{{item.ename}}</td>
+        <td (click)="empfull(item.id)" style="cursor:pointer;">{{item.ename}}</td>
         <td>{{item.esalary}}</td>
     </tr>
 </table>
+</span>
+<span style="float:left;margin-left:40px;">
+    <b>fullview get list</b>
+<table border="">
+    <tr *ngFor="let item of filterdata">
+        <td style="cursor:pointer;">{{item.ename}}</td>
+        <td>{{item.esalary}}</td>
+        <td>{{item.position}}</td>
+    </tr>
+</table>
+</span>
+</div>
+
+<span >
 <h2>Mongodb Get List</h2>
 <table border="">
     <tr *ngFor="let item of mongo |slice:0:10">
@@ -14,6 +30,7 @@
         <td>{{item.class}}</td>
     </tr>
 </table>
+</span>
 <h2>Mysql Insert Data</h2>
 <form [formGroup]="frmsub" novalidate>
 <table border="">
@@ -36,4 +53,6 @@
         </td>
     </tr>
 </table>
+{{alert}}
 </form>
+

@@ -35,8 +35,27 @@ var HomeComponent = (function () {
             "ename": this.frmsub.value.name,
             "esalary": this.frmsub.value.salary
         };
-        console.log(this.frmsub.value);
-        this.userService.Postuser(datas).subscribe(function (data) { _this.profilesub = data; console.log(_this.profilesub); });
+        console.log(datas);
+        this.userService.Postuser(datas).subscribe(function (data) {
+            _this.profilesub = data;
+            _this.frmsub.reset();
+            console.log(_this.profilesub);
+        }, function (err) {
+            console.log(err);
+        }, function () {
+            _this.alert = _this.profilesub.message;
+        });
+    };
+    HomeComponent.prototype.empfull = function (id) {
+        var _this = this;
+        console.log(id);
+        this.userService.Filterlist(id).subscribe(function (data) {
+            _this.filterdata = data.data;
+            console.log(_this.filterdata);
+        }, function (err) {
+            console.log(err);
+        }, function () {
+        });
     };
     return HomeComponent;
 }());

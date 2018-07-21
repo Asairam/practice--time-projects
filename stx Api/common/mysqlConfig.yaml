@@ -1,0 +1,12 @@
+development:
+  host: localhost
+  port: 3306
+  user: stxbeacon
+  password: webappclouds
+  database: stx_beacon
+production:
+  host: nodejs.ctcsmr785ze2.us-east-1.rds.amazonaws.com
+  port: 3306
+  user: stxbeacon
+  password: webappclouds
+  database: stx_beacon

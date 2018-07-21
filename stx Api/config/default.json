@@ -1,0 +1,591 @@
+{
+    "statusCodes": {
+        "1001": "General Success",
+        "1011": "Record created successfully",
+        "1012": "Record fetched successfully",
+        "1013": "Record deleted successfully",
+        "1014": "Record updated successfully",
+        "1028": "Data fetched successfully",
+        "2001": "Login Failed",
+        "2011": "Record creation failed",
+        "2012": "Record fetch failed",
+        "2013": "Record deletion failed",
+        "2014": "Record update failed",
+        "2028": "Data fetch failed",
+        "2033": "Record with the same name already exists",
+        "2034": "Online name already exists",
+        "2035": "Booking Window Start must be before Booking Window End",
+        "2036": "Mobile Carrier Name Should Not Be Same",
+        "2038": "Client Facing Name already exists",
+        "2039": "The specified user data is invalid",
+        "2040": "Record can not be deleted due to dependency",
+        "2041": "There is no dependency for this record we can proceed for delete",
+        "2042": "No Inventory Groups or Units of Measure may be duplicated",
+        "2043": "Product_Code__c with the same value already exists",
+        "2044": "This Scale is being used in an Active Compensation Method and cannot be inactivated. Please change the compensation method and try again",
+        "2045": "Resource Should Not Be Same",
+        "2046": "Priority Should Not Be Same",
+        "2047": "Resource And Priority Should Not Be Same",
+        "2048": "All Visit Types marked as Active must have a Name",
+        "2049": "Visit Types Name Should Not Be Same",
+        "2050": "All Client Flags marked as Active must have a Name",
+        "2051": "Client Flag Name Should Not Be Same",
+        "2052": "All Occupations must have a Name",
+        "2053": "Occupations Name Should Not Be Same",
+        "2054": "Mobile Carriers must have a Name",
+        "2055": "Mobile Carriers Name Should Not Be Same",
+        "2056": "Mail not sent",
+        "2057": "Mail sent Successfully",
+        "2058": "Please upload Image fomats (jpeg, png, jpg..)",
+        "2059": "Duplicate found. No two payment types may have the same name",
+        "2060": "Duplicate found. No two payment types may have the same abbreviation",
+        "2061": "Duplicate found. No two payment types may have the same sort order",
+        "2062": "Sunday Start Time must be prior to End Time",
+        "2063": "Monday Start Time must be prior to End Time",
+        "2064": "Tuesday Start Time must be prior to End Time",
+        "2065": "Wednesday Start Time must be prior to End Time",
+        "2066": "Thursday Start Time must be prior to End Time",
+        "2067": "Friday Start Time must be prior to End Time",
+        "2068": "Saturday Start Time must be prior to End Time",
+        "2069": "Custom Hours Start time must be prior to End Time",
+        "2070": "The Begin Date is after the End Date",
+        "2071": "Invalid Token",
+        "2072": "We have not found city with your pincode. Please enter below city,state,country",
+        "2073": "Invalid Username",
+        "2074": "Duplicate found. No two promotions may have the same name",
+        "2075": "Duplicate found. No two promotions may have the same sort order",
+        "2076": "Duplicate Marketing Set name found. All marketing sets must have a unique name",
+        "2078": "One Week or One Weekday view requires selection of a Worker",
+        "2079": "Validation for duplicate name missing",
+        "2080": "No Dates Avilable",
+        "9997": "No data found",
+        "9951": "Username or Password is incorrect",
+        "9995": "Missing mandatory fields",
+        "9998": "Duplicate Records",
+        "9999": "An unexpected error occurred on the server side"
+    },
+    "responseTemplte": {
+        "status": 0,
+        "message": "",
+        "result": {}
+    },
+    "auroraMySQLDB": {
+        "host": "nodejs.ctcsmr785ze2.us-east-1.rds.amazonaws.com",
+        "port": 3306,
+        "user": "stxbeacon",
+        "password": "webappclouds",
+        "databaseDev": "stx_test"
+    },
+    "MySQLDB": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "databaseDev": "stx_beacon"
+    },
+    "logsPath": "logs/stxbeacon.log",
+    "logsLevel": "debug",
+    "booleanTrue": 1,
+    "booleanFalse": 0,
+    "usersTable": "users",
+    "clientFieldsPreferencesTable": "client_fields_preferences",
+    "appointmentsBookingTable": "appointments_booking",
+    "notificationsTable": "notifications",
+    "countryStateTable": "country_states",
+    "lookupsDataTable": "lookup_codes",
+    "companiesTable": "companies",
+    "visitTypesTable": "visit_types",
+    "onlineGiftsTable": "online_gifts",
+    "referFriendTable": "refer_friend",
+    "remindersTable": "reminders",
+    "onlineBookingTable": "online_booking",
+    "occupationsTable": "occupations",
+    "clientFlagsTable": "client_flags",
+    "setupServicesTable": "setup_services",
+    "setupServiceClassesTable": "setup_service_classes",
+    "setupServicePackagesTable": "setup_service_packages",
+    "setupServiceGroupsTable": "setup_service_groups",
+    "setupResourcesTable": "setup_resources",
+    "mobileCarriersTable": "mobile_carriers",
+    "companyLogoFilePath": "uploads/companies",
+    "workerFilePath":"uploads/workers",
+    "productFilePath":"uploads/productPictures",
+    "paymentTypesFilePath": "uploads/paymenttypes",
+    "setupInventoryTable": "setup_suppliers",
+    "serviceGroups": "Service Groups",
+    "inventoryGroups": "Inventory Groups",
+    "cashDrawers": "Cash Drawers",
+    "receiptMemo": "Receipt Memo",
+    "companyColors": "Company Colors",
+    "visitTypes": "Client Visit Types",
+    "clientFlags": "Client Flags",
+    "occupations": "Client Occupations",
+    "favoriteItems": "Favorite Items",
+    "apptBooking": "Appt Booking",
+    "onlineBooking": "Appt Online Booking",
+    "mobileCarriers": "Mobile Carriers",
+    "clientQuickAddRequiredFields": "Client Quick Add Required Fields",
+    "clientCardRequiredFields": "Client Card Required Fields",
+    "onlineBookingRequiredFields": "Online Booking Required Fields",
+    "apptNotification": "Appt Notification",
+    "apptReminders": "Appt Reminders",
+    "posTax": "Sales Tax",
+    "posMerchantOnline": "Merchant Online",
+    "posMerchantInStore": "Merchant In Store",
+    "posPaymentGateway": "Payment Gateway",
+    "referFriend": "Refer a Friend",
+    "giftsOnline": "Gifts Online",
+    "emailApp": "Email App",
+    "emailAppSubuser": "Email App Subuser",
+    "sendGridEndPoint": "https://api.sendgrid.com/v3/",
+    "dbTables": {
+        "preferenceTBL": "Preference__c",
+        "serviceTBL": "Service__c",
+        "resourceTBL": "Resource__c",
+        "suppliersTBL": "Supplier__c",
+        "serviceResourceTBL": "Service_Resource__c",
+        "setupProductLineTBL": "Product_Line__c",
+        "setupProductTBL": "Product__c",
+        "productSupplierTBL": "ProductSupplier__c",
+        "setupMembershipTBL": "Membership__c",
+        "setupCompensationTBL": "Compensation__c",
+        "setupGoalsTBL": "Goal__c",
+        "setupUsersTBL": "User__c",
+        "companyHoursTBL": "Company_Hours__c",
+        "workerGoalsTBL": "Worker_Goal__c",
+        "paymentTypesTBL": "Payment_Types__c",
+        "workerServiceTBL": "Worker_Service__c",
+        "customHoursTBL": "CustomHours__c",
+        "permissionsTBL": "Permission_Set__c",
+        "promotionTBL": "Promotion__c",
+        "ticketPaymentTBL": "Ticket_Payment__c",
+        "clientMembershipTBL": "Client_Membership__c",
+        "inventoryUsageTBL": "Inventory_Usage__c",
+        "purchaseOrdersTBL": "Purchase_Order__c",
+        "ticketServiceTBL": "Ticket_Service__c",
+        "purchaseOrderDetailsTBL": "Purchase_Order_Detail__c",
+        "marketingSetTBL": "Marketing_Set__c",
+        "apptTicketTBL": "Appt_Ticket__c",
+        "ContactTBL": "Contact__c",
+        "EmailTBL": "Email__c",
+        "ticketProductTBL": "Ticket_Product__c",
+        "ticketOtherTBL": "Ticket_Other__c",
+        "packageTBL": "Package__c",
+        "clientRewardTBL": "Client_Reward__c",
+        "marketingRewards": "Reward__c",
+        "clientRewardDetailTBL": "Client_Reward_Detail__c",
+        "ticketPaymentsTBL": "Ticket_Payment__c",
+        "cashInOutTBL": "Cash_In_Out__c",
+        "dailyCashTBL": "Daily_Cash__c",
+        "ticketTipTBL": "Ticket_Tip__c"
+    },
+    "RSAKeyPassword": "Web@ppclouds",
+    "forgotSubject": "STX - Reset Your Password",
+    "userNameChangedSubject": "STX - Username changed",
+    "forgotHTML": "assets/templates/forgot.html",
+    "userNameChangeHTML": "assets/templates/userName_Change.html",
+    "recieptEmailText": "Attached is your receipt from STX Beacon UAT 2018",
+    "recieptEmailReadHtmlPath":"assets/templates/reciept.html",
+    "recieptEmailPath": "uploads/receipts/",
+    "recieptEmailSub": "STX Beacon UAT 2018 Ticket",
+    "bseURL": "http://34.238.108.233:4200",
+    "resetLink": "/#/resetpassword/",
+    "clientPictureLocation": "uploads/clientPictures",
+    "timeZonesList": [
+        [
+            "Line Is. Time",
+            "Pacific/Kiritimati"
+        ],
+        [
+            "Chatham Daylight Time",
+            "Pacific/Chatham"
+        ],
+        [
+            "New Zealand Daylight Time",
+            "Pacific/Auckland"
+        ],
+        [
+            "Phoenix Is. Time",
+            "Pacific/Enderbury"
+        ],
+        [
+            "Tonga Time",
+            "Pacific/Tongatapu"
+        ],
+        [
+            "Petropavlovsk-Kamchatski Time",
+            "Asia/Kamchatka"
+        ],
+        [
+            "Fiji Time",
+            "Pacific/Fiji"
+        ],
+        [
+            "Lord Howe Daylight Time",
+            "Australia/Lord_Howe"
+        ],
+        [
+            "Australian Eastern Daylight Time (New South Wales)",
+            "Australia/Sydney"
+        ],
+        [
+            "Solomon Is. Time",
+            "Pacific/Guadalcanal"
+        ],
+        [
+            "Norfolk Time",
+            "Pacific/Norfolk"
+        ],
+        [
+            "Australian Central Daylight Time",
+            "Australia/Adelaide"
+        ],
+        [
+            "Australian Eastern Standard Time",
+            "Australia/Brisbane"
+        ],
+        [
+            "Australian Central Standard Time",
+            "Australia/Darwin"
+        ],
+        [
+            "Korea Standard Time",
+            "Asia/Seoul"
+        ],
+        [
+            "Japan Standard Time",
+            "Asia/Tokyo"
+        ],
+        [
+            "Hong Kong Time",
+            "Asia/Hong_Kong"
+        ],
+        [
+            "Malaysia Time",
+            "Asia/Kuala_Lumpur"
+        ],
+        [
+            "Philippines Time",
+            "Asia/Manila"
+        ],
+        [
+            "China Standard Time",
+            "Asia/Shanghai"
+        ],
+        [
+            "Singapore Time",
+            "Asia/Singapore"
+        ],
+        [
+            "China Standard Time",
+            "Asia/Taipei"
+        ],
+        [
+            "Australian Western Standard Time",
+            "Australia/Perth"
+        ],
+        [
+            "Indochina Time",
+            "Asia/Bangkok"
+        ],
+        [
+            "Indochina Time",
+            "Asia/Ho_Chi_Minh"
+        ],
+        [
+            "West Indonesia Time",
+            "Asia/Jakarta"
+        ],
+        [
+            "Myanmar Time",
+            "Asia/Rangoon"
+        ],
+        [
+            "Bangladesh Time",
+            "Asia/Dhaka"
+        ],
+        [
+            "Nepal Time",
+            "Asia/Kathmandu"
+        ],
+        [
+            "India Standard Time",
+            "Asia/Colombo"
+        ],
+        [
+            "India Standard Time",
+            "Asia/Kolkata"
+        ],
+        [
+            "Pakistan Time",
+            "Asia/Karachi"
+        ],
+        [
+            "Uzbekistan Time",
+            "Asia/Tashkent"
+        ],
+        [
+            "Yekaterinburg Time",
+            "Asia/Yekaterinburg"
+        ],
+        [
+            "Afghanistan Time",
+            "Asia/Kabul"
+        ],
+        [
+            "Azerbaijan Time",
+            "Asia/Baku"
+        ],
+        [
+            "Gulf Standard Time",
+            "Asia/Dubai"
+        ],
+        [
+            "Georgia Time",
+            "Asia/Tbilisi"
+        ],
+        [
+            "Armenia Time",
+            "Asia/Yerevan"
+        ],
+        [
+            "Iran Standard Time",
+            "Asia/Tehran"
+        ],
+        [
+            "Eastern African Time",
+            "Africa/Nairobi"
+        ],
+        [
+            "Arabia Standard Time",
+            "Asia/Baghdad"
+        ],
+        [
+            "Arabia Standard Time",
+            "Asia/Kuwait"
+        ],
+        [
+            "Arabia Standard Time",
+            "Asia/Riyadh"
+        ],
+        [
+            "Eastern European Time",
+            "Europe/Istanbul"
+        ],
+        [
+            "Moscow Standard Time",
+            "Europe/Minsk"
+        ],
+        [
+            "Moscow Standard Time",
+            "Europe/Moscow"
+        ],
+        [
+            "Eastern European Time",
+            "Africa/Cairo"
+        ],
+        [
+            "South Africa Standard Time",
+            "Africa/Johannesburg"
+        ],
+        [
+            "Eastern European Time",
+            "Asia/Beirut"
+        ],
+        [
+            "Israel Standard Time",
+            "Asia/Jerusalem"
+        ],
+        [
+            "Eastern European Time",
+            "Europe/Athens"
+        ],
+        [
+            "Eastern European Time",
+            "Europe/Bucharest"
+        ],
+        [
+            "Eastern European Time",
+            "Europe/Helsinki"
+        ],
+        [
+            "Central European Time",
+            "Africa/Algiers"
+        ],
+        [
+            "Central European Time",
+            "Europe/Amsterdam"
+        ],
+        [
+            "Central European Time",
+            "Europe/Berlin"
+        ],
+        [
+            "Central European Time",
+            "Europe/Brussels"
+        ],
+        [
+            "Central European Time",
+            "Europe/Paris"
+        ],
+        [
+            "Central European Time",
+            "Europe/Prague"
+        ],
+        [
+            "Central European Time",
+            "Europe/Rome"
+        ],
+        [
+            "Western European Time",
+            "Africa/Casablanca"
+        ],
+        [
+            "Greenwich Mean Time",
+            "Europe/Dublin"
+        ],
+        [
+            "Western European Time",
+            "Europe/Lisbon"
+        ],
+        [
+            "Greenwich Mean Time",
+            "Europe/London"
+        ],
+        [
+            "Greenwich Mean Time",
+            "GMT"
+        ],
+        [
+            "Eastern Greenland Time",
+            "America/Scoresbysund"
+        ],
+        [
+            "Azores Time",
+            "Atlantic/Azores"
+        ],
+        [
+            "Cape Verde Time",
+            "Atlantic/Cape_Verde"
+        ],
+        [
+            "South Georgia Standard Time",
+            "Atlantic/South_Georgia"
+        ],
+        [
+            "Newfoundland Daylight Time",
+            "America/St_Johns"
+        ],
+        [
+            "Argentine Time",
+            "America/Argentina/Buenos_Aires"
+        ],
+        [
+            "Atlantic Daylight Time",
+            "America/Halifax"
+        ],
+        [
+            "Chile Summer Time",
+            "America/Santiago"
+        ],
+        [
+            "Brasilia Time",
+            "America/Sao_Paulo"
+        ],
+        [
+            "Atlantic Daylight Time",
+            "Atlantic/Bermuda"
+        ],
+        [
+            "Venezuela Time",
+            "America/Caracas"
+        ],
+        [
+            "Eastern Daylight Time",
+            "America/Indiana/Indianapolis"
+        ],
+        [
+            "Eastern Daylight Time",
+            "America/New_York"
+        ],
+        [
+            "Atlantic Standard Time",
+            "America/Puerto_Rico"
+        ],
+        [
+            "Colombia Time",
+            "America/Bogota"
+        ],
+        [
+            "Central Daylight Time",
+            "America/Chicago"
+        ],
+        [
+            "Peru Time",
+            "America/Lima"
+        ],
+        [
+            "Eastern Standard Time",
+            "America/Panama"
+        ],
+        [
+            "Mountain Daylight Time",
+            "America/Denver"
+        ],
+        [
+            "Central Standard Time",
+            "America/El_Salvador"
+        ],
+        [
+            "Central Standard Time",
+            "America/Mexico_City"
+        ],
+        [
+            "Pacific Daylight Time",
+            "America/Los_Angeles"
+        ],
+        [
+            "Mountain Standard Time",
+            "America/Mazatlan"
+        ],
+        [
+            "Mountain Standard Time",
+            "America/Phoenix"
+        ],
+        [
+            "Pacific Daylight Time",
+            "America/Tijuana"
+        ],
+        [
+            "Alaska Daylight Time",
+            "America/Anchorage"
+        ],
+        [
+            "Pitcairn Standard Time",
+            "Pacific/Pitcairn"
+        ],
+        [
+            "Hawaii-Aleutian Daylight Time",
+            "America/Adak"
+        ],
+        [
+            "Gambier Time",
+            "Pacific/Gambier"
+        ],
+        [
+            "Marquesas Time",
+            "Pacific/Marquesas"
+        ],
+        [
+            "Hawaii-Aleutian Standard Time",
+            "Pacific/Honolulu"
+        ],
+        [
+            "Niue Time",
+            "Pacific/Niue"
+        ],
+        [
+            "Samoa Standard Time",
+            "Pacific/Pago_Pago"
+        ]
+    ]
+}

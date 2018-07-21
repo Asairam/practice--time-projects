@@ -1,0 +1,872 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "stxbeacon Module Api Documentation",
+        "termsOfService": "http://webappclouds.com/"
+    },
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "Tag1",
+            "description": "stxbeacon Module Api Documentation"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/text"
+    ],
+    "paths": {
+        "/api/appointments/booking": {
+            "get": {
+                "tags": [
+                    "Setup Appointments & Emails"
+                ],
+                "summary": "Get appointments booking",
+                "description": "Get appointments booking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "appointments booking successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Setup Appointments & Emails"
+                ],
+                "summary": "save appointments booking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "aptBooking",
+                        "in": "body",
+                        "description": "To Setup appointments booking, Provide the following details.",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/aptBookingObj"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "appointments booking successful"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/setup/clientpreferences/clientfields": {
+            "get": {
+                "tags": [
+                    "Setup Client Preferences"
+                ],
+                "summary": "Get Client Fields",
+                "description": "Get Client Fields",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Client Fields successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Setup Client Preferences"
+                ],
+                "summary": "save Client Fields",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "clientFields",
+                        "in": "body",
+                        "description": "To Setup Client Fields, Provide the following details.",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/clientFieldsObj"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Client Fields successful"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/setup/clientpreferences/clientflags": {
+            "get": {
+                "tags": [
+                    "Setup Client Preferences"
+                ],
+                "summary": "Get Client Flags",
+                "description": "Get Client Flags",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Client Flags successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Setup Client Preferences"
+                ],
+                "summary": "save Client Flags",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "clientFlags",
+                        "in": "body",
+                        "description": "To Setup Client Flags, Provide the following details.",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/clientFlagsObj"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Client Flags successful"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/clientsearch/{searchstring}": {
+            "get": {
+                "tags": [
+                    "Client Search"
+                ],
+                "summary": "Get Client Search",
+                "description": "Get Client Search",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "searchstring",
+                        "in": "path",
+                        "description": "To get Clients.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Client Search successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/clientSearch/bookappointment/{id}": {
+            "get": {
+                "tags": [
+                    "Client Search"
+                ],
+                "summary": "Client Search Book Appointment",
+                "description": "Client Search Book Appointment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "To get Appointments.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Client Appointments successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/clientSearch/bookappointments/{searchstring}": {
+            "get": {
+                "tags": [
+                    "Client Search"
+                ],
+                "summary": "Client Search For Appointment",
+                "description": "Client Search For Appointment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "searchstring",
+                        "in": "path",
+                        "description": "To get Client Appointments.",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Client Search Appointments successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/stxbeacon/setupcompany": {
+            "post": {
+                "tags": [
+                    "Setup"
+                ],
+                "summary": "Setup Company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "Company",
+                        "in": "body",
+                        "description": "To Setup Company, Provide the following details.",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/setupCompanyObj"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Login successful"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/stxbeacon/companies": {
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Get companies",
+                "description": "Get companies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "companies successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/setup/clientpreferences/visittypes": {
+            "get": {
+                "tags": [
+                    "Setups"
+                ],
+                "summary": "Get Visit Types",
+                "description": "Get Visit Types",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Visit Types successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/setupservices/servicegroups/{active}": {
+            "get": {
+                "tags": [
+                    "Setup servicegroups"
+                ],
+                "summary": "Get servicegroups",
+                "description": "Get servicegroups",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Service Groups successfully Fetched"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        },
+        "/api/setupservices/servicegroups": {
+            "post": {
+                "tags": [
+                    "Setup servicegroups"
+                ],
+                "parameters": [
+                    {
+                        "name": "Setup servicegroups",
+                        "in": "body",
+                        "description": "To post servicegroups",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "$ref": "#/definitions/setupServiceGroups"
+                        }
+                    }
+                ],
+                "summary": "Post Setup servicegroups",
+                "description": "Post Setup servicegroups",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Post Setup servicegroups successful"
+                    },
+                    "400": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "Invalid data"
+                    },
+                    "500": {
+                        "$ref": "#/definitions/ResponseObj",
+                        "description": "An unknown error occurred"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ResponseObj": {
+            "type": "object",
+            "required": [
+                "status",
+                "message",
+                "result"
+            ],
+            "properties": {
+                "status": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "object"
+                }
+            }
+        },
+        "setupCompanyObj": {
+            "type": "object",
+            "required": [
+                "companyName",
+                "contactDetails.phone",
+                "contactDetails.email",
+                "address.streetAddress",
+                "address.postalCode",
+                "address.city",
+                "address.state",
+                "address.country",
+                "color.beaconHeaderFooter",
+                "isEnabled",
+                "isDeleted",
+                "createdBy",
+                "createdAt",
+                "updatedBy",
+                "updatedAt"
+            ],
+            "properties": {
+                "enterprise": {
+                    "type": "object",
+                    "properties": {
+                        "companyName": {
+                            "type": "string"
+                        },
+                        "address": {
+                            "type": "object",
+                            "properties": {
+                                "streetAddress": {
+                                    "type": "string"
+                                },
+                                "postalCode": {
+                                    "type": "string"
+                                },
+                                "city": {
+                                    "type": "string"
+                                },
+                                "state": {
+                                    "type": "string"
+                                },
+                                "country": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "contactDetails": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "color": {
+                            "type": "object",
+                            "properties": {
+                                "beaconHeaderFooter": {
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "companyLogo": {
+                            "type": "boolean"
+                        },
+                        "companyLogoFilePath": {
+                            "type": "string"
+                        },
+                        "isEnabled": {
+                            "type": "boolean"
+                        },
+                        "isDeleted": {
+                            "type": "boolean"
+                        },
+                        "createdBy": {
+                            "type": "string"
+                        },
+                        "createdAt": {
+                            "type": "Date"
+                        },
+                        "updatedBy": {
+                            "type": "string"
+                        },
+                        "updatedAt": {
+                            "type": "Date"
+                        }
+                    },
+                    "companyId": {
+                        "type": "number",
+                        "properties": {
+                            "_id": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "setupServiceGroups": {
+            "type": "object",
+            "required": [
+                "active",
+                "serviceGroupName",
+                "serviceGroupColor",
+                "sortOrder",
+                "clientFacingServiceGroupName",
+                "isSystem"
+            ],
+            "properties": {
+                "createServiceGroupsData": {
+                    "type": "object",
+                    "properties": {
+                        "active": {
+                            "type": "boolean"
+                        },
+                        "serviceGroupName": {
+                            "type": "string"
+                        },
+                        "serviceGroupColor": {
+                            "type": "string"
+                        },
+                        "sortOrder": {
+                            "type": "numbur"
+                        },
+                        "clientFacingServiceGroupName": {
+                            "type": "string"
+                        },
+                        "isSystem": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "aptBookingObj": {
+            "type": "object",
+            "required": [
+                "bookingIntervalMinutes",
+                "bookedStatusColor",
+                "reminderSentStatusColor",
+                "calledStatusColor",
+                "confirmedStatusColor",
+                "canceledStatusColor",
+                "checkedInStatusColor",
+                "noShowStatusColor",
+                "completeStatusColor",
+                "conflictingStatusColor",
+                "pendingDepositStatusColor",
+                "maximumAvailableToShow",
+                "availabilityOrder",
+                "expressBookingClientNameNotRequired"
+            ],
+            "properties": {
+                "createServiceGroupsData": {
+                    "type": "object",
+                    "properties": {
+                        "bookingIntervalMinutes": {
+                            "type": "number"
+                        },
+                        "bookedStatusColor": {
+                            "type": "string"
+                        },
+                        "reminderSentStatusColor": {
+                            "type": "string"
+                        },
+                        "calledStatusColor": {
+                            "type": "string"
+                        },
+                        "confirmedStatusColor": {
+                            "type": "string"
+                        },
+                        "canceledStatusColor": {
+                            "type": "string"
+                        },
+                        "checkedInStatusColor": {
+                            "type": "string"
+                        },
+                        "noShowStatusColor": {
+                            "type": "string"
+                        },
+                        "completeStatusColor": {
+                            "type": "string"
+                        },
+                        "conflictingStatusColor": {
+                            "type": "string"
+                        },
+                        "pendingDepositStatusColor": {
+                            "type": "string"
+                        },
+                        "maximumAvailableToShow": {
+                            "type": "number"
+                        },
+                        "availabilityOrder": {
+                            "type": "string"
+                        },
+                        "expressBookingClientNameNotRequired": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "clientFieldsObj": {
+            "type": "object",
+            "required": [
+                "bookingIntervalMinutes",
+                "bookedStatusColor",
+                "reminderSentStatusColor",
+                "calledStatusColor",
+                "confirmedStatusColor",
+                "canceledStatusColor",
+                "checkedInStatusColor",
+                "noShowStatusColor",
+                "completeStatusColor",
+                "conflictingStatusColor",
+                "pendingDepositStatusColor",
+                "maximumAvailableToShow",
+                "availabilityOrder",
+                "expressBookingClientNameNotRequired"
+            ],
+            "properties": {
+                "createServiceGroupsData": {
+                    "type": "object",
+                    "properties": {
+                        "bookingIntervalMinutes": {
+                            "type": "number"
+                        },
+                        "bookedStatusColor": {
+                            "type": "string"
+                        },
+                        "reminderSentStatusColor": {
+                            "type": "string"
+                        },
+                        "calledStatusColor": {
+                            "type": "string"
+                        },
+                        "confirmedStatusColor": {
+                            "type": "string"
+                        },
+                        "canceledStatusColor": {
+                            "type": "string"
+                        },
+                        "checkedInStatusColor": {
+                            "type": "string"
+                        },
+                        "noShowStatusColor": {
+                            "type": "string"
+                        },
+                        "completeStatusColor": {
+                            "type": "string"
+                        },
+                        "conflictingStatusColor": {
+                            "type": "string"
+                        },
+                        "pendingDepositStatusColor": {
+                            "type": "string"
+                        },
+                        "maximumAvailableToShow": {
+                            "type": "number"
+                        },
+                        "availabilityOrder": {
+                            "type": "string"
+                        },
+                        "expressBookingClientNameNotRequired": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        },
+        "clientFlagsObj": {
+            "type": "object",
+            "required": [
+                "bookingIntervalMinutes",
+                "bookedStatusColor",
+                "reminderSentStatusColor",
+                "calledStatusColor",
+                "confirmedStatusColor",
+                "canceledStatusColor",
+                "checkedInStatusColor",
+                "noShowStatusColor",
+                "completeStatusColor",
+                "conflictingStatusColor",
+                "pendingDepositStatusColor",
+                "maximumAvailableToShow",
+                "availabilityOrder",
+                "expressBookingClientNameNotRequired"
+            ],
+            "properties": {
+                "createServiceGroupsData": {
+                    "type": "object",
+                    "properties": {
+                        "bookingIntervalMinutes": {
+                            "type": "number"
+                        },
+                        "bookedStatusColor": {
+                            "type": "string"
+                        },
+                        "reminderSentStatusColor": {
+                            "type": "string"
+                        },
+                        "calledStatusColor": {
+                            "type": "string"
+                        },
+                        "confirmedStatusColor": {
+                            "type": "string"
+                        },
+                        "canceledStatusColor": {
+                            "type": "string"
+                        },
+                        "checkedInStatusColor": {
+                            "type": "string"
+                        },
+                        "noShowStatusColor": {
+                            "type": "string"
+                        },
+                        "completeStatusColor": {
+                            "type": "string"
+                        },
+                        "conflictingStatusColor": {
+                            "type": "string"
+                        },
+                        "pendingDepositStatusColor": {
+                            "type": "string"
+                        },
+                        "maximumAvailableToShow": {
+                            "type": "number"
+                        },
+                        "availabilityOrder": {
+                            "type": "string"
+                        },
+                        "expressBookingClientNameNotRequired": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

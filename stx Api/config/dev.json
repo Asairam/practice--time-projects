@@ -1,0 +1,10 @@
+{
+    "region": "us-east-1",
+    "uiAddress": "https://10.13.11.20:8080/#/",
+    "email": "info@salonclouds.io",
+    "password": "webappclouds",
+    "host": "mail.appclouds.com",
+    "port": 587,
+    
+    "jwtSecret": "wEB!AppCloud"
+}

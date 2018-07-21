@@ -1,0 +1,48 @@
+.background-color {
+    width:100%;
+    background-color: black;
+    padding: 5px 5px 5px ;
+    margin-bottom: 5px;
+    
+}
+#inner_cont {
+    margin-right: 8%;
+    color: white;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+@media (device-width: 768px){
+    hr {
+        display: none;
+    }
+    .thcss {
+        font-size: 7px;
+    }
+    .form_cont table {
+        font-size: 10px;
+    }
+    #inner_cont {
+        margin-right: 10%;
+    }
+    .ml-5{
+        margin-left: -4%;
+    }
+}
+@media (device-width: 1024px) {
+    .thcss {
+        font-size: 10px;
+    }
+    .form_cont table {
+        font-size: 10px;
+    }
+    #inner_cont {
+        margin-right: 10%;
+    }
+    .ml-5{
+        margin-left: -3%;
+    }
+}

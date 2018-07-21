@@ -1,0 +1,87 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>{{'SETUP_TICKET_PREFERENCES.TYPE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select [(ngModel)]="cashType" (change)="clearMsg()">
+                        <option value="Cash Paid In">Cash Paid In</option>
+                        <option value="Cash Paid Out">Cash Paid Out</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>{{ 'POS_DEVICES.CASH_DRAWER' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8"style="color:white;">
+                    <p>{{cashDrawer}}</p>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>{{ 'CHECK_OUT_LIST.CASH_IN_OUT.TRANSACTION_BY' | translate }}
+                        <span class="red">*</span>
+                    </label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" maxlength="40" [(ngModel)]="transactionName" (keypress)="clearMsg()"/>
+                    <p class="red">{{ cashError1 | translate }}</p>
+                </div>
+                <div>
+                    
+                </div>
+            </div>
+            <hr>
+            <h4 *ngIf="cashType=='Cash Paid In'">{{ 'CHECK_OUT_LIST.CASH_IN_OUT.CASH_PAID_IN' | translate }}</h4>
+            <h4 *ngIf="cashType=='Cash Paid Out'">{{ 'CHECK_OUT_LIST.CASH_IN_OUT.CASH_PAID_OUT' | translate }}</h4>
+            <div class="row mt-20">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{ 'COMMON.AMOUNT' | translate }}<span class="red">*</span></th>
+                                <th class="thcss" *ngIf="cashType=='Cash Paid In'">{{ 'CHECK_OUT_LIST.CASH_IN_OUT.FROM' | translate }}<span class="red">*</span></th>
+                                <th class="thcss" *ngIf="cashType=='Cash Paid Out'">{{ 'CHECK_OUT_LIST.CASH_IN_OUT.TO' | translate }}<span class="red">*</span></th>
+                                <th class="thcss">{{ 'CHECK_OUT_LIST.CASH_IN_OUT.REASON' | translate }}<span class="red">*</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" *ngIf="cashType=='Cash Paid In'" [(ngModel)]="cashAmount" (keypress)="IsAlphaNumeric($event)"/>
+                                    <input type="text" *ngIf="cashType=='Cash Paid Out'" [(ngModel)]="cashAmount" (keypress)="IsAlphaNumericNeg($event)"/>
+                                    <p class="red">{{ cashError2 | translate }}</p>
+                                </td>
+                                <td>
+                                    <input type="text"maxlength="40" *ngIf="cashType=='Cash Paid In'" [(ngModel)]="cashFrom" (keypress)="clearMsg()"/>
+                                    <input type="text"maxlength="40" *ngIf="cashType=='Cash Paid Out'" [(ngModel)]="cashTo" (keypress)="clearMsg()"/>
+                                    <p class="red">{{ cashError3 | translate }}</p>
+                                    <p class="red">{{ cashError4 | translate }}</p>
+                                </td>
+                                <td>
+                                    <input type="text" maxlength="140" [(ngModel)]="cashReason" (keypress)="clearMsg()"/>
+                                    <p class="red">{{ cashError5 | translate }}</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>    
+                </div>
+            </div>
+            <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <button type="button" class="save-btn" (click)="saveCashInOut()">{{ 'BUTTON.SAVE' | translate }}</button>
+                        <button type="button" class="cancel-btn" (click)="cancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+                    </div>
+                </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

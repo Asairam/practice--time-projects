@@ -1,0 +1,58 @@
+.payment-table-border{
+    background-color: #e6f3f8
+}
+.black-header{
+    background: #000;
+    color:white
+}
+.black-header>td:nth-child(2),.black-header>td:nth-child(1){
+  
+    border-right-color: #fff !important;
+    /* border-right-color:  #fff !important; */
+}
+.setsubcont .payment-detail h1{
+    margin-top:9px
+}
+
+.btn-deleted {
+	padding: 6px 20px;
+	outline: none;
+	background-color:  #ac2925;
+    border:1px solid #761c19;
+	color: #fff;
+	border-radius: 3px;
+	font-family: 'AvenirLTStdMedium';
+	font-size: 15px;
+	letter-spacing: 1px;
+	position: relative;
+	margin-bottom: 10px;
+	margin-right: 10px;
+}
+.setsubcont .payment-table-border>tbody>tr>td {
+	/*border-color: #fff;*/
+	border-color: #111;
+}
+
+.setsubcont .payment-table-border>thead:first-child>tr:first-child>th {
+	border-top: solid 1px #111;
+}
+.setsubcont .payment-table-border>thead>tr>th {
+	border-color: #111 ;
+}
+.setsubcont input[type=text], .form-control, .setsubcont input[type=email], .setsubcont input[type=number], .setsubcont input[type=password] {
+	color: white;
+}
+.setsubcont input[type=text]:focus, .form-control, .setsubcont input[type=email]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=password]:focus {
+  color: black;
+}
+/* .setsubcont input[type=checkbox]:focus{
+    background-color:#fff;
+    border-color: #111 ;
+} */
+/* style used for responsive*/
+@media only screen and (device-width: 768px) {
+	.setsubcont {
+		margin-right:10% !important;
+	}
+}
+

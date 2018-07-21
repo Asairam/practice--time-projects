@@ -1,0 +1,123 @@
+<div id="wrapper_setup_new">
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont">
+		<div class="container form_cont">
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>{{'COMMON.BEGIN_DATE' | translate }}</label>
+				</div>
+				<div class="col-md-7 col-sm-8">
+					<input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
+					 class="datefield">
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>{{'COMMON.BEGIN_DATE' | translate }}</label>
+				</div>
+				<div class="col-md-7 col-sm-8">
+					<input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
+					 class="datefield">
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					&nbsp;
+				</div>
+
+				<div class="col-md-7 col-sm-8">
+					<button type="button" (click)="generateReport();" class="btn btn-primary">
+						{{'BUTTON.RETRIEVE_STATUS' | translate }} </button>
+				</div>
+			</div>
+
+<hr>
+			<div class="row mt-20 res-mt-15" *ngIf="itemsDisplay">
+				<div class="col-md-4">{{'EMAIL_ACTIVITY.ACTIVITY' | translate}}</div>
+				<div class="col-md-12">
+					<div class="">
+						<table class="form_cont_one mobile-table table-bordered-white table-hover table-bordered">
+							<thead>
+								<tr>
+									<th class="thcss">{{'COMMON.DATE' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.REQUESTS' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.DELIVERED' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.UNIQUE_OPENS' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.OPENS' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.CLICKS' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.UNSUBSCRIBERS' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.INVALID_EMAIL' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.BOUNCES' | translate}} </th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.BLOCKED' | translate}}</th>
+									<th class="thcss">{{'EMAIL_ACTIVITY.SPAM_REPORTSTE' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<!-- add &nbsp to each td  data (dynaic) for responsive -->
+									<td>03/28/2018</td>
+									<td>0</td>
+									<td>0</td>
+									<td>1</td>
+									<td>1</td>
+									<td>0</td>
+									<td>0</td>
+									<td>0</td>
+									<td>0</td>
+									<td>0</td>
+									<td>0</td>
+								</tr>
+								<tr>
+
+									<td>03/29/2018</td>
+									<td>4</td>
+									<td>0</td>
+									<td>1</td>
+									<td>1</td>
+									<td>0</td>
+									<td>0</td>
+									<td>0</td>
+									<td>0</td>
+									<td>4</td>
+									<td>0</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="col-md-4">{{'EMAIL_ACTIVITY.MARKETING_EMAILS' | translate}}</div>
+				<div class="col-md-12">
+					<div class="table-responsive">
+						<table class="table table-hover table-bordered width-align-t1">
+							<thead>
+								<tr>
+									<th class="thcss">{{'EMAIL_ACTIVITY.EMAIL_ID' | translate}}</th>
+									<th class="thcss">{{'COMMON.NAME' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2249007</td>
+									<td>Daily no show</td>
+								</tr>
+								<tr>
+									<td>1926605</td>
+									<td>Holiday Hours</td>
+								</tr>
+								<tr>
+									<td>1626116</td>
+									<td>Brenda</td>
+								</tr>
+								<tr>
+									<td>1487588 </td>
+									<td>Holiday Hours</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

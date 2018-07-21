@@ -1,0 +1,101 @@
+:host ::ng-deep  .panel-heading .accordion-toggle:after {
+    font-family: none;
+    content: none;
+    float: right;
+    color: #fff;
+}
+
+:host ::ng-deep .panel-body.card-block.card-body {
+    min-height:145px
+} 
+
+:host ::ng-deep  .panel-heading {
+    padding-left:5px;
+    position: relative;
+    overflow: auto;
+}
+:host ::ng-deep .added-filter .panel-title {
+    padding-left:10px;
+    display: inline-block;
+    width: 90%;
+}
+.remove-icon{
+    display: inline;
+    position:absolute;
+    right: 10px;
+    line-height: 16px;
+}
+.enter-manually select:focus{
+    background-color:#fff;
+    color:#000;
+}
+.filter-params{
+    min-height:400px;
+}
+.btn{
+    background-color: #337ab7
+}
+.add-filter-btn{
+    outline: none;
+    border-radius: 3px;
+    /* font-family: 'AvenirLTStdMedium'; */
+    font-size: 15px;
+    letter-spacing: 1px;
+    position: relative;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    background-color: #d6ecf8;
+    color: black;
+}
+.add-filter-btn:hover{
+    outline: none;
+    border-radius: 3px;
+    /* font-family: 'AvenirLTStdMedium'; */
+    font-size: 15px;
+    letter-spacing: 1px;
+    position: relative;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    background-color: #d6ecf8;
+    color: black;
+}
+#inner_cont{
+    overflow: auto;
+}
+
+.day{
+    background-size: 14px 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.status-service select,.enter-manually select{
+  width:100%;
+}
+
+.filter-params .col-md-12{
+  padding:0px;
+}
+.filter-heading{
+    color: #fff;
+    margin-bottom: 10px;
+}
+label{
+    color:#fff;
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) 
+and (orientation : portrait){
+	.filter-params .text-right{
+        text-align: left;
+    }
+    .filter-params .day{
+       margin-top:10px;
+       background-size: inherit;
+    }
+    .filter-heading{
+        font-size: 17px;
+    }
+    .select-filter{
+        padding:0px;
+    }
+}

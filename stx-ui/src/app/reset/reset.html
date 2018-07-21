@@ -1,0 +1,20 @@
+<div class="login_content">
+	<div class="login_logo">
+		<img title="Login" width="300" routerLinkActive="active" [routerLink]="['/']" class="reset-cursor" src="/assets/images/logo.png">
+	</div>
+	<form class="login_inner">
+		<div class="reset-password">
+			<input type="{{passwordType}}" placeholder="{{'LOGIN.ENTER_NEW_PASSWORD' | translate }}" (keypress)="clear();" [(ngModel)]="password"
+			 autocomplete="on" name="password">
+			<span class="glyphicon {{glyphiconClass}} reset-show-password" (click)="togglePassword();" *ngIf="password && password.length > 0"></span>
+		</div>
+		<div class="reset-password">
+			<input type="{{passwordType2}}" placeholder="{{'LOGIN.REENTER_NEW_PASSWORD' | translate }}" (keypress)="clear();" [(ngModel)]="password2"
+			 autocomplete="on" name="password">
+			<span class="glyphicon {{glyphiconClass2}} reset-show-password" (click)="togglePassword2();" *ngIf="password2 && password2.length > 0"></span>
+		</div>
+		<input type="submit" (click)="resetPassword()" class="reset-capital" value="{{'BUTTON.SUBMIT' | translate }}">
+		<div class="clearfix"></div>
+		<div class="text-danger">{{error | translate}}</div>
+	</form>
+</div>

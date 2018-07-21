@@ -1,0 +1,373 @@
+<div id="wrapper_setup_new">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont" class="setsubcont">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 mt-40" *ngIf='hideTable == true'>
+					<div class="table-responsive">
+						<table class="table table-bordered-white">
+							<tbody>
+								<tr class="white">
+									<td>{{'COMMON.ACTIVE'| translate }}</td>
+									<td>{{'COMMON.NAME'| translate }}</td>
+								</tr>
+								<tr *ngFor="let methods of methodsListing; let i='index'" id="methods{{i}}">
+									<td *ngIf='methods.Active__c==1'>
+										<input type="checkbox" checked disabled>
+									</td>
+									<td *ngIf='methods.Active__c==0'>
+										<input type="checkbox" disabled>
+									</td>
+									<td class="tbl-txt" (click)="showData(methods);">{{methods.Name}}</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2" (click)="addNewRecord()">
+										<a class="white">
+											<i class="fa fa-plus"></i> {{'BUTTON.NEW'| translate }} </a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!--<div class="col-md-1">&nbsp;</div>-->
+				<div class="col-md-4 mt-40 disable" *ngIf='hideTable == false'>
+					<div class="table-responsive">
+						<table class="table table-bordered-white">
+							<tbody>
+								<tr class="white">
+									<td>{{'COMMON.ACTIVE'| translate }}</td>
+									<td>{{'COMMON.NAME'| translate }}</td>
+								</tr>
+								<tr *ngFor="let methods of methodsListing; let i='index'" id="methods{{i}}">
+									<td *ngIf='methods.Active__c==1'>
+										<input type="checkbox" checked disabled>
+									</td>
+									<td *ngIf='methods.Active__c==0'>
+										<input type="checkbox" disabled>
+									</td>
+									<td>{{methods.Name}}</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2">
+										<a href="#" class="white">
+											<i class="fa fa-plus"></i> {{'BUTTON.NEW'| translate }}</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- ----------------------addDiv == true-------------- -->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv == true'>
+					<h1>{{'SETUP_COMPENSATION_METHODS.COMPENSATION_DETAIL'| translate }}</h1>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.NAME'| translate }}</label>
+							<span class="red">*</span>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" (keypress)="clearErrMsg()" [(ngModel)]="name" maxlength="80">
+						</div>
+						<div class="col-sm-10">
+							<p class="red"> {{error | translate }} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" [(ngModel)]="active">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>{{'SETUP_COMPENSATION_METHODS.STEP'| translate }}</td>
+											<td>{{'COMMON.ACTION'| translate }}</td>
+											<td>{{'SETUP_COMPENSATION_METHODS.VALUE'| translate }}</td>
+											<td>{{'COMMON.NUMBER'| translate }}</td>
+											<td>{{'SETUP_COMPENSATION_METHODS.SAMPLE_CALCULATION'| translate }}</td>
+											<td></td>
+										</tr>
+										<tr *ngFor="let row of rows; let i = 'index'">
+											<td [innerHTML]="row.step"></td>
+											<td style="padding: 2px;">
+												<select [class.disabled]="i==0" [(ngModel)]="row.operator" name="action" style="width: 100%; min-width:130px; padding-left: 2px;">
+													<option *ngFor="let actions of actionsStaticData; let i='index'" value="{{actions.id}}" id="actions{{i}}">{{actions.action}}</option>
+												</select>
+											</td>
+											<td style="padding-left: 2px;padding-right: 2px;">
+												<table>
+													<tbody>
+														<tr>
+															<td style="padding-left: 2px;padding-right: 2px;">
+																<div *ngIf='optionalDiv == -1'>
+																	<select [(ngModel)]="row.operand" style="width: 100%;padding-left: 2px;" (change)="onValueChange($event.target.value, row, i)">
+																		<option *ngFor="let values of valuesStaticData; let i='index'" value="{{values.value}}" id="values{{i}}">{{values.value}}</option>
+																		<option value="-" disabled="disabled">-----</option>
+																		<option *ngFor="let values of scalesData; let i='index'" value="scale:{{values.Id}}" id="values{{i}}">{{values.Name}}</option>
+																	</select>
+																</div>
+															</td>
+															<td style="padding-left: 5px;padding-right: 2px;">
+																<div>
+																	<select *ngIf="servicesList && servicesList[i] && servicesList[i].length > 0 && servicesList[i][0].Name" style="width: 100%;padding-left: 2px;"
+																	 (change)="change($event.target.value, i)">
+																		<option value='All'>{{'SETUP_COMPENSATION_METHODS.ALL'| translate }}</option>
+																		<option *ngFor="let values of servicesList[i]; let i='index'" value="{{values.Name}}" id="values{{i}}">{{values.Name}}</option>
+																		<option *ngFor="let  data of StaticData1">{{data.option}}</option>
+																	</select>
+																	<select *ngIf="servicesList && servicesList[i] && servicesList[i].length > 0 && servicesList[i][0].serviceGroupName" style="width: 100%;padding-left: 2px;"
+																	 (change)="change($event.target.value, i)">
+																		<option value='All'>{{'SETUP_COMPENSATION_METHODS.ALL'| translate }}</option>
+																		<option *ngFor="let values of servicesList[i]; let i='index'" value="{{values.serviceGroupName}}" id="values{{i}}">{{values.serviceGroupName}}</option>
+																		<option *ngFor="let  data of StaticData">{{data.option}}</option>
+																	</select>
+
+																	<select *ngIf="servicesList && servicesList[i] && servicesList[i].length > 0 && servicesList[i][0].inventoryGroupName" style="width: 100%;padding-left: 2px;"
+																	 (change)="change($event.target.value, i)">
+																		<option *ngFor="let values of servicesList[i]; let i='index'" value="{{values.inventoryGroupName}}" id="values{{i}}">{{values.inventoryGroupName}}</option>
+																		<option *ngFor="let  data of StaticData">{{data.option}}</option>
+																	</select>
+
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</td>
+											<td>
+												<input type="text" [(ngModel)]="row.numeral" style="width: 70px;padding-left: 2px;padding-right: 2px;">
+											</td>
+											<td>&nbsp;{{row.result | number:'2.2-4'}}</td>
+											<td>
+												<a style="color: #000;" (click)="addRows()" *ngIf='showPlus == true'>
+													<span class="f-plus">
+														<i class="fa fa-plus" aria-hidden="true"></i>
+													</span>
+												</a>
+												<a *ngIf='showPlus == false'>
+													<!-- <span class="del">
+															<i class="fa fa-plus disable" aria-hidden="true"></i>
+														</span> -->
+												</a>
+												<a (click)="deleteFieldValue(row, i)" data-toggle="tooltip" data-placement="top" title="Remove" *ngIf="rows.length > 1">
+													<span class="f-minus">
+														<i class="fa fa-trash-o" aria-hidden="true"></i>
+													</span>
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-10">
+							<button type="button" (click)="updateSampleCalculation()">{{'SETUP_COMPENSATION_METHODS.UPDATE_SAMPLE_CALCULATION'| translate }}</button>
+						</div>
+					</div>
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button class="save-btn" type="button" (click)="saveCompensationMethods()">{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+							<button class="cancel-btn" (click)="cancel();" type="button">{{'BUTTON.CANCEL'|translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!-- ------------------------edit--------------------- -->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf='editDiv == true'>
+					<h1>{{'SETUP_COMPENSATION_METHODS.COMPENSATION_DETAIL'| translate }}</h1>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.NAME'| translate }}</label>
+							<span class="red">*</span>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" (keypress)="clearErrMsg()" [(ngModel)]="updateName" maxlength="80">
+						</div>
+						<div class="col-sm-10">
+							<p class="red"> {{error | translate }} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" [(ngModel)]="updateActive">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>{{'SETUP_COMPENSATION_METHODS.STEP'| translate }}</td>
+											<td>{{'COMMON.ACTION'| translate }}</td>
+											<td>{{'SETUP_COMPENSATION_METHODS.VALUE'| translate }}</td>
+											<td>{{'COMMON.NUMBER'| translate }}</td>
+											<td>{{'SETUP_COMPENSATION_METHODS.SAMPLE_CALCULATION'| translate }}</td>
+											<td></td>
+										</tr>
+										<tr *ngFor="let row of rows; let i = 'index'">
+											<td [innerHTML]="row.step"></td>
+											<td style="padding: 4px;">
+												<select [class.disabled]="i==0" [(ngModel)]="row.operator" name="action" style="width: 100%; min-width:130px; padding-left: 2px;">
+													<option *ngFor="let actions of actionsStaticData; let i='index'" value="{{actions.id}}" id="actions{{i}}">{{actions.action}}</option>
+												</select>
+											</td>
+											<td style="padding-left: 2px; padding-right: 2px;">
+												<table>
+													<tbody>
+														<tr>
+															<td style="padding-left: 2px; padding-right: 2px;">
+																<div *ngIf='optionalDiv == -1'>
+																	<select style="width: 100%;padding-left: 2px;" [(ngModel)]="row.operand" (change)="onValueChange($event.target.value, row, i)">
+																		<option *ngFor="let values of valuesStaticData; let i='index'" value="{{values.value}}" id="values{{i}}">{{values.value}}</option>
+																		<option value="-" disabled="disabled">-----</option>
+																		<option *ngFor="let values of scalesData; let i='index'" value="scale:{{values.Id}}" id="values{{i}}">{{values.Name}}</option>
+																	</select>
+																</div>
+															</td>
+															<td style="padding-left: 2px; padding-right: 2px;">
+																<div>
+																	<select [(ngModel)]="row.operandSubOption" *ngIf="servicesList && servicesList[i] && servicesList[i].length > 0 && servicesList[i][0].Name"
+																	 style="width: 100%;padding-left: 2px;" (change)="change($event.target.value, i)">
+																		<option value='All'>{{'SETUP_COMPENSATION_METHODS.ALL'| translate }}</option>
+																		<option *ngFor="let values of servicesList[i]; let i='index'" value="{{values.Name}}" id="values{{i}}">{{values.Name}}</option>
+																		<option *ngFor="let  data of StaticData1">{{data.option}}</option>
+																	</select>
+
+
+																	<select [(ngModel)]="row.operandSubOption" *ngIf="servicesList && servicesList[i] && servicesList[i].length > 0 && servicesList[i][0].serviceGroupName"
+																	 style="width: 100%;padding-left: 2px;" (change)="change($event.target.value, i)">
+																		<option value='All'>{{'SETUP_COMPENSATION_METHODS.ALL'| translate }}</option>
+																		<option *ngFor="let values of servicesList[i]; let i='index'" value="{{values.serviceGroupName}}" id="values{{i}}">{{values.serviceGroupName}}</option>
+																		<option *ngFor="let  data of StaticData">{{data.option}}</option>
+																	</select>
+																	<select [(ngModel)]="row.operandSubOption" *ngIf="servicesList && servicesList[i] && servicesList[i].length > 0 && servicesList[i][0].inventoryGroupName"
+																	 style="width: 100%;padding-left: 2px;" (change)="change($event.target.value, i)">
+																		<option value='All'>{{'SETUP_COMPENSATION_METHODS.ALL'| translate }}</option>
+																		<option *ngFor="let values of servicesList[i]; let i='index'" value="{{values.inventoryGroupName}}" id="values{{i}}">{{values.inventoryGroupName}}</option>
+																		<option *ngFor="let  data of StaticData1">{{data.option}}</option>
+																	</select>
+
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</td>
+											<td style="padding-left: 4px;padding-right: 2px;">
+												<input style="width: 70px;padding-left: 2px;padding-right: 2px;" type="text" [(ngModel)]="row.numeral">
+											</td>
+											<td>&nbsp;{{row.result | number:'2.2-4'}}</td>
+											<td>
+												<a style="color: #000;" (click)="addRows()" *ngIf='showPlus == true'>
+													<span class="f-plus">
+														<i class="fa fa-plus" aria-hidden="true"></i>
+													</span>
+												</a>
+												<a *ngIf='showPlus == false'>
+													<!-- <span class="del">
+															<i class="fa fa-plus disable" aria-hidden="true"></i>
+														</span> -->
+												</a>
+												<a (click)="deleteFieldValue(row, i)" *ngIf='hideDelete==true' data-toggle="tooltip" data-placement="top" title="Remove">
+													<span class="f-minus">
+														<i class="fa fa-trash-o" aria-hidden="true"></i>
+													</span>
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-10">
+							<button type="button" (click)="updateSampleCalculation()">{{'SETUP_COMPENSATION_METHODS.UPDATE_SAMPLE_CALCULATION'| translate }}</button>
+						</div>
+					</div>
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button class="save-btn" type="button" (click)="editCompensationMethods()">{{'BUTTON.SAVE'| translate }}</button> &nbsp;&nbsp;
+							<button class="cancel-btn" (click)="cancel();" type="button">{{'BUTTON.CANCEL'| translate }}</button>
+						</div>
+					</div>
+				</div>
+				<!-- --------------------disable div---------------------- -->
+				<div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+					<h1>{{'SETUP_COMPENSATION_METHODS.COMPENSATION_DETAIL'| translate }}</h1>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.NAME'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>{{'SETUP_COMPENSATION_METHODS.STEP'| translate }}</td>
+											<td>{{'COMMON.ACTION'| translate }}</td>
+											<td>{{'SETUP_COMPENSATION_METHODS.VALUE'| translate }}</td>
+											<td>{{'COMMON.NUMBER'| translate }}</td>
+											<td>{{'SETUP_COMPENSATION_METHODS.SAMPLE_CALCULATION'| translate }}</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td style="width:20%">
+												<select style="width:100%"></select>
+											</td>
+											<td style="width:20%">
+												<select style="width:100%"></select>
+											</td>
+											<td>
+												<input type="text">
+											</td>
+											<td>&nbsp;</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-10">
+							<button type="button">{{'SETUP_COMPENSATION_METHODS.UPDATE_SAMPLE_CALCULATION'| translate }}</button>
+						</div>
+					</div>
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button class="save-btn" type="button">{{'BUTTON.SAVE'| translate }}</button> &nbsp;&nbsp;
+							<button class="cancel-btn" type="button">{{'BUTTON.CANCEL'| translate }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

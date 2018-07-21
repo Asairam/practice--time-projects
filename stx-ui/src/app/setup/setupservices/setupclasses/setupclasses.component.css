@@ -1,0 +1,26 @@
+/* .classes-resouces{
+    width :40%
+}
+.classes-resouces .select-priority{
+    width: 34%;
+} */
+.setsubcont select{
+    color: white;
+}
+.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email], .setsubcont textarea, .setsubcont select{
+    color: white !important;
+}
+.setsubcont input[type=text]:focus, .setsubcont input[type=email]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=password]:focus, .setsubcont textarea:focus  {
+	
+	color: #000 !important;
+}
+@media (min-width: 768px){
+.col-sm-11 {
+    width: 90.666667%;
+}
+}
+@media (min-width: 1024px){
+    .col-sm-11 {
+        width: 32.666667%
+    }
+    }

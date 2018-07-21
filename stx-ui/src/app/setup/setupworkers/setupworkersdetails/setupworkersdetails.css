@@ -1,0 +1,100 @@
+::-webkit-file-upload-button {
+    background: #b1d6ec;
+    outline: none;
+    border: solid 1px #0285b9;
+    background: #03a4e4;
+    color: #fff;
+    border-radius: 3pc;
+    padding: 4px;
+}
+
+a.white {
+    cursor: pointer;
+}
+
+.hideinactive {
+    display: none !important;
+}
+
+.showinactive {
+    display: table-row !important;
+}
+
+.activelabel span {
+    display: none;
+}
+
+.activelabel span.labelshow {
+    display: inline-block;
+}
+
+.activelabel span.labelhide {
+    display: inline-block;
+}
+
+p-calendar[inputStyleClass="timezone-calendar calendar"] .ui-calendar button {
+    background: #000 !important;
+    border-color: #000 !important;
+}
+
+p-calendar[inputStyleClass="timezone-calendar calendar"] {
+    display: block;
+}
+
+p-calendar[inputStyleClass="timezone-calendar calendar"] span.ui-calendar {
+    display: block;
+}
+
+p-calendar[inputStyleClass="timezone-calendar calendar"] span.ui-calendar {
+    width: 100%;
+}
+
+p-calendar[inputStyleClass="timezone-calendar calendar"] .ui-calendar button {
+    right: -1px;
+}
+
+.tabcontent {
+    display: none;
+}
+
+.setupworkerdetails-password {
+    background: none;
+    border: solid 1px #fff;
+    padding: 5px 15px 5px 15px;
+    height: 35px;
+    width: 70%;
+    outline: none;
+    color: #000;
+}
+
+.setworkdtl-show-password {
+    top: 10px;
+    cursor: pointer;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.setup-wrk-inactive-label {
+    margin-left: 35px;
+    margin-top: 5px;
+}
+/* used for responsive */
+.setsubcont {
+    margin-right: 10% !important;
+}
+.table-bordered-white>tbody>tr>td {
+    color: white;
+}
+.table-bordered-light>tbody>tr>td {
+    color: white;
+}
+.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email],.setupworkerdetails-password, .setsubcont select,
+.setsubcont textarea {
+    color: white;
+}
+.setsubcont input[type=text]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=email]:focus,.setupworkerdetails-password:focus,
+.setsubcont textarea:focus {
+    color: black;
+}

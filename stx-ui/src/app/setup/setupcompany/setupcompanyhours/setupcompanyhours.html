@@ -1,0 +1,615 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div *ngIf='addData == true'>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.COMPANY_HOURS' | translate }}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.DESCRIPTION' | translate }}</h1>
+                    </div>
+                </div>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.DESCRIPTION' | translate }}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" [(ngModel)]="description" (keydown)="clearDublicateError()" (click)="clearDescName()">
+                    </div>
+                </div>
+                <div class="text-danger text-center">{{ dublicateError | translate }}</div>
+                <div class="text-danger text-center">{{errorDescription | translate }}</div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.USE_COMPANY_HOURS_DEFAULT' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="checkbox" [(ngModel)]="companyHourse">
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'COMMON.ACTIVE' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="checkbox" [(ngModel)]="active" (click)="errorRequirdactive = ''">
+                    </div>
+                </div>
+
+                <div class="text-danger text-center">{{errorRequirdactive | translate }}</div>
+
+                <div class="row mt-20">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.TIME_ZONE' | translate }}</h1>
+                    </div>
+                </div>
+
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.TIME_ZONE' | translate }}
+                            <span class="red">*</span>
+                        </label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <select [(ngModel)]="timeZone" (click)="clearTimezone()" class="timezone-align">
+                            <option *ngFor="let time of getTimezones">{{time}} </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-danger text-center">{{errorTimezone | translate }}</div>
+
+                <div class="row mt-20">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.HOURS' | translate }}</h1>
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-2 text-right res-tleft">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <div class="table-responsive">
+                            <table width="450" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td height="40">&nbsp;</td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.OPEN' | translate }}</td>
+                                    <td>&nbsp;</td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.CLOSE' | translate }}</td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.SUNDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sun_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sun_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.MONDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="mon_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="mon_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.TUESDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="tue_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="tue_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.WEDNESDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="wed_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="wed_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.THURSDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="thur_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="thur_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.FRIDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="fri_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="fri_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.SATURDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sat_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sat_end" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-danger text-center">{{imageErrorTime | translate }}</div>
+
+                <div class="text-danger text-center">{{errorTime | translate }}</div>
+                <div class="row mt-40">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <button type="button" class="save-btn" (click)="addCompanyHrs()">{{'BUTTON.SAVE' | translate }} </button>
+                        <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate }} </button>
+                    </div>
+                </div>
+            </div>
+            <!--   insert end -->
+
+            <!-----------------------------------------------     Edit records  ---------------------------------------------->
+            <div *ngIf='eddData ==true'>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.COMPANY_HOURS' | translate }}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.DESCRIPTION' | translate }}</h1>
+                    </div>
+                </div>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.DESCRIPTION' | translate }}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" [(ngModel)]="description" (keydown)="clearDublicateError()" (click)="clearDescName()">
+                    </div>
+                </div>
+                <div class="text-danger text-center">{{errorDescription | translate }}</div>
+                <div class="text-danger text-center">{{ dublicateError | translate }}</div>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.USE_COMPANY_HOURS_DEFAULT' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8" *ngIf="companyHourse  == true">
+                        <input type="checkbox" [(ngModel)]="companyHourse" checked disabled>
+                    </div>
+                    <div class="col-md-7 col-sm-8" *ngIf="companyHourse  == false">
+                        <input type="checkbox" [(ngModel)]="companyHourse">
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'COMMON.ACTIVE' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8" *ngIf="active  == true">
+                        <input type="checkbox" [(ngModel)]="active" checked>
+                    </div>
+                    <div class="col-md-7 col-sm-8" *ngIf="active  == false">
+                        <input type="checkbox" [(ngModel)]="active" (click)="errorRequirdactive = ''">
+                    </div>
+                </div>
+
+                <div class="text-danger text-center">{{errorRequirdactive | translate }}</div>
+                <div class="row mt-20">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.TIME_ZONE' | translate }}</h1>
+                    </div>
+                </div>
+
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.TIME_ZONES' | translate }}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <select [(ngModel)]="timeZone" (click)="clearTimezone()" class="timezone-align">
+                            <option *ngFor="let time of getTimezones">{{time}} </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="text-danger text-center">{{errorTimezone | translate }}</div>
+
+                <div class="row mt-20">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.HOURS' | translate }}</h1>
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-2 text-right res-tleft">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <div class="table-responsive">
+                            <table width="450" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td height="40">&nbsp;</td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.OPEN' | translate }}</td>
+                                    <td>&nbsp;</td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.CLOSE' | translate }}</td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.SUNDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sun_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sun_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.MONDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="mon_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="mon_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.TUESDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="tue_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="tue_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.WEDNESDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="wed_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="wed_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.THURSDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="thur_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="thur_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.FRIDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="fri_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="fri_end" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="42">{{'SETUP_COMPANY_HOURSE.SATURDAY' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sat_start" />
+                                    </td>
+                                    <td align="center">{{'SETUP_COMPANY_HOURSE.TO' | translate }}</td>
+                                    <td align="center">
+                                        <input type="text" (click)="clearErrMsgTime()" [(ngModel)]="sat_end" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-danger text-center">{{imageErrorTime | translate }}</div>
+
+                <div class="text-danger text-center">{{errorTime | translate }}</div>
+                <div class="row mt-40">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <button type="button" class="save-btn" (click)="editCompanyHrs();">{{'BUTTON.SAVE' | translate }} </button>
+                        <button type="button" class="cancel-btn" [routerLink]="['/setup/company/hours']">{{'BUTTON.CANCEL' | translate }} </button>
+                    </div>
+                </div>
+            </div>
+            <!----- listing ---->
+            <div class="row mt-20 res-mt-15" *ngIf='listTable  == true'>
+                <div class="col-md-12 col-sm-11">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered table-border-color">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'COMMON.ACTION' | translate }} </th>
+                                    <th class="thcss">{{'COMMON.NAME' | translate }}</th>
+                                    <th class="thcss">{{'COMMON.ACTIVE' | translate }}</th>
+                                    <th class="thcss">{{'SETUP_COMPANY_HOURSE.TIME_ZONE' | translate }}</th>
+                                    <th class="thcss">{{'SETUP_COMPANY_HOURSE.DEFAULT' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let getList of getCompanyList; let i = 'index'">
+                                    <td>
+                                        <a class="dark">
+                                            <span class="del">
+                                                <i class="fa fa-pencil-square-o" (click)="editRecord(getList)" aria-hidden="true"></i>
+                                            </span> {{'BUTTON.EDIT' | translate }}</a>
+                                    </td>
+                                    <td> {{getList.Name}}</td>
+                                    <td *ngIf="getList.isActive__c  == 1">
+                                        <input type="checkbox" checked disabled/>
+                                    </td>
+                                    <td *ngIf="getList.isActive__c  == 0">
+                                        <input type="checkbox" disabled/>
+                                    </td>
+                                    <td>{{getList.TimeZoneSidKey__c.split(') ')[1]}}</td>
+                                    <td *ngIf="getList.isDefault__c  == 1">
+                                        <input type="checkbox" checked disabled/>
+                                    </td>
+                                    <td *ngIf="getList.isDefault__c  == 0">
+                                        <input type="checkbox" disabled/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="5">
+                                        <a class="white btn btn-hovr" (click)="newbutton()">
+                                            <i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-------------------------------  show list -------------------------------------------------->
+
+            <div *ngIf='customTable == true'>
+
+
+                <div class="row mt-20">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.CUSTOM_HOURS_LIST' | translate }}</h1>
+                    </div>
+                </div>
+
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.ACTION' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_COMPANY_HOURSE.DESCRIPTION' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_COMPANY_HOURSE.DATE' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_COMPANY_HOURSE.ALL_DAY_OFF' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_COMPANY_HOURSE.START_TIME' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_COMPANY_HOURSE.END_TIME' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let list of getCustomLists">
+                                        <td>
+                                            <a class="dark cursor-text" (click)="CustomEdit(list)">{{'BUTTON.EDIT' | translate }}</a> |
+                                            <a class="dark cursor-text" (click)="CustomDelete(list.Id)">{{'BUTTON.DELETE' | translate }}</a>
+                                        </td>
+                                        <td>{{list.Name}}</td>
+                                        <td>{{list.Date__c.split(' ')[0]}}</td>
+                                        <td *ngIf="list.All_Day_Off__c == 1">
+                                            <input type="checkbox" checked disabled/>
+                                        </td>
+                                        <td *ngIf="list.All_Day_Off__c == 0 || list.All_Day_Off__c == null">
+                                            <input type="checkbox" disabled/>
+                                        </td>
+                                        <td>{{list.StartTime__c}}</td>
+                                        <td>{{list.EndTime__c}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td align="center" colspan="7">
+                                            <a class="white" (click)="customAddNew();">
+                                                <i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate }}</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!----------------------  end of custome show  ---------------------------------------->
+            <div *ngIf='customInsert == true'>
+
+                <div class="row mt-20">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.CUSTOM_HOURS_EDIT' | translate }}</h1>
+                    </div>
+                </div>
+
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.DESCRIPTION' | translate }}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" (click)="customerCheck()" [(ngModel)]="customDescription" maxlength="80">
+                    </div>
+                </div>
+
+                <div class="text-danger text-center">{{errorDescriptions | translate }}</div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.DATE' | translate }}</label>
+                        <span class="red">*</span>
+                    </div>
+
+                    <div class="col-md-7 col-sm-8">
+                        <input class="form-control datefield" [(ngModel)]="customDate" [bsConfig]="datePickerConfig" (click)="customerCheck()" bsDatepicker
+                            [minDate]="minDate">
+                    </div>
+
+                </div>
+                <div class="text-danger text-center">{{errorDate | translate }}</div>
+
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.ALL_DAY_OFF' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="checkbox" (click)="customerCheck()" [(ngModel)]="customAllDay">
+                    </div>
+                </div>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.START_TIME' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" (click)="customerCheck()" [(ngModel)]="customStart">
+                    </div>
+                </div>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.END_TIME' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" (click)="customerCheck()" [(ngModel)]="customEnd">
+                    </div>
+                </div>
+                <div class="text-danger text-center">{{errorTime | translate }}</div>
+                <div class="text-danger text-center">{{errorCustomTimeHrs | translate }}</div>
+                <div class="text-danger text-center">{{errorCustomTimeHrs1 | translate }}</div>
+                <div class="text-danger text-center">{{errorCustomTimeformat | translate }}</div>
+                <div class="text-danger text-center">{{CustomErrorHrs | translate }}</div>
+
+                <div class="row mt-40">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <button type="button" class="save-btn" (click)="saveCustomhourse()">{{'BUTTON.SAVE' | translate}}</button>
+                        <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-------------------    Edit custom hrs  ------>
+            <div *ngIf='editCustomInsert == true'>
+
+                <div class="row mt-20">
+                    <div class="col-md-12">
+                        <h1 class="sub_titles">{{'SETUP_COMPANY_HOURSE.EDIT_CUSTOM_HOURS' | translate }} </h1>
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.DESCRIPTION' | translate }}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" (click)="customerCheck()" [(ngModel)]="customDescription" maxlength="80">
+                    </div>
+                </div>
+
+                <div class="text-danger text-center">{{errorDescriptions | translate }}</div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.DATE' | translate }}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" class="form-control datefield" (click)="customerCheck()" [bsConfig]="datePickerConfig" [(bsValue)]="bsValue"
+                            value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [minDate]="minDate">
+                    </div>
+                </div>
+                <div class="text-danger text-center">{{errorDate | translate }}</div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.ALL_DAY_OFF' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="checkbox" (click)="customerCheck()" [(ngModel)]="customAllDay">
+                    </div>
+                </div>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.START_TIME' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" (click)="customerCheck()" [(ngModel)]="customStart">
+                    </div>
+                </div>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_COMPANY_HOURSE.END_TIME' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" [(ngModel)]="customEnd" (click)="customerCheck()">
+                    </div>
+                </div>
+                <div class="text-danger text-center">{{errorTime | translate }}</div>
+                <div class="text-danger text-center">{{errorCustomTimeHrs | translate }}</div>
+                <div class="text-danger text-center">{{errorCustomTimeHrs1 | translate }}</div>
+                <div class="text-danger text-center">{{errorCustomTimeformat | translate }}</div>
+                <div class="text-danger text-center">{{CustomErrorHrs | translate }}</div>
+                <div class="row mt-40">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <button type="button" class="save-btn" (click)="customeEditRecord()">{{'BUTTON.SAVE' | translate}}</button>
+                        <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

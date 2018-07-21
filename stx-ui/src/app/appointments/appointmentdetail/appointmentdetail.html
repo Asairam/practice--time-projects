@@ -1,0 +1,320 @@
+<style>
+	.boldClass {
+		font-weight: 700;
+		color: white !important;
+	}
+
+	.form_cont select {
+		font-weight: 700;
+		color: white !important;
+	}
+</style>
+<div id="wrapper_setup_new">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont">
+		<div class="container form_cont" style="color:white;">
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Appointment Date / Time</label>
+				</div>
+				<div class="col-md-7 col-sm-8 boldClass">
+					{{apptData.Appt_Date_Time__c | date: 'M/dd/yyyy h:mm a'}}
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Client</label>
+				</div>
+				<!-- <td class="tbl-txt boldClass" style="cursor:pointer" width="15%" [routerLink]="['/client/edit/'+ clientid]"> &nbsp;&nbsp;{{apptData?.clientName?apptData?.clientName:'No Client'}}</td> -->
+				<div *ngIf="apptData.clientName && apptData.clientName !== ''" style="cursor:pointer" class="col-md-7 col-sm-8 boldClass"
+				 [routerLink]="['/client/edit/'+ clientid]">
+					{{apptData.clientName}}
+				</div>
+				<div *ngIf="!(apptData.clientName && apptData.clientName !== '')" class="col-md-7 col-sm-8 boldClass">
+					No Client
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Mobile Phone</label>
+				</div>
+				<div class="col-md-7 col-sm-8 boldClass">
+					{{apptData.mbphone}}
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Primary Email</label>
+				</div>
+				<div class="col-md-7 col-sm-8 boldClass">
+					{{apptData.cltemail}}
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Primary Phone</label>
+				</div>
+				<div class="col-md-7 col-sm-8 boldClass">
+					{{apptData.cltphone}}
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Package Booking</label>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.pkgbooking === 1'>
+					<input type="checkbox" [(ngModel)]="apptData.pkgbooking" checked disabled/>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.pkgbooking === 0'>
+					<input type="checkbox" [(ngModel)]="apptData.pkgbooking" disabled/>
+				</div>
+			</div>
+			<div *ngIf="apptData.apstatus == 'Checked In'||apptData.apstatus == 'Complete'" class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Ticket#</label>
+				</div>
+				<div class="col-md-7 col-sm-8">
+					<td class="tbl-txt" style="text-decoration: underline;" [routerLink]="['/checkout/'+ apptid]" *ngIf="apptData.apstatus == 'Checked In'">{{apptData.ticketNumber}}</td>
+					<td class="tbl-txt" style="text-decoration: underline;" [routerLink]="['/completedticketdetailsview/'+ apptid]" *ngIf="apptData.apstatus == 'Complete'">{{apptData.ticketNumber}}</td>
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Notes</label>
+				</div>
+				<div class="col-md-7 col-sm-8">
+					<textarea [(ngModel)]="apptData.notes" [disabled]='isSaveAllowed === false ? true : false'>{{apptData.notes}}</textarea>
+				</div>
+			</div>
+			<hr />
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Status</label>
+				</div>
+				<div *ngIf="!(apptData.apstatus == 'Checked In' || apptData.apstatus == 'Complete')" style="text-align: left" class="col-md-5 col-sm-4 text-right res-tleft">
+					<select class="appointment-select-width" [(ngModel)]="apptData.apstatus" style="display:inline" [disabled]='isSaveAllowed === false ? true : false'>
+						<option class="boldClass">{{apptData.apstatus}}</option>
+						<option *ngFor="let apptStatus of apptStatus">{{apptStatus.status}} </option>
+					</select>
+					<input type="text" style="width:50px" [ngStyle]="statusColor" disabled>
+				</div>
+				<div *ngIf="apptData.apstatus == 'Checked In' || apptData.apstatus == 'Complete'" class="col-sm-4">
+					<!-- <select class="appointment-select-width" [(ngModel)] = "apptData.apstatus"> -->
+					<span class="appointment-select-width">{{apptData.apstatus}}</span>
+					<input type="text" style="width:50px" [ngStyle]="statusColor" disabled>
+					<!-- <option *ngFor="let apptStatus of apptStatus">{{apptStatus.status}} </option> -->
+					<!-- </select> -->
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Visit Type</label>
+				</div>
+				<div class="col-md-5 col-sm-4 res-tleft">
+					<select [(ngModel)]="apptData.visttype" [disabled]='isSaveAllowed === false ? true : false'>
+						<option [value]='null'>--None--</option>
+						<option *ngFor="let listData of visitTypesList; let i='index'" value="{{listData.visitType}}" id="listData{{i}}">{{listData.visitType}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Rebooked</label>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.Rebooked__c === 1'>
+					<input type="checkbox" [(ngModel)]="apptData.Rebooked__c" checked disabled/>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.Rebooked__c === 0'>
+					<input type="checkbox" [(ngModel)]="apptData.Rebooked__c" disabled/>
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>New Client</label>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.newclient === 1'>
+					<input type="checkbox" [(ngModel)]="apptData.newclient" checked disabled/>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.newclient === 0'>
+					<input type="checkbox" [(ngModel)]="apptData.newclient" disabled/>
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Standing Appointment</label>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.standingappt === 1'>
+					<input type="checkbox" [(ngModel)]="apptData.standingappt" checked disabled/>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf='apptData.standingappt === 0'>
+					<input type="checkbox" [(ngModel)]="apptData.standingappt" disabled/>
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Booked Appointment</label>
+				</div>
+				<div class="col-md-7 col-sm-8">
+					<input type="checkbox" disabled/>
+				</div>
+
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Client Picture</label>
+				</div>
+				<div *ngIf="clientPic && clientPic !== ''" class="col-md-7 col-sm-8">
+					<img src="{{clientPic}}" width="50" height="50" onerror="this.onerror=null;this.src='assets/images/user-icon.png';">
+				</div>
+				<div *ngIf="!clientPic || clientPic === ''" class="col-md-7 col-sm-8">
+					<div class="appnt-pro-letter" style="margin:0px">
+						<strong *ngIf="apptData.clientName"> {{ apptData.clientName[0].toUpperCase() }} </strong>
+						<strong *ngIf="!apptData.clientName"> {{ 'N'.toUpperCase() }} </strong>
+					</div>
+				</div>
+
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="sub_titles">Appointment Services</h1>
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-12">
+					<div class="">
+						<table class="form_cont_one mobile-table table-bordered-white">
+							<thead>
+								<tr>
+									<th class="thcss">Service Date/Time</th>
+									<th class="thcss">Service Name</th>
+									<th class="thcss">Package</th>
+									<th class="thcss">Net Price</th>
+									<th class="thcss">Duration</th>
+									<th class="thcss">Worker</th>
+									<th class="thcss">Status</th>
+									<th class="thcss">Rebooked</th>
+									<th class="thcss">Resources</th>
+									<th class="thcss">Note</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let row of rows; let i = 'index'">
+									<td>{{row.Service_Date_Time__c| date: 'MM/dd/yyyy h:mm a'}}&nbsp;</td>
+									<td>{{row.Name}}&nbsp;</td>
+									<td>{{row.packageName}}&nbsp;</td>
+									<td>{{row.Net_Price__c}}&nbsp;</td>
+									<td>{{row.Duration__c}}&nbsp;</td>
+									<td>{{row.name}}&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>
+										<div class="" *ngIf='row.Rebooked__c == 1'>
+											<input type="checkbox" [(ngModel)]="row.Rebooked__c" checked disabled style="margin: 0;" />
+										</div>
+										<div class="" *ngIf='row.Rebooked__c == 0'>
+											<input type="checkbox" [(ngModel)]="row.Rebooked__c" disabled style="margin: 0;" />
+										</div>
+									</td>
+									<td>{{row.Resources__c}}&nbsp;</td>
+									<td *ngIf="row.Notes__c == '' || row.Notes__c == null || row.Notes__c == 'undefined' || row.Notes__c == undefined">
+										<a (click)='showNotesModal(row.tsId, i);' class="white">
+											<i class="fa fa-sticky-note-o"></i>
+										</a>
+									</td>
+									<td *ngIf="row.Notes__c!= '' && row.Notes__c != null && row.Notes__c != 'undefined' && row.Notes__c != undefined">
+										<a (click)='showNotesModal(row.tsId, i);' class="white">
+											<i style="background-color:yellow" class="fa fa-sticky-note-o"></i>
+										</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Created Date</label>
+				</div>
+				<div class="col-md-7 col-sm-8">
+					{{apptData.creadate | date: 'MM/dd/yyyy h:mm a'}} - {{apptData.CreatedBy}}
+					<!-- 11/30/2017 11:02 AM - Tonya Moran -->
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Last Modified Date</label>
+				</div>
+				<div class="col-md-7 col-sm-8">
+					{{apptData.lastmofdate | date: 'MM/dd/yyyy h:mm a'}} - {{apptData.LastModifiedBy}}
+					<!-- 12/1/2017 11:27 AM - Tonya Moran -->
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					<label>Subsequent Appointment:</label>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf="subSeaquentAppointmentDate">
+					{{subSeaquentAppointmentDate | date: 'MM/dd/yyyy h:mm a'}} - {{nextservicename}} {{subSeaquentAppointment}}
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf="!subSeaquentAppointmentDate">
+					None
+				</div>
+			</div>
+			<div class="row mt-20">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					&nbsp;
+				</div>
+				<div class="col-md-7 col-sm-8">
+					<button type="button" class="save-btn" (click)="saveAppointmentDetails()" [routerLink]="['/appointments']" [queryParams]="{date:apptData.Appt_Date_Time__c | date: 'yyyy-MM-dd'}"
+					 *ngIf="isSaveAllowed">Save</button>
+					<button type="button" class="cancel-btn" (click)="cancelAppointmentDetails()" >Cancel</button>
+					<button type="button" class="save-btn" (click)="sendReminder()" *ngIf="isRemainderEmailAllowed">Send Reminder Email</button>
+					<button type="button" class="save-btn" [routerLink]="['/checkout/'+apptData.apptId]" *ngIf="apptData.isTicket__c && apptData.apstatus === 'Checked In'">Ticket Details</button>
+					<button type="button" class="save-btn" *ngIf="isCheckedInAllowed" (click)="checkIn()">Check In</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-5 col-sm-4 text-right res-tleft">
+					&nbsp;
+				</div>
+				<div class="col-md-7 col-sm-8">
+					<!-- <button *ngIf="remEmailButtonValue !=''" type="button" class="btn btn-default mb-5">{{remEmailButtonValue}}</button> -->
+					<!-- <button *ngIf="remTextButtonValue !=''" type="button" class="btn btn-default mb-5">{{remTextButtonValue}}</button> -->
+					<!-- <button *ngIf = "modifyButtonValue != ''" type="button" class="btn btn-default mb-5">{{modifyButtonValue}}</button> -->
+					<button *ngIf="isModifyAllowed" type="button" class="btn btn-default mb-5" [routerLink]="['/appointment/modifyappt/'+ clientid + '/' + apptid]">
+						<i class="fa fa-calendar"></i> Modify</button>
+					<a *ngIf="isRebookAllowed" [routerLink]="['/appointment/book/' + clientid + '/' + apptid]" [queryParams]="{bookingType:'rebook'}"
+					 class="btn btn-default mb-5">
+						<i class="fa fa-calendar"></i> Rebook</a>
+					<button *ngIf="isBookApptAllowed" type="button" class="btn btn-default mb-5" [routerLink]="['/appointment/book/'+ clientid]">
+						<i class="fa fa-calendar"></i> Book Appt</button>
+				</div>
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>
+<!-- ----------------------note popup--------- -->
+<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+ role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4>Notes</h4>
+				<button type="button" class="close" (click)="closeServiceNotesModal()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<textarea class="note" style="color:black" [(ngModel)]="serviceNotes" id="notesTestareaId">{{updateNotes}}</textarea>
+			</div>
+			<div class="text-center">
+				<button type="button" class="save-btn" (click)="saveNote()">Save</button>
+				<button type="button" class="cancel-btn" (click)="cancelModel()">Cancel</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+</div>

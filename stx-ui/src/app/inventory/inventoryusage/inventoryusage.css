@@ -1,0 +1,21 @@
+.width-align{
+    width:60%;
+}
+#wrapper_setup_new {
+    color: white;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select {
+    color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus {
+    color: black;
+}
+@media (min-width: 768px){
+    .width-align{
+        margin-bottom: 5px;
+        width: 100%
+    }
+    .col-md-12 {
+        width: 90%;
+    }
+}

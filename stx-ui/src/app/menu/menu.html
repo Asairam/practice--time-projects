@@ -1,0 +1,775 @@
+<div id="wrapper_setup_new">
+	<app-header [newMenu]="'noNav'" *ngIf="navURL === 'home' || navURL === 'setup'"></app-header>
+	<app-header [newMenu]="'nav'" *ngIf="!(navURL === 'home' || navURL === 'setup')"></app-header>
+	<div *ngIf="navURL === 'home'" id="main_content" [style.zoom]="'65%'">
+		<div class="home-row" style="border-top: solid 1px white;">
+			<div class="col-md-4 col-sm-4 col-xs-6 pdg0 pdg1">
+				<a routerLinkActive="active" [routerLink]="['/appointments']">
+					<div class="h-box">
+						<div class="h-box-cont">
+							<img src="assets/images/appointment-icon.png" width="60">
+							<h2>{{ 'HEADER.APPOINTMENTS' | translate }}</h2>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-4 col-sm-4 col-xs-6 pdg0 pdg1">
+				<a routerLinkActive="active" [routerLink]="['/checkout/newticket']">
+					<div class="h-box res-brdnone">
+						<div class="h-box-cont">
+							<img src="assets/images/checkout-iocn.png" width="60">
+							<h2>Check Out</h2>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-4 col-sm-4 hidden-xs pdg0">
+				<a routerLinkActive="active" [routerLink]="['/client']">
+					<div class="h-box">
+						<div class="h-box-cont">
+							<img src="assets/images/clients-icon.png">
+							<h2>Clients</h2>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="home-row">
+			<div class="col-md-6 col-sm-6 pdg0 pdg1">
+				<a routerLinkActive="active" [routerLink]="['/membercheckin']">
+					<div class="h-box-two res-brd-btm res-brdnone">
+						<div class="h-box-cont-two">
+							<h2>
+								<img src="assets/images/checkin-icon.png"> Member Check-in</h2>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-md-6 col-sm-6 pdg0">
+				<a routerLinkActive="active" [routerLink]="['/giftbalances']">
+					<div class="h-box-two">
+						<div class="h-box-cont-two">
+							<h2>
+								<img src="assets/images/gift-icon.png"> Gift Balances</h2>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="circle-cont">
+			<ul>
+				<!-- <li>
+					<a routerLinkActive="active">
+							<!-- [routerLink]="['/favourites']" -->
+						<!-- <div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/favorities-h.png">
+								<h2>Favorites</h2>
+							</div>
+						</div>
+					</a>
+				</li>  -->
+				<!-- <li>
+					<a routerLinkActive="active" [routerLink]="['/marketing']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/marketing-h.png">
+								<h2>Marketing
+									<span>Email</span>
+								</h2>
+							</div>
+						</div>
+					</a>
+				</li>
+				<li>
+					<a routerLinkActive="active" [routerLink]="['/reports']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/reports-h.png" width="48">
+								<h2>Reports
+									<span>Sales </span>
+								</h2>
+							</div>
+						</div>
+					</a>
+				</li>
+				<li>
+					<a routerLinkActive="active" [routerLink]="['/inventory']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/inventory-h.png" width="34">
+								<h2>Inventory
+									<br>
+									<span> Manage</span>
+								</h2>
+							</div>
+						</div>
+					</a>
+				</li>
+				<li>
+					<a routerLinkActive="active" [routerLink]="['/dashboard']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/dashboard-h.png">
+								<h2>&nbsp;Dashboard</h2>
+							</div>
+						</div>
+					</a>
+				</li> -->
+				<li>
+					<a routerLinkActive="active" [routerLink]="['/marketing']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/marketing-h.png">
+								<h2>Marketing
+									<span>Email</span>
+								</h2>
+							</div>
+						</div>
+					</a>
+				</li>
+				<li>
+					<a routerLinkActive="active" [routerLink]="['/reports']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/reports-h.png" width="48">
+								<h2>Reports
+									<span>Sales </span>
+								</h2>
+							</div>
+						</div>
+					</a>
+				</li>
+				<li>
+					<a routerLinkActive="active" [routerLink]="['/inventory']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/inventory-h.png" width="34">
+								<h2>Inventory
+									<br>
+									<span> Manage</span>
+								</h2>
+							</div>
+						</div>
+					</a>
+				</li>
+				<li>
+					<a routerLinkActive="active" [routerLink]="['/dashboard']">
+						<div class="circle">
+							<div class="circle-inner">
+								<img src="assets/images/dashboard-h.png">
+								<h2>&nbsp;Dashboard</h2>
+							</div>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div [style.zoom]="'90%'">
+		<section *ngIf="navURL === 'setup'" id="main_content">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="setup">
+							<div class="setup_inner" style="margin-left: 42px;">
+								<!--<a routerLinkActive="active" [routerLink]="['/setup/inventory']">
+								<div class="setup_box_one1">
+									<h2>{{ 'HEADER.SETUP1' | translate }}
+										<br> <b>{{ 'HEADER.INVENTORY' | translate }}</b></h2>
+								</div>
+							</a>-->
+								<!--<a href="#">
+								<div class="setup_box_two2">
+									<h2>
+										<img src="assets/images/favorities-h.png"> {{ 'HEADER.SETUP1' | translate }}
+										<br> <b>{{ 'HEADER.FAVORITES' | translate }}</b></h2>
+								</div>
+							</a>-->
+								<a routerLinkActive="active" [routerLink]="['/setup/clientpreference']">
+									<div class="setup_box_one1">
+										<h2>{{ 'HEADER.SETUP1' | translate }}
+											<br>
+											<b>{{ 'HEADER.CLIENT' | translate }}
+												<br> {{ 'HEADER.PREFERENCES' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+								<a routerLinkActive="active" [routerLink]="['/setup/appointments']">
+									<div class="setup_box_two2">
+										<h2>{{ 'HEADER.SETUP1' | translate }}
+											<br>
+											<b>{{ 'HEADER.APPOINTMENTS' | translate }}
+												<br>{{ 'HEADER._EMAILS' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+								<a routerLinkActive="active" [routerLink]="['/setup/services']">
+									<div class="setup_box_one1">
+										<h2>{{ 'HEADER.SETUP1' | translate }}
+											<br>
+											<b>{{ 'SETUP_PACKAGES.SERVICE' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+
+							</div>
+							<div class="clearfix"></div>
+							<div class="setup_inner">
+								<!--<a routerLinkActive="active" [routerLink]="['/setup/appointments']">
+								<div class="setup_box_three3 ml-50">
+									<h2>{{ 'HEADER.SETUP1' | translate }}
+										<br> <b>{{ 'HEADER.APPOINTMENTS' | translate }}
+										<br>{{ 'HEADER._EMAILS' | translate }}</b></h2>
+								</div>
+							</a>-->
+								<a routerLinkActive="active" [routerLink]="['/setup/inventory']">
+									<div class="setup_box_three3 ml-50">
+										<h2>{{ 'HEADER.SETUP1' | translate }}
+											<br>
+											<b>{{ 'HEADER.INVENTORY' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+								<a routerLinkActive="active" [routerLink]="['/setup/company']">
+									<div class="setup_box_four4 ml50">
+										<h2>
+											<span><img src="assets/images/setuplogo.png" style="width: 150px;margin-bottom: 10px;"></span>
+											<br> {{ 'HEADER.SETUP1' | translate }}
+											<b>{{ 'HEADER.COMPANY' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+
+								<!--<a routerLinkActive="active" [routerLink]="['/setup/clientpreference']">
+								<div class="setup_box_three3 ml50">
+									<h2>{{ 'HEADER.SETUP1' | translate }}
+										<br> <b>{{ 'HEADER.CLIENT' | translate }}
+										<br> {{ 'HEADER.PREFERENCES' | translate }}</b></h2>
+								</div>
+							</a>-->
+								<a routerLinkActive="active" [routerLink]="['/setup/workers']">
+									<div class="setup_box_three3 ml50">
+										<h2>{{ 'HEADER.SETUP1' | translate }}
+											<br>
+											<b>{{ 'HEADER.WORKERS' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+							</div>
+							<div class="clearfix"></div>
+							<div class="setup_inner" style="margin-left: 33px;">
+								<!--<a routerLinkActive="active" [routerLink]="['/setup/workers']">
+								<div class="setup_box_five5">
+									<h2>{{ 'HEADER.SETUP1' | translate }}
+										<br> <b>{{ 'HEADER.WORKERS' | translate }}</b></h2>
+								</div>
+							</a>-->
+								<a routerLinkActive="active" [routerLink]="['/setup/memberships']">
+									<div class="setup_box_five5">
+										<h2>{{ 'HEADER.SETUP1' | translate }}
+											<br>
+											<b>{{ 'HEADER.MEMBERSHIPS' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+								<a routerLinkActive="active" [routerLink]="['/setup/ticketpreferences']">
+									<div class="setup_box_six6">
+										<h2>{{ 'HEADER.SETUP1' | translate }}
+											<b>{{ 'HEADER.TICKET' | translate }}
+												<br> {{ 'HEADER.PREFERENCES' | translate }}</b>
+										</h2>
+									</div>
+								</a>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section *ngIf="navURL === 'setup/company'" id="inner_cont">
+			<div class="container">
+				<div class="row mt-50">
+					<ul class="set_box">
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/company/info']">
+								<div class="set_box_inner1">
+									<h1>Company Info</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/company/hours']">
+								<div class="set_box_inner1">
+									<h1>Company Hours</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/company/paymenttypes']">
+								<div class="set_box_inner1">
+									<h1>Payment Types</h1>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section *ngIf="navURL === 'setup/services'" id="inner_cont">
+			<div class="container">
+				<div class="row mt-50">
+					<ul class="set_box">
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/services/groups']">
+								<div class="set_box_inner1">
+									<h1>Setup Service Groups</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/services/resources']">
+								<div class="set_box_inner1">
+									<h1>Setup Resources</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/services/details']">
+								<div class="set_box_inner1">
+									<h1>Setup Services</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/services/packages']">
+								<div class="set_box_inner1">
+									<h1>Setup Service Packages</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/services/classes']">
+								<div class="set_box_inner1">
+									<h1>Setup Classes</h1>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section *ngIf="navURL === 'setup/inventory'" id="inner_cont">
+			<div class="container">
+				<div class="row mt-50">
+					<ul class="set_box">
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/inventory/suppliers']">
+								<div class="set_box_inner1">
+									<h1>{{'SETUP_INVENTORY.SETUP_SUPPLIERS' | translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/inventory/groups']">
+								<div class="set_box_inner1">
+									<h1>{{'SETUP_INVENTORY.SETUP_INVENTORY_GROUPS' | translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/inventory/productlines']">
+								<div class="set_box_inner1">
+									<h1>{{'SETUP_INVENTORY.SETUP_PRODUCT_LINES' | translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/inventory/products']">
+								<div class="set_box_inner1">
+									<h1>{{'SETUP_INVENTORY.SETUP_PRODUCTS' | translate}}</h1>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section *ngIf="navURL === 'setup/workers'" id="inner_cont">
+			<div class="container">
+				<div class="row mt-50">
+					<ul class="set_box">
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/workers/permissions']">
+								<div class="set_box_inner1">
+									<h1>Setup Permissions</h1>
+								</div>
+							</a>
+						</li>
+
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/workers/compensationscales']">
+								<div class="set_box_inner1">
+									<h1>Setup Compensation Scales</h1>
+								</div>
+							</a>
+						</li>
+
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/workers/compensationmethods']">
+								<div class="set_box_inner1">
+									<h1>Setup Compensation Methods</h1>
+								</div>
+							</a>
+						</li>
+
+
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/workers/goals']">
+								<div class="set_box_inner1">
+									<h1>Setup Goals</h1>
+								</div>
+							</a>
+						</li>
+
+						<li>
+							<a routerLinkActive="active" [routerLink]="['/setup/workers/details']">
+								<!-- <a routerLinkActive="active" [routerLink]="['/setupworkersdetails']"> -->
+								<div class="set_box_inner1">
+									<h1>Worker Details</h1>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section *ngIf="navURL === 'inventory'" id="inner_cont">
+			<div class="container">
+				<div class="row mt-50">
+					<ul class="set_box">
+						<li>
+							<a [routerLink]="['/inventory/manage']">
+								<div class="set_box_inner1">
+									<h1>Manage Inventory</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a [routerLink]="['/inventory/purchaseorders']">
+								<div class="set_box_inner1">
+									<h1>Purchase Orders</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a [routerLink]="['/inventory/usage']">
+								<div class="set_box_inner1">
+									<h1>Inventory Usage</h1>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section *ngIf="navURL === 'marketing'" id="inner_cont">
+			<div class="container">
+				<div class="row mt-50">
+					<ul class="set_box">
+						<li>
+							<a [routerLink]="['/marketing/setuppromotions']">
+								<div class="set_box_inner1">
+									<h1>{{'MARKETING.SETUP_PROMOTIONS'|translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a [routerLink]="['/marketing/setuprewards']">
+								<div class="set_box_inner1">
+									<h1>{{'MARKETING.SETUP_REWARDS'|translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a [routerLink]="['/marketing/email']">
+								<div class="set_box_inner1">
+									<h1>{{'MARKETING.MARKETING_EMAIL'|translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a [routerLink]="['/marketing/sets']">
+								<div class="set_box_inner1">
+									<h1>{{'MARKETING.MARKETING_SETS'|translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a [routerLink]="['/marketing/reports']">
+								<div class="set_box_inner1">
+									<h1>{{'MARKETING.MARKETING_REPORTS'|translate}}</h1>
+								</div>
+							</a>
+						</li>
+						<li>
+							<a [routerLink]="['/marketing/emailactivity']">
+								<div class="set_box_inner1">
+									<h1>{{'MARKETING.EMAIL_ACTIVITY'|translate}}</h1>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		<section *ngIf="navURL === 'reports'" id="inner_cont">
+			<div class="container form_cont">
+				<div class="row mt-50 reports">
+					<div class="col-md-1"></div>
+					<div class="col-md-10 reports-panel">
+						<accordion style="margin-right: 90px">
+							<accordion-group #group1>
+								<div accordion-heading class="reports-uppercase">
+									Transaction Reports
+									<i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group1?.isOpen, 'glyphicon-chevron-right': !group1?.isOpen}"></i>
+								</div>
+								<ul class="set_box">
+									<li>
+										<a [routerLink]="['/reports/transaction/totalsheets']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.TOTAL_SHEET'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+									<li>
+										<a [routerLink]="['/reports/transaction/ticketlist']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.TICKET_DETAILS'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+
+									<li>
+										<a [routerLink]="['/reports/transaction/reportdailycashdrawer']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.DAILY_CASH_DRAWER'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+									<li>
+										<a [routerLink]="['/reports/transaction/paymentdetails']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.ELECTRONIC_PAYMENT_DETAILS'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+								</ul>
+							</accordion-group>
+							<accordion-group #group2>
+								<div accordion-heading class="reports-uppercase">
+									Sales Reports
+									<i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group2?.isOpen, 'glyphicon-chevron-right': !group2?.isOpen}"></i>
+								</div>
+								<ul class="set_box">
+									<li>
+										<a [routerLink]="['/reports/sales/ticketsaleschart']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.TICKET_SALES_CHART'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+									<li>
+										<a [routerLink]="['/reports/sales/ticketsalesreport']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.TICKET_SALES_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+
+									<li>
+										<a [routerLink]="['/reports/sales/reportservicesales']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.SERVICE_SALES_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+									<li>
+										<a [routerLink]="['/reports/sales/productsaleschart']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.PRODUCT_SALES_CHART'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+									<li>
+										<a [routerLink]="['/reports/sales/reportproductsales']">
+											<div class="set_box_inner1">
+												<h1 class="product-lines">{{'REPORTS.PRODUCT_SALES_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+									<li>
+										<a [routerLink]="['/reports/sales/productsalesbyrank']">
+											<div class="set_box_inner1">
+												<h1 class="product-lines">{{'REPORTS.PRODUCT_SALES_BY_RANK'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+
+								</ul>
+							</accordion-group>
+							<accordion-group #group3>
+								<div accordion-heading class="reports-uppercase">
+									Business Analysis Reports
+									<i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group3?.isOpen, 'glyphicon-chevron-right': !group3?.isOpen}"></i>
+								</div>
+								<ul class="set_box">
+									<li>
+										<a [routerLink]="['/reports/businessanalysis/ticketanalysisreport']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.TICKET_ANALYSIS_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/businessanalysis/clientretention']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.CLIENT_RETENTION'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/businessanalysis/reportactivitycomparison']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.ACTIVITY_COMPARISON'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/businessanalysis/reportvisittypeoverview']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.VISIT_TYPE_OVERVIEW'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/businessanalysis/monthlybussinessanalysis']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.MONTHLY_BUSINESS_ANALYSIS'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/businessanalysis/tbpreport']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.TBP_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/businessanalysis/abcreport']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.ABC_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</accordion-group>
+							<accordion-group #group4>
+								<div accordion-heading class="reports-uppercase">
+									Inventory & Gift Reports
+									<i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group4?.isOpen, 'glyphicon-chevron-right': !group4?.isOpen}"></i>
+								</div>
+								<ul class="set_box">
+									<li>
+										<a [routerLink]="['/reports/inventorygift/onhandproduct']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.ON_HAND_PRODUCT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/inventorygift/adjustmentreportlist']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.ADJUSTMENT_REPORTS'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/inventorygift/inventoryusagereport']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.INVENTORY_USAGE_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/inventorygift/reportgifts']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.GIFT_LIST_REPORT'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</accordion-group>
+							<accordion-group #group5>
+								<div accordion-heading class="reports-uppercase">
+									Compensation Reports
+									<i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group5?.isOpen, 'glyphicon-chevron-right': !group5?.isOpen}"></i>
+								</div>
+								<ul class="set_box">
+									<li>
+										<a [routerLink]="['/reports/compensation/processcompensation']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.PROCESS_COMPENSATION'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/compensation/workertips']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.WORKER_TIPS'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+									<li>
+										<a [routerLink]="['/reports/compensation/workergoals']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.WORKER_GOALS'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</accordion-group>
+							<accordion-group #group6>
+								<div accordion-heading class="reports-uppercase">
+									{{'REPORTS.REPORT_WRITER'|translate}}
+									<i class="pull-right glyphicon" [ngClass]="{'glyphicon-chevron-down': group6?.isOpen, 'glyphicon-chevron-right': !group6?.isOpen}"></i>
+								</div>
+								<ul class="set_box">
+									<li>
+										<a [routerLink]="['/reports/reportwriterlist']">
+											<div class="set_box_inner1">
+												<h1>{{'REPORTS.REPORT_WRITER'|translate}}</h1>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</accordion-group>
+						</accordion>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<app-rightbar *ngIf="navURL !== 'home'"></app-rightbar>
+</div>

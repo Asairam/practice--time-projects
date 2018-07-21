@@ -1,0 +1,274 @@
+/*--- RESPONSIVE CSS ----*/
+
+@media screen and (max-width:1360px) {
+	.set_box {
+		width: 90%;
+	}
+	.set_box li.last {
+		margin-left: 430px;
+	}
+}
+
+@media screen and (max-width:1199px) {
+	.setup {
+		width: 80%;
+	}
+	.set_box_inner {
+		height: 220px;
+		width: 220px;
+	}
+	.set_box_inner h1 {
+		font-size: 20px;
+	}
+	.set_box li.last {
+		margin-left: 365px;
+	}
+}
+
+@media screen and (max-width:991px) {
+	.setup {
+		width: 92%;
+	}
+	.ml-cont-50 {
+		margin-left: 0px;
+	}
+	.setup_inner h2 {
+		font-size: 15px;
+	}
+	.setup_box_one {
+		width: 160px;
+		height: 160px;
+	}
+	.setup_box_five {
+		width: 160px;
+		height: 160px;
+		margin: -5px 10px 0px 10px;
+	}
+	.setup_box_two {
+		width: 185px;
+		height: 185px;
+	}
+	.setup_box_three {
+		width: 185px;
+		height: 185px;
+	}
+	.setup_box_four {
+		width: 210px;
+		height: 210px;
+	}
+	.setup_box_six {
+		width: 185px;
+		height: 185px;
+	}
+	.ml-50 {
+		margin-left: -10px;
+	}
+	.ml50 {
+		margin-left: 10px;
+	}
+	.pdgl30 {
+		padding-left: 15px;
+	}
+	.res-mt-15 {
+		margin-top: 15px !important;
+	}
+	.setsubcont label {
+		font-size: 16px;
+		letter-spacing: 1px;
+	}
+	.setsubcont h1 {
+		text-align: left;
+	}
+	.set_box li {
+		margin-bottom: 20px;
+	}
+	.set_box li.last {
+		margin-left: 0px;
+	}
+}
+@media screen and (max-width:767px) {
+	.res-brd-btm {
+		border-bottom: solid 1px #fff;
+	}
+	.res-brdnone {
+		border-right: 0px solid #fff;
+	}
+	.drawer-dropdown-menu li {
+		margin-left: 10px;
+		position: relative;
+		padding-left: 10px;
+	}
+	.setup_box_one {
+		float: none;
+		margin: 8px auto !important;
+	}
+	.setup_box_two {
+		float: none;
+		margin: 8px auto !important;
+	}
+	.setup_box_three {
+		float: none;
+		margin: 8px auto !important;
+	}
+	.setup_box_four {
+		float: none;
+		margin: 8px auto !important;
+	}
+	.setup_box_five {
+		float: none;
+		margin: 8px auto !important;
+	}
+	.setup_box_six {
+		float: none;
+		margin: 8px auto !important;
+	}
+	.res-text-center {
+		text-align: center !important;
+	}
+	.res-tleft {
+		text-align: left !important;
+	}
+	#title h1 {
+		margin-bottom: 10px;
+	}
+	.form_cont {
+		border-radius: 0px;
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+	.form_cont input[type=text], .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password] {
+		width: 90%;
+	}
+	.form_cont select {
+		width: 90%;
+	}
+	.form_cont textarea {
+		width: 90%;
+	}
+	.inputfile {
+		width: 88%;
+	}
+	.res-mb10 {
+		margin-bottom: 10px;
+	}
+	.inptwdth input[type=text] {
+		max-width: 100% !important;
+		width: 200px !important;
+	}
+	.menu-link {
+		font-size: 34px;
+	}
+	.setsubcont h1 {
+		text-align: left;
+	}
+ 
+	.setup {
+		width: 95%;
+	}
+}
+
+@media screen and (max-width:693px) {
+	.nav-tabs>li {
+		float: none;
+		margin-bottom: 1px;
+	}
+	.nav-tabs>li>a {
+		border-radius: 0px 0px 0px 0px;
+		border-bottom: 1px solid #49b5de !important;
+	}
+	.nav-tabs {
+		border-bottom: 0px solid #49b5de !important;
+	}
+}
+
+@media screen and (max-width:473px) {
+	.brdgrey {
+		line-height: 24px;
+		padding: 5px;
+	}
+}
+
+@media screen and (max-width:420px) {
+	.h-box-cont img {
+		max-width: 50px;
+		width: 100%;
+	}
+	.h-box-cont h2 {
+		font-size: 15px;
+	}
+	.drawer-nav {
+		width: 33.25rem;
+	}
+}
+
+@media screen and (max-width:387px) {
+	.top-header ul li a img {
+		max-width: 30px;
+		width: 100%;
+	}
+	.top-header ul li {
+		margin: 2px;
+	}
+	.menu-link {
+		font-size: 30px;
+	}
+}
+
+@media screen and (max-width:323px) {
+	.h-box-cont img {
+		max-width: 40px;
+		width: 100%;
+	}
+	.h-box-cont h2 {
+		font-size: 13px;
+	}
+	.h-box-cont-two h2 {
+		font-size: 13px;
+	}
+	.h-box-cont-two h2 img {
+		max-width: 30px;
+		width: 100%;
+		padding-right: 5px;
+	}
+	.h-box-two {
+		height: 100px;
+	}
+	.circle-inner h2 {
+		font-size: 13px;
+	}
+	.circle-cont li {
+		width: 150px !important;
+		height: 150px !important;
+	}
+	.circle {
+		height: 150px !important;
+	}
+	.top-header ul li a img {
+		max-width: 25px;
+		width: 100%;
+	}
+	.top-header ul li {
+		margin: 1px;
+	}
+}
+
+@media screen and (max-width:293px) {
+	.cancel-btn {
+		margin-left: 0px;
+	}
+}
+
+@media screen and (max-width:280px) {
+	.top-header ul li a img {
+		max-width: 20px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-width:251px) {
+	.top-header ul li a img {
+		display: none;
+	}
+}
+
+/*--- END RESPONSIVE CSS ----*/

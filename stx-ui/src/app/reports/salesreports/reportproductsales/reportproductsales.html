@@ -1,0 +1,193 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.END_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option>Issued</option>
+                        <option>Expired</option>
+                        <option>No Issued Date</option>
+                        <option>No Expired Date</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SETUP_INVENTORY_PRODUCTS.PRODUCT_LINE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option>All</option>
+                        <option>American Crew</option>
+                        <option>Bio Elements</option>
+                        <option>BKR Test Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.WORKER' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select disabled>
+                        <option disabled>Select worker</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="generateReport()" class="btn btn-primary">
+                        <i class="fa fa-cog" aria-hidden="true"></i> {{'BUTTON.GENERATE' | translate }}</button>
+                </div>
+            </div>
+
+            <hr />
+            <div class="row mt-20 res-mt-15 ml-left" *ngIf="itemsDisplay">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate }}</th>
+                                    <th class="thcss">Gift List Report: Issued</th>
+                                    <th class="thcss"> 03/21/2018 - 03/29/2018</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+                <!-- <div class="row mt-20 res-mt-15"> -->
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'MANAGE_INVENTORY.PRODUCT_NAME' | translate }}</th>
+                                        <th class="thcss">{{'COMMON.SIZE' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_INVENTORY_PRODUCTS.UNIT_OF_MEASURE' | translate }}</th>
+                                        <th class="thcss">{{'TICKET_SALES_REPORT.APPOINTMENT_OR_TICKETNUMBER' | translate }}</th>
+                                        <th class="thcss">{{'PRODUCT_SALES_REPORT.APPT_DATE_AND_TIME' | translate }}</th>
+                                        <th class="thcss">{{'PRODUCT_SALES_REPORT.QTY_SOLD' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_PACKAGES.DISCOUNTED_PRICE' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+
+                                        <td>Absolute Moisture Cream</td>
+                                        <td>6.000</td>
+                                        <td>ml</td>
+                                        <td>0000242/28/2018 </td>
+                                        <td>1/24/2018 8:12 AM</td>
+                                        <td>1</td>
+                                        <td>$30.00</td>
+                                    </tr>
+                                    <tr class="background-color">
+                                        <td>** 10</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>$30.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Daily Shampoo/td>
+                                            <td>8.001</td>
+                                            <td>oz</td>
+                                            <td>000000</td>
+                                            <td>1/23/2018 5:49 AM</td>
+                                            <td>1</td>
+                                            <td>$12.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Daily Shampoo</td>
+                                        <td>6.000</td>
+                                        <td>oz</td>
+                                        <td>000051 </td>
+                                        <td>1/24/2018 11:11 AM</td>
+                                        <td>1</td>
+                                        <td>$12.00</td>
+                                    </tr>
+
+                                    <tr class="background-color">
+                                        <td>** 100</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>$24.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>BKR Injectibles</td>
+                                        <td>1.000</td>
+                                        <td>ea</td>
+                                        <td>000083 </td>
+                                        <td>1/25/2018 11:09 AM</td>
+                                        <td>1</td>
+                                        <td>$100.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>BKR</td>
+                                        <td>1.000</td>
+                                        <td>ea</td>
+                                        <td>000086 </td>
+                                        <td>1/29/2018 11:11 AM</td>
+                                        <td>1</td>
+                                        <td>$100.00</td>
+                                    </tr>
+                                    <tr class="background-color">
+                                        <td>** BKR</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>$200.00</td>
+                                    </tr>
+                                    <tr class="background-color">
+                                        <td>Total</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>$254.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <!-- </div> -->
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

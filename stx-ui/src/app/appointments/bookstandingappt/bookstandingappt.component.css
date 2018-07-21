@@ -1,0 +1,116 @@
+.form_cont select:focus{
+    border:1px solid #000;
+    background-color: #fff;
+    color:#000;
+}
+.form_cont input[type=text] {
+    width:90%;
+}
+
+.select-align {
+    width:90%;
+}
+.appt-box {
+    border: solid 1.5px #3583a1;
+}
+#inner_cont {
+    margin-right: 4%;
+}
+#box-align {
+    margin-right:-2%;
+}
+.align-select {
+    width:90%;
+    margin-left: 10px;
+    margin-bottom:5px;
+}
+.align1-select {
+    width:90%;
+    margin-left: 10px;
+}
+#height-align {
+    min-height: 330px;
+    max-height:auto;
+}
+.form_cont12{
+    text-align: center;
+    margin-top: -28px;
+}
+.form_cont12 h1 {
+    font-family: 'AvenirLTStdRoman';
+    font-size: 24px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select {
+    color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus {
+    color: black;
+}
+@media (device-width: 768px) {
+    #box-align {
+        margin-right:0px;
+    }
+    #inner_cont {
+        margin-right: 10%;
+    }
+    
+    .col-sm-4 {
+        width: 20.333333%;
+    }
+    .select-align {
+        width:50%;
+    }
+    .form_cont input[type=text] {
+        width:50%;
+    }
+    .align-select {
+        width:40%;
+       float:left;
+    }
+    .align1-select {
+        width:40%;
+    }
+    
+}
+@media (min-device-width: 992px) {
+    .align-select {
+        width: 35%;
+        float:left;
+    }
+    .align1-select {
+        width: 50%;  
+    }
+}
+@media (device-width: 1024px) {
+    #inner_cont {
+        margin-right: 5%;
+    }
+    .button-align {
+        margin-left:15%;
+    }
+    #box-align {
+        margin-right:-2.5%;
+    }
+   #text-align {
+       padding-left:1px;
+   }
+   #align-box {
+       width:113%
+   }
+   #padding-align {
+        width: 103%;
+        padding-left: 3px;
+    }
+    .align-select {
+        width: 35%;
+        margin-left:15px;
+        float:left;
+    }
+    .align1-select {
+        width: 50%;  
+    }
+}

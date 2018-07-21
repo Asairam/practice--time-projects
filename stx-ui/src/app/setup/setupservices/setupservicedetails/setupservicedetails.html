@@ -1,0 +1,692 @@
+<div id="wrapper_setup_new">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont" class="setsubcont" style="margin-top: -38px;">
+		<div class="container W-color">
+			<div class="row mb-40">
+				<div class="col-md-3 mt-40">
+					<div class="table-responsive">
+						<!-- Start : Setup service page Listing -->
+						<table [class.disabled]="listingEnableDisable" class="table table-bordered-white">
+							<tbody>
+								<tr class="white">
+									<td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
+										<input type="checkbox" ([ngModel])='showInactive' (click)="showInactiveList($event.target.checked);clearErrorMsg();" id="c1"
+										 class="pull-left"> &nbsp;&nbsp;
+										<label for="c1" class="c1">{{'COMMON.SHOW_INACTIVE' | translate}}</label>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
+										<select class="form-control input-sm" [(ngModel)]="selectedServiceGroup" (change)="serviceGroupListOnChange($event.target.value);clearErrorMsg()"
+										 style="color:white;">
+											<option *ngFor="let serviceGroup of serviceGroupsList; let i='index'" [ngValue]="serviceGroup.serviceGroupName">{{serviceGroup.serviceGroupName}}</option>
+										</select>
+									</td>
+								</tr>
+								<tr class="white">
+									<td>{{'COMMON.ACTIVE' | translate}}</td>
+									<td>{{'COMMON.NAME' | translate}}</td>
+								</tr>
+								<tr *ngFor="let serviceDetails of serviceDetailsList; let i='index'" id="serviceDetails{{i}}">
+									<td align="center" *ngIf='serviceDetails.Active__c == 1'>
+										<input type="checkbox" checked disabled>
+									</td>
+									<td align="center" *ngIf='serviceDetails.Active__c == 0'>
+										<input type="checkbox" disabled>
+									</td>
+									<td class="tbl-txt" (click)="editServiceDetails(serviceDetails);clearErrorMsg();">
+										<a class="W-color">{{serviceDetails.Name}}</a>
+									</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2">
+										<a class="white btn btn-hovr" (click)="addNew();clearErrorMsg();">
+											<i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- End : Setup service page Listing -->
+					</div>
+				</div>
+				<!-- Start : Setup service add -->
+				<div class="col-md-9 pdgl30" [class.disabled]="addEnableDisable" *ngIf="isAdding" style="margin-top: -15px;">
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-8 pdgl30 mt-40">
+							<h1>{{'SETUP_SERVICES.SERVICE_DETAILS' | translate}}</h1>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]='active' (click)='clearErrorMsg();'>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.NAME' | translate}}
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" [(ngModel)]='serviceName' maxlength="80" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()" placeholder="New Service">
+							<p class="red">{{nameRequiredErrMsg | translate}} </p>
+							<p class="red">{{nameUniqueErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.SERVICE_GROUP' | translate}}
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-sm-8">
+							<select class="form-control input-sm" [(ngModel)]="addServiceGroupName" (change)="serviceGroupName($event.target.value);clearErrorMsg()">
+								<option *ngFor="let serviceGroup of serviceGroupsList; let i='index'" [ngValue]="serviceGroup.serviceGroupName">{{serviceGroup.serviceGroupName}}</option>
+							</select>
+							<p class="red"> {{serviceGroupRequiredErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.TAXABLE' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]='taxable' (click)='clearErrorMsg();'>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.USE_MULTIPLE_PRICE_LEVELS' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]='isUseMultiplePriceLevels' id="multiple" (click)='populateMultiplePriceLevels();clearErrorMsg();'>
+						</div>
+					</div>
+					<!-- Use Multiple Price Levels table -->
+					<div class="row mt-20 res-mt-15" id="showtable">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<p class="red"> {{durationRequiredErrMsg | translate}} </p>
+								<p class="red"> {{totalDurationValidErrMsg | translate}} </p>
+								<p class="red"> {{priceNotValidErrMsg | translate}} </p>
+								<!-- Start: If Use Multiple Price Level is true showing table with levels -->
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td *ngIf='hideUseMultiplePriceLevels'>{{'SETUP_SERVICES.LEVEL' | translate}}</td>
+											<td>{{'COMMON.PRICE' | translate}} &nbsp; &nbsp;
+											</td>
+											<td>
+												<span class="text-danger">*</span>
+												{{'SETUP_SERVICES.DURATION1' | translate}}
+											</td>
+											<td>{{'SETUP_SERVICES.AVAILABLE' | translate}}</td>
+											<td>
+												{{'SETUP_SERVICES.DURATION2' | translate}}
+											</td>
+											<td>{{'SETUP_SERVICES.AVAILABLE' | translate}}</td>
+											<td>{{'SETUP_SERVICES.DURATION3' | translate}}</td>
+											<td>{{'SETUP_SERVICES.AVAILABLE' | translate}}</td>
+											<td>{{'SETUP_SERVICES.BUFFER_AFTER' | translate}}</td>
+											<td *ngIf='hideUseMultiplePriceLevels'></td>
+										</tr>
+										<tr *ngFor="let multiplePriceLevelRow of multiplePriceLevelRows; let i = 'index'">
+											<td [innerHTML]="multiplePriceLevelRow.levelNumber" *ngIf='hideUseMultiplePriceLevels'></td>
+											<td>
+												<input type="text" class="align_right width-align" [(ngModel)]="multiplePriceLevelRow.price" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+													if(event.keyCode != 46 && event.keyCode > 31
+													&& (event.keyCode < 48 || event.keyCode > 57))
+														return false;
+														return true;">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.duration1" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+														if (event.keyCode == 8 || event.keyCode == 127) 
+															return true;
+														else if ( key < 48 || key > 57 )
+															return false;
+														else
+															return true;">
+											</td>
+											<td>
+												<input type="checkbox" [(ngModel)]="multiplePriceLevelRow.duration1AvailableForOtherWork" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.duration2" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+														if(event.keyCode == 8 || event.keyCode == 127)
+															return true;
+														else if( key < 48 || key > 57 )
+															return false;
+														else
+															return true;">
+											</td>
+											<td>
+												<input type="checkbox" [(ngModel)]="multiplePriceLevelRow.duration2AvailableForOtherWork" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.duration3" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+														if (event.keyCode == 8 || event.keyCode == 127) 
+															return true;
+														else if ( key < 48 || key > 57 )
+															return false;
+														else
+															return true;">
+											</td>
+											<td>
+												<input type="checkbox" [(ngModel)]="multiplePriceLevelRow.duration3AvailableForOtherWork" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.bufferAfter" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+														if (event.keyCode == 8 || event.keyCode == 127) 
+															return true;
+														else if ( key < 48 || key > 57 )
+															return false;
+														else
+															return true;">
+											</td>
+											<td *ngIf='hideUseMultiplePriceLevels'>
+												<span class="f-minus" *ngIf='multiplePriceLevelRow.levelNumber !== 1'>
+													<i class="fa fa-minus" (click)="deleteMultiplePriceLevels(i);clearErrorMsg();"></i>
+												</span>
+											</td>
+											<input [(ngModel)]="multiplePriceLevelRow.totalDuration" hidden>
+										</tr>
+									</tbody>
+								</table>
+								<!-- End: If Use Multiple Price Level is true showing table with levels -->
+								<span class="f-plus" *ngIf="(isUseMultiplePriceLevels || isUseMultiplePriceLevels == 'undefined') && multiplePriceLevelRows.length < 10">
+									<i class="fa fa-plus" (click)='populateMoreMultiplePriceLevels();clearErrorMsg();'></i>
+								</span>
+							</div>
+							<em>
+								<small>{{'COMMON.DURATION' | translate}}: {{'SETUP_SERVICES.TXT1' | translate}}. {{'SETUP_SERVICES.TXT2' | translate}}.
+									{{'SETUP_SERVICES.TXT3' | translate}}.
+								</small>
+							</em>
+							<br>
+							<em>
+								<small>{{'SETUP_SERVICES.AVAILABLE' | translate}}: {{'SETUP_SERVICES.TXT4' | translate}}. </small>
+							</em>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.GUEST_CHARGE_AMOUNT' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="align_right" step="0.01" [(ngModel)]='guestChargeAmount' (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+							 onkeypress="var key = window.event ? event.keyCode : event.which;
+								if(event.keyCode != 46 && event.keyCode > 31
+								&& (event.keyCode < 48 || event.keyCode > 57))
+									return false;
+									return true;">
+							<p class="red"> {{guestAmountlength | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.ONLINE_NAME' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" maxlength="40" [(ngModel)]='onlineName' (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()">
+							<p class="red"> {{onlineNameUniqueErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DESCRIPTION' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<textarea maxlength="255" [(ngModel)]='description' (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"></textarea>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DEPOSIT_REQUIRED' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]="depositRequired" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;
+								if(event.keyCode == 8 || event.keyCode == 127)
+									return true;
+								else if( key < 48 || key > 57 )
+									return false;
+								else
+									return true;">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DEPOSIT_AMOUNT' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="align_right" [(ngModel)]='depositAmount' (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+							 onkeypress="var key = window.event ? event.keyCode : event.which;
+								if(event.keyCode != 46 && event.keyCode > 31
+								&& (event.keyCode < 48 || event.keyCode > 57))
+									return false;
+									return true;">
+							<p class="red"> {{depositAmountErrMsg | translate}} </p>
+							<p class="red"> {{depositAmountNotValidErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DEPOSIT_PERCENT' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" [(ngModel)]='depositPercent' (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;
+								if (event.keyCode == 8 || event.keyCode == 127) 
+									return true;
+								else if ( key < 48 || key > 57 )
+									return false;
+								else
+									return true;">
+							<p class="red">{{depositPercentErrMsg | translate}}</p>
+							<p class="red">{{depositRequiredErrMsg | translate}}</p>
+							<p class="red">{{depositNotValidErrMsg | translate}}</p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.RESOURCE_USED' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<select (click)="clearErrorMsg();" [(ngModel)]='resourcesFilter' (change)="resourceType($event.target.value);clearErrorMsg()">
+								<option *ngFor="let resourceType of resourcesTypeList; let i='index'" [ngValue]="resourceType.type">{{resourceType.type}}</option>
+							</select>
+						</div>
+					</div>
+					<!-- Resources Used Start -->
+					<div class="row mt-20 res-mt-15" *ngIf='resourceUsedShowHide'>
+						<div class="col-sm-4 text-right res-tleft">
+
+						</div>
+
+						<div class="col-sm-8">
+							<table>
+								<tr>
+									<td>
+										<label>{{'SETUP_SERVICES.RESOURCES_NAME' | translate}}</label>
+									</td>
+									<td *ngIf="priorityShowHide">
+										<label>{{'SETUP_SERVICES.PRIORITY' | translate}}</label>
+									</td>
+									<td></td>
+								</tr>
+								<tr *ngFor="let resourcesUsedRow of resourcesUsedRows; let i = index">
+									<td>
+										<select [(ngModel)]="resourcesUsedRow.name" class="mb-15" style="width:fit-content" (click)="clearErrorMsg();">
+											<option value="">-- Select Resource --</option>
+											<option *ngFor='let name of getResourcesDropdown' value="{{name.Id}}">{{name.Name}}</option>
+										</select>
+									</td>
+									<td>
+										<select *ngIf="priorityShowHide" [(ngModel)]="resourcesUsedRow.priority" class="mb-15" style="width:fit-content; margin-left:5px; "
+										 (click)="clearErrorMsg();">
+											<option *ngFor='let priority of numberOptionsList' [ngValue]="priority">{{priority}}</option>
+										</select>
+									</td>
+									<td>
+										<div class="mb-15" *ngIf="i !== 0">
+											<span class="f-minus " (click)="deleteResourcesUsedRow(i); clearErrorMsg();">
+												<i class="fa fa-minus "></i>
+											</span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p class="red">{{resourceRequiredErrMsg | translate}}</p>
+										<p class="red">{{resourceDuplicateErrMsg | translate}}</p>
+										<p class="red">{{priorityRequiredErrMsg | translate}}</p>
+										<p class="red">{{priorityDuplicateErrMsg | translate}}</p>
+										<span class="f-plus " (click)="addResourcesUsedRow(); clearErrorMsg();">
+											<i class="fa fa-plus "></i>
+										</span>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+					</div>
+					<!-- Resources Used End -->
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button class="save-btn" type="button" (click)='setupServiceDetails(true);'>{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+							<button class="save-btn" type="button" (click)='setupServiceDetails(false);'>{{'BUTTON.SAVE' | translate}} & {{'BUTTON.NEW' | translate}}</button> &nbsp;&nbsp;
+							<button class="cancel-btn" type="button" (click)='cancel();clearErrorMsg();'>{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!-- End : Setup service add -->
+				<!-- Start : Setup service edit -->
+				<div class="col-md-9 pdgl30" [class.disabled]="addEnableDisable" *ngIf="isEditing" style="margin-top: -15px;">
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-8 pdgl30 mt-40">
+							<h1>{{'SETUP_SERVICES.SERVICE_DETAILS' | translate}}</h1>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]='active' (click)='clearErrorMsg();'>
+							<p class="red">{{inActiveDependencyErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.NAME' | translate}}
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" [(ngModel)]='serviceName' maxlength="80" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()" placeholder="New Service">
+							<p class="red">{{nameRequiredErrMsg | translate}} </p>
+							<p class="red">{{nameUniqueErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.SERVICE_GROUP' | translate}}
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-sm-8">
+							<select class="form-control input-sm" [(ngModel)]="addServiceGroupName" (change)="serviceGroupName($event.target.value);clearErrorMsg()">
+								<option *ngFor="let serviceGroup of serviceGroupsList; let i='index'" [ngValue]="serviceGroup.serviceGroupName">{{serviceGroup.serviceGroupName}}</option>
+							</select>
+							<p class="red"> {{serviceGroupRequiredErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.TAXABLE' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]='taxable' (click)='clearErrorMsg();'>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.USE_MULTIPLE_PRICE_LEVELS' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]='isUseMultiplePriceLevels' id="multiple" (click)='populateMultiplePriceLevels();clearErrorMsg();'>
+						</div>
+					</div>
+					<!-- Use Multiple Price Levels table -->
+					<div class="row mt-20 res-mt-15" id="showtable">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<p class="red"> {{durationRequiredErrMsg | translate}} </p>
+								<p class="red"> {{totalDurationValidErrMsg | translate}} </p>
+								<p class="red"> {{priceNotValidErrMsg | translate}} </p>
+								<!-- Start: If Use Multiple Price Level is true showing table with levels -->
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td *ngIf='hideUseMultiplePriceLevels'>{{'SETUP_SERVICES.LEVEL' | translate}}</td>
+											<td>{{'COMMON.PRICE' | translate}} &nbsp; &nbsp;
+
+											</td>
+											<td>
+												<span class="text-danger">*</span>
+												{{'SETUP_SERVICES.DURATION1' | translate}}
+											</td>
+											<td>{{'SETUP_SERVICES.AVAILABLE' | translate}}</td>
+											<td>
+												{{'SETUP_SERVICES.DURATION2' | translate}}
+											</td>
+											<td>{{'SETUP_SERVICES.AVAILABLE' | translate}}</td>
+											<td>{{'SETUP_SERVICES.DURATION3' | translate}}</td>
+											<td>{{'SETUP_SERVICES.AVAILABLE' | translate}}</td>
+											<td>{{'SETUP_SERVICES.BUFFER_AFTER' | translate}}</td>
+											<td *ngIf='hideUseMultiplePriceLevels'></td>
+										</tr>
+										<tr *ngFor="let multiplePriceLevelRow of multiplePriceLevelRows; let i = 'index'">
+											<td [innerHTML]="multiplePriceLevelRow.levelNumber" *ngIf='hideUseMultiplePriceLevels'></td>
+											<td>
+												<input type="text" step="0.01" class="align_right" [(ngModel)]="multiplePriceLevelRow.price" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+													if(event.keyCode != 46 && event.keyCode > 31
+													&& (event.keyCode < 48 || event.keyCode > 57))
+														return false;
+														return true;">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.duration1" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+																					if (event.keyCode == 8 || event.keyCode == 127) 
+																						return true;
+																					else if ( key < 48 || key > 57 )
+																						return false;
+																					else
+																						return true;">
+											</td>
+											<td>
+												<input type="checkbox" [(ngModel)]="multiplePriceLevelRow.duration1AvailableForOtherWork" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.duration2" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+																					if(event.keyCode == 8 || event.keyCode == 127)
+																						return true;
+																					else if( key < 48 || key > 57 )
+																						return false;
+																					else
+																						return true;">
+											</td>
+											<td>
+												<input type="checkbox" [(ngModel)]="multiplePriceLevelRow.duration2AvailableForOtherWork" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.duration3" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+																					if (event.keyCode == 8 || event.keyCode == 127) 
+																						return true;
+																					else if ( key < 48 || key > 57 )
+																						return false;
+																					else
+																						return true;">
+											</td>
+											<td>
+												<input type="checkbox" [(ngModel)]="multiplePriceLevelRow.duration3AvailableForOtherWork" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()">
+											</td>
+											<td>
+												<input type="text" class="align_right" [(ngModel)]="multiplePriceLevelRow.bufferAfter" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+												 onkeypress="var key = window.event ? event.keyCode : event.which;
+																					if (event.keyCode == 8 || event.keyCode == 127) 
+																						return true;
+																					else if ( key < 48 || key > 57 )
+																						return false;
+																					else
+																						return true;">
+											</td>
+											<td *ngIf='hideUseMultiplePriceLevels'>
+												<span class="f-minus" *ngIf='multiplePriceLevelRow.levelNumber !== 1'>
+													<i class="fa fa-minus" (click)="deleteMultiplePriceLevels(i);clearErrorMsg();"></i>
+												</span>
+											</td>
+											<input [(ngModel)]="multiplePriceLevelRow.totalDuration" hidden>
+										</tr>
+									</tbody>
+								</table>
+								<!-- End: If Use Multiple Price Level is true showing table with levels -->
+								<span class="f-plus" *ngIf="(isUseMultiplePriceLevels || isUseMultiplePriceLevels == 'undefined') && multiplePriceLevelRows.length < 10">
+									<i class="fa fa-plus" (click)='populateMoreMultiplePriceLevels();clearErrorMsg();'></i>
+								</span>
+							</div>
+							<em>
+								<small>{{'COMMON.DURATION' | translate}}: {{'SETUP_SERVICES.TXT1' | translate}}. {{'SETUP_SERVICES.TXT2' | translate}}.
+									{{'SETUP_SERVICES.TXT3' | translate}}.
+								</small>
+							</em>
+							<br>
+							<em>
+								<small>{{'SETUP_SERVICES.AVAILABLE' | translate}}: {{'SETUP_SERVICES.TXT4' | translate}}. </small>
+							</em>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.GUEST_CHARGE_AMOUNT' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" class="align_right" [(ngModel)]='guestChargeAmount' step="0.01" (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"
+							 onkeypress="var key = window.event ? event.keyCode : event.which;
+								if(event.keyCode != 46 && event.keyCode > 31
+								&& (event.keyCode < 48 || event.keyCode > 57))
+									return false;
+									return true;">
+							<p class="red"> {{guestAmountlength | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'COMMON.ONLINE_NAME' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" maxlength="40" [(ngModel)]='onlineName' (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()">
+							<p class="red"> {{onlineNameUniqueErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DESCRIPTION' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<textarea maxlength="255" [(ngModel)]='description' (keyup)="clearErrorMsg()" (keypress)="clearErrorMsg()"></textarea>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DEPOSIT_REQUIRED' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="checkbox" [(ngModel)]="depositRequired" (click)='clearErrorMsg();' (keypress)="clearErrorMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;
+															if(event.keyCode == 8 || event.keyCode == 127)
+																return true;
+															else if( key < 48 || key > 57 )
+																return false;
+															else
+																return true;">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DEPOSIT_AMOUNT' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" step="0.01" class="align_right" [(ngModel)]='depositAmount' (keyup)="clearErrorMsg()" (keypress)="run($event.target.value);clearErrorMsg()"
+							 onkeypress="var key = window.event ? event.keyCode : event.which;
+								if(event.keyCode != 46 && event.keyCode > 31
+								&& (event.keyCode < 48 || event.keyCode > 57))
+									return false;
+									return true;">
+							<p class="red"> {{depositAmountErrMsg | translate}} </p>
+							<p class="red"> {{depositAmountNotValidErrMsg | translate}} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.DEPOSIT_PERCENT' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<input type="text" [(ngModel)]='depositPercent' (keypress)="clearErrorMsg()" (keyup)="clearErrorMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;
+															if(event.keyCode == 8 || event.keyCode == 127)
+																return true;
+															else if( key < 48 || key > 57 )
+																return false;
+															else
+																return true;">
+							<p class="red">{{depositPercentErrMsg | translate}}</p>
+							<p class="red">{{depositRequiredErrMsg | translate}}</p>
+							<p class="red">{{depositNotValidErrMsg | translate}}</p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-4 text-right res-tleft">
+							<label>{{'SETUP_SERVICES.RESOURCE_USED' | translate}}</label>
+						</div>
+						<div class="col-sm-8">
+							<select (click)="clearErrorMsg();" [(ngModel)]='resourcesFilter' (change)="resourceType($event.target.value);clearErrorMsg()">
+								<option *ngFor="let resourceType of resourcesTypeList; let i='index'" [ngValue]="resourceType.type">{{resourceType.type}}</option>
+							</select>
+						</div>
+					</div>
+					<!-- Resources Used Start -->
+					<div class="row mt-20 res-mt-15" *ngIf='resourceUsedShowHide'>
+						<div class="col-sm-4 text-right res-tleft">
+						</div>
+						<div class="col-sm-8">
+							<table>
+								<tr>
+									<td>
+										<label>{{'SETUP_SERVICES.RESOURCES_NAME' | translate}}</label>
+									</td>
+									<td *ngIf="priorityShowHide">
+										<label>{{'SETUP_SERVICES.PRIORITY' | translate}}</label>
+									</td>
+									<td></td>
+								</tr>
+								<tr *ngFor="let resourcesUsedRow of resourcesUsedRows; let i = index">
+									<td>
+										<select [(ngModel)]="resourcesUsedRow.name" class="mb-15" style="width:90% " (click)="clearErrorMsg();">
+											<option value="">-- Select Resource --</option>
+											<option *ngFor='let name of getResourcesDropdown' value="{{name.Id}}">{{name.Name}}</option>
+										</select>
+									</td>
+									<td>
+										<select *ngIf="priorityShowHide" [(ngModel)]="resourcesUsedRow.priority" class="mb-15" style="width:90% " (click)="clearErrorMsg();">
+											<option *ngFor='let priority of numberOptionsList' [ngValue]="priority">{{priority}}</option>
+										</select>
+									</td>
+									<td>
+										<div class="mb-15" *ngIf="i !== 0">
+											<span class="f-minus " (click)="deleteResourcesUsedRow(i); clearErrorMsg();">
+												<i class="fa fa-minus "></i>
+											</span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p class="red">{{resourceRequiredErrMsg | translate}}</p>
+										<p class="red">{{resourceDuplicateErrMsg | translate}}</p>
+										<p class="red">{{priorityRequiredErrMsg | translate}}</p>
+										<p class="red">{{priorityDuplicateErrMsg | translate}}</p>
+										<span class="f-plus " (click)="addResourcesUsedRow(); clearErrorMsg();">
+											<i class="fa fa-plus "></i>
+										</span>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<!-- Resources Used End -->
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button class="save-btn" type="button" (click)='updateServiceDetails(true);'>{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+							<button class="save-btn" type="button" (click)='updateServiceDetails(false);'>{{'BUTTON.SAVE' | translate}} & {{'BUTTON.NEW' | translate}}</button> &nbsp;&nbsp;
+							<button class="cancel-btn" type="button" (click)='cancel();clearErrorMsg();'>{{'BUTTON.CANCEL' | translate}}</button>
+							<button *ngIf='isToDelete == false' class="cancel-btn" type="button" (click)='deleteServiceDetail(true);clearErrorMsg();'>{{'BUTTON.DELETE' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!-- End : Setup service edit -->
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

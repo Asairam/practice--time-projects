@@ -1,0 +1,229 @@
+<div id="wrapper_setup_new">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+		<section id="inner_cont" class="setsubcont">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-4 mt-40" *ngIf='listTable == true'>
+						<div class="table-responsive vertical_tabs_menu">
+							<table class="table table-bordered-white">
+								<tbody>
+									<tr class="white">
+										<td>{{ 'COMMON.NAME' | translate }}</td>
+									</tr>
+									<tr *ngFor='let permissionData of permissionsList'>
+										<td class="tbl-txt" (click)="showData(permissionData)">{{permissionData.Name}}</td>
+									</tr>
+									<tr>
+										<td align="center" class="tbl-txt" (click)="addNew()">
+											<i class="fa fa-plus"></i>{{ 'BUTTON.NEW' | translate }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-md-4 mt-40 disable" *ngIf='listTable == false'>
+						<div class="table-responsive vertical_tabs_menu">
+							<table class="table table-bordered-white">
+								<tbody>
+									<tr class="white">
+										<td>{{ 'COMMON.NAME' | translate }}</td>
+									</tr>
+									<tr *ngFor='let permissionData of permissionsList'>
+										<td class="td_active" (click)="showData(permissionData)">{{permissionData.Name}}</td>
+									</tr>
+									<tr>
+										<td align="center">
+											<a href="#" class="white">
+												<i class="fa fa-plus"></i>{{ 'BUTTON.NEW' | translate }}</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv == true'>
+						<div id="vtab1" class="vertical_tabs" style="display:block;">
+							<h1>{{'SETUP_PERMISSIONS.PERMISSION_DETAIL' | translate }}</h1>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-sm-3 text-right res-tleft">
+									<label>{{ 'COMMON.NAME' | translate }}</label>
+									<span class="red">*</span>
+								</div>
+								<div class="col-sm-7">
+									<input type="text" (keypress)="clearErrMsg()" [(ngModel)]="Name">
+									<div class="red">
+										<p>{{error | translate}}</p>
+									</div>
+								</div>
+							</div>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-sm-3 text-right res-tleft">
+									<label>{{ 'SETUP_PERMISSIONS.PAGE_CATEGORY' | translate }}</label>
+								</div>
+								<div class="col-sm-7">
+									<select (change)="onValueChange($event.target.value)">
+										<option *ngFor="let keys of objectKeys" let i='index' value="{{keys}}">{{keys}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row mt-30 mb-30 res-mt-15 text-center res-tleft">
+								<div class="col-sm-10">
+									<button type="button" (click)="unSelectAll()">{{ 'BUTTON.UNSELECT_ALL' | translate }}</button> &nbsp;&nbsp;
+									<button type="button" (click)="selectAll()">{{ 'BUTTON.SELECT_ALL' | translate }}</button>
+								</div>
+							</div>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table class="table table-bordered-light">
+											<tbody>
+												<tr class="grey_th">
+													<td>{{ 'SETUP_PERMISSIONS.PAGE_NAME' | translate }}</td>
+													<td>{{ 'SETUP_PERMISSIONS.ALLOW_ACCESS' | translate }}</td>
+												</tr>
+
+												<tr *ngFor='let tableData of sortData'>
+													<td>{{tableData.pageName}}</td>
+													<td *ngIf='tableData.allowAcces == true'>
+														<input [(ngModel)]="tableData.allowAcces" type="checkbox" checked>
+													</td>
+													<td *ngIf='tableData.allowAcces == false'>
+														<input [(ngModel)]="tableData.allowAcces" type="checkbox">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="row mt-30 res-mt-15 text-center res-tleft">
+								<div class="col-sm-10">
+									<button type="button" class="save-btn" (click)="savePermissionSet()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+									<button type="button" class="cancel-btn" (click)="cancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+								</div>
+							</div>
+						</div>
+						<div id="vtab2" class="vertical_tabs">{{ 'COMMON.TEST' | translate }}</div>
+					</div>
+					<!-- ---------------------Edit div ----------------- -->
+					<div class="col-md-8 pdgl30 mt-40" *ngIf='EditDiv == true'>
+						<div id="vtab1" class="vertical_tabs" style="display:block;">
+							<h1>{{'SETUP_PERMISSIONS.PERMISSION_DETAIL' | translate }}</h1>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-sm-3 text-right res-tleft">
+									<label>{{ 'COMMON.NAME' | translate }}</label>
+									<span class="red">*</span>
+								</div>
+								<div class="col-sm-7">
+									<input type="text" (keypress)="clearErrMsg()" [(ngModel)]="Name">
+									<div class="red">
+										<p>{{error | translate}}</p>
+									</div>
+								</div>
+							</div>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-sm-3 text-right res-tleft">
+									<label>{{ 'SETUP_PERMISSIONS.PAGE_CATEGORY' | translate }}</label>
+								</div>
+								<div class="col-sm-7">
+									<select (change)="onValueChange($event.target.value)">
+										<option *ngFor="let keys of objectKeys" let i='index' value="{{keys}}">{{keys}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row mt-30 mb-30 res-mt-15 text-center res-tleft">
+								<div class="col-sm-10">
+									<button type="button" (click)="unSelectAll()">{{ 'BUTTON.UNSELECT_ALL' | translate }}</button> &nbsp;&nbsp;
+									<button type="button" (click)="selectAll()">{{ 'BUTTON.SELECT_ALL' | translate }}</button>
+								</div>
+							</div>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table class="table table-bordered-light">
+											<tbody>
+												<tr class="grey_th">
+													<td>{{ 'SETUP_PERMISSIONS.PAGE_NAME' | translate }}</td>
+													<td>{{ 'SETUP_PERMISSIONS.ALLOW_ACCESS' | translate }}</td>
+												</tr>
+												<tr *ngFor='let tableData of sortData'>
+													<td>{{tableData.pageName}}</td>
+													<td *ngIf='tableData.allowAcces == true'>
+														<input [(ngModel)]="tableData.allowAcces" type="checkbox" checked>
+													</td>
+													<td *ngIf='tableData.allowAcces == false'>
+														<input [(ngModel)]="tableData.allowAcces" type="checkbox">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="row mt-30 res-mt-15 text-center res-tleft">
+								<div class="col-sm-10">
+									<button type="button" class="save-btn" (click)="editPermissionSet()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+									<button type="button" class="cancel-btn" (click)="cancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+								</div>
+							</div>
+						</div>
+						<div id="vtab2" class="vertical_tabs">{{ 'COMMON.TEST' | translate }}</div>
+					</div>
+					<!-- -------------------disable------------------ -->
+					<div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+						<div id="vtab1" class="vertical_tabs" style="display:block;">
+							<h1>{{'SETUP_PERMISSIONS.PERMISSION_DETAIL' | translate }}</h1>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-sm-3 text-right res-tleft">
+									<label>{{ 'COMMON.NAME' | translate }}</label>
+									<span class="red">*</span>
+								</div>
+								<div class="col-sm-7">
+									<input type="text">
+								</div>
+							</div>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-sm-3 text-right res-tleft">
+									<label>{{ 'SETUP_PERMISSIONS.PAGE_CATEGORY' | translate }}</label>
+								</div>
+								<div class="col-sm-7">
+									<select>
+										<option value="">{{ 'SETUP_PERMISSIONS.HOME' | translate }}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row mt-30 mb-30 res-mt-15 text-center res-tleft">
+								<div class="col-sm-10">
+									<button type="button">{{ 'BUTTON.UNSELECT_ALL' | translate }}</button> &nbsp;&nbsp;
+									<button type="button">{{ 'BUTTON.SELECT_ALL' | translate }}</button>
+								</div>
+							</div>
+							<div class="row mt-20 res-mt-15">
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table class="table table-bordered-light">
+											<tbody>
+												<tr class="grey_th">
+													<td>{{ 'SETUP_PERMISSIONS.PAGE_NAME' | translate }}</td>
+													<td>{{ 'SETUP_PERMISSIONS.ALLOW_ACCESS' | translate }}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="row mt-30 res-mt-15 text-center res-tleft">
+								<div class="col-sm-10">
+									<button type="button" class="save-btn" (click)="cancel()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+									<button type="button" class="cancel-btn" (click)="cancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+								</div>
+							</div>
+						</div>
+						<div id="vtab2" class="vertical_tabs">{{ 'COMMON.TEST' | translate }}</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<app-rightbar></app-rightbar>
+</div>

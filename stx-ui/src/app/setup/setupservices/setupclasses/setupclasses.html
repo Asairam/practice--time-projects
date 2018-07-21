@@ -1,0 +1,510 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-11 mt-40">
+                    <div class="table-responsive">
+                        <table class="table table-bordered-white" *ngIf='hideTable == true'>
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input type="checkbox" [checked]="!classActive" (click)="getInactive($event)" id="c1" class="pull-left"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate }}</td>
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                </tr>
+                                <tr  class="white" *ngFor="let classes of getClassesList let i='index'" id="classes{{i}}">
+                                    <td align="center" *ngIf='classes.Active__c == 1'>
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td align="center" *ngIf='classes.Active__c == 0'>
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(classes)">{{classes.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2">
+                                        <a class="white" (click)="addNew()">
+                                            <i class="fa fa-plus"></i> {{ 'SETUP_CLASSES.NEW' | translate }} </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- hide table -->
+                        <table class="table table-bordered-white disable" *ngIf='hideTable == false'>
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input type="checkbox" [checked]="!classActive" (click)="getInactive($event)" id="c1" class="pull-left"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate }}</td>
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                </tr>
+                                <tr class="white" *ngFor="let classes of getClassesList let i='index'" id="classes{{i}}">
+                                    <td align="center" *ngIf='classes.Active__c == 1'>
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td align="center" *ngIf='classes.Active__c == 0'>
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(classes)">{{classes.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2">
+                                        <a class="white" (click)="addNew()">
+                                            <i class="fa fa-plus"></i> {{ 'SETUP_CLASSES.NEW' | translate }} </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- disable div starts -->
+                <div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+                    <h1>{{ 'SETUP_CLASSES.CLASS_DETAIL' | translate }}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.NAME' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.DURATION' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.MAX_ATTENDEES' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" value="0" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.PRICE_PER_ATTENDEE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" placeholder="0.00" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_SERVICES.RESOURCE_USED' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <select disabled>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-40 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" disabled class="save-btn">{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" disabled class="save-btn">{{'BUTTON.SAVE_AND_NEW' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" disabled>{{'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- disable div ends -->
+                <!-- add div starts -->
+                <div class="col-md-8 pdgl30 mt-40 " *ngIf='addDiv == true'>
+                    <h1>{{ 'SETUP_CLASSES.CLASS_DETAIL' | translate }}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="classesActive" (keypress)="clearErrorMsg();">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.NAME' | translate }} </label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="classesName" value="New Service" (click)="clearErrorMsg();">
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorClass | translate}} </div>
+                    <div class="text-danger text-center">{{errorNameExit | translate}} </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.DURATION' | translate }}</label>
+                            <span class="text-danger pull right">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="classesDuration" (keypress)="clearErrorMsg1();" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key <= 46 || key > 57 ) return false; else return true;">
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorMsgss | translate}} </div>
+                    <div class="text-danger text-center">{{errorMsgss1 | translate}} </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.MAX_ATTENDEES' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="3" (keypress)="clearMaxMsg();" [(ngModel)]="classesMaxattendence" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorMaxAttendees | translate}} </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.PRICE_PER_ATTENDEE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="classesPrice" maxlength="9" (keypress)="clearErrorMsg();keyPress($event)" />
+                            <!-- onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; 
+                            else if ( key < 46 || key > 57 ) return false; else return true;"> -->
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorPricePerAttendees | translate}} </div>
+                    <!-- <div class="text-danger text-center">{{errorMsg | translate}} </div> -->
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.RESOURCES_USED' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <select (click)="clearErrorMsg();" (change)="resource($event.target.value);">
+                                <option *ngFor="let res of resourceList; let i='index'" [selected]="classesResources==res.NAME" value="{{res.NAME}}">{{res.NAME}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- resource list start here  -->
+                    <!-- Resources Used Start -->
+                    <div class="row mt-20 res-mt-15" *ngIf='resAll == true'>
+                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="col-sm-3 text-right res-tleft">
+                        </div>
+                        <div class="col-sm-7">
+                            <table>
+                                <tr class="white">
+                                    <td>
+                                        <label>{{ 'SETUP_CLASSES.RESOURCES_NAME' | translate }}</label>
+                                    </td>
+                                </tr>
+
+                                <tr class="white" *ngFor="let updateInput of inputs; let i='index'">
+                                    <td>
+                                        <select (change)="selectResource($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" class="mb-15"
+                                        style="width:fit-content;margin-right:5px;">
+                                            <option value="">--Select Resource--</option>
+                                            <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}" [selected]="resdrop.Id==updateInput?.resourceName">{{resdrop.Name}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="mb-15" *ngIf="inputs.length>1 && i!=0">
+                                            <span class="f-minus" (click)="deleteFieldValue(updateInput,i)">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="f-plus " (click)="addInput();">
+                                            <i class="fa fa-plus "></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!--  edit Any -->
+                    <div class="row mt-20 res-mt-15" *ngIf='resAny == true'>
+                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="col-sm-3 text-right res-tleft">
+                        </div>
+                        <div class="col-sm-7">
+                            <table>
+                                <tr class="white">
+                                    <td>
+                                        <label>{{ 'SETUP_CLASSES.RESOURCES_NAME' | translate }}</label>
+                                    </td>
+                                    <td>
+                                        <label>{{ 'SETUP_CLASSES.PRIORITY' | translate }}</label>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr *ngFor="let updateInput of inputs; let i = 'index' ">
+                                    <td>
+                                        <!-- <select class="mb-15" style="width:90%" [(ngModel)]="updateInput.resourceName">
+                                                        <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}">{{resdrop.Name}}</option>
+                                                    </select> -->
+                                        <select (change)="selectResource($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" class="mb-15 pull-left"
+                                        style="width:fit-content;">
+                                            <option value="">--Select Resource--</option>
+                                            <option *ngFor='let resdrop of getResourcesDropdown' [selected]="resdrop.Id==updateInput?.resourceName" value="{{resdrop.Id}}">{{resdrop.Name}}</option>
+                                        </select>
+                                    </td>
+                                    <td class="select-priority white">
+                                        <!-- <select class="mb-15 " style="width:90%" [(ngModel)]="updateInput.priority ">
+                                                        <option *ngFor='let pri of priority'>{{pri.NAME}}</option>
+                                                    </select> -->
+                                        <select (change)="selectPriority($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" class="mb-15 pull-left"
+                                        style="width:fit-content;margin-left:5px;margin-right:5px;">
+                                            <option value="">None</option>
+                                            <option *ngFor='let pri of priority' value="{{pri.NAME}}" [selected]="pri.NAME==updateInput?.priority">{{pri.NAME}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="mb-15" *ngIf="inputs.length>1 && i!=0">
+                                            <span class="f-minus" (click)="deleteFieldValue(updateInput,i)">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="f-plus" (click)="addInput();">
+                                            <i class="fa fa-plus"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="text-danger"> {{duplicateError | translate }} </div>
+                    <!-- <div class="text-danger text-center">{{errorNameExit | translate}} </div> -->
+                    <div class="text-danger text-center">{{error | translate}} </div>
+                    <!-- resource list end here -->
+                    <div class="row mt-40 res-mt-15 text-center res-tleft ">
+                        <div class="col-sm-10 ">
+                            <button (click)="createClassesData('create')" class="save-btn" type="button ">{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="save-btn" (click)="saveAndNewMethod()">{{'BUTTON.SAVE_AND_NEW' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)='cancel()'>{{'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- add div ends -->
+                <!-- disable div -->
+                <!-- edit div starts -->
+                <!-- edit div starts -->
+                <div class="col-md-8 pdgl30 mt-40 " *ngIf="editDiv==true">
+                    <h1>{{ 'SETUP_CLASSES.CLASS_DETAIL' | translate }}</h1>
+                    <div class="row mt-20 res-mt-15 ">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7 ">
+                            <input type="checkbox" [(ngModel)]="updateactive" (click)="clearErrorMsg();">
+                        </div>
+                        <!-- <div class="col-sm-7 ">
+                                <input type="checkbox" *ngIf='updateactive == 0' (click)="clearErrorMsg();">
+                            </div> -->
+                    </div>
+                    <div class="row mt-20 res-mt-15 ">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.NAME' | translate }}</label>
+                            <span class="text-danger pull right">*</span>
+                        </div>
+                        <div class="col-sm-7 ">
+                            <input type="text" value="{{updateclasses}}" [(ngModel)]="updateclasses" (keypress)="clearErrorMsg();">
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorClass | translate}} </div>
+                    <div class="text-danger text-center">{{errorNameExit | translate}} </div>
+                    <div class="row mt-20 res-mt-15 ">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.DURATION' | translate }}</label>
+                            <span class="text-danger pull right">*</span>
+                        </div>
+                        <div class="col-sm-7 ">
+                            <input type="text" (keypress)="clearErrorMsg1();" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key <= 46 || key > 57 ) return false; else return true;"
+                                value="{{updateduration}}" [(ngModel)]="updateduration ">
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorMsgss | translate}} </div>
+                    <div class="text-danger text-center">{{errorMsgss1 | translate}} </div>
+                    <div class="row mt-20 res-mt-15 ">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.MAX_ATTENDEES' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7 ">
+                            <input type="text" (keypress)="clearMaxMsg()" [(ngModel)]="updatemaxattendees" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorMaxAttendees | translate}} </div>
+                    <div class="row mt-20 res-mt-15 ">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.PRICE_PER_ATTENDEE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7 ">
+                            <input type="text" (keypress)="clearMaxMsg();keyPress($event)" maxlength="9" [(ngModel)]="updateprice" />
+                        </div>
+                    </div>
+                    <div class="text-danger text-center">{{errorPricePerAttendees | translate}} </div>
+                    <div class="row mt-20 res-mt-15 ">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_CLASSES.RESOURCES_USED' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7 ">
+                            <select (change)="updateResource($event.target.value);" (keypress)="clearErrorMsg();" [(ngModel)]="updateresource">
+                                <option *ngFor="let res of resourceList">{{res.NAME}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- edit All -->
+                    <div class="row mt-20 res-mt-15" *ngIf='updateAll == true'>
+                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="col-sm-3 text-right res-tleft white">
+                        </div>
+                        <div class="col-sm-7">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <label>{{ 'SETUP_CLASSES.RESOURCES_NAME' | translate }}</label>
+                                    </td>
+                                </tr>
+                                <tr *ngFor="let getList of getListClassess; let i = index">
+                                    <td>
+                                        <select class="mb-15 pull-left white" style="width:fit-content;margin-right:5px;" (click)="resouceListhide();" [(ngModel)]="getList.resourceId">
+                                            <option value="">--Select Resource--</option>
+                                            <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}">{{resdrop.Name}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="mb-15" *ngIf="getListClassess.length>1 && i!=0">
+                                            <span class="f-minus" (click)="deleteFieldValues1(getList.srId,i);">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngFor="let updateInput of updateInputs; let i=index">
+                                    <td>
+                                        <select class="mb-15" (change)="selectResourceForUpdate($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false"
+                                        style="width:fit-content;margin-right:5px;">
+                                            <option value="">--Select Resource--</option>
+                                            <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}" [selected]="resdrop.Id==updateInput?.resourceId">{{resdrop.Name}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="mb-15" *ngIf="getListClassess.length==0?updateInputs.length>1&&i!=0:true">
+                                            <span class="f-minus" (click)="deleteFieldValue2(updateInput,i)">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="f-plus " (click)="addupdate();">
+                                            <i class="fa fa-plus "></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!--  edit Any -->
+                    <div class="row mt-20 res-mt-15" *ngIf='updateAny == true'>
+                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="col-sm-3 text-right res-tleft ">
+                        </div>
+                        <div class="col-sm-7">
+                            <table>
+                                <tr class="white">
+                                    <td>
+                                        <label>{{ 'SETUP_CLASSES.RESOURCES_NAME' | translate }} </label>
+                                    </td>
+                                    <td>
+                                        <label>{{ 'SETUP_CLASSES.PRIORITY' | translate }}</label>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr *ngFor="let getList of getListClassess; let i = index">
+                                    <td>
+                                        <select class="mb-15 pull-left white" style="width:fit-content;" [(ngModel)]="getList.resourceId">
+                                            <option value="">--Select Resource--</option>
+                                            <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}">{{resdrop.Name}}</option>
+                                        </select>
+                                    </td>
+                                    <td class="select-priority">
+                                        <select class="mb-15 pull-left white" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" style="width:fit-content;margin-left:5px;margin-right:5px;" (change)="selectPriorityForList($event.target.value,i)">
+                                            <option value="">None </option>
+                                            <option *ngFor='let pri of priority' [selected]="pri.NAME==getList?.Priority__c">{{pri.NAME}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="mb-15" *ngIf="getListClassess.length>1 && i!=0">
+                                            <span class="f-minus" (click)="deleteFieldValues1(getList.srId, i);">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngFor="let updateInput of updateInputs; let i = 'index' ">
+                                    <td>
+                                        <select class="mb-15" (change)="selectResourceForUpdate($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false"
+                                            style="width:fit-content;">
+                                            <option value="">--Select Resource--</option>
+                                            <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}" [selected]="resdrop.Id==updateInput?.resourceId">{{resdrop.Name}}</option>
+                                        </select>
+                                    </td>
+                                    <td class="select-priority">
+                                        <select class="mb-15 " style="width:fit-content;margin-left:5px;margin-right:5px;" (change)="selectPriorityForUpdate($event.target.value,i)" (focus)="dropdownCheck=true"
+                                            (blur)="dropdownCheck=false">
+                                            <option value="">None</option>
+                                            <option *ngFor='let pri of priority' [selected]="pri.NAME==updateInput?.priority">{{pri.NAME}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="mb-15" *ngIf="getListClassess.length==0?updateInputs.length>1&&i!=0:true">
+                                            <span class="f-minus" (click)="deleteFieldValue2(updateInput,i)">
+                                                <i class="fa fa-minus"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="f-plus" (click)="addupdate();">
+                                            <i class="fa fa-plus"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="text-danger"> {{duplicateError | translate }} </div>
+                    <div class="text-danger text-center">{{priorityError | translate}} </div>
+                    <div class="text-danger text-center">{{priorityResouceError | translate}} </div>
+                    <div class="row mt-40 res-mt-15 text-center res-tleft ">
+                        <div class="col-sm-10 ">
+                            <button (click)="updateClassesDatas('edit');" class="save-btn" type="button" class="save-btn">{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="save-btn" (click)="editAndNewMethod()">{{'BUTTON.SAVE_AND_NEW' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" (click)="cancel()" class="cancel-btn">{{'BUTTON.CANCEL' | translate }}</button>&nbsp;&nbsp;
+                            <button type="button" *ngIf="statuscode == '2041'" class="cancel-btn" (click)="deleteClass();">{{'BUTTON.DELETE' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- edit div ends -->
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

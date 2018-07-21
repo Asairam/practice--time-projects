@@ -1,0 +1,18 @@
+::-webkit-file-upload-button {
+    background: #b1d6ec;
+    outline: none;
+    border: solid 1px #0285b9;
+    background: #03a4e4;
+    color: #fff;
+    border-radius: 3pc;
+    padding: 4px;
+}
+#wrapper_setup_new {
+    color: white;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}

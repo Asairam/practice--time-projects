@@ -1,0 +1,394 @@
+<!-- <div class="drawer drawer--left"> -->
+<div id="wrapper_setup_new">
+  <!-- <app-header></app-header> -->
+  <app-header [newMenu]="'noNav'"></app-header>
+  <section id="inner_cont" class="section-custom">
+    <!-- error messages  -->
+    <div class="col-sm-8" *ngIf="error ">
+      <p class="red mb-0"> {{error | translate }} </p>
+    </div>
+    <div class="col-sm-8" *ngIf="error1 ">
+      <p class="red mb-0"> {{error1 | translate }} </p>
+    </div>
+    <div class="col-sm-8" *ngIf="error2 ">
+      <p class="red mb-0"> {{error2 | translate }} </p>
+    </div>
+    <div class="col-sm-8" *ngIf="error3 ">
+      <p class="red mb-0"> {{error3 | translate }} </p>
+    </div>
+    <div class="col-sm-8" *ngIf="error5 ">
+      <p class="red mb-0"> {{error5 | translate }} </p>
+    </div>
+    <div class="col-sm-8" *ngIf="error6 ">
+      <p class="red mb-0"> {{error6 | translate }} </p>
+    </div>
+    <div class="col-sm-8" *ngIf="error7 ">
+      <p class="red mb-0"> {{error7 | translate }} </p>
+    </div>
+    <!-- error messages end here -->
+    <div class="container form_cont">
+      <ul class="nav nav-tabs">
+        <!-- <tabset type="pills" #staticTabs>
+          <tab (select)="getTab('pos')" id="profilePage_myvideos_anchor">
+            <ng-template tabHeading>
+              <span id="profile_myvideos_heading">
+                <div class="clearfix"></div>POS</span>
+            </ng-template>
+          </tab>
+          <tab (select)="getTab('posdevice')">
+            <ng-template tabHeading>
+              <span id="profile_rewards_heading">
+                <div class="clearfix"></div>POS Devices</span>
+            </ng-template>
+          </tab>
+          <tab (select)="getTab('favorites')" id="profilePage_dashboard_anchor">
+            <ng-template tabHeading>
+              <span id="profile_dashboard_heading">
+                <div class="clearfix"></div>Favorites</span>
+            </ng-template>
+          </tab>
+        </tabset> -->
+        <li class="tablinks {{activeTabClass[0]}}" id="favoritesnav" (click)="updateTabs(0)">
+          <a data-toggle="tab">
+            <b>{{'SETUP_TICKET_PREFERENCES.POS' | translate }}</b>
+          </a>
+        </li>
+        <li class="tablinks {{activeTabClass[1]}}" id="favoritesnav" (click)="updateTabs(1)">
+          <a data-toggle="tab">
+            <b>{{'SETUP_TICKET_PREFERENCES.POS_DEVICES' | translate }}</b>
+          </a>
+        </li>
+        <li class="tablinks {{activeTabClass[2]}}" id="favoritesnav" (click)="updateTabs(2)">
+          <a data-toggle="tab">
+            <b>{{'SETUP_TICKET_PREFERENCES.FAVORITES' | translate }}</b>
+          </a>
+        </li>
+      </ul>
+      <div *ngIf="activeTab2[0]">
+        <div class="tab-content">
+          <div id="home" class="tab-pane fade in active">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="4" class="thcss">{{'POS.SALES_TAX' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="20%">{{'POS.SERVICE_TAX' | translate }}</td>
+                    <td>
+                      <input type="text" (click)="clearmessage()" (keypress)="numberOnly($event)" [(ngModel)]="addServiceTax" >
+                    </td>
+                    <td width="20%">{{'POS.RETAIL_TAX' | translate }}</td>
+                    <td>
+                      <input type="text" (click)="clearmessage()" (keypress)="numberOnly($event)" [(ngModel)]="addRetailTax">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive mt-10">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="4" class="thcss">{{'POS.MERCHANT_ACCOUNT' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="20%">{{'POS.PAYMENT_GATEWAY' | translate }}</td>
+                    <td colspan="3">
+                      <select [(ngModel)]="addPaymentType" (click)="clearmessage()">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                        <option selected>AnywhereCommerce</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="20%">{{'POS.STORE_TERMINAL_ID' | translate }}</td>
+                    <td>
+                      <input type="text" (keypress)="alphaOnly($event)" (click)="clearmessage()" [(ngModel)]="addStoreTerminalID" />
+                    </td>
+                    <td width="20%">{{'POS.SHARED_SECRET' | translate }}</td>
+                    <td>
+                      <input type="password" required maxlength="40" (click)="clearmessage()" [(ngModel)]="addSharedSecret1" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="20%">{{'COMMON.TEST' | translate }}</td>
+                    <td colspan="3">
+                      <input type="checkbox" [(ngModel)]="addTest1" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="20%">{{'POS.ONINE_TERMINAL_ID' | translate }}</td>
+                    <td>
+                      <input type="text" (click)="clearmessage()" (keypress)="alphaOnly($event)" [(ngModel)]="addOnlineTerminalID" />
+                    </td>
+                    <td width="20%">{{'POS.SHARED_SECRET' | translate }}</td>
+                    <td>
+                      <input type="password" required maxlength="40" (click)="clearmessage()" [(ngModel)]="addSharedSecret2" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="20%">{{'COMMON.TEST' | translate }}</td>
+                    <td colspan="3">
+                      <input type="checkbox" [(ngModel)]="addTest2" />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeTab2[1]">
+        <div class="tab-content">
+          <!-- table for cash Drawers -->
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th colspan="4" class="thcss">{{ 'POS_DEVICES.CASH_DRAWERS' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="info-new">
+                  <td>{{ 'COMMON.ACTIVE' | translate }}</td>
+                  <td>{{ 'POS_DEVICES.DRAWER' | translate }}</td>
+                  <td>{{ 'POS_DEVICES.DRAWER_NAME' | translate }}</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr *ngFor='let row of rows1'>
+                  <td>
+                    <input type="checkbox" checked [(ngModel)]="row.readOnly" (change)="ActiveDraw()">
+                  </td>
+                  <td>
+                    <input disabled type="text" value="1" (click)="clearmessage()" [(ngModel)]="row.drawerNumber">
+                  </td>
+                  <td>
+                    <input type="text" value="CD1" maxlength="40" (click)="clearmessage()" [(ngModel)]="row.drawerName">
+                  </td>
+                  <td>
+                    <a (click)="addNew()" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                      <span class="add">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+                <tr *ngFor='let row of rows'>
+                  <td>
+                    <input type="checkbox" checked [(ngModel)]="row.readOnly" (change)="ActiveCashDraw(row)">
+                  </td>
+                  <td>
+                    <input type="text" value="1" (click)="clearmessage()" [(ngModel)]="row.drawerNumber">
+                  </td>
+                  <td>
+                    <input type="text" value="CD1" maxlength="40" (click)="clearmessage()" [(ngModel)]="row.drawerName">
+                  </td>
+                  <td>
+                    <a (click)="addNew()" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                      <span class="add">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- table for receipt memo -->
+          <div class="table-responsive mt-10">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th colspan="4" class="thcss">{{ 'POS_DEVICES.RECIEPT_MEMO' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td width="20%">{{ 'POS_DEVICES.RECIEPT_MEMO' | translate }}</td>
+                  <td colspan="3">
+                    <textarea [(ngModel)]="addReceiptMemo" maxlength="2000" (click)="clearmessage()"></textarea>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- device Configuration table -->
+          <div class="table-responsive mt-10">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th colspan="4" class="thcss">{{ 'POS_DEVICES.DEVICE_CONFIGURATION' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td width="20%">{{ 'POS_DEVICES.CREDIT_CARD_DEVICE' | translate }}</td>
+                  <td colspan="3">
+                    <select [(ngModel)]="addCreditCardDevice">
+                      <option [selected]="addCreditCardDevice == ''" value="">{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                      <option *ngFor="let ccDeviceData of CreditCardDevice" [ngValue]="ccDeviceData.value">{{ccDeviceData.value}}</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="20%">{{ 'POS_DEVICES.CASH_DRAWER' | translate }}</td>
+                  <td colspan="3">
+                    <select [(ngModel)]="addCashDrawer">
+                      <option [selected]="true" value="">{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                      <option *ngFor="let cdData of cashDraw" [ngValue]="cdData.drawerNumber + ' ' + cdData.drawerName">{{cdData.drawerNumber}} {{cdData.drawerName}}</option>
+                      <option *ngFor="let cdData of cashDrawRow" [ngValue]="cdData.drawerNumber + ' ' + cdData.drawerName">{{cdData.drawerNumber}} {{cdData.drawerName}}</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="20%">{{ 'POS_DEVICES.RECEIPT_PRINTER' | translate }}</td>
+                  <td colspan="3">
+                    <input type="text" [(ngModel)]="addReceiptPrinter" value="None" />
+                    <!-- <div class="col-sm-8">
+                        <p class="red"> {{error3 | translate }} </p>
+                      </div> -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeTab2[2]">
+        <div class="tab-content">
+          <div class="row">
+            <div class="col-md-12">
+              <p class="no-margin" >{{ 'SETUP_TICKET_PREFERENCES.FAVORITES_TEXT' | translate }}</p>
+            </div>
+          </div>
+          <div class="row clearfix">
+            <div class="col-md-8">
+              <div class="row clearfix mb-10">
+                <div class="col-md-2 col-sm-2 mt-10" *ngFor="let favoriteslist of favoritesList; let i='index'">
+                  <a>
+                    <div [style.background]="favoriteslist.color" [ngClass]="{'plusbg': favoriteslist.id === ''}" (click)="showFavoriteModal(favoriteslist,i)"
+                      class="fav_box setup-favbox">
+                      <h4>{{favoriteslist.name}}</h4>
+                      <!-- <h4 [innerHTML]="fData.type"></h4> -->
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div bsModal #favoriteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+          aria-hidden="true" [config]="{ backdrop: 'static', keyboard: false}">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <label class="color-font"><h4>{{add}}</h4></label>
+                <button type="button" class="close" (click)="closeModel();skuString = '';" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="clearfix">
+                    <div class="col-md-4">
+                      <label class="color-font">{{'SETUP_TICKET_PREFERENCES.TYPE' | translate}}</label>
+                      <select  class="form-control width-align input-sm select" (change)="types($event.target.value);">
+                        <option *ngFor="let serviceGroup of ticketPreferencesTypes" value="{{serviceGroup.type}}">{{serviceGroup.type}}</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label  class="color-font">{{'COMMON.CATEGORY' | translate}}</label>
+                      <select  class="form-control width-align input-sm select" *ngIf=" default == true">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                      </select>
+                      <select  class="form-control width-align input-sm select" *ngIf="[type]=='Service'" (change)="categoryOfService($event.target.value);">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                        <option *ngFor="let servicegroupslist of serviceGroupsList; let i='index'" value="{{servicegroupslist.serviceGroupName}}${{servicegroupslist.serviceGroupColor}}">{{servicegroupslist.serviceGroupName}}</option>
+                      </select>
+                      <select  class="form-control width-align input-sm select" *ngIf="[type]=='Product'" (change)="categoryOfProduct($event.target.value)">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                        <option *ngFor="let servicegroupslist of serviceGroupsList; let i='index'" value="{{servicegroupslist.Id}}${{servicegroupslist.Color__c}}">{{servicegroupslist.Name}}</option>
+                      </select>
+                      <select  class="form-control width-align input-sm select" *ngIf="[type]=='Promotion'" (change)="categoryOfPromotion($event.target.value)">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                        <option *ngFor="let servicegroupslist of serviceGroupsList; let i='index'" value="{{servicegroupslist.Id}}">{{servicegroupslist.Name}}</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4" *ngIf="[type]!='Promotion'">
+                      <label  class="color-font">{{'COMMON.ITEM' | translate}}</label>
+                      <select  class="form-control width-align input-sm select" *ngIf="default == true">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                      </select>
+                      <select  class="form-control width-align input-sm select" [(ngModel)]='favoriteId' (change)="onChangeServices($event.target.value)"
+                        *ngIf="[type]=='Service'">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                        <option *ngFor="let servicelist of serviceList; let i='index'" value="{{servicelist.Id}}">{{servicelist.Name}}</option>
+                      </select>
+                      <select  class="form-control width-align input-sm select" [(ngModel)]='favoriteId' (change)="onChangeProducts($event.target.value)"
+                        *ngIf="[type]=='Product'">
+                        <option>{{'SETUP_TICKET_PREFERENCES.NONE' | translate }}</option>
+                        <option *ngFor="let productlist of productList; let i='index'" value="{{productlist.Id}}">{{productlist.Name}}</option>
+                      </select>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row clearfix">
+                      <div class="col-xs-12 mt-15" *ngIf="[type]=='Promotion'">
+                        <div class="col-sm-4">
+                          <label  class="color-font">{{'SETUPCOMPANY.BEACON_FOOTER_COLOR' | translate }}</label>
+                          <input class="col-xs-8 modalinput" type="text" (keypress)="clear();" [ngClass]="{'my-class': promotionColor ==='#000000'}" [(ngModel)]="promotionColor" [(colorPicker)]="promotionColor"
+                            [style.background]="promotionColor" [cpHeight]="'290px'" [value]="promotionColor" maxlength="7"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="clearfix mt-20" *ngIf="[type]=='Product'">
+                    <div class="col-sm-4">
+                      <label  class="color-font">{{'SETUP_TICKET_PREFERENCES.SKU' | translate}}</label>
+                      <input class="col-xs-12 modalinput" type='text' [(ngModel)]='skuString' (keypress)='clearErrorMsg()' maxlength="13" (keypress)="alphaOnly($event)"/>
+                    </div>
+                    <div class="col-sm-4">
+                      <button class="btn btn-default mt-25" type="button" (click)='getSearchList();'>{{'BUTTON.SEARCH' | translate}}</button>
+                    </div>
+                  </div>
+                  <div class="clearfix mt-20" *ngIf="[search]=='Search' && searchProductsList!=''">
+                    <div class="col-sm-4">
+                      <select class="form-control input-sm select" (change)="getSelectedProduct($event.target.value)" *ngIf="[singleProduct]=='false'">
+                        <option>Select</option>
+                        <option *ngFor="let searchproductslist of searchProductsList; let i='index'" value="{{searchproductslist.Id}}${{searchproductslist.Color__c}}">{{searchproductslist.Name}}</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-4" *ngIf="[singleProduct]=='false'">
+                      <button class="btn btn-default" type="button" (click)='select()'>{{'BUTTON.SELECT' | translate}}</button>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 red">{{favouritError}}</div>
+                  <div *ngIf="[productSku]==='true'"></div>
+                </div>
+                <div class="row">
+                  <div class="text-center mt-40">
+                    <button class="save-btn" type="button" (click)='addToFavorites();clearErrorMsg()'>{{'SETUP_TICKET_PREFERENCES.UPDATE_FAVORITES' | translate}}</button>
+                    <button class="cancel-btn" type="button" (click)='cancelModel()'>{{'BUTTON.CANCEL' | translate}}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+        </div>
+      </div>
+      <!-- Buttons -->
+      <div class="text-center mt-10">
+        <button class="save-btn" type="button" (click)='commonSave();'>{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+        <button class="cancel-btn" type="button" (click)='commonCancel();'>{{'BUTTON.CANCEL' | translate}}</button>
+      </div>
+    </div>
+  </section>
+<app-rightbar></app-rightbar>  
+</div>
+<!-- </div> -->

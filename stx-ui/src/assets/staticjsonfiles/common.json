@@ -1,0 +1,1460 @@
+{
+    "data": [
+        {
+            "booking": "Chronological Order"
+        },
+        {
+            "booking": "Ranking Order"
+        }
+    ],
+    "timeFormats": [
+        {
+            "days": "Hours"
+        },
+        {
+            "days": "Days"
+        }
+    ],
+    "hoursForOnlineBooking": [
+        {
+            "values": "Brenda"
+        },
+        {
+            "values": "KMB Short Hours"
+        },
+        {
+            "values": "KMB Standard Hours"
+        },
+        {
+            "values": "Lana Hours"
+        },
+        {
+            "values": "OLB"
+        },
+        {
+            "values": "Part Time"
+        },
+        {
+            "values": "Standard"
+        },
+        {
+            "values": "SW"
+        }
+    ],
+    "failedDepositesOfNotifications": [
+        {
+            "values": "--None--"
+        },
+        {
+            "values": "Kymberly Bartlo"
+        },
+        {
+            "values": "Tonya Worker"
+        },
+        {
+            "values": "Stephanie Oltman"
+        },
+        {
+            "values": "Carole Cruz"
+        },
+        {
+            "values": "Cristina Ross"
+        },
+        {
+            "values": "Randy Tyrell"
+        },
+        {
+            "values": "Jennifer Ames"
+        },
+        {
+            "values": "Ava Moran"
+        },
+        {
+            "values": "Brenda West"
+        },
+        {
+            "values": "Samantha Moran"
+        },
+        {
+            "values": "Worker Bee"
+        },
+        {
+            "values": "Miles WorkerPig"
+        },
+        {
+            "values": "Lily Maze"
+        },
+        {
+            "values": "Seen Abla"
+        }
+    ],
+    "resourceNumberAvailabilities": [
+        {
+            "availability": 1
+        },
+        {
+            "availability": 2
+        },
+        {
+            "availability": 3
+        },
+        {
+            "availability": 4
+        },
+        {
+            "availability": 5
+        },
+        {
+            "availability": 6
+        },
+        {
+            "availability": 7
+        },
+        {
+            "availability": 8
+        },
+        {
+            "availability": 9
+        },
+        {
+            "availability": 10
+        },
+        {
+            "availability": 11
+        },
+        {
+            "availability": 12
+        },
+        {
+            "availability": 13
+        },
+        {
+            "availability": 14
+        },
+        {
+            "availability": 15
+        },
+        {
+            "availability": 16
+        },
+        {
+            "availability": 17
+        },
+        {
+            "availability": 18
+        },
+        {
+            "availability": 19
+        },
+        {
+            "availability": 20
+        }
+    ],
+    "compensationmethods": [
+        {
+            "id": 1,
+            "value": "Hourly Wage"
+        },
+        {
+            "id": 2,
+            "value": "Salary"
+        },
+        {
+            "id": 3,
+            "value": "Hours Worked"
+        },
+        {
+            "id": 4,
+            "value": "Days Worked"
+        },
+        {
+            "id": 5,
+            "value": "Services Performed"
+        },
+        {
+            "id": 6,
+            "value": "Products Sold"
+        },
+        {
+            "id": 7,
+            "value": "Classes Performed"
+        },
+        {
+            "id": 8,
+            "value": "Tickets"
+        },
+        {
+            "id": 9,
+            "value": "Gross Service"
+        },
+        {
+            "id": 10,
+            "value": "Gross Retail"
+        },
+        {
+            "id": 11,
+            "value": "Class Sales"
+        },
+        {
+            "id": 12,
+            "value": "Cost of Service Fee"
+        },
+        {
+            "id": 13,
+            "value": "Number"
+        },
+        {
+            "id": 14,
+            "value": "Percent"
+        },
+        {
+            "id": 15,
+            "value": "Result of Step"
+        }
+    ],
+    "actionmethods": [
+        {
+            "id": "Start With",
+            "action": "Start With"
+        },
+        {
+            "id": "Add",
+            "action": "Add"
+        },
+        {
+            "id": "Subtract",
+            "action": "Subtract"
+        },
+        {
+            "id": "Multiply By",
+            "action": "Multiply By"
+        },
+        {
+            "id": "Divide By",
+            "action": "Divide By"
+        },
+        {
+            "id": "If Less Than",
+            "action": "If Less Than"
+        },
+        {
+            "id": "If More Than",
+            "action": "If More Than"
+        }
+    ],
+    "bookstandingevery": [
+        {
+            "value": "1"
+        },
+        {
+            "value": "2"
+        },
+        {
+            "value": "3"
+        },
+        {
+            "value": "4"
+        },
+        {
+            "value": "5"
+        },
+        {
+            "value": "6"
+        },
+        {
+            "value": "7"
+        },
+        {
+            "value": "8"
+        },
+        {
+            "value": "9"
+        },
+        {
+            "value": "10"
+        },
+        {
+            "value": "11"
+        },
+        {
+            "value": "12"
+        },
+        {
+            "value": "14"
+        },
+        {
+            "value": "15"
+        }
+    ],
+    "bookstandingEvery": [
+        {
+            "type": "Days"
+        },
+        {
+            "type": "Weeks"
+        },
+        {
+            "type": "Months"
+        }
+    ],
+    "workerRole": [
+        {
+            "value": "Business Manager"
+        },
+        {
+            "value": "Business Owner"
+        },
+        {
+            "value": "Business Worker"
+        },
+        {
+            "value": "Front Desk"
+        },
+        {
+            "value": "System Administrator"
+        }
+    ],
+    "marketingfrequency": [
+        {
+            "type": "Daily"
+        },
+        {
+            "type": "Weekly"
+        },
+        {
+            "type": "Monthly"
+        },
+        {
+            "type": "On Request"
+        }
+    ],
+    "marketingoutput": [
+        {
+            "type": "Email"
+        },
+        {
+            "type": "Online Report"
+        }
+    ],
+    "marketingemail": [
+        {
+            "name": "Daily no show"
+        },
+        {
+            "name": "Holiday Hours"
+        },
+        {
+            "name": "Black Friday"
+        }
+    ],
+    "marketingtimes": [
+        {
+            "value": "7:00 AM"
+        },
+        {
+            "value": "7:30 AM"
+        },
+        {
+            "value": "8:00 AM"
+        },
+        {
+            "value": "8:30 AM"
+        },
+        {
+            "value": "9:00 AM"
+        },
+        {
+            "value": "9:30 AM"
+        },
+        {
+            "value": "10:00 AM"
+        },
+        {
+            "value": "10:30 AM"
+        },
+        {
+            "value": "11:00 AM"
+        },
+        {
+            "value": "11:30 AM"
+        },
+        {
+            "value": "12:00 PM"
+        },
+        {
+            "value": "12:30 PM"
+        },
+        {
+            "value": "1:00 PM"
+        },
+        {
+            "value": "1:30 PM"
+        },
+        {
+            "value": "2:00 PM"
+        },
+        {
+            "value": "2:30 PM"
+        },
+        {
+            "value": "3:00 PM"
+        },
+        {
+            "value": "3:30 PM"
+        },
+        {
+            "value": "4:00 PM"
+        },
+        {
+            "value": "4:30 PM"
+        },
+        {
+            "value": "5:00 PM"
+        },
+        {
+            "value": "5:30 PM"
+        },
+        {
+            "value": "6:00 PM"
+        },
+        {
+            "value": "6:30 PM"
+        },
+        {
+            "value": "7:00 PM"
+        },
+        {
+            "value": "7:30 PM"
+        },
+        {
+            "value": "8:00 PM"
+        },
+        {
+            "value": "8:30 PM"
+        },
+        {
+            "value": "9:00 PM"
+        },
+        {
+            "value": "9:30 PM"
+        },
+        {
+            "value": "10:00 PM"
+        }
+    ],
+    "goalsvalue": [
+        {
+            "value": "Gross Service"
+        },
+        {
+            "value": "Gross Retail"
+        },
+        {
+            "value": "Services Performed"
+        },
+        {
+            "value": "Products Sold"
+        },
+        {
+            "value": "Rebooked Appointments"
+        },
+        {
+            "value": "Tickets"
+        },
+        {
+            "value": "Number"
+        },
+        {
+            "value": "Percent"
+        },
+        {
+            "value": "Result of Step"
+        }
+    ],
+    "resourceUsedType": [
+        {
+            "type": "None"
+        },
+        {
+            "type": "Any"
+        },
+        {
+            "type": "All"
+        }
+    ],
+    "basis": [
+        {
+            "type": "Zero"
+        },
+        {
+            "type": "Step"
+        }
+    ],
+    "serviceLevels": [
+        {
+            "level": "None"
+        },
+        {
+            "level": "1"
+        },
+        {
+            "level": "2"
+        },
+        {
+            "level": "3"
+        },
+        {
+            "level": "4"
+        },
+        {
+            "level": "5"
+        },
+        {
+            "level": "6"
+        },
+        {
+            "level": "7"
+        },
+        {
+            "level": "8"
+        },
+        {
+            "level": "9"
+        },
+        {
+            "level": "10"
+        }
+    ],
+    "ticketPreferenceTypes": [
+        {
+            "type": "None"
+        },
+        {
+            "type": "Service"
+        },
+        {
+            "type": "Product"
+        },
+        {
+            "type": "Promotion"
+        }
+    ],
+    "browserObject": {
+        "CreditCardDevice": [
+            {
+                "value": "MagTek"
+            },
+            {
+                "value":  "Walker"
+            },
+            {
+                "value": "Walker BT"
+            },
+            {
+                "value":  "Nomad"
+            }
+        ],
+        "CashDrawer": [
+            {
+                "value": "None"
+            },
+            {
+                "value": "1 CD1"
+            },
+            {
+                "value": "1 CD2"
+            },
+            {
+                "value": "3"
+            }
+        ],
+        "ReceiptPrinter": [
+            {
+                "value": "None"
+            }
+        ]
+    },
+    "deviceObject": {
+        "CreditCardDevice": [
+            {
+                "value": "none"
+            },
+            {
+                "value": "Nomad"
+            },
+            {
+                "value": "Walker"
+            },
+            {
+                "value": "Walker Bluetooth"
+            }
+        ],
+        "CashDrawer": [
+            {
+                "value": "None"
+            },
+            {
+                "value": "1 CD1"
+            },
+            {
+                "value": "1 CD2"
+            }
+        ],
+        "ReceiptPrinter": [
+            {
+                "value": "None"
+            }
+        ]
+    },
+    "viewOptions": [
+        {
+            "value": "Retail only"
+        },
+        {
+            "value": "Professional only"
+        }
+    ],
+    "usedBy": [
+        {
+            "usedType": "Company"
+        },
+        {
+            "usedType": "Worker"
+        }
+    ],
+    "permissions": {
+        "Home": [
+            {
+                "pageName": "GiftBalanceSearch",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MemberCheckIn",
+                "allowAcces": false
+            },
+            {
+                "pageName": "OwnerDashboard",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupList",
+                "allowAcces": false
+            },
+            {
+                "pageName": "TimeClock",
+                "allowAcces": false
+            },
+            {
+                "pageName": "WorkerDashboard",
+                "allowAcces": false
+            }
+        ],
+        "Setup Company": [
+            {
+                "pageName": "CompanyHoursEdit",
+                "allowAcces": false
+            },
+            {
+                "pageName": "CompanyHoursList",
+                "allowAcces": false
+            },
+            {
+                "pageName": "CompanyInfo",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupCompany",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupPaymentTypes",
+                "allowAcces": false
+            }
+        ],
+        "Setup Other": [
+            {
+                "pageName": "SetupAppointments",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupClients",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupMemberships",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupTickets",
+                "allowAcces": false
+            }
+        ],
+        "Setup Service": [
+            {
+                "pageName": "SetupClasses",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupResources",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupService",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupServiceGroups",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupServicePackage",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupServices",
+                "allowAcces": false
+            }
+        ],
+        "Setup Inventory": [
+            {
+                "pageName": "SetupInventory",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupInventoryGroups",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupProductLines",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupProducts",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupSuppliers",
+                "allowAcces": false
+            }
+        ],
+        "Setup Workers": [
+            {
+                "pageName": "CreateWorker",
+                "allowAcces": false
+            },
+            {
+                "pageName": "Setup Permissions",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupCompensation",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupCompensationScales",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupGoal",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SetupWorker",
+                "allowAcces": false
+            },
+            {
+                "pageName": "Worker Details",
+                "allowAcces": false
+            }
+        ],
+        "Clients": [
+            {
+                "pageName": "ClientEdit",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ClientQuickAdd",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ClientQuickEdit",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ClientSearch",
+                "allowAcces": false
+            },
+            {
+                "pageName": "CreateToken",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MergeClient",
+                "allowAcces": false
+            }
+        ],
+        "Appointments": [
+            {
+                "pageName": "AppointmentDetail",
+                "allowAcces": false
+            },
+            {
+                "pageName": "AppointmentList",
+                "allowAcces": false
+            },
+            {
+                "pageName": "BookAppt",
+                "allowAcces": false
+            },
+            {
+                "pageName": "BookClass",
+                "allowAcces": false
+            },
+            {
+                "pageName": "BookOutAppointment",
+                "allowAcces": false
+            },
+            {
+                "pageName": "BookOutAppointmentDetail",
+                "allowAcces": false
+            },
+            {
+                "pageName": "BookStandingAppt",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ClassDetail",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ModifyAppt",
+                "allowAcces": false
+            },
+            {
+                "pageName": "WaitingList",
+                "allowAcces": false
+            }
+        ],
+        "Inventory": [
+            {
+                "pageName": "InventoryAdjustmentReport",
+                "allowAcces": false
+            },
+            {
+                "pageName": "InventoryAdjustmentReportDelete",
+                "allowAcces": false
+            },
+            {
+                "pageName": "InventoryAdjustmentReportList",
+                "allowAcces": false
+            },
+            {
+                "pageName": "InventoryMenu",
+                "allowAcces": false
+            },
+            {
+                "pageName": "InventoryReports",
+                "allowAcces": false
+            },
+            {
+                "pageName": "InventoryUsage",
+                "allowAcces": false
+            },
+            {
+                "pageName": "InventoryUsageReport",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ManageInventory",
+                "allowAcces": false
+            },
+            {
+                "pageName": "PurchaseOrders",
+                "allowAcces": false
+            }
+        ],
+        "Tickets": [
+            {
+                "pageName": "CashInOut",
+                "allowAcces": false
+            },
+            {
+                "pageName": "CheckOut",
+                "allowAcces": false
+            },
+            {
+                "pageName": "CompletedTicketDetailView",
+                "allowAcces": false
+            },
+            {
+                "pageName": "CompletedTicketDetailViewPDF",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MembershipEdit",
+                "allowAcces": false
+            },
+            {
+                "pageName": "RefundDetails",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportCashCounting",
+                "allowAcces": false
+            },
+            {
+                "pageName": "TicketEdit",
+                "allowAcces": false
+            }
+        ],
+        "Reports": [
+            {
+                "pageName": "BaseDetailReport",
+                "allowAcces": false
+            },
+            {
+                "pageName": "BaseReport",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ClientRetention",
+                "allowAcces": false
+            },
+            {
+                "pageName": "GroupingReport",
+                "allowAcces": false
+            },
+            {
+                "pageName": "OnHandProductReport",
+                "allowAcces": false
+            },
+            {
+                "pageName": "PaymentDetails",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ProcessCompensation",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ProcessCompensationDetail",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ProductChart",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ProductSales",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ProductSalesByRank",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportABC",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportActivityComparison",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportDailyCashDrawer",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportDailyTotalSheet",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportGifts",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportMonthlyBusinessAnalysis",
+                "allowAcces": false
+            },
+            {
+                "pageName": "Reports",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportServiceSales",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportTBP",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportTicketAnalysis",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportVisitTypeOverview",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportWriterDelete",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportWriterEdit",
+                "allowAcces": false
+            },
+            {
+                "pageName": "ReportWriterList",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SalesChart",
+                "allowAcces": false
+            },
+            {
+                "pageName": "TicketList",
+                "allowAcces": false
+            },
+            {
+                "pageName": "TicketSales",
+                "allowAcces": false
+            },
+            {
+                "pageName": "WorkerGoals",
+                "allowAcces": false
+            },
+            {
+                "pageName": "WorkerTips",
+                "allowAcces": false
+            }
+        ],
+        "Marketing": [
+            {
+                "pageName": "EmailActivity",
+                "allowAcces": false
+            },
+            {
+                "pageName": "Marketing",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MarketingEmail",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MarketingReport",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MarketingReportDelete",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MarketingReportList",
+                "allowAcces": false
+            },
+            {
+                "pageName": "MarketingSets",
+                "allowAcces": false
+            },
+            {
+                "pageName": "Promotions",
+                "allowAcces": false
+            },
+            {
+                "pageName": "Rewards",
+                "allowAcces": false
+            },
+            {
+                "pageName": "SelectClientFilters",
+                "allowAcces": false
+            }
+        ]
+    },
+    "inventorySortOptions": [
+        {
+            "type": "Alphabetically"
+        },
+        {
+            "type": "SKU"
+        }
+    ],
+    "genders": [
+        {
+            "type": "Male"
+        },
+        {
+            "type": "Female"
+        },
+        {
+            "type": "Unspecified"
+        }
+    ],
+    "apptViews": [
+        "One Day",
+        "One Week",
+        "One Weekday"
+    ],
+    "bookoutevery": [
+        {
+            "value": "1"
+        },
+        {
+            "value": "2"
+        },
+        {
+            "value": "3"
+        },
+        {
+            "value": "4"
+        },
+        {
+            "value": "5"
+        },
+        {
+            "value": "6"
+        },
+        {
+            "value": "7"
+        },
+        {
+            "value": "8"
+        },
+        {
+            "value": "9"
+        },
+        {
+            "value": "10"
+        },
+        {
+            "value": "11"
+        },
+        {
+            "value": "12"
+        },
+        {
+            "value": "14"
+        },
+        {
+            "value": "15"
+        }
+    ],
+    "numberofBookOuts": [
+        {
+            "availability": 1
+        },
+        {
+            "availability": 2
+        },
+        {
+            "availability": 3
+        },
+        {
+            "availability": 4
+        },
+        {
+            "availability": 5
+        },
+        {
+            "availability": 6
+        },
+        {
+            "availability": 7
+        },
+        {
+            "availability": 8
+        },
+        {
+            "availability": 9
+        },
+        {
+            "availability": 10
+        },
+        {
+            "availability": 11
+        },
+        {
+            "availability": 12
+        },
+        {
+            "availability": 13
+        },
+        {
+            "availability": 14
+        },
+        {
+            "availability": 15
+        },
+        {
+            "availability": 16
+        },
+        {
+            "availability": 17
+        },
+        {
+            "availability": 18
+        },
+        {
+            "availability": 19
+        },
+        {
+            "availability": 20
+        }
+    ],
+    "workerTips": [
+        {
+            "option": "--company--"
+        },
+        {
+            "option": "Brenda West"
+        },
+        {
+            "option": "Candice Bentley"
+        },
+        {
+            "option": "Catherine Stockard"
+        },
+        {
+            "option": "Courtney Rigtrep"
+        },
+        {
+            "option": "Diana 1 Welvaert"
+        },
+        {
+            "option": " Elvis Rodriguez"
+        },
+        {
+            "option": "Erica Keller"
+        },
+        {
+            "option": "Isabella Moran"
+        },
+        {
+            "option": "Javier Ojeda"
+        },
+        {
+            "option": "Kymberly Bartlo"
+        },
+        {
+            "option": "Maureen McInerney"
+        },
+        {
+            "option": "Michael Maple"
+        },
+        {
+            "option": "Randy Metallic"
+        },
+        {
+            "option": "Raul Mendez"
+        },
+        {
+            "option": "Renee Welch"
+        },
+        {
+            "option": "Sally Worker"
+        },
+        {
+            "option": "Shannon Marker"
+        },
+        {
+            "option": "Test Soto"
+        },
+        {
+            "option": "Tom Mapple"
+        },
+        {
+            "option": "Tonya Morgan"
+        },
+        {
+            "option": "Tracy Ross"
+        },
+        {
+            "option": "Worker 15"
+        },
+        {
+            "option": "Worker 16"
+        },
+        {
+            "option": "Worker 17"
+        },
+        {
+            "option": "Worker 18"
+        },
+        {
+            "option": "Worker 19"
+        },
+        {
+            "option": "Worker 20"
+        },
+        {
+            "option": "Worker 21"
+        }
+    ],
+    "calenderMonths": [
+        {
+            "option": "January"
+        },
+        {
+            "option": "February"
+        },
+        {
+            "option": "March"
+        },
+        {
+            "option": "April"
+        },
+        {
+            "option": "May"
+        },
+        {
+            "option": "June"
+        },
+        {
+            "option": "July"
+        },
+        {
+            "option": "August"
+        },
+        {
+            "option": "September"
+        },
+        {
+            "option": "October"
+        },
+        {
+            "option": "November"
+        },
+        {
+            "option": "December"
+        }
+    ],
+    "CalenderYears": [
+        {
+            "option": "2018"
+        },
+        {
+            "option": "2017"
+        },
+        {
+            "option": "2016"
+        },
+        {
+            "option": "2015"
+        },
+        {
+            "option": "2014"
+        },
+        {
+            "option": "2013"
+        }
+    ],
+    "CalculateGoals": [
+        {
+            "option": "All"
+        },
+        {
+            "option": "New Goal"
+        },
+        {
+            "option": "Product Sales"
+        },
+        {
+            "option": "Rebooked Number"
+        },
+        {
+            "option": "Rebooked Percent"
+        },
+        {
+            "option": "Service Sales"
+        }
+    ],
+    "apptBRTypes": [
+        "Alert Only",
+        "Do Not Book"
+    ],
+    "apptViewsBy": [
+        "Future",
+        "Past"
+    ],
+    "apptStatus": [
+        {
+            "status": "Booked"
+        },
+        {
+            "status": "Called"
+        },
+        {
+            "status": "Canceled"
+        },
+        {
+            "status": "Confirmed"
+        },
+        {
+            "status": "Conflicting"
+        },
+        {
+            "status": "No Show"
+        }
+    ],
+    "mergeFields": [
+        {
+            "fields": "Client First Name"
+        },
+        {
+            "fields": "Client Last Name"
+        },
+        {
+            "fields": "Client Primary Email"
+        },
+        {
+            "fields": "Client Primary Phone"
+        },
+        {
+            "fields": "Appointment Date / Time"
+        },
+        {
+            "fields": "Company Name"
+        },
+        {
+            "fields": "Company Email"
+        },
+        {
+            "fields": "Company Primary Phone"
+        },
+        {
+            "fields": "Booked Services"
+        }
+    ],
+    "STATIC DATA OF SERVICE PERFORMED AND GROSSSERVICE": [
+        {
+            "option": "New Clients"
+        },
+        {
+            "option": "Recurring Clients"
+        },
+        {
+            "option": "Booked Online"
+        },
+        {
+            "option": "Booked in-house"
+        },
+        {
+            "option": "Service Rebooked"
+        },
+        {
+            "option": "Standing Appointments"
+        }
+    ],
+    "STATIC DATA OF PRODUCT SOLD AND GROSS RETAIL": [
+        {
+            "option": "American Crew"
+        },
+        {
+            "option": "Bio Elements"
+        },
+        {
+            "option": "BKR test inactive"
+        }
+    ]
+}

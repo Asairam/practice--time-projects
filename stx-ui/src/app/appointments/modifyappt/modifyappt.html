@@ -1,0 +1,194 @@
+<div id="wrapper_setup_new" style="color:white;">
+  <!-- <app-header></app-header> -->
+  <app-header [newMenu]="'noNav'"></app-header>
+  <div class="form_cont12" *ngIf="clientId">
+    <h1 [routerLink]="['/client/edit/' + clientId]" [queryParams]="{action:'modify',apptid:apptid}"> {{appData?.clientName}}</h1>
+  </div>
+  <section id="inner_cont">
+    <div class="container form_cont">
+      <div class="row mt-20">
+        <div class="col-md-12">
+          <div class="appt-box-one">
+            <h1 class="sub_titles">{{'MODIFY_APPT.SERVICES' | translate }}</h1>
+            <div class="red col-md-12">{{ serviceNameError | translate }}</div>
+            <div class="red col-md-12">{{ dateAndTimeError | translate }}</div>
+            <div class="red col-md-12" *ngIf="checkBookingInterval">{{ duration1Error | translate:'' }}</div>
+            <div class="red col-md-12" *ngIf="checkBookingInterval">{{ bookingInterValError }}</div>
+            <div class="col-md-12 mb-20">
+              <input id="c1" type="checkbox" class="pull-left" [(ngModel)]="showDurations"> &nbsp;&nbsp;
+              <label for="c1" class="c1">{{'MODIFY_APPT.SHOW_DURATIONS' | translate}}</label>
+            </div>
+            <div class="mt-20">
+              <div class="col-md-6">
+                <div class="table-responsive">
+                  <table class="table table-hover table-bordered form_cont_one">
+                    <tbody>
+                      <tr *ngFor="let row of rows; let i='index'">
+                        <td>
+                          <select style="width:100%;" [(ngModel)]="row.serviceGroup" (change)="categoryOfService($event.target.value, i);clearReports();"
+                            (click)="clearMsg()">
+                            <option *ngFor="let groupData of serviceGroupList; let i='index'" value="{{groupData.serviceGroupName}}${{groupData.serviceGroupColor}}"
+                              id="groupData{{i}}">{{groupData.serviceGroupName}}</option>
+                            <option value="-" disabled="disabled">--- Packages ---</option>
+                            <option *ngFor="let values of packagesList; let i='index'" value="scale:{{values.Id}}" id="values{{i}}">{{values.Name}}</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select style="width:100%;" [(ngModel)]="row.Id" *ngIf="(serviceDetailsList[i] && serviceDetailsList[i].length > 0 )" (change)="servicesListOnChange($event.target.value, i);clearReports();"
+                            (click)="clearMsg()">
+
+                            <option value="">--select--</option>
+                            <option *ngFor="let serviceData of serviceDetailsList[i]; let i='index'" [value]="serviceData.Id" id="serviceData{{i}}">{{serviceData.Name}}</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select style="width:100%;" [(ngModel)]="row.workerName" *ngIf='workerList[i]?workerList[i].length>0:false' (click)="clearMsg()"
+                            (change)="workerListOnChange($event.target.value, i);clearReports();">
+                            <option *ngFor="let workerData of workerList[i]; let i='index'" value="{{workerData.workername}}" id="serviceData{{i}}">{{workerData.name}}</option>
+                          </select>
+                        </td>
+                        <td *ngIf="!this.IsBookingInitiated">
+                          <a (click)="addServices(index);clearReports();" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                            <span class="add">
+                              <i class="fa fa-plus" aria-hidden="true"></i>
+                            </span>
+                          </a>
+                        </td>
+                        <td *ngIf="!IsBookingInitiated">
+                          <a *ngIf="rows.length>1" (click)="removeServices(row,i);clearReports();" data-toggle="tooltip" data-placement="top" title=""
+                            data-original-title="Remove">
+                            <span class="del">
+                              <i class="fa fa-minus" aria-hidden="true"></i>
+                            </span>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="mt-20" *ngIf="showDurations==true">
+              <div class="col-md-6 padding-align">
+                <div class="table-responsive">
+                  <table class="table table-hover table-bordered form_cont_one">
+                    <tbody>
+                      <tr>
+                        <th>{{'MODIFY_APPT.DURATION_1' | translate}}
+                          <sup class="red">*</sup>
+                        </th>
+                        <th> {{'MODIFY_APPT.AVAILABLE' | translate}}</th>
+                        <th> {{'MODIFY_APPT.DURATION_2' | translate}}</th>
+                        <th> {{'MODIFY_APPT.AVAILABLE' | translate}}</th>
+                        <th>{{'MODIFY_APPT.DURATION_3' | translate}} </th>
+                        <th>{{'MODIFY_APPT.AVAILABLE' | translate}}</th>
+                        <th>{{'MODIFY_APPT.BUFFER_AFTER' | translate}} </th>
+                        <th> {{'MODIFY_APPT.PREFERRED_DURATION' | translate}} </th>
+                      </tr>
+                      <tr *ngFor="let show of rows;let i='index'">
+                        <td>
+
+                          <input *ngIf='show.check == null' type="text" (keypress)="IsNumeric($event)" (blur)="calculateServiceDurations(i)" [(ngModel)]="show.Duration_1__c"
+                            (keydown)="clearMsg();" />
+                        </td>
+                        <td>
+                          <input type="checkbox" [(ngModel)]="show.Duration_1_Available_for_Other_Work__c" [checked]='show.Duration_1_Available_for_Other_Work__c'
+                          />
+                        </td>
+                        <td>
+                          <input type="text" (keypress)="IsNumeric($event)" (blur)="calculateServiceDurations(i)" [(ngModel)]="show.Duration_2__c"
+                          />
+                        </td>
+                        <td>
+                          <input type="checkbox" [(ngModel)]="show.Duration_2_Available_for_Other_Work__c" [checked]='show.Duration_2_Available_for_Other_Work__c'
+                          />
+
+                        </td>
+                        <td>
+                          <input type="text" (keypress)="IsNumeric($event)" (blur)="calculateServiceDurations(i)" [(ngModel)]="show.Duration_3__c"
+                          />
+                        </td>
+                        <td>
+                          <input type="checkbox" [(ngModel)]="show.Duration_3_Available_for_Other_Work__c" [checked]='show.Duration_3_Available_for_Other_Work__c'
+                          />
+                        </td>
+                        <td>
+                          {{show.Buffer_After__c}}
+                        </td>
+                        <td>
+                          <input type="checkbox" [(ngModel)]="show.Preferred_Duration__c" class="disabled" [checked]='show.Preferred_Duration__c' />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label>{{'MODIFY_APPT.TOTAL_PRICE' | translate}} {{totalPrice | number:'2.2-2'}} {{'MODIFY_APPT.TOTAL_DURATION' | translate}}
+            {{sumOfServiceDurations}}Minutes
+          </label>
+        </div>
+      </div>
+      <div class="row mt-30">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'MODIFY_APPT.APPOINTMENT_DATE' | translate}}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input class="datefield" [(ngModel)]="bsValue" (ngModelChange)="serviceHitCount===0?serviceHitCount=serviceHitCount+1:getWorkersFromDate();"
+            type="text" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig" class="mb-25 datefield" [minDate]="minDate"
+          />
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'MODIFY_APPT.APPOINTMENT_TIME' | translate}}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select #times [(ngModel)]="modifyTime" (change)="searchForAppointment1()">
+            <option [value]="modifyTime" *ngIf="showOptions">{{modifyTime}}</option>
+            <option *ngFor="let time of TimeData" [value]="time">{{time}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          &nbsp;
+        </div>
+        <div class="col-md-7 col-sm-8" *ngIf="!checkBookingInterval">
+          <button type="button" *ngIf="dateAndTimeError == ''" (click)="saveModifyAppointment()" class="save-btn">{{'BUTTON.SAVE' | translate}}</button>
+          <button type="button" *ngIf="dateAndTimeError != ''" (click)="saveModifyAppointment()" class="save-btn">Book Anyway</button>
+          <button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{'BUTTON.CANCEL' | translate}}</button>
+          <button type="button" class="btn btn-primary" (click)="searchForAppointment()">
+            <i class="fa fa-binoculars" aria-hidden="true"></i>{{'BUTTON.SEARCH_FOR_APPOINTMENT' | translate}} </button>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <ng-container *ngIf="apptSearchData.length>0">
+              <table class="table table-hover table-bordered form_cont_one">
+                <thead>
+                  <tr>
+                    <th class="thcss">{{'MODIFY_APPT.SELECT_APPOINTMENT_DATE_AND_TIME' | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let searchData of apptSearchData; let i = 'index'" [ngClass]="{ 'row-selected': selectedIndex === i }">
+                    <td (click)="scheduleButtonShow(searchData.value, i)">{{searchData.value}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <app-rightbar></app-rightbar>
+</div>

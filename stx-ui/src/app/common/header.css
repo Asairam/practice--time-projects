@@ -1,0 +1,374 @@
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    /* background-color: #111; */
+    background: rgba(0, 0, 0, 0.9);
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    /* padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s; */
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    font-family: 'AvenirLTStdBook';
+    font-size: 16px;
+    text-transform: uppercase;
+    line-height: 50px;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+.sidenav li {
+    padding-left: 5px;
+}
+
+.sidenav li a img {
+    padding-right: 15px;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+.close_menu {
+    color: #fff !important;
+    font-family: 'AvenirLTStdMedium';
+    font-size: 22px !important;
+    line-height: 50px !important
+}
+
+.dropdown {
+    display: none;
+}
+
+.menu {
+    list-style: none;
+    margin: 0;
+    padding: 20px 30px;
+    width: 26em;
+}
+
+.menu li a {
+    display: block;
+    text-decoration: none;
+    color: #fff;
+    font-family: 'AvenirLTStdBook';
+    font-size: 16px;
+    text-transform: uppercase;
+    line-height: 60px;
+    font-weight: normal;
+    letter-spacing: 2px;
+}
+
+img {
+    vertical-align: middle;
+}
+
+.menu li a img {
+    padding-right: 15px;
+}
+
+nav {
+    background: rgba(0, 0, 0, 0.9);
+    padding-right: .25em;
+    position: fixed;
+    left: -33em;
+    top: 0;
+    box-sizing: border-box;
+    z-index: 20;
+    height: 100%;
+    -webkit-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
+    overflow-y: scroll;
+}
+
+nav.active {
+    left: 0;
+}
+
+.dropdown li {
+    margin-left: 50px;
+    position: relative;
+    padding-left: 10px;
+    display: block;
+    text-align: left;
+}
+
+.dropdown li:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #02a6e7;
+    top: 10px;
+}
+
+.dropdown li a {
+    font-size: 12px;
+    line-height: 26px;
+    text-transform: uppercase;
+    transition: all 0.4s;
+    text-align: left;
+}
+
+.dropdown li a:hover {
+    color: #ccc !important;
+    transition: all 0.4s;
+}
+
+.dropdown-span span {
+    position: relative;
+    top: 4px;
+}
+
+.dropdown-span span:before {
+    content: "+";
+    font-family: 'AvenirLTStdBook';
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    color: #fff;
+    font-size: 18px;
+    padding-right: 0.5em;
+    position: absolute;
+    top: -20px;
+    left: 0px;
+}
+
+.dropdown-span.open span:before {
+    content: "-";
+    font-family: 'AvenirLTStdBook';
+}
+
+.dropdown-span.open .dropdown {
+    display: block;
+}
+
+.page-title {
+    color: #fff !important;
+    font-family: 'AvenirLTStdMedium';
+    font-size: 24px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.header-nav {
+    display: inline-block;
+    font-size: 15px;
+}
+
+.header-url span, .header-url a, .header-url i {
+    color: #fff;
+    font-size: 20px;
+    padding: 0px 10px;
+}
+
+.header-url a :hover {
+    color: #000;
+}
+
+.header-nav-icon {
+    margin-left: 1px;
+    margin-right: 5px
+}
+
+.header-sidenav-img {
+    margin-top: -10px;
+}
+
+.header-bottom-ul {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
+.header-bottom-ul li {
+    display: table-cell;
+    height: 40px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    border-right: 1px solid #000;
+}
+
+.header-bottom-ul li a {
+    display: block;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.header-bottom-div {
+    background-color: white;
+    width: 100%;
+    border-bottom: solid 1px black;
+}
+
+.header-bottom-ul li:nth-last-child(1) {
+    border-right: none;
+}
+
+.header-bottom-ul img {
+    width: 25px;
+    height: 25px;
+}
+
+.header-logo {
+    margin-top: 17px;
+    margin-left: -15px;
+}
+
+.head-ham {
+    width: 52px !important;
+    float: left;
+}
+.width-align {
+    margin-left: -20%;
+    width: 73%;
+    margin-top: 17px;
+}
+
+/* Added for Ipad View */
+
+@media only screen and (device-width: 768px) {
+    .header-bottom-ul li a {
+        display: block;
+        margin-left: 5px;
+        font-weight: 700;
+        font-size: 9px;
+    }
+    .header-bottom-ul img {
+        width: 15px;
+        height: 15px;
+    }
+    /* .header-logo {
+        width: 50%;
+        height: 21px;
+        margin-top: 19px;
+        margin-left: -5px;
+    } */
+    .width-align {
+        margin-left: -13%;
+        width: 61%;
+        margin-top: 20px;
+    }
+    .page-title[_ngcontent-c1] {
+        font-size: 20px; 
+    }
+
+}
+
+@media only screen and (max-device-width: 375px) {
+    .header-logo {
+        width: 50%;
+        height: 27px;
+        margin-top: 19px;
+        margin-left: 25px;
+    }
+}
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 496px) {
+    .header-logo {
+        width: 50%;
+        height: 27px;
+        margin-top: 20px;
+        margin-left: 25px;
+    }
+}
+
+@media only screen and (device-width: 568px) {
+    .header-logo {
+        width: 35%;
+        height: 27px;
+        margin-top: 23px;
+        margin-left: 30px;
+    }
+}
+
+@media only screen and (device-width: 640px) {
+    .header-logo {
+        width: 35%;
+        height: 27px;
+        margin-top: 23px;
+        margin-left: 25px;
+    }
+}
+
+@media only screen and (device-width: 667px) {
+    .header-logo {
+        width: 35%;
+        margin-top: 19px;
+        margin-left: 30px;
+    }
+}
+
+@media only screen and (device-width: 731px) {
+    .header-logo {
+        width: 35%;
+        margin-top: 16px;
+        margin-left: 27px;
+    }
+}
+
+@media only screen and (device-width: 736px) {
+    .header-logo {
+        width: 35%;
+        margin-top: 18px;
+        margin-left: 30px;
+    }
+}
+
+@media only screen and (device-width: 812px) {
+    .header-logo {
+        width: 65%;
+        margin-top: 18px;
+        margin-left: 0px;
+    }
+}
+
+@media only screen and (device-width: 823px) {
+    .header-logo {
+        width: 50%;
+        height: 27px;
+        margin-top: 16px;
+        margin-left: 0px;
+    }
+}
+
+@media only screen and (device-width: 1024px) {
+    .header-logo {
+        width: 45%;
+        margin-top: 18px;
+        margin-left: -15px;
+    }
+}

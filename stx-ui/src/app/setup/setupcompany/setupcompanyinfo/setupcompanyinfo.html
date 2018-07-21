@@ -1,0 +1,411 @@
+<div id="wrapper_setup_new">
+  <!-- <app-header></app-header> -->
+  <app-header [newMenu]="'noNav'"></app-header>
+  <section id="inner_cont">
+    <div class="container form_cont" *ngIf="companyListLength==0">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="sub_titles">{{'SETUPCOMPANY.GENERAL_INFORMATION' | translate}}:</h1>
+        </div>
+      </div>
+      <div class="text-danger text-center">
+        {{error | translate}}
+      </div>
+      <!-- start of 1st row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.SETUPCOMPANY_NAME' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" (keypress)="clear();clearError1();" [(ngModel)]="companyName">
+        </div>
+      </div>
+
+      <div class="text-danger text-center"> {{error1 | translate}}</div>
+      <!-- end of 1st row -->
+      <!-- start of 2nd row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'COMMON.PHONE' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+            id="mobile_id" (keypress)='hyphen_generate_mobile(phone);clear();clearError2();' name="phone" [(ngModel)]="phone">
+        </div>
+      </div>
+      <div class="text-danger text-center"> {{error2 | translate}}</div>
+      <!-- end of 2nd row -->
+      <!-- start of 3rd row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'COMMON.EMAIL' | translate }}
+
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="email" name="email" (keypress)="Emailclear();" [(ngModel)]="email">
+        </div>
+      </div>
+
+      <div class="text-danger text-center"> {{emailError | translate}}</div>
+      <!-- end of 3rd row -->
+      <!-- start of 4th row -->
+      <div class="row mt-20">
+        <div class="col-md-12">
+          <h1 class="sub_titles">{{'SETUPCOMPANY.ADDRESS' | translate }}:</h1>
+        </div>
+      </div>
+      <!-- end of 4th row -->
+      <!-- start of 5th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.STREET_ADDRESS' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <textarea (keypress)="clear();" [(ngModel)]="streetAddress"></textarea>
+        </div>
+      </div>
+      <!-- end of 5th row -->
+      <!-- start of 6th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.POSTAL_CODE' | translate }}
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" maxlength="12" (keypress)="clear();" (keyup)="getLocation('add');" [(ngModel)]="postalCodes1">
+          <!-- <input type="text" maxlength="12" (keypress)="clear();" [(ngModel)]="postalCode" #search [formControl]="searchControl"> -->
+        </div>
+      </div>
+      <div class="text-danger text-center"> {{pincodeError | translate}}</div>
+      <!-- end of 6th row -->
+      <!-- start of 7th row -->
+
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.COUNTRY_CODE' | translate }}</label>
+          <span class="text-danger">*</span>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select id="" class="form-control input-sm" [(ngModel)]="country" (change)="getCountryStates($event.target.value);">
+            <option value=''>{{'COMMON.SELECT' | translate }}</option>
+            <option *ngFor="let clang of countries; let i='index'" (keypress)="Clear();clearError3();" value="{{clang.NAME}}" id="profilePage_timezone_select_option_{{i}}">{{clang.NAME}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="text-danger text-center"> {{error3 | translate}}</div>
+      <!-- end of 8th row -->
+      <!-- start of 9th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.STATE_PROVINCE' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select id="" class="form-control input-sm" [(ngModel)]="state" (change)="getStates($event.target.value);">
+            <option>{{state}}</option>
+            <option>Select below country</option>
+            <option *ngFor="let clang of states; let i='index'" value="{{clang.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{clang.STATE}}</option>
+          </select>
+        </div>
+      </div>
+      <!-- end of 9th row -->
+      <!-- start of 10th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.CITY' | translate }}
+            <!-- <span class="text-danger">*error</span> -->
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" (keypress)="clear();" [(ngModel)]="city">
+        </div>
+      </div>
+      <!-- end of 10th row -->
+      <!-- start of 11th row -->
+      <div class="row mt-20">
+        <div class="col-md-12">
+          <h1 class="sub_titles">{{'SETUPCOMPANY.LOGO' | translate }}:</h1>
+        </div>
+      </div>
+      <!-- end of 11th row -->
+      <!-- start of 12th row -->
+      <!-- <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.BEACON_HEADER_COLOR' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" (keypress)="clear();" [(ngModel)]="color" [(colorPicker)]="color" [style.background]="color" [cpHeight]="'290px'"
+            [value]="color" maxlength="7" />
+        </div>
+      </div> -->
+      <!-- end of 13th row -->
+      <!-- start of 14th row -->
+      <!-- <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.BEACON_FOOTER_COLOR' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" (keypress)="clear();" [(ngModel)]="color1" [(colorPicker)]="color1" [style.background]="color1" [cpHeight]="'290px'"
+            [value]="color1" maxlength="7" />
+        </div>
+      </div> -->
+      <!-- end of 15th row -->
+      <!-- start of 16th row -->
+      <div class="row mt-20 res-mt-15" *ngIf="imageDiv">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label></label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <img [src]="logo" (error)="imageErrorHandler($event);" width="auto" height="200" style="max-width: 380px;" />
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.LOGO' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input style="display: none" data-label="Upload" id="fileUpload" (click)="clearImageError();" (change)="imageUpload($event)"
+            type="file" />
+          <label class="uploadButton" for="fileUpload">Choose File</label>
+          <div class="chooseFileName">{{fileName}}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5 col-sm-4">
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <div class="text-danger"> {{imageTypeError | translate }} </div>
+          <div class="text-danger"> {{imageError | translate }}</div>
+        </div>
+      </div>
+
+      <!-- end of 16th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          &nbsp;
+        </div>
+        <!-- Buttons -->
+        <div class="col-md-6 col-sm-6">
+          <div class="col-md-3 col-sm-3">
+            <button type="button" class="save-btn" (click)="createSetupCompanyData()">{{'BUTTON.SAVE' | translate}}</button>
+          </div>
+          <div class="col-md-3 col-sm-3">
+            <button type="button" class="cancel-btn" (click)="cancel();" value="CANCEL">{{'BUTTON.CANCEL' | translate}}</button>
+          </div>
+        </div>
+        <!-- Buttons -->
+      </div>
+    </div>
+
+    <!-- Add div ends -->
+    <!-- Edit Div starts -->
+
+    <div class="container form_cont" *ngIf="companyListLength!=0">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="sub_titles">{{'SETUPCOMPANY.GENERAL_INFORMATION' | translate}}:</h1>
+        </div>
+      </div>
+      <div class="text-danger text-center">
+        {{error | translate}}
+      </div>
+      <!-- start of 1st row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.SETUPCOMPANY_NAME' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" [(ngModel)]="updateCompanyName" (keydown)="clearmessage()">
+        </div>
+      </div>
+
+      <div class="text-danger text-center"> {{error1 | translate}}</div>
+      <!-- end of 1st row -->
+      <!-- start of 2nd row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'COMMON.PHONE' | translate }}
+            <span class="text-danger">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+            id="mobile_id1" (keypress)='hyphen_generate_mobile1(updatePhone);' name="updatePhone" [(ngModel)]="updatePhone"
+            (keydown)="clearmessage()">
+        </div>
+      </div>
+      <div class="text-danger text-center"> {{error2 | translate}}</div>
+      <!-- end of 2nd row -->
+      <!-- start of 3rd row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'COMMON.EMAIL' | translate }}
+
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="email" name="email" (keypress)="Emailclear();" [(ngModel)]="updateEmail">
+        </div>
+      </div>
+
+      <div class="text-danger text-center"> {{emailError | translate}}</div>
+      <!-- end of 3rd row -->
+      <!-- start of 4th row -->
+      <div class="row mt-20">
+        <div class="col-md-12">
+          <h1 class="sub_titles">{{'SETUPCOMPANY.ADDRESS' | translate }}:</h1>
+        </div>
+      </div>
+      <!-- end of 4th row -->
+      <!-- start of 5th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.STREET_ADDRESS' | translate }}
+
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <textarea [(ngModel)]="updateStreetAddress"></textarea>
+        </div>
+      </div>
+      <!-- end of 5th row -->
+      <!-- start of 6th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.POSTAL_CODE' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" maxlength="12" (keypress)="clear()" (keyup)="getLocation('edit');" [(ngModel)]="updatePostalCode">
+          <!-- <input type="text" maxlength="12" (keypress)="clear()" [(ngModel)]="postalCode" #search [formControl]="searchControl"> -->
+        </div>
+      </div>
+      <div class="text-danger text-center"> {{pincodeError | translate}}</div>
+      <!-- end of 6th row -->
+      <!-- start of 7th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.COUNTRY_CODE' | translate }}</label>
+          <span class="text-danger">*</span>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select id="" class="form-control input-sm" [(ngModel)]="updateCountryCode" (change)="getCountryStates($event.target.value);">
+            <option value=''>{{'COMMON.SELECT' | translate }}</option>
+            <option *ngFor="let clang of countries; let i='index'" (keypress)="Clear();clearError3();" value="{{clang.NAME}}" id="profilePage_timezone_select_option_{{i}}">{{clang.NAME}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="text-danger text-center"> {{error3 | translate}}</div>
+      <!-- end of 8th row -->
+      <!-- start of 9th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.STATE_PROVINCE' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select id="" class="form-control input-sm" [(ngModel)]="updateStateCode" (change)="getStates($event.target.value);">
+            <!-- <option>{{updateStateCode}}</option> -->
+            <option>Select below state</option>
+            <option *ngFor="let clang of states; let i='index'" value="{{clang.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{clang.STATE}}</option>
+          </select>
+        </div>
+      </div>
+      <!-- end of 9th row -->
+      <!-- start of 10th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.CITY' | translate }}
+            <!-- <span class="text-danger">*error</span> -->
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" [(ngModel)]="updpateCity" maxlength="40">
+        </div>
+      </div>
+      <!-- end of 10th row -->
+      <!-- start of 11th row -->
+      <div class="row mt-20">
+        <div class="col-md-12">
+          <h1 class="sub_titles">{{'SETUPCOMPANY.LOGO' | translate }}:</h1>
+        </div>
+      </div>
+      <!-- end of 11th row -->
+      <!-- start of 12th row -->
+      <!-- <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.BEACON_HEADER_COLOR' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" (keypress)="clear();" [(ngModel)]="updateHeaderColor" [(colorPicker)]="updateHeaderColor" [style.background]="updateHeaderColor"
+            [cpHeight]="'290px'" [value]="updateHeaderColor" maxlength="7" />
+        </div>
+      </div> -->
+      <!-- end of 13th row -->
+      <!-- start of 14th row -->
+      <!-- <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.BEACON_FOOTER_COLOR' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input type="text" [(ngModel)]="updateFooterColor" [(colorPicker)]="updateFooterColor" [style.background]="updateFooterColor"
+            [cpHeight]="'290px'" [value]="updateFooterColor" maxlength="7" />
+        </div>
+      </div> -->
+      <!-- end of 15th row -->
+      <!-- start of 16th row -->
+      <div class="row mt-20 res-mt-15">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label></label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <img [src]="logo" (error)="imageErrorHandler($event);" width="auto" height="200" style="max-width: 380px;" />
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'SETUPCOMPANY.LOGO' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input style="display: none" data-label="Upload" id="fileUpload" (click)="clearImageError();" (change)="imageUpload($event)"
+            type="file" />
+          <label class="uploadButton" for="fileUpload">Choose File</label>
+          <div class="chooseFileName">{{fileName}}</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5 col-sm-4">
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <div class="text-danger"> {{imageTypeError | translate }} </div>
+          <div class="text-danger"> {{imageError | translate }}</div>
+        </div>
+      </div>
+
+      <!-- end of 16th row -->
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          &nbsp;
+        </div>
+        <!-- Buttons -->
+        <div class="col-md-6 col-sm-6">
+          <div class="col-md-3 col-sm-3">
+            <button type="button" class="save-btn" (click)="updateCompanyInfo()">{{'BUTTON.SAVE' | translate}}</button>
+          </div>
+          <div class="col-md-3 col-sm-3">
+            <button type="button" class="cancel-btn" (click)="cancel();" value="CANCEL">{{'BUTTON.CANCEL' | translate}}</button>
+          </div>
+        </div>
+        <!-- Buttons -->
+      </div>
+    </div>
+
+    <!-- Edit div ends -->
+
+  </section>
+  <app-rightbar></app-rightbar>
+</div>

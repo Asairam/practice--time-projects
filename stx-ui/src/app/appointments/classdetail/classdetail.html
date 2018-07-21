@@ -1,0 +1,120 @@
+<div id="wrapper_setup_new">
+  <app-header></app-header>
+    <section id="inner_cont">
+      <div class="container form_cont">
+        <div class="row mt-20">
+          <div class="col-md-5 col-sm-4 text-right res-tleft">
+            <label>Appointment Date/Time</label>
+          </div>
+          <div class="col-md-7 col-sm-8">
+            12/2/2018 9:00AM
+          </div>
+        </div>
+        <div class="row mt-20">
+          <div class="col-md-5 col-sm-4 text-right res-tleft">
+            <label>Notes</label>
+          </div>
+          <div class="col-md-7 col-sm-8">
+            <textarea></textarea>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="sub_titles">Class</h1>
+          </div>
+        </div>
+        <div class="row mt-20">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered form_cont_one">
+                <thead>
+                  <tr>
+                    <th class="thcss">Name</th>
+                    <th class="thcss">Duration</th>
+                    <th class="thcss">Worker</th>
+                    <th class="thcss">Remaining Openings</th>
+                    <th class="thcss">Max # Attendees</th>
+                    <th class="thcss">Price per Attendee</th>
+                    <th class="thcss">Resources</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Advanced Spinning</td>
+                    <td>75</td>
+                    <td>Samantha Moran</td>
+                    <td>9</td>
+                    <td>10</td>
+                    <td>$25.00</td>
+                    <td>Spinning Bikes#</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="sub_titles">Attendees</h1>
+          </div>
+        </div>
+        <div class="row mt-20">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered form_cont_one">
+                <thead>
+                  <tr>
+                    <th class="thcss">#</th>
+                    <th class="thcss">Status</th>
+                    <th class="thcss">Attendee</th>
+                    <th class="thcss">Price</th>
+                    <th class="thcss">&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>
+                      <button class="btn btn-default">Check In</button>
+                    </td>
+                    <td>Jillian Keller</td>
+                    <td>
+                      <button class="btn btn-default">25.00</button>
+                    </td>
+                    <td>
+                      <a href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                        <span class="del">
+                          <i class="fa fa-minus" aria-hidden="true"></i>
+                        </span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-20">
+          <div class="col-md-5 col-sm-4">
+            <button class="btn btn-default">
+              <i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+          </div>
+          <div class="col-md-7 col-sm-8">
+          </div>
+        </div>
+        <div class="row mt-25">
+          <div class="col-md-5 col-sm-4 text-right res-tleft">
+            &nbsp;
+          </div>
+          <div class="col-md-7 col-sm-8">
+            <button type="button" class="save-btn">Check In All</button>
+            <button type="button" class="save-btn">Save</button>
+            <button type="button" class="cancel-btn" [routerLink]="['/appointments']">Cancel</button>
+            <button type="button" class="cancel-btn">Cancel Class</button>
+          </div>
+        </div>
+      </div>
+    </section>
+</div>

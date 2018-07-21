@@ -1,0 +1,26 @@
+#inner_cont {
+    margin-right: 8%;
+    color: white;
+}
+.padding-align{
+    padding: 5px 5px 5px ;
+    background: black;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+.background-color {
+    background-color :black;
+}
+@media (min-width: 768px){
+	#inner_cont {
+        margin-right: 11.5%;
+       
+    }
+    .form_cont table {
+        font-size: 12px;
+    }
+}

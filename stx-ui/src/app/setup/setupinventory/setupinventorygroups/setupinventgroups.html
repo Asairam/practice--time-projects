@@ -1,0 +1,220 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header>    -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mt-40" *ngIf='hideTable == true'>
+                    <div class="table-responsive">
+                        <table class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                    <td>{{ 'COMMON.SORT_ORDER' | translate }}</td>
+                                </tr>
+                                <tr class="tbl-txt" (click)="showData(groupData)" *ngFor="let groupData of groupList; let i='index'" id="groupData{{i}}">
+                                    <td class="white">
+                                        {{groupData.inventoryGroupName}}
+                                    </td>
+                                    <td class="white">
+                                        {{groupData.sortOrder}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" align="center" (click)="addNew()">
+                                        <a class="white">
+                                            <i class="fa fa-plus"></i> {{'COMMON.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ---------hide table---------------- -->
+                <div class="col-md-4 mt-40 disable" *ngIf='hideTable == false'>
+                    <div class="table-responsive">
+                        <table class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                    <td>{{ 'COMMON.SORT_ORDER' | translate }}</td>
+                                </tr>
+                                <tr class="white" *ngFor="let groupData of groupList; let i='index'" id="groupData{{i}}">
+                                    <td>
+                                        {{groupData.inventoryGroupName}}
+                                    </td>
+                                    <td>
+                                        {{groupData.sortOrder}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" align="center">
+                                        <a href="#" class="white">
+                                            <i class="fa fa-plus"></i> {{'COMMON.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!--<div class="col-md-1">&nbsp;</div>-->
+
+                <!-- ------------addDiv== true--------------------------- -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv==true'>
+                    <h1>{{ 'INVENTORY_GROUP.INVENTORY_GROUP_DETAIL' | translate }}</h1>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.NAME' | translate }}
+                                <span class="red">*</span>
+                            </label>
+                        </div>
+
+                        <div class="col-sm-7">
+                            <input type="text" (keypress)="clearErrMsg()" [(ngModel)]="inventoryGroupName">
+                            <div class="red">{{error | translate }}</div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_SERVICES.TAXABLE' | translate }}</label>
+                            <span class="red">*</span>
+                            <br>
+                            <em>
+                                <small>{{ 'INVENTORY_GROUP.APPLIED_TO_ALL_PRODUCTS' | translate }}</small>
+                            </em>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="taxable">
+                        </div>
+                    </div>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.SORT_ORDER' | translate }}</label>
+                            <br>
+                            <em>
+                                <small>{{ 'INVENTORY_GROUP.APPLIED_TO_ALL' | translate }}</small>
+                            </em>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="sortOrder" (keypress)="clearErrMsg()">
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)="saveGroups();">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel();">{{ 'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- -----------------edit div----------- -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='editDiv==true'>
+                    <h1>{{ 'INVENTORY_GROUP.INVENTORY_GROUP_DETAIL' | translate }}</h1>
+                    <div class="red">
+                        {{error | translate }}
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.NAME' | translate }}
+                                <span class="red">*</span>
+
+                            </label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="updateInventoryGroupName">
+                        </div>
+                    </div>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_SERVICES.TAXABLE' | translate }}</label>
+                            <span class="red">*</span>
+                            <br>
+                            <em>
+                                <small>{{ 'INVENTORY_GROUP.APPLIED_TO_ALL_PRODUCTS' | translate }}</small>
+                            </em>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="updateTaxable">
+                        </div>
+                    </div>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.SORT_ORDER' | translate }}</label>
+                            <br>
+                            <em>
+                                <small>{{ 'INVENTORY_GROUP.APPLIED_TO_ALL' | translate }}</small>
+                            </em>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="updateSortOrder" (keypress)="clearErrMsg()">
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)="editInventorygroupData();">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel();">{{ 'BUTTON.CANCEL' | translate }}</button>
+                            <button *ngIf='button' type="button" class="cancel-btn" (click)="deleteInvGroup();">{{ 'BUTTON.DELETE' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- ------------------------------disable div---------------- -->
+                <div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+                    <h1>{{ 'INVENTORY_GROUP.INVENTORY_GROUP_DETAIL' | translate }}</h1>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.NAME' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="inventoryGroupName" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_SERVICES.TAXABLE' | translate }}</label>
+                            <br>
+                            <em>
+                                <small>{{ 'INVENTORY_GROUP.APPLIED_TO_ALL_PRODUCTS' | translate }}</small>
+                            </em>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="taxable" disabled>
+
+                        </div>
+                    </div>
+
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.SORT_ORDER' | translate }}</label>
+                            <br>
+                            <em>
+                                <small>{{ 'INVENTORY_GROUP.APPLIED_TO_ALL' | translate }}</small>
+                            </em>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="sortOrder" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn">{{ 'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

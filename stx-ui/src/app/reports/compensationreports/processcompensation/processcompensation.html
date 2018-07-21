@@ -1,0 +1,239 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.BEGIN_DATE' | translate }} </label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input class="datefield datefield" type="text" id="startId" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue"
+                        [bsConfig]="datePickerConfig">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.END_DATE' | translate }} </label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input class="datefield datefield" type="text" id="endId" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1"
+                        [bsConfig]="datePickerConfig">
+                </div>
+            </div>
+            <div class="row mt-20 res-mt-15 ml-5" *ngIf="bsValue && bsValue1">
+                <div class="col-md-12" class="mt-top">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered form_cont_one">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'PROCESS_COMPENSATION.INCLUDE' | translate }}</th>
+                                    <th class="thcss">{{'COMMON.NAME' | translate }}</th>
+                                    <th class="thcss">{{'PROCESS_COMPENSATION.SETUP_COMPENSATION_METHODS' | translate }}</th>
+                                    <th class="thcss">{{'PROCESS_COMPENSATION.REGULAR_HOURS' | translate }}</th>
+                                    <th class="thcss">{{'PROCESS_COMPENSATION.OVERTIME_HOURS' | translate }}</th>
+                                    <th class="thcss">{{'PROCESS_COMPENSATION.EXTRA_PAY' | translate }}</th>
+                                    <th class="thcss">{{'PROCESS_COMPENSATION.DEDUCTION' | translate }}</th>
+                                    <th class="thcss">{{'COMMON.TOTAL' | translate }}</th>
+                                    <th class="thcss">{{'COMMON.TIPS' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td *ngIf='checkValue == false'>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td *ngIf='checkValue == true'>
+                                        <input type="checkbox" checked />
+                                    </td>
+                                    <td>Brenda West</td>
+                                    <td>Hourly Plus Retail Commission </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" [ngModel]="reset" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td *ngIf='checkValue == false'>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td *ngIf='checkValue == true'>
+                                        <input type="checkbox" checked />
+                                    </td>
+                                    <td>Diana 1 Welvaert</td>
+                                    <td>Hourly Plus Retail Commission</td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" [ngModel]="reset" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td *ngIf='checkValue == false'>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td *ngIf='checkValue == true'>
+                                        <input type="checkbox" checked />
+                                    </td>
+                                    <td>Erica Keller</td>
+                                    <td>Hourly Plus Retail Commission</td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" [ngModel]="reset" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td *ngIf='checkValue == false'>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td *ngIf='checkValue == true'>
+                                        <input type="checkbox" checked />
+                                    </td>
+                                    <td>Isabella Moran</td>
+                                    <td>Hourly Plus Retail Commission</td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" [ngModel]="reset" />
+                                    </td>
+                                    <td>10.00</td>
+                                </tr>
+                                <tr>
+                                    <td *ngIf='checkValue == false'>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td *ngIf='checkValue == true'>
+                                        <input type="checkbox" checked />
+                                    </td>
+                                    <td>Tom Mapple</td>
+                                    <td>Hourly Plus Retail Commission</td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" [ngModel]="reset" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td *ngIf='checkValue == false'>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td *ngIf='checkValue == true'>
+                                        <input type="checkbox" checked />
+                                    </td>
+                                    <td>Tracy Ross</td>
+                                    <td>Hourly Plus Retail Commission</td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" [ngModel]="reset" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td *ngIf='checkValue == false'>
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td *ngIf='checkValue == true'>
+                                        <input type="checkbox" checked />
+                                    </td>
+                                    <td>Brenda West</td>
+                                    <td>Hourly Plus Retail Commission</td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" />
+                                    </td>
+                                    <td>
+                                        <input type="text" value="0.00" [ngModel]="reset" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="col-md-12">{{'PROCESS_COMPENSATION.TOTAL_PERIOD_COMPENSATION' | translate }} : $0.00</div>
+                    </div>
+                    <div class="row mt-20">
+                        <div class="col-md-7 col-sm-8 text-right res-tleft width-align">
+                            <button type="button" class="btn btn-primary" (click)="unSelectAll()">Un Select all workers</button>
+                            <button type="button" class="btn btn-primary" (click)="selectAll()">Select all workers</button>
+                            <button type="button" class="btn btn-primary" (click)="resetMethod()"> <i class="fa fa-cog" aria-hidden="true"></i> Generate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

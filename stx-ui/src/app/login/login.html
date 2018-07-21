@@ -1,0 +1,19 @@
+<div class="login_content">
+	<div class="login_logo">
+		<img width="300" src="/assets/images/logo.png">
+	</div>
+	<form class="login_inner">
+		<input type="text" placeholder="{{'SETUP_WORKERS_DETAILS.USER_NAME' | translate }}" (keypress)="clear();" [(ngModel)]="userName"
+		 name="userName" title="{{'SETUP_WORKERS_DETAILS.USER_NAME_TITLE' | translate }}">
+		<div class="login-password">
+			<input type="{{passwordType}}" placeholder="{{'COMMON.PASSWORD' | translate }}" (keypress)="clear();" [(ngModel)]="password"
+			 autocomplete="on" name="password" title="{{'COMMON.PASSWORD_TITLE' | translate }}">
+			<span class="glyphicon {{glyphiconClass}} login-show-password" (click)="togglePassword();" *ngIf="password && password.length > 0"></span>
+		</div>
+		<input type="submit" (click)="getAuthorised()" class="login-capital" value="{{'LOGIN.LOGIN_LABEL' | translate }}" title="{{'LOGIN.LOGIN_LABEL_TITLE' | translate }}">
+		<div class="clearfix"></div>
+		<div class="text-danger">{{error | translate}}</div>
+		<div class="clearfix"></div>
+		<a class="login-forgot-label" (click)="forgotPassword()" title="{{'LOGIN.FORGOT_PASSWORD_TITLE' | translate }}">{{'LOGIN.FORGOT_PASSWORD' | translate }}</a>
+	</form>
+</div>

@@ -1,0 +1,328 @@
+<div id="wrapper_setup_new" style="color:white;">
+  <!-- <app-header></app-header> -->
+  <app-header [newMenu]="'noNav'"></app-header>
+  <div class="form_cont12">
+    <h1>{{showCliName}}</h1>
+  </div>
+  <section id="inner_cont">
+    <div class="col-sm-8">
+      <p class="red mb-0"> {{bookStandErr | translate }} </p>
+    </div>
+    <div class="container form_cont">
+      <div class="row">
+        <div class="col-md-6" id="box-align">
+          <div class="appt-box">
+            <h1 class="sub_titles">{{'BOOKSTANDING_APPT.SERVICES' | translate}}</h1>
+
+            <div class="mt-20">
+              <div class="col-md-12">
+                <label>{{'BOOKSTANDING_APPT.ADD_OR_REMOVE_SERVICES' | translate}}</label>
+              </div>
+            </div>
+            <div class="mt-20">
+              <div class="col-md-12" id="padding-align">
+                <div class="table-responsive">
+                  <table class="table table-hover table-bordered form_cont_one">
+                    <tbody>
+                      <tr *ngFor="let row of rows; let i=index">
+                        <td>
+                          <select style="width:90%;" [(ngModel)]="row.serviceGroupName" (change)="categoryOfService($event.target.value, i)" (click)="clearErrorMsg()">
+                            <!-- <option>{{serviceGroupName}}</option> -->
+                            <option *ngFor="let groupData of serviceGroupList; let i='index'" value="{{groupData.serviceGroupName}}${{groupData.serviceGroupColor}}"
+                              id="groupData{{i}}">{{groupData.serviceGroupName}}</option>
+                            <!-- <option>--packages--</option>
+                            
+                                <option *ngFor="let packageName of packagesList; let i='index'" value="{{packagesList.Id}}" id="packagesList{{i}}">{{packageName.Name}}</option> -->
+                            <option value="-" disabled="disabled">--- Packages ---</option>
+                            <option *ngFor="let packageName of packageGroupList; let i='index'" value="scale:{{packageName.Id}}" id="packageName{{i}}">{{packageName.Name}}</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select style="width:90%;" [(ngModel)]="row.Id" (change)="servicesListOnChange($event.target.value, i)" (click)="clearErrorMsg()">
+                            <option value="">--select--</option>
+                            <option *ngFor="let serviceData of serviceDetailsList[i]; let i='index'" [value]="serviceData.Id" id="serviceData{{i}}">{{serviceData.Name}}</option>
+
+                          </select>
+                        </td>
+                        <td>
+                          <select style="width:90%;" [(ngModel)]="row.workerName" *ngIf='workerList[i]?workerList[i].length>0:false' (change)="workerListOnChange($event.target.value,i)"
+                            (click)="clearErrorMsg()">
+                            <option *ngFor="let workerData of workerList[i]; let i='index'" value="{{workerData.workername}}" id="serviceData{{i}}">{{workerData.name}}</option>
+                            <!-- <option value="" >--select--</option> -->
+                          </select>
+                        </td>
+                        <td>
+                          <a (click)="addServices(index)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                            <span class="add">
+                              <i class="fa fa-plus" aria-hidden="true"></i>
+                            </span>
+                          </a>
+                        </td>
+                        <td>
+                          <a *ngIf="rows.length>1" (click)="removeServices(i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                            <span class="del">
+                              <i class="fa fa-minus" aria-hidden="true"></i>
+                            </span>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="col-md-12">
+                <label>{{'BOOKSTANDING_APPT.TOTAL_SERVICE_DURATION' | translate}}:{{sumOfServiceDurations}} {{'BOOKSTANDING_APPT.MINUTES'
+                  | translate}} </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---------------- Appointment time table ---------------------->
+        <div class="col-md-3">
+          <div class="appt-box" id="align-box">
+            <h1 class="sub_titles" id="text-align">{{'BOOKSTANDING_APPT.APPOINTMENT_START_DATE_AND_TIME' | translate}}</h1>
+            <div class="mt-20">
+              <div class="col-md-4 col-sm-4 text-right res-tleft">
+                <label>{{'COMMON.START_DATE' | translate}}
+                  <span class="red">*</span>
+                </label>
+              </div>
+              <div class="col-md-8">
+                <input type="text" (ngModelChange)="getWorkersFromDate()" [(ngModel)]="bsValue"  bsDatepicker [(bsValue)]="bsValue" class="mb-25 datefield" [minDate]="minDate"
+                  (click)="clearErrorMsg();clearAppts();" [bsConfig]="datePickerConfig" />
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="mt-20">
+              <div class="col-md-4 col-sm-4 text-right res-tleft">
+                <label>{{'BOOKSTANDING_APPT.TIME' | translate}}
+                  <span class="red">*</span>
+                </label>
+              </div>
+              <div class="col-md-8">
+                <select class="select-align" [(ngModel)]="bookStandingTime" (click)="clearErrorMsg();clearAppts();">
+                  <option>--None--</option>
+                  <option *ngFor="let time of TimeData">{{time}}</option>
+                </select>
+                <!-- <input type="text"[(ngModel)]="bookStandingTime" value="{{bookStandingTime}}" class="mb-25" /> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---------------- Appointment time table End ---------------------->
+        <!---------------- Book table ---------------------->
+        <div class="col-md-3">
+          <div class="appt-box">
+            <h1 class="sub_titles">{{'BOOKSTANDING_APPT.BOOK' | translate}}</h1>
+            <div class="mt-20">
+              <div class="col-md-12 ">
+                <label>{{'BOOKSTANDING_APPT.NUMBER_OF_APPOINTMENTS' | translate}}</label>
+              </div>
+              <div class="col-md-12">
+                <select style="width:40%;" [(ngModel)]="numberOfBookStandings" (click)="clearAppts();">
+                  <option *ngFor="let number of numberOfBooks">{{number.availability}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="mt-20">
+              <div class="col-md-12">
+                <label>{{'BOOKSTANDING_APPT.EVERY' | translate}}</label>
+              </div>
+              <div class="">
+                <select class="align-select" [(ngModel)]='bookEvery' (click)="clearAppts();">
+                  <option *ngFor='let data of bookEveryData'>{{ data.value }}</option>
+                </select>
+              </div>
+              <div class="">
+                <select class="align1-select" [(ngModel)]='bookEvery1' (click)="clearAppts();">
+                  <option *ngFor='let data1 of everyData'>{{ data1.type }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="mt-20">
+              <div class="col-md-12 text-center">
+                <button type="button" class="btn btn-primary" (click)="searchAppointmentData()">
+                  <i class="fa fa-binoculars" aria-hidden="true"></i> {{'BUTTON.SEARCH' | translate}}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---------------- Book table ---------------------->
+
+      </div>
+      <!---------------- div row end ---------------------->
+      <div class="row">
+        <div class="col-md-12">
+          {{'BOOKSTANDING_APPT.THESE_OPTINS_END_DATE_OF' | translate}} &nbsp;{{ bsValue | date:'y/MM/d'}} {{bookStandingTime}}
+        </div>
+      </div>
+      <div class="row">
+        <!---------------- Appointment Details table ---------------------->
+        <div class="col-md-6" id="box-align">
+          <div class="appt-box">
+            <h1 class="sub_titles"> {{'BOOKSTANDING_APPT.APPOINTMENT_DETAILS' | translate}}</h1>
+
+            <div class="mt-20">
+              <div class="col-md-12">
+                <label>{{'BOOKSTANDING_APPT.CLIENT_NOTES' | translate}}</label>
+              </div>
+              <div class="col-md-12">
+                &nbsp;
+              </div>
+            </div>
+            <div class="mt-20">
+              <div class="col-md-12">
+                <label>
+                  <span class="red">*</span>{{'BOOKSTANDING_APPT.VISIT_TYPE' | translate}}</label>
+              </div>
+              <div class="col-md-12">
+                <select [(ngModel)]="bookStandingVisitType" (change)="onVisitTypeChange($event.target.value)">
+                  <option value=''>--None--</option>
+                  <option *ngFor="let listData of visitTypesList; let i='index'" value="{{listData.visitType}}" id="listData{{i}}">{{listData.visitType}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="mt-20">
+              <div class="col-md-12">
+                <label>{{'BOOKSTANDING_APPT.APPOINTMENT_NOTES' | translate}}</label>
+              </div>
+              <div class="col-md-12">
+                <textarea class="w90" [(ngModel)]="bookStandingText"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---------------- Appointment Details table End ---------------------->
+        <!---------------- Appointment Search Details table ---------------------->
+        <div class="col-md-6">
+          <div class="appt-box" id="height-align">
+            <h1 class="sub_titles">{{'BOOKSTANDING_APPT.APPOINTMENT_SEARCH_RESULTS' | translate}}</h1>
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered form_cont_one">
+                  <thead>
+                    <tr>
+                      <th class="thcss">{{'BOOKSTANDING_APPT.DATE' | translate}}</th>
+                      <th class="thcss">{{'COMMON.START' | translate}}</th>
+                      <th class="thcss">{{'COMMON.STATUS' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="appointmentData.length!==0">
+                    <tr *ngFor="let bookoutData of  appointmentData; let i='index'">
+
+                      <td>{{bookoutData[0].bsValue | date:'MM/d/yyyy'}}</td>
+                      <td>{{bookStandingTime}}</td>
+                      <td>
+                        <ng-container *ngFor="let data of bookoutData;let k=index">
+                          <ng-container>
+                            {{data.Status__c!=='Booked'?data.FullName+'('+data.Status__c+')':''+bookoutData.length-1===k&&data.Status__c!=='Booked'?',
+                            ':''}}
+                          </ng-container>
+                          <!-- <td *ngIf="bookoutData.Status__c == 'Booked'"></td>
+                      <td *ngIf="bookoutData.Status__c == 'Cancelled'">{{bookoutData.names|slice:0:bookoutData.names.length-1}}</td>
+                      <td *ngIf="bookoutData.Status__c == 'Closed'">{{bookoutData.names|slice:0:bookoutData.names.length-1}}</td>
+                      <td *ngIf="bookoutData.Status__c == 'Conflicting'">{{bookoutData.names|slice:0:bookoutData.names.length-1}}</td> -->
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!---------------- Appointment Search Details table End---------------------->
+      </div>
+      <!---------------- div row end ---------------------->
+      <!--------Buttons------------>
+      <div class="row mt-40">
+        <div class=" col-md-12 text-center">
+          <button type="button" class="save-btn" *ngIf="appointmentData.length!==0 && !scheduleAvailableButton" (click)="scheduleAvailable('scheduleAllDates')">{{ 'BUTTON.SCHEDULE_ALL_DATES'| translate}}</button>
+          <button type="button" class="save-btn" *ngIf="appointmentData.length!==0 && scheduleAvailableButton" (click)="scheduleAvailable('scheduleAvailable')">{{ 'BUTTON.SCHEDULE_AVAILABLE'| translate}}</button>
+          <button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{'BUTTON.CANCEL' | translate}}</button>
+        </div>
+      </div>
+      <!--------Buttons End------------>
+    </div>
+  </section>
+  <app-rightbar></app-rightbar>
+</div>
+
+<!-- ----------------------popup--------- -->
+<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+  role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" style="width: 590px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close" (click)="closeServiceNotesModal()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button> -->
+      </div>
+      <table>
+        <tbody>
+          <tr>
+            <td style="padding: 10px;">
+              <img src="assets/images/declinedIcon.png">
+            </td>
+            <td>
+              There is a booking alert for this client.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <label style="margin: 0px 12px;">{{clientData?.FirstName+' '+clientData?.LastName}} has a booking alert for the following reason(s):</label>
+      <table style="margin-left:100px">
+        <tbody>
+          <tr *ngIf="clientData?.BR_Reason_No_Email__c === 1">
+            <td>
+              <label>No Email</label>
+            </td>
+          </tr>
+          <tr *ngIf="clientData?.BR_Reason_Account_Charge_Balance__c === 1">
+            <td>
+              <label>Account Charge Balance</label>
+            </td>
+          </tr>
+          <tr *ngIf="clientData?.BR_Reason_Deposit_Required__c === 1">
+            <td>
+              <label>Deposit Required</label>
+            </td>
+          </tr>
+          <tr *ngIf="clientData?.BR_Reason_No_Show__c === 1">
+            <td>
+              <label>Persistant No Show</label>
+            </td>
+          </tr>
+          <tr *ngIf="clientData?.BR_Reason_Other__c === 1">
+            <td>
+              <label>Other</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <label style="margin: 0px 12px;" *ngIf="clientData?.BR_Reason_Other_Note__c">Notes : {{clientData?.BR_Reason_Other_Note__c}}</label>
+      <div class="modal-footer">
+        <table>
+          <tbody>
+            <tr>
+
+              <td>
+
+                <button class="save-btn" (click)="bookAnyWay()" *ngIf="clientData?.Booking_Restriction_Type__c !== 'Do Not Book'"> Book Anyway</button>
+                <button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{clientData?.Booking_Restriction_Type__c === 'Do Not Book'?'Ok':'Don\'t Book'}}</button>
+                <a *ngIf='clientId' [routerLink]="['/client/edit/' + clientId]" [queryParams]="{action:'bookstanding'}" class="btn btn-default mb-5">
+                  <i class="fa fa-pencil"></i> Go To Full Client Card</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+</div>

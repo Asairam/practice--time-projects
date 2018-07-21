@@ -1,0 +1,32 @@
+#inner_cont {
+    margin-right: 10%;
+}
+@media (min-width: 992px) {
+    .col-sm-4 {
+        margin-right: -16px;
+    }
+    .align-width {
+        width: 58%;
+    }
+}
+@media (device-width: 768px) {
+    .col-sm-4 {
+        width: 33.33333333%;
+    }
+    .align-width {
+        width: 82%;
+        margin-left: -31%;
+    }
+    .align-width-i {
+        width: 60%;
+    }
+    em {
+        margin-left: -10%;
+    }
+}
+@media (device-width: 1024px) {
+    .align-width {
+        width: 72%;
+        margin-left: -10%;
+    }
+}

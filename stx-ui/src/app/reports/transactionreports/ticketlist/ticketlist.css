@@ -1,0 +1,20 @@
+.mr-10, hr {
+    margin-right: 8%;
+}
+.form_cont{
+    color: white!important;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+@media (device-width: 768px){
+.mr-10{
+    margin-right: 10%;
+}
+hr {
+    display: none;
+}
+}

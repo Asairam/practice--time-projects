@@ -1,0 +1,179 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20 ">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'MONTHLY_BUSINESS_ANALYSIS.SELECT_YEAR' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option selected>2018</option>
+                        <option>2017</option>
+                        <option>2016</option>
+                        <option>2015</option>
+                        <option>2014</option>
+                        <option>2013</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20 ">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'MONTHLY_BUSINESS_ANALYSIS.SELECT_MONTH' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option>January</option>
+                        <option>February</option>
+                        <option>March</option>
+                        <option selected>April</option>
+                        <option>May</option>
+                        <option>June</option>
+                        <option>July</option>
+                        <option>Augest</option>
+                        <option>September</option>
+                        <option>October</option>
+                        <option>November</option>
+                        <option>December</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20 ">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option selected>Company Name</option>
+                        <option>Worker Name</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.WORKER' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option disabled>Select worker</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20 ">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'MONTHLY_BUSINESS_ANALYSIS.SELECT_SERVICE_GROUP' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option selected>Nails</option>
+                        <option>skin</option>
+                        <option>Body</option>
+                        <option>Pure</option>
+                        <option>Hair</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SETUP_INVENTORY_PRODUCTS.PRODUCT_LINE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option selected>American Crew</option>
+                        <option>Bio Elements</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="generateReport()" class="btn btn-primary">
+                        <i class="fa fa-cog" aria-hidden="true"></i> {{'BUTTON.GENERATE' | translate }}</button>
+                </div>
+            </div>
+            <hr />
+            <div class="row mt-20 res-mt-15 ml-5" *ngIf="itemsDisplay">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+
+                                    <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate }}</th>
+                                    <th class="thcss">{{'REPORTS.MONTHLY_BUSINESS_ANALYSIS' | translate }} : Company</th>
+                                    <th class="thcss">{{'SETUP_COMPENSATION_SCALES.PERIOD' | translate }}: April 2018</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'COMMON.CATEGORY' | translate }}</th>
+                                    <th class="thcss">2018</th>
+                                    <th class="thcss">{{'MONTHLY_BUSINESS_ANALYSIS.PRIOR_YEAR' | translate }}</th>
+                                    <th class="thcss">{{'ACTIVITY_COMPARISON.PERCENTAGE_CHANGE' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sales: Total Sales (excluding tax, rounded to nearest whole amount)</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Sales: Service Sales (excluding tax, rounded to nearest whole amount)</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+
+                                </tr>
+                                <tr>
+                                    <td>Sales: Nails Service Sales Percentage</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Tickets: Percent of Service Tickets with at least one Product</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                </tr>
+
+                                <tr>
+                                    <td> Tickets: Average Service Amount Per Service Ticket (SPST)</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td> Appointments: Percent Appointments Rebooked</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Inventory: American Crew Sales (excluding tax, rounded to nearest whole amount)</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {{'MONTHLY_BUSINESS_ANALYSIS.PRODUCTIVITY_RATE_NOT_INCLUDES_WORKER_SCHEDULE_CHANGES' | translate }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

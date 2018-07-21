@@ -1,0 +1,21 @@
+.crt-tkn-select {
+    width: 24.5%;
+    display: inline-block;
+}
+
+.crt-tkn-cvv {
+    width: 24.5% !important;
+}
+
+.crt-tkn-chkbox {
+    margin-left: 0px !important;
+}
+
+.crt-tkn-error {
+    margin-top: 4px;
+    margin-left: 4px;
+}
+
+.form_cont label {
+    margin-top: 8px;
+}

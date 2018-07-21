@@ -1,0 +1,28 @@
+.setsubcont {
+    margin-right: 8%;
+}
+#wrapper_setup_new, a{
+    color: white;
+}
+.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email]{
+    color: white;
+}
+.setsubcont input[type=text]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=email]:focus{
+    color: black;
+}
+@media (device-width: 768px){
+    .table-bordered-light {
+        font-size: 12px;
+    }
+    .setsubcont {
+        margin-right: 10%;
+    }
+}
+@media (device-width: 1024px){
+    .table-bordered-light {
+        font-size: 12px;
+    }
+    .setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email] {
+        width: 90%;
+    }
+}

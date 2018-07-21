@@ -1,0 +1,24 @@
+<div id="wrapper_setup_new">
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont">
+		<div class="container form_cont">
+			<div class="row mt-20" style="padding:5px;">
+				<div class="col-md-12">
+					<label>Marketing Set: BKR Test S-02651</label>
+				</div>
+				<div class="col-md-12">
+					<label>Run Date: 01/24/2018 </label>
+				</div>
+				<div class="col-md-12">
+					<label>Are you sure you want to delete this? </label>
+				</div>
+			</div>
+
+			<div class="text-center mt-10">
+				<button type="button" class="cancel-btn" [routerLink]="['/marketing/reports']">Delete</button>
+				<button type="button" class="cancel-btn" [routerLink]="['/marketing/reports']">Cancel</button>
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

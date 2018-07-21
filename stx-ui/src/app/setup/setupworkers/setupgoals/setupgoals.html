@@ -1,0 +1,289 @@
+<div id="wrapper_setup_new">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont" class="setsubcont">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 mt-40">
+					<div class="table-responsive">
+						<!-- enable table starts -->
+						<table class="table table-bordered-white" *ngIf="hideTable == false">
+							<tbody>
+								<tr class="white">
+									<td>{{ 'COMMON.ACTIVE' | translate }}</td>
+									<td>{{ 'COMMON.NAME' | translate }}</td>
+								</tr>
+								<tr *ngFor="let goalslist of goalsList; let i='index'" id="goalslist{{i}}">
+									<td *ngIf='goalslist.Active__c==1'>
+										<input type="checkbox" checked disabled>
+									</td>
+									<td *ngIf='goalslist.Active__c==0'>
+										<input type="checkbox" disabled>
+									</td>
+									<td class="tbl-txt" (click)="showData(goalslist)">
+										{{goalslist.Name}}
+									</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2">
+										<a class="white" (click)="addNew();">
+											<i class="fa fa-plus"></i>{{ 'BUTTON.NEW' | translate }}</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- enable table ends -->
+						<!-- hide table starts -->
+						<table class="table table-bordered-white disable" *ngIf="hideTable == true">
+							<tbody>
+								<tr class="white">
+									<td>{{ 'COMMON.ACTIVE' | translate }}</td>
+									<td>{{ 'COMMON.NAME' | translate }}</td>
+								</tr>
+								<tr *ngFor="let goalslist of goalsList; let i='index'" id="goalslist{{i}}">
+									<td *ngIf='goalslist.Active__c==1'>
+										<input type="checkbox" checked disabled>
+									</td>
+									<td *ngIf='goalslist.Active__c==0'>
+										<input type="checkbox" disabled>
+									</td>
+									<td class="tbl-txt" (click)="showData(goalslist)">{{goalslist.Name}}</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2">
+										<a class="white">
+											<i class="fa fa-plus"></i>{{ 'BUTTON.NEW' | translate }}</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- hide table ends -->
+					</div>
+				</div>
+				<!-- add div starts -->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf="addDiv == true">
+					<h1>{{ 'SETUP_GOALS.GOAL_DETAIL' | translate }}</h1>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{ 'COMMON.NAME' | translate }}</label>
+							<span class="red">*</span>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" (keypress)="clearErrMsg()" [(ngModel)]="name">
+						</div>
+						<div class="col-sm-10">
+							<p class="red"> {{error | translate }} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{ 'COMMON.ACTIVE' | translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" [(ngModel)]="active">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>{{ 'SETUP_GOALS.STEP' | translate }}</td>
+											<td>{{ 'COMMON.ACTION' | translate }}</td>
+											<td>{{ 'SETUP_GOALS.VALUE' | translate }}</td>
+											<td>{{ 'COMMON.NUMBER' | translate }}</td>
+											<td>{{ 'SETUP_GOALS.SAMPLE_CALCULATION' | translate }}</td>
+											<td></td>
+										</tr>
+										<tr *ngFor="let row of rows; let i = 'index'">
+											<td [innerHTML]="row.step"></td>
+											<td>
+												<select [class.disabled]="i==0" type="text" [(ngModel)]="row.operator" style="width: 100%; min-width:130px; padding-left: 2px;">
+													<option *ngFor="let actions of actionsStaticData; let i='index'" id="actions{{i}}">{{actions.action}}</option>
+												</select>
+											</td>
+											<td>
+												<select style="width: 100%;padding-left: 1px;" type="text" [(ngModel)]="row.operand">
+													<option *ngFor="let values of valuesStaticData; let i='index'" id="values{{i}}">{{values.value}}</option>
+												</select>
+											</td>
+											<td>
+												<input type='number' [(ngModel)]="row.numeral">
+											</td>
+											<td>{{row.result | number:'2.2-4'}}
+											</td>
+											<td>
+												<span class="f-plus" (click)="addRows() ">
+													<i class="fa fa-plus "></i>
+												</span>
+												<!-- <span class="f-minus" *ngIf="rowLength = 1" (click)="deleteFieldValue(row, i)">
+														<i class="fa fa-minus"></i>
+													</span> -->
+												<span class="f-minus" *ngIf="rowLengthInc > 1" (click)="deleteFieldValue(row, i)">
+													<i class="fa fa-minus"></i>
+												</span>
+												<!-- <span class="f-minus" *ngIf="rowLength == 1"  [hidden]="true" >
+																<i class="fa fa-minus"></i>
+															</span> -->
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-10">
+							<button type="button" (click)="updateSampleCalculation()">{{ 'BUTTON.UPDATE_SAMPLE_CALCULATION' | translate }}</button>
+						</div>
+					</div>
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class='save-btn' (click)="saveCompensationGoals()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+							<button type="button" class='cancel-btn' (click)="cancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+						</div>
+					</div>
+				</div>
+				<!-- add div ends -->
+				<!-- disable div starts -->
+				<div class="col-md-8 pdgl30 mt-40 disable" *ngIf="disableDiv == true">
+					<h1>{{ 'SETUP_GOALS.GOAL_DETAIL' | translate }}</h1>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{ 'COMMON.NAME' | translate }}</label>
+							<span class="red">*</span>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" value="New Goal" disabled>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{ 'COMMON.ACTIVE' | translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" checked disabled>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>{{ 'SETUP_GOALS.STEP' | translate }}</td>
+											<td>{{ 'COMMON.ACTION' | translate }}</td>
+											<td>{{ 'SETUP_GOALS.VALUE' | translate }}</td>
+											<td>{{ 'COMMON.NUMBER' | translate }}</td>
+											<td>{{ 'SETUP_GOALS.SAMPLE_CALCULATION' | translate }}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-10">
+							<button type="button">{{ 'BUTTON.UPDATE_SAMPLE_CALCULATION' | translate }}</button>
+						</div>
+					</div>
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class='save-btn' disabled>{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+							<button type="button" class='cancel-btn' disabled>{{ 'BUTTON.CANCEL' | translate }}</button>
+						</div>
+					</div>
+				</div>
+				<!-- disable div ends -->
+				<!-- edit div starts -->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf="editDiv == true">
+					<h1>{{ 'SETUP_GOALS.GOAL_DETAIL' | translate }}</h1>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{ 'COMMON.NAME' | translate }}</label>
+							<span class="red">*</span>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" (keypress)="clearErrMsg()" [(ngModel)]="updateName">
+						</div>
+						<div class="col-sm-10">
+							<p class="red"> {{error | translate }} </p>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{ 'COMMON.ACTIVE' | translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" [(ngModel)]="updateActive">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>{{ 'SETUP_GOALS.STEP' | translate }}</td>
+											<td>{{ 'COMMON.ACTION' | translate }}</td>
+											<td>{{ 'SETUP_GOALS.VALUE' | translate }}</td>
+											<td>{{ 'COMMON.NUMBER' | translate }}</td>
+											<td>{{ 'SETUP_GOALS.SAMPLE_CALCULATION' | translate }}</td>
+											<td></td>
+										</tr>
+										<tr *ngFor="let row of rows; let i = 'index'">
+											<td [innerHTML]="row.step"></td>
+											<td>
+												<select [class.disabled]="i==0" type="text" [(ngModel)]="row.operator" style="width: 100%; min-width:130px; padding-left: 2px;">
+													<option *ngFor="let actions of actionsStaticData; let i='index'" id="actions{{i}}">{{actions.action}}</option>
+												</select>
+											</td>
+											<td>
+												<select style="width: 100%;padding-left: 1px;" type="text" [(ngModel)]="row.operand">
+													<option *ngFor="let values of valuesStaticData; let i='index'" id="values{{i}}">{{values.value}}</option>
+												</select>
+											</td>
+											<td>
+												<input type='number' [(ngModel)]="row.numeral">
+											</td>
+											<td>{{row.result | number:'2.2-4'}}
+											</td>
+											<td>
+												<span class="f-plus" (click)="addRows() ">
+													<i class="fa fa-plus "></i>
+												</span>
+												<!-- <span class="f-minus" *ngIf="rowLength = 1" (click)="deleteFieldValue(row, i)">
+															<i class="fa fa-minus"></i>
+														</span> -->
+												<span class="f-minus" *ngIf="rowLengthInc > 1" (click)="deleteFieldValue(row, i)">
+													<i class="fa fa-minus"></i>
+												</span>
+												<!-- <span class="f-minus" *ngIf="rowLength == 1"  [hidden]="true" >
+																	<i class="fa fa-minus"></i>
+																</span> -->
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-10">
+							<button type="button" (click)="updateSampleCalculation()">{{ 'BUTTON.UPDATE_SAMPLE_CALCULATION' | translate }}</button>
+						</div>
+					</div>
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class='save-btn' (click)="editCompensationGoals()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+							<button type="button" class='cancel-btn' (click)="cancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+						</div>
+					</div>
+				</div>
+				<!-- edit div ends -->
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

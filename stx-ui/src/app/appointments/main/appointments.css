@@ -1,0 +1,560 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
+/** old**/
+
+.appointment-week-table {
+    width: 100%;
+}
+
+.appointment-week-table>tr>td {
+    padding: 1px;
+}
+
+.appointment-margin-checkbox {
+    margin-bottom: -5px
+}
+
+.appointment-label {
+    margin-top: 5px;
+}
+
+.appointment-select-width {
+    width: 75%;
+}
+
+.appointment-button-sidenav>a {
+    margin: 2px 0px;
+    border-radius: 9px;
+    min-width: 156px;
+    text-align: left;
+}
+
+.appointment-search-text {
+    color: black
+}
+
+.appt-cursor {
+    cursor: pointer;
+}
+.staff125{
+    background:rgb(8, 136, 189);
+    width: 83%;
+    float: left;
+}
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content */
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    /* padding: 20px; */
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    right: -10px;
+    position: absolute;
+    top: -10px;
+}
+
+.close:hover, .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal {
+    z-index: 9999 !important;
+}
+.view-by-calneder li:nth-child(1) {
+    margin-left: 22px;
+}
+.modal-content.modal-md {
+    width: 100% !important;
+    max-width: 800px !important;
+}
+
+.modal-content.modal-md .modal-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0;
+}
+
+.pb-10 {
+    padding-bottom: 10px;
+}
+
+.pt-10 {
+    padding-top: 10px;
+}
+
+.appoinment-heading {
+    background: #fff;
+    color: #000;
+    padding: 5px 10px;
+    font-size: 15px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.appoinment-heading span {
+    background: -webkit-gradient(linear, left top, right top, color-stop(0, #16337d), to(#05c9d0));
+    background: linear-gradient(90deg, #16337d 0, #05c9d0 100%);
+    background-position: 50% 50%;
+    background-origin: padding-box;
+    background-clip: border-box;
+    background-size: auto auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+    -ms-background-clip: text;
+    -ms-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-weight: 700;
+}
+
+.close-list {
+    position: relative;
+    z-index: 99;
+}
+
+#expressModel .form-control {
+    height: 25px;
+    padding: 2px 10px 2px 10px;
+}
+
+#expressModel textarea.form-control {
+    height: auto;
+    resize: none;
+    border: 1px solid #000;
+}
+
+#expressModel hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#expressModel .form_cont select {
+    height: 25px;
+    padding: 2px 10px 2px 10px;
+    font-size: 14px;
+}
+
+#expressModel .modal-content {
+    max-width: 600px !important;
+}
+
+#expressModel p {
+    font-size: 12px;
+}
+
+#expressModel label {
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+}
+
+#expressModel {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.close {
+    width: 30px;
+    height: 30px;
+    background: #000 !important;
+    border-radius: 50%;
+    color: #fff !important;
+    font-size: 20px !important;
+    line-height: 30px !important;
+    opacity: 1 !important;
+    text-align: center;
+    text-shadow: none !important;
+    font-weight: normal !important;
+}
+
+.close span {
+    margin: -2px 0 0 0;
+    display: block;
+}
+
+.modal-open {
+    padding: 0 !important;
+}
+
+.fc-header-toolbar {
+    margin: 0em;
+    padding: 15px
+}
+
+@media (min-width:992px) {
+    .apointmnet-right {
+        padding-left: 0;
+        width: 80%;
+        margin-top:-72px;
+    }
+    .apointmnet-left {
+        width: 20%;
+    }
+    .mydp .inlinedp {
+        width: 100%;
+    }
+}
+
+.custom-tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.custom-tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.custom-tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.custom-tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+/* new**/
+
+#wrapper_setup_new {
+    background-size: cover;
+    font-family: 'Raleway', sans-serif;
+    padding-right: 90px;
+}
+
+#wrapper_setup_new * {
+    font-family: 'Raleway', sans-serif;
+}
+
+footer {
+    background: none !important;
+    color: #fff !important;
+}
+
+.sidebar-icons {
+    width: 100px;
+    position: absolute;
+    right: 10px;
+    top: 0;
+    height: 100%;
+}
+
+.sidebar-icons ul {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding-top: 70px;
+}
+
+.sidebar-icons ul li {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+}
+
+.sidebar-icons ul li a {
+    display: block;
+    font-size: 12px;
+    line-height: 18px;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
+}
+
+.sidebar-icons ul li a img {
+    display: block;
+    margin: 0 auto;
+    width: 40px;
+}
+
+.btn-circle {
+    padding: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 13px !important;
+    line-height: 30px !important;
+    text-align: center !important;
+    border-radius: 50% !important;
+}
+
+.apont-head {
+    background: rgba(255, 255, 255, 0.1);
+    border: 0 !important;
+    color: #fff;
+    font-size: 13px;
+    line-height: 18px;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+}
+
+.apont-head-large {
+    background: rgba(255, 255, 255, 0.1);
+    border: 0 !important;
+    color: #fff;
+    font-size: 25px;
+    line-height: 30px;
+    padding: 6px 15px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: 'Raleway', sans-serif !important;
+    font-weight: 500;
+}
+
+.form_cont .btn-default {
+    background: rgba(255, 255, 255, 0.1);
+    border: 0 !important;
+    border-radius: 30px;
+}
+
+.apointmnet-left {
+    color: #fff;
+}
+
+.view-by-calneder ul {
+    display: block;
+    width: 100%;
+}
+
+.view-by-calneder ul li {
+    display: block;
+    width: 25%;
+    float: left;
+    padding: 5px;
+}
+
+.view-by-calneder ul li a {
+    display: block;
+    font-size: 9px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    text-transform: capitalize
+}
+
+.view-by-calneder {
+    overflow: auto;
+}
+
+.select-bg {
+    border: 0 !important;
+    width: 100% !important;
+    background: url(/assets/images/select-arrow.png) no-repeat calc(100% - 10px) center rgba(255, 255, 255, 0.1) !important;
+    color: #fff;
+    padding: 4px 25px 4px 15px;
+    font-size: 13px;
+    line-height: 14px;
+    height: 28px;
+    background-size: 25px auto !important;
+}
+
+.select-bg option {
+    background: #2d7aa8 !important;
+    color: #fff !important;
+    padding: 5px !important;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.appointment-button-sidenav a {
+    min-width: 100%;
+    font-size: 17px;
+    line-height: 17px;
+    padding: 12px 20px;
+    display: block;
+    text-align: center !important;
+    text-transform: uppercase;
+    margin: 5px 0 !important;
+    font-weight: 600;
+}
+
+.table-no-bordered>tbody>tr>td, .table-no-bordered>tbody>tr>th, .table-no-bordered>tfoot>tr>td, .table-no-bordered>tfoot>tr>th, .table-no-bordered>thead>tr>td, .table-no-bordered>thead>tr>th {
+    border: 0;
+    color: #fff;
+}
+
+.icon-profile {
+    border-radius: 50%;
+    border: 1px solid #fff;
+    width: 50px;
+    margin: 0 auto;
+}
+
+.icon-profile img {
+    border-radius: 50%;
+    border: 1px solid #fff;
+    width: 50px;
+}
+
+.container {
+    padding-left: 10px;
+}
+
+.appt-btn {
+    display: inline-block;
+    cursor: pointer;
+    padding: 6px 12px;
+}
+
+.appt-client-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    object-fit: contain;
+    border: 2px solid #efefef;
+    background: #eee;
+}
+
+/***check****/
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    .appointment-week-table>tr>td {
+        text-align: center
+    }
+    .view-by-calneder ul li img {
+        margin: 0 auto;
+    }
+    .apont-head {
+        background: rgba(255, 255, 255, 0.1);
+        border: 0 !important;
+        color: #fff;
+        font-size: 11px;
+        line-height: 18px;
+        padding: 5px 10px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        text-align: center;
+        font-family: 'Raleway', sans-serif;
+        font-weight: 600;
+    }
+    .btn-circle {
+        padding: 0 !important;
+        width: 23px !important;
+        height: 23px !important;
+        font-size: 12px !important;
+        line-height: 21px !important;
+        text-align: center !important;
+        border-radius: 50% !important;
+        font-family: sans-serif !important;
+    }
+    .view-by-calneder ul li a span {
+        display: block;
+        font-size: 6px;
+        line-height: 15px;
+        color: #fff;
+        text-align: center;
+        text-transform: capitalize;
+        transform: scale(1, 1.2);
+        -webkit-transform: scale(1, 1.2);
+        -moz-transform: scale(1, 1.2);
+        -ms-transform: scale(1, 1.2);
+        -o-transform: scale(1, 1.2);
+    }
+    .appointment-button-sidenav a {
+        min-width: 100%;
+        font-size: 12px;
+        line-height: 12px;
+        padding: 10px 15px;
+        display: block;
+        text-align: center !important;
+        text-transform: uppercase;
+        margin: 8px 0 !important;
+        font-weight: 600;
+    }
+}
+#popStyle{
+    border: 1px solid #000000;
+    padding: 10px;
+}
+div#centerDiv {
+    width: 100%;
+    text-align: center;
+}
+ul.centerUL {
+    margin: auto;
+    padding-left: 0;
+}
+.centerUL li {
+    display: inline;
+    text-align: center;
+}
+.margin-btm {
+    margin-bottom: -10px;
+}
+.bluemodal.small-modal .modal-content {
+    max-width: 400px !important;
+}
+.bluemodal.small-modal .modal-dialog {
+    width:100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+}
+.staff-search-list-mobile, .staff-search-list-email {
+    font-size: 12px;
+    text-transform: lowercase;
+}

@@ -1,0 +1,41 @@
+.nav-tabs>li {
+    cursor: pointer;
+}
+.form_cont table {
+    color: white;
+}
+.form_cont input[type=text], .form-control,.form_cont, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont textarea, .form_cont select {
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus, .form_cont textarea:focus {
+	color: black;
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    :host ::ng-deep   .nav>li>a {
+        padding:10px;
+        font-size: 13px;
+    }
+    .form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont select {
+        width: 70%;
+    } 
+    :host ::ng-deep .fl[_ngcontent-c0] {
+        float: left;
+        width: 45% !important;
+        margin-right: 7px;
+    }
+    .col-sm-6 {
+        width: 37%;
+    }
+}
+.fl {
+    float: left;
+    width: 27% !important;
+    margin-right: 7px;
+    margin-left: 5px;
+}
+.col-sm-6 {
+    width: 38.6%;
+}
+#inner_cont {
+    margin-right: 9.5%;
+}

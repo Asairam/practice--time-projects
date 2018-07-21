@@ -1,0 +1,1435 @@
+<div id="wrapper_setup_new">
+    <app-header></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <ul class="nav nav-tabs">
+                <li class="tablinks {{activeTabClass[0]}}" id="favoritesnav" (click)="updateTabs(0)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.CLIENT_INFO' | translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[1]}}" id="favoritesnav" (click)="updateTabs(1)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.CLIENT_PROFILE'|translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[2]}}" id="favoritesnav" (click)="updateTabs(2)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.APPOINTMENTS' | translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[3]}}" id="favoritesnav" (click)="updateTabs(3)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.EMAIL_TEXT_LOG'|translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[4]}}" id="favoritesnav" (click)="updateTabs(4)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.PRODUCT_LOG' | translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[5]}}" id="favoritesnav" (click)="updateTabs(5)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.SERVICE_LOG' | translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[6]}}" id="favoritesnav" (click)="updateTabs(6)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.CLASS_LOG' | translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[7]}}" id="favoritesnav" (click)="updateTabs(7)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.PREFERENCES' | translate}}</b>
+                    </a>
+                </li>
+                <li class="tablinks {{activeTabClass[8]}}" id="favoritesnav" (click)="updateTabs(8)">
+                    <a data-toggle="tab">
+                        <b>{{'CLIENT_EDIT.ACCOUNTS' | translate}}</b>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <!-- client info div starts -->
+                <div class="red">{{ error | translate }}</div>
+                <div class="red">{{ clientInfoError1 | translate }}</div>
+                <div class="red">{{ clientInfoError2 | translate }}</div>
+                <div class="red">{{ clientInfoError3 | translate }}</div>
+                <div class="red">{{ clientInfoError4 | translate }}</div>
+                <div class="red">{{ clientInfoError5 | translate }}</div>
+                <div class="red">{{ clientInfoError6 | translate }}</div>
+                <div class="red">{{ clientInfoError7 | translate }}</div>
+                <div class="red">{{ clientInfoError8 | translate }}</div>
+                <div *ngIf="activeTab2[0]">
+                    <div class="tab-pane fade in active">
+                        <p class="red">{{ deleteError | translate }}</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered inptwdth">
+
+                                <tbody>
+                                    <tr>
+                                        <td>Active</td>
+                                        <td colspan="5" *ngIf='clientInfoActive == 0'>
+                                            <input type="checkbox" [(ngModel)]="clientInfoActive">
+                                        </td>
+                                        <td colspan="5" *ngIf='clientInfoActive == 1'>
+                                            <input type="checkbox" [(ngModel)]="clientInfoActive" checked>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.FIRST_NAME' | translate}}
+                                            <span class="red">*</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoFirstName" (keydown)="clearmessage()">
+
+                                        </td>
+                                        <td>{{'CLIENT_EDIT.MIDDLE_NAME'| translate}} </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoMiddleName" (keydown)="clearmessage()">
+                                        </td>
+                                        <td>{{'CLIENT_EDIT.LAST_NAME' | translate}}
+                                            <span class="red">*</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoLastName" (keydown)="clearmessage()">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered inptwdth">
+
+                                <tbody>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.MAILING_STREET' | translate}}</td>
+                                        <td>
+                                            <textarea [(ngModel)]="clientInfoMailingStreet" (keydown)="clearmessage()"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.MAILING_COUNTRY' | translate}}</td>
+                                        <td>
+                                            <select (change)="getCountry($event.target.value);" (click)="clearmessage()">
+                                                <option>{{country}}</option>
+                                                <option>--None--</option>
+                                                <option *ngFor="let mailingcountrieslist of mailingCountriesList; let i='index'" (keypress)="Clear();clearError3();" value="{{mailingcountrieslist.NAME}}"
+                                                    id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.MAILING_ZIP_POSTAL_CODE' | translate}}</td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoPostalCode" (keydown)="clearmessage()" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.MAILING_CITY' | translate}}</td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoMailingCity" (keydown)="clearmessage()" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.MAILING_STATE_PROVINCE' | translate}}</td>
+                                        <td>
+                                            <select (change)="getStates($event.target.value);" (click)="clearmessage()">
+                                                <option>{{state}}</option>
+                                                <option>--None--</option>
+                                                <option *ngFor="let stateslist of statesList; let i='index'" value="{{stateslist.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{stateslist.STATE}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered inptwdth">
+
+                                <tbody>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.PRIMARY_PHONE' |translate}}</td>
+                                        <td>
+                                            <input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                                id="mobile_id" (keypress)='hyphen_generate_mobile(clientInfoPrimaryPhone);' [(ngModel)]="clientInfoPrimaryPhone"
+                                                (keydown)="clearmessage()" />
+                                        </td>
+                                        <td>{{'CLIENT_EDIT.MOBILE_PHONE'|translate}}
+                                            <span class="red">*</span>
+                                        </td>
+                                        <td>
+                                            <input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                                id="mobile_id1" (keypress)='hyphen_generate_mobile1(clientInfoMobilePhone);'
+                                                [(ngModel)]="clientInfoMobilePhone" (keydown)="clearmessage()" />
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h1 class="sub_titles">{{'CLIENT_EDIT.EMAILS' | translate}}</h1>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered inptwdth">
+
+                                <tbody>
+
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.NO_EMAIL'|translate}}</td>
+                                        <td *ngIf="noEmail== 0">
+                                            <input type="checkbox" [(ngModel)]="noEmail" />
+                                        </td>
+                                        <td *ngIf="noEmail== 1">
+                                            <input type="checkbox" [(ngModel)]="noEmail" checked/>
+                                        </td>
+                                    </tr>
+                                    <ng-container *ngIf="noEmail== 0">
+                                        <tr>
+                                            <td>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}
+                                                <span class="red">*</span>
+                                            </td>
+                                            <td>
+                                                <input type="text" [(ngModel)]="clientInfoEmail" (keydown)="clearmessage()" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{'CLIENT_EDIT.SECONDARY_EMAIL' | translate}}</td>
+                                            <td>
+                                                <input type="text" [(ngModel)]="clientInfoSecondaryEmail" (keydown)="clearmessage()" />
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-container *ngIf="noEmail== 1 ">
+                                        <tr>
+                                            <td>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}</td>
+                                            <td>
+                                                <input type="text" class="disable" [(ngModel)]="clientInfoEmail" disabled/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{'CLIENT_EDIT.SECONDARY_EMAIL' | translate}}</td>
+                                            <td>
+                                                <input type="text" class="disable" disabled/>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <h1 class="sub_titles">{{'CLIENT_EDIT.IN_CASE_OF_EMERGENCY'|translate}}</h1>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered inptwdth">
+
+                                <tbody>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.EMERGENCY_NAME'|translate}}</td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoEmergName" (keydown)="clearmessage()" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.EMERGENCY_PRIMARY_PHONE'|translate}}</td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoEmergPrimaryPhone" (keydown)="clearmessage()" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.EMERGENCY_SECONDARY_PHONE' | translate}}</td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="clientInfoEmergSecondaryPhone" (keydown)="clearmessage()" />
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered inptwdth">
+
+                                <tbody>
+                                    <tr>
+                                        <td>{{'CLIENT_EDIT.RESPONSIBLE_PARTY'| translate}}
+                                            <input type="button" value="Lookup" (click)="getLookupPopup()" /> {{infoClientName}}
+                                        </td>
+                                        <td>
+                                            <input type="button" value="Clear" (click)="clearinfoClientName()" />
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- client info div ends -->
+                <!-- client profile div starts -->
+                <div *ngIf="activeTab2[1]">
+                    <!-- <div id="menu1" class="tab-pane fade"> -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered inptwdth">
+                            <tbody>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.GENDER'|translate}}</td>
+                                    <td colspan="3">
+                                        <select [(ngModel)]="genderValue" style="width: 100%">
+                                            <option value="-" selected>--None--</option>
+                                            <option *ngFor="let gender of genderData; let i='index'" value="{{gender.type}}" id="gender{{i}}">{{gender.type}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.OCCUPATION' | translate}}</td>
+                                    <td colspan="3">
+                                        <select (change)="onChangeOccupations($event.target.value)" [(ngModel)]="occupationvalue">
+                                            <option>{{occupationvalue}}</option>
+                                            <option *ngFor="let ocupations of occupationData; let i = 'index'" value='{{ocupations.occupationName}}'>{{ocupations.occupationName}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.BIRTH_DATE' | translate}}</td>
+                                    <td width="20%">{{'CLIENT_EDIT.CLIENT_PROFILE.MONTH'|translate}}
+                                        <select [(ngModel)]="birthMonth" (change)="changeMonths($event.target.value)" style="width: 100%">
+                                            <option value="-" selected>--None--</option>
+                                            <option *ngFor="let month of monthsArray; let i='index'" value="{{month.value}}" id="month{{i}}">{{month.month}}</option>
+                                        </select>
+                                    </td>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.DAY' | translate}}
+                                        <select [(ngModel)]="birthDay" style="width: 100%">
+                                            <option value="-" selected>--None--</option>
+                                            <option *ngFor="let day of daysArray; let i='index'" value="{{day}}" id="day{{i}}">{{day}}</option>
+                                        </select>
+                                    </td>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.YEAR'|translate}}
+                                        <input type="number" [(ngModel)]="birthYear">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.FLAGS' |translate}}</td>
+                                    <td colspan="3">
+                                        <select class="clientedit-multi-select" multiple [(ngModel)]="selectedFlags">
+                                            <option *ngFor="let Cflags of clientFlags; let i = 'index'" value='{{Cflags.flagName}}'>{{Cflags.flagName}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.NOTES' | translate}}</td>
+                                    <td colspan="3">
+                                        <textarea [(ngModel)]="notes"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered inptwdth">
+                            <tbody>
+                                <tr>
+                                    <td width="40%">{{'CLIENT_EDIT.CLIENT_PROFILE.REFERED_BY' | translate}}</td>
+                                    <td>
+                                        <button (click)="showProfileModal()">Lookup</button>{{clientName}}
+                                        <button (click)="clearClientName()">Clear</button>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.REFERED_DATE' | translate}}</td>
+                                    <td>{{referedOnDate | date:'MM/dd/yyyy'}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.REFERED_FRIEND_PROSPECT' | translate}}</td>
+                                    <td *ngIf='ReferedAFriendProspect == 1'>
+                                        <input type="checkbox" [(ngModel)]="ReferedAFriendProspect" checked/>
+                                    </td>
+                                    <td *ngIf='ReferedAFriendProspect == 0'>
+                                        <input type="checkbox" [(ngModel)]="ReferedAFriendProspect" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.MY_REFERRALS' | translate}}</td>
+                                    <td>
+                                        <select>
+                                            <option>{{referralsLength}} Referrals</option>
+                                            <option *ngFor="let refData of referredClientData">{{refData}}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'CLIENT_EDIT.CLIENT_PROFILE.CLIENT_PICTURE' | translate}}</td>
+                                    <td colspan="3">
+                                        <input style="display: none" id="fileUpload" type="file" (change)="selectFile($event)">
+                                        <div class="chooseFileName">
+                                            <label class="uploadButton" for="fileUpload" style="margin-top: 10px;">Choose File</label>{{fileName}}
+                                            <img [src]="clientPictureFileView" width="50" (error)="imageErrorHandler($event);" height="50" style="margin-bottom: 6px; margin-left: 10px;">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- </div> -->
+                </div>
+
+                <!-- ------------------merge client popup starts-------------------- -->
+                <div bsModal #mergeClientModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+                    role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="clearfix">
+                                        <div class="row mt-20">
+                                            <div class="col-md-5 col-sm-4 text-right res-tleft">
+                                                <label>{{'CLIENTS.SEARCH' | translate}}</label>
+                                            </div>
+                                            <div class="col-md-7 col-sm-8">
+                                                <input type="text" [(ngModel)]="searchKey" style="color:black" />
+                                            </div>
+                                            <div class="row mt-20">
+                                                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                                                    &nbsp;
+                                                </div>
+                                                <div class="col-md-7 col-sm-8">
+                                                    <button type="button" class="btn btn-primary" (click)="searchClients()">
+                                                        <i class="fa fa-binoculars" aria-hidden="true"></i> {{ 'CLIENTS.SEARCH' | translate }}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="mt-50" />
+                                        <!-- data table starts -->
+                                        <div class="row mt-20 res-mt-15">
+                                            <div class="col-md-12">
+                                                <div class="table-responsive">
+                                                    <p-dataTable [responsive]="true" [value]="DataObj" [rows]="rowsPerPage" [paginator]="true" [pageLinks]="2" expandableRows="true">
+                                                        <p-column field="Active__c" header="{{ 'COMMON.ACTIVE' | translate }}">
+                                                            <ng-template let-user="rowData" pTemplate="body">
+                                                                <span *ngIf='user.Active__c == 1'>
+                                                                    <input type="checkbox" checked />
+                                                                </span>
+                                                                <span *ngIf='user.Active__c == 0'>
+                                                                    <input type="checkbox" />
+                                                                </span>
+                                                            </ng-template>
+                                                        </p-column>
+
+                                                        <p-column field="FullName" header="{{'CLIENTS.FULL_NAME'| translate }}">
+                                                            <ng-template let-user="rowData" pTemplate="body">
+                                                                <span>
+                                                                    <a [routerLink]="['/client/merge/' + user.Id + '/' + clientId]">{{user.FullName}}</a>
+                                                                </span>
+                                                            </ng-template>
+                                                        </p-column>
+                                                        <p-column field="Phone" header="{{'CLIENTS.PRIMARY_PHONE'| translate }}"></p-column>
+                                                        <p-column field="MobilePhone" header="{{'CLIENTS.MOBILE_PHONE'| translate }}"></p-column>
+                                                        <p-column field="Email" header="{{'CLIENTS.PRIMARY_EMAIL'| translate }}"></p-column>
+                                                    </p-dataTable>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- data table end -->
+                                    </div>
+                                    <!-- clearfix end -->
+                                </div>
+                                <div class="row">
+                                    <div class="text-center mt-40">
+                                        <button class="save-btn" type="button">New</button>
+                                        <button class="cancel-btn" type="button" (click)='cancelModal()'>{{'BUTTON.CANCEL' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                </div>
+
+
+                <!-- ----------------merge client popup ends------------------- -->
+                <!-- client profile div ends -->
+                <!-- appointments div starts -->
+                <div *ngIf="activeTab2[2]">
+                    <!-- <div id="menu2" class="tab-pane fade"> -->
+                    <h1 class="sub_titles">{{'CLIENT_EDIT.APPOINTMENTS.BOOKING_RESTRICTIONS' | translate}}</h1>
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>Type</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+                            <select (change)="onChangeBRTypes($event.target.value)" [(ngModel)]="BRTypeValue">
+                                <option>{{BRTypeValue}}</option>
+                                <option value=''>None</option>
+                                <option *ngFor='let types of BRTypesData' value="{{types}}">{{types}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.REASONS' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+                            <div *ngIf="noEmailAppt == 1">
+                                <input id="c1" type="checkbox" [(ngModel)]="noEmailAppt" class="pull-left" checked>&nbsp;&nbsp;
+                                <label for="c1" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.NO_EMAIL'|translate}}</label>
+                            </div>
+
+                            <div *ngIf="noEmailAppt == 0">
+                                <input id="c1" type="checkbox" [(ngModel)]="noEmailAppt" class="pull-left">&nbsp;&nbsp;
+                                <label for="c1" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.NO_EMAIL'|translate}}</label>
+                            </div>
+                            <div class="mt-10" *ngIf="accoutChargeBalance == 1">
+                                <input id="c2" type="checkbox" [(ngModel)]="accoutChargeBalance" checked class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c2" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.ACC_CHARGE_BALANCE' | translate}}</label>
+                            </div>
+                            <div class="mt-10" *ngIf="accoutChargeBalance == 0">
+                                <input id="c2" type="checkbox" [(ngModel)]="accoutChargeBalance" class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c2" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.ACC_CHARGE_BALANCE' | translate}}</label>
+                            </div>
+
+                            <div class="mt-10" *ngIf="depositRequired == 1">
+                                <input id="c3" type="checkbox" [(ngModel)]="depositRequired" checked class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c3" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.DEPOSIT_REQUIRED' | translate}}</label>
+                            </div>
+                            <div class="mt-10" *ngIf="depositRequired == 0">
+                                <input id="c3" type="checkbox" [(ngModel)]="depositRequired" class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c3" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.DEPOSIT_REQUIRED' | translate}}</label>
+                            </div>
+
+                            <div class="mt-10" *ngIf="persistanceNoShow == 1">
+                                <input id="c4" type="checkbox" [(ngModel)]="persistanceNoShow" checked class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c4" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.PERSISTENCE_NO_SHOW' | translate}}</label>
+                            </div>
+                            <div class="mt-10" *ngIf="persistanceNoShow == 0">
+                                <input id="c4" type="checkbox" [(ngModel)]="persistanceNoShow" class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c4" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.PERSISTENCE_NO_SHOW' | translate}}</label>
+                            </div>
+
+                            <div class="mt-10" *ngIf="other == 1">
+                                <input id="c5" type="checkbox" [(ngModel)]="other" checked class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c5" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.OTHER' | translate}}</label> &nbsp;&nbsp;
+                                <input type="text" [(ngModel)]="otherReason" />
+                            </div>
+                            <div class="mt-10" *ngIf="other == 0">
+                                <input id="c5" type="checkbox" [(ngModel)]="other" class="pull-left mt-10">&nbsp;&nbsp;
+                                <label for="c5" class="c1">{{'CLIENT_EDIT.APPOINTMENTS.OTHER' | translate}}</label> &nbsp;&nbsp;
+                                <input type="text" [(ngModel)]="otherReason" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.NOTES' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+                            <textarea [(ngModel)]="apptNotes"></textarea>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.LAST_VISIT' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+                            {{'CLIENT_EDIT.APPOINTMENTS.LAST_VISIT_DATE' | translate}}
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.BOOKING_FREQUENCY' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+                            <input type="text" [(ngModel)]="bookingFrequency" value="0" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.ALLOW_ONLINE_BOOKING' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8" *ngIf="allowOnlineBooking == 1">
+                            <input type="checkbox" [(ngModel)]="allowOnlineBooking" checked />
+                        </div>
+                        <div class="col-md-7 col-sm-8" *ngIf="allowOnlineBooking == 0">
+                            <input type="checkbox" [(ngModel)]="allowOnlineBooking" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.HAS_STANDING_APPT' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8" *ngIf="hasStandingAppt == 1">
+                            <input type="checkbox" [(ngModel)]="hasStandingAppt" checked/>
+                        </div>
+                        <div class="col-md-7 col-sm-8" *ngIf="hasStandingAppt == 0">
+                            <input type="checkbox" [(ngModel)]="hasStandingAppt" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.PIN' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+                            <input type="password" [(ngModel)]="pin" value="123456" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-5 col-sm-4 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.STANDING_APPT_EXP' | translate}}</label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row mt-20 mb-20">
+                        <div class="col-md-4">
+                            <span class="pull-left">
+                                <label class="mt-10">{{'CLIENT_EDIT.APPOINTMENTS.APPOINTMENT_VIEW' | translate}} &nbsp;&nbsp;</label>
+                            </span>
+                            <select (change)="onChangeViews($event.target.value)">
+                                <option *ngFor='let view of apptViewsData' value='{{view}}'>{{view}}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.SHOW_ALL_APPOINTMENTS' | translate}}</label>
+                            <input type="checkbox" (click)="getAllClientAppointments($event)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>{{'CLIENT_EDIT.APPOINTMENTS.SHOW_CANCELL' | translate}} </label>
+                            <input type="checkbox" (click)="getCancelledClientAppointments($event)" />
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.APPOINTMENTS_DATE' | translate}}</th>
+                                    <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.APPOINTMENT_TIME' | translate}}</th>
+                                    <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.STATUS' | translate}}</th>
+                                    <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.SERVICE' | translate}}</th>
+                                    <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.WORKER' | translate}}</th>
+                                    <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.DURATION' | translate}}</th>
+                                    <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.PREFERRED_DURATION' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor='let apptData of resultAppointments'>
+                                    <td>{{apptData.Appt_Date_Time__c | date:'MM/dd/yyyy'}}</td>
+                                    <td>{{apptData.Time | date:'h:mm a'}}</td>
+                                    <td *ngIf="apptData.Appt_Date_Time__c !== '' && apptData.Time === ''">{{apptData.Status__c}}</td>
+                                    <td *ngIf="apptData.Time !== ''"></td>
+                                    <td>{{apptData.ServiceName}}</td>
+                                    <td>{{apptData.WorkerName}}</td>
+                                    <td>{{apptData.Duration__c}}</td>
+                                    <td *ngIf='apptData.PrefDur == false'></td>
+                                    <td *ngIf='apptData.PrefDur == true'>
+                                        <input type="checkbox" [(ngModel)]="apptData.PrefDur">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- appointments div ends -->
+                <!-- email text log div starts -->
+                <div *ngIf="activeTab2[3]">
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'CLIENT_EDIT.EMAIL_TEXT_LOG.DATE_SENT' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.NAME' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.EMAIL_TEXT_LOG.TYPE'| translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.EMAIL_TEXT_LOG.TRACKING' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let emailTextLoglist of emailTextLogList; let i='index'">
+                                        <td>{{emailTextLoglist.Sent__c}}</td>
+                                        <td>{{emailTextLoglist.Name}}</td>
+                                        <td>{{emailTextLoglist.Type__c}}</td>
+                                        <td>{{emailTextLoglist.Tracking__c}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- <div class="mb-20 clearfix brdgrey">
+                                <div class="col-md-12  pdgt5">
+                                    Product Summary: 0 Products / Total Amount $0.00
+                                </div>
+                            </div> -->
+                    </div>
+                </div>
+                <!-- email text log div ends -->
+                <!-- product log div starts -->
+                <div *ngIf="activeTab2[4]">
+                    <!-- <div id="menu4" class="tab-pane fade"> -->
+
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.DATE' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.WORKER'|translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.PRODUCT_SIZE' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.QTY_SOLD' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.PROMOTION' |translate}}</th>
+                                        <th class="thcss">{{'COMMON.AMOUNT' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let productLoglist of productLogList; let i='index'">
+                                        <td>{{productLoglist.Appt_Date_Time__c | date:'MM/dd/yyyy'}}</td>
+                                        <td>{{productLoglist.Appt_Ticket__c}}</td>
+                                        <td>{{productLoglist.Username}}</td>
+                                        <td>{{productLoglist.Size__c}}</td>
+                                        <td>{{productLoglist.Qty_Sold__c}}</td>
+                                        <td>{{productLoglist.promotionName}}</td>
+                                        <td>{{productLoglist.Price__c}}</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="mb-20 clearfix brdgrey">
+                            <div class="col-md-12  pdgt5">
+                                {{'CLIENT_EDIT.PRODUCT_LOG.PRODUCT_SUMMARY' | translate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- product log div ends -->
+                <!-- service log div starts -->
+                <div *ngIf="activeTab2[5]">
+                    <!-- <div id="menu5" class="tab-pane fade"> -->
+
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.DATE' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.WORKER'|translate}}</th>
+                                        <th class="thcss">{{'COMMON.SERVICE'|translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.CLIENT_PROFILE.NOTES' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.PROMOTION'|translate}}</th>
+                                        <th class="thcss">{{'COMMON.AMOUNT' |translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let serviceloglist of serviceLogList; let i='index'">
+                                        <td>{{serviceloglist.Service_Date_Time__c | date:'MM/dd/yyyy'}}</td>
+                                        <td>{{serviceloglist.Appt_Ticket__c}}</td>
+                                        <td>{{serviceloglist.Username}}</td>
+                                        <td>{{serviceloglist.Name}}</td>
+                                        <td *ngIf="serviceloglist.Notes__c == ''">
+                                            <a (click)='showNotesModal(i, serviceloglist);' class="white">
+                                                <i class="fa fa-sticky-note-o"></i>
+                                            </a>
+                                        </td>
+                                        <td *ngIf="serviceloglist.Notes__c != ''">
+                                            <a (click)='showNotesModal(i, serviceloglist);' class="white">
+                                                <i style="background-color:yellow" class="fa fa-sticky-note-o"></i>
+                                            </a>
+                                        </td>
+                                        <td>{{serviceloglist.Promotion__c}}</td>
+                                        <td>{{serviceloglist.Price_per_Attendee__c}}</td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mb-20 clearfix brdgrey">
+                            <div class="col-md-12  pdgt5">
+                                Service Summary: {{serviceLogLength}} Services / Total Amount $0.00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- service log div ends -->
+                <!-- class log div starts -->
+                <div *ngIf="activeTab2[6]">
+                    <!-- <div id="menu6" class="tab-pane fade"> -->
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.DATE' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.CLASS_LOG.CLASS' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.WORKER'|translate}}</th>
+                                        <th class="thcss">{{'COMMON.CLASS' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.PRICE'| translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let classLoglist of classLogList; let i='index'">
+                                        <td>{{classLoglist.ClassLogDate}}</td>
+                                        <td>{{classLoglist.Class__c}}</td>
+                                        <td>{{classLoglist.Username}}</td>
+                                        <td>{{classLoglist.className}}</td>
+                                        <td>{{classLoglist.Amount__c}}</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="mb-20 clearfix brdgrey">
+                            <div class="col-md-12  pdgt5">
+                                Class Summary: {{classLogLength}} Classes / Total Amount $0.00
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 
+                        </div> -->
+                </div>
+                <!-- class log div ends -->
+                <!-- preferences div starts -->
+                <div *ngIf="activeTab2[7]">
+                    <!-- <div id="menu7" class="tab-pane fade"> -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1 class="sub_titles">{{'COMMON.MARKETING' | translate}}</h1>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.PREFERENCES.OPT_OUT' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingOptOut == 1'>
+                            <input type="checkbox" [(ngModel)]="marketingOptOut" checked/>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingOptOut == 0'>
+                            <input type="checkbox" [(ngModel)]="marketingOptOut" />
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'COMMON.MOBILE_PHONE' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingMobilePhone == 1'>
+                            <input type="checkbox" [(ngModel)]="marketingMobilePhone" checked/>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingMobilePhone == 0'>
+                            <input type="checkbox" [(ngModel)]="marketingMobilePhone" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingPrimaryEmail == 1'>
+                            <input type="checkbox" [(ngModel)]="marketingPrimaryEmail" checked/>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingPrimaryEmail == 0'>
+                            <input type="checkbox" [(ngModel)]="marketingPrimaryEmail" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.SECONDARY_EMAIL' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingSecondaryEmail == 1'>
+                            <input type="checkbox" [(ngModel)]="marketingSecondaryEmail" checked/>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='marketingSecondaryEmail == 0'>
+                            <input type="checkbox" [(ngModel)]="marketingSecondaryEmail" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-30">
+                        <div class="col-md-12">
+                            <h1 class="sub_titles">{{'COMMON.NOTIFICATIONS'| translate}}</h1>
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.PREFERENCES.OPT_OUT' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationOptOut == 1'>
+                            <input type="checkbox" [(ngModel)]="notificationOptOut" checked/>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationOptOut == 0'>
+                            <input type="checkbox" [(ngModel)]="notificationOptOut" />
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'COMMON.MOBILE_PHONE'|translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationMobilePhone == 1'>
+                            <input type="checkbox" [(ngModel)]="notificationMobilePhone" checked/>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationMobilePhone == 0'>
+                            <input type="checkbox" [(ngModel)]="notificationMobilePhone" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationPrimaryEmail == 1'>
+                            <input type="checkbox" [(ngModel)]="notificationPrimaryEmail" checked/>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationPrimaryEmail == 0'>
+                            <input type="checkbox" [(ngModel)]="notificationPrimaryEmail" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.SECONDARY_EMAIL'|translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationSecondaryEmail == 1'>
+                            <input type="checkbox" [(ngModel)]="notificationSecondaryEmail" checked/>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6" *ngIf='notificationSecondaryEmail == 0'>
+                            <input type="checkbox" [(ngModel)]="notificationSecondaryEmail" />
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-30">
+                        <div class="col-md-12">
+                            <h1 class="sub_titles">{{'COMMON.REMINDER'|translate}}</h1>
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.PREFERENCES.OPT_OUT' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderOptOut == 1'>
+                            <input type="checkbox" [(ngModel)]="reminderOptOut" checked/>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderOptOut == 0'>
+                            <input type="checkbox" [(ngModel)]="reminderOptOut" />
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'COMMON.MOBILE_PHONE' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderMobilePhone == 1'>
+                            <input type="checkbox" [(ngModel)]="reminderMobilePhone" checked/>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderMobilePhone == 0'>
+                            <input type="checkbox" [(ngModel)]="reminderMobilePhone" />
+                        </div>
+                    </div>
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderPrimaryEmail == 1'>
+                            <input type="checkbox" [(ngModel)]="reminderPrimaryEmail" checked/>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderPrimaryEmail == 0'>
+                            <input type="checkbox" [(ngModel)]="reminderPrimaryEmail" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'CLIENT_EDIT.SECONDARY_EMAIL'|translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderSecondaryEmail == 1'>
+                            <input type="checkbox" [(ngModel)]="reminderSecondaryEmail" checked/>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6" *ngIf='reminderSecondaryEmail == 0'>
+                            <input type="checkbox" [(ngModel)]="reminderSecondaryEmail" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-20 mb-30">
+                        <div class="col-md-6 col-sm-6 text-right res-tleft">
+                            <label>{{'COMMON.MOBILE_CARRIER' | translate}}</label>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <select (change)="onChangeMobileCarrier($event.target.value)" (click)="clearmessage()">
+                                <option value="">--None--</option>
+                                <option *ngFor="let mobiledata of mobileCarrierData; let i = 'index'" [selected]="mobiledata.mobileCarrierName == mobileCarrierName"
+                                    value='{{mobiledata.mobileCarrierName}}'>{{mobiledata.mobileCarrierName}} </option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- </div> -->
+                </div>
+                <!-- preferences div ends -->
+                <!-- accounts div starts -->
+                <div *ngIf="activeTab2[8]">
+                    <!-- <div id="menu8" class="tab-pane fade"> -->
+                    <div class="row mt-20 clearfix brdgrey">
+                        <div class="col-md-12  pdgt5">
+                            {{'COMMON.REWARDS' | translate}}
+                        </div>
+                    </div>
+
+                    <div class="row mt-10">
+                        <div class="col-md-12" *ngIf='activeRewards == 1'>
+                            {{'COMMON.ACTIVE_REWARDS' | translate}}
+                            <input type="checkbox" checked [(ngModel)]="activeRewards" />
+                        </div>
+                        <div class="col-md-12" *ngIf='activeRewards == 0'>
+                            {{'COMMON.ACTIVE_REWARDS' | translate}}
+                            <input type="checkbox" [(ngModel)]="activeRewards" />
+                        </div>
+                    </div>
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.REWARD_PRO' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.POINTS_BAL' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.ADJUST_POINT' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.DESCRIPTION' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor='let rewarddata of rewardData'>
+                                        <td>{{rewarddata.Name}}</td>
+                                        <td>{{rewarddata.Points_c}}</td>
+                                        <td>
+                                            <input type="text" (click)="clearErrForRewards()" [(ngModel)]="rewarddata.adjustPoints" />
+                                        </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="rewarddata.rewardDesc" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row mt-20 clearfix brdgrey">
+                        <div class="col-md-12  pdgt5">
+                            {{'COMMON.MEMBERSHIP' | translate}}
+                        </div>
+                    </div>
+
+                    <div class="row mt-10">
+                        <div class="col-md-6">
+                            {{'COMMON.MEMBERSHIP_ID'| translate}}
+                            <input type="text" [(ngModel)]="clientMemberShipId" />
+                        </div>
+                    </div>
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.MEMBERSHIP_PRO' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.PURCHASE_DATE' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.MEMBERSHIP_PRICE' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.AUTO_BILL'|translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.BILLING_STATUS'|translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.NEXT_BILL_DATE' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor='let memberShipsData of clientMemberShipsData'>
+                                        <td>{{memberShipsData.Name}}</td>
+                                        <td>12/21/2015</td>
+                                        <td>{{memberShipsData.Membership_Price__c}}</td>
+                                        <td *ngIf='memberShipsData.Auto_Bill__c == 1'>
+                                            <input type="checkbox" [(ngModel)]="memberShipsData.Auto_Bill__c"/>
+                                        </td>
+                                        <td *ngIf='memberShipsData.Auto_Bill__c == 0'>
+                                            <input type="checkbox" [(ngModel)]="memberShipsData.Auto_Bill__c"/>
+                                        </td>
+                                        <td width="20%">Approved</td>
+                                        <td>
+						                    <input type="text" [(ngModel)]="memberShipsData.Next_Bill_Date__c" bsDatepicker  [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+                                            <!-- <input type="text" [(ngModel)] ="clientMemberShipsData.Next_Bill_Date__c" /> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row mt-20 clearfix brdgrey">
+                        <div class="col-md-12  pdgt5">
+                            {{'COMMON.PACKAGES' |translate}}
+                        </div>
+                    </div>
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.DATE_PUR' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.PACKAGE_NAME' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.UNUSED'| translate}}</th>
+                                        <th class="thcss">{{'COMMON.ITEM' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.UNUSED_VALUE' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor='let packagesData of clientPackagesData'>
+                                        <td>{{packagesData.CreatedDate | date:'MM/dd/yyyy'}}</td>
+                                        <td>{{packagesData.TicketName}}</td>
+                                        <td>{{packagesData.Name}}</td>
+                                        <td>{{packagesData.unused}}</td>
+                                        <td>{{packagesData.serviceName}}</td>
+                                        <td>{{packagesData.unusedValue}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-10 clearfix brdgrey">
+                        <div class="col-md-12 text-right pdgt5">
+                            {{'CLIENT_EDIT.ACCOUNTS.TOTAL_UNUSED_VALUE' | translate}} {{totalUnUsedValue}}
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row mt-10 clearfix brdgrey">
+                        <div class="col-md-6 pdgt5">
+                            {{'COMMON.ACC_BAL' | translate}}
+                        </div>
+                        <div class="col-md-6 text-right pdgt5">
+                            {{'CLIENT_EDIT.ACCOUNTS.NEGATIVE_AMOUNT' | translate}}
+                        </div>
+                    </div>
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.DATE'| translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.DEBIT_TYPE' |translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.CREDIT_TYPE' |translate}}</th>
+                                        <th class="thcss">{{'COMMON.AMOUNT_PAID' | translate}}</th>
+                                        <th class="thcss">{{'COMMON.CURRENT_BAL' | translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor='let acctData of clientAccountsData'>
+                                        <td>{{acctData.dateTime | date:'MM/dd/yyyy'}}</td>
+                                        <td>{{acctData.TicketName}}</td>
+                                        <td>{{acctData.debitType}}</td>
+                                        <td>{{acctData.Transaction_Type__c}}</td>
+                                        <td>{{acctData.Amount_Paid__c}}</td>
+                                        <td>{{acctData.Amount__c}}</td>
+                                    </tr>
+                                    <!-- <tr>
+                                            <td>3/22/2017</td>
+                                            <td>000826</td>
+                                            <td>Account Charge</td>
+                                            <td></td>
+                                            <td>55.00</td>
+                                            <td>130.55</td>
+                                        </tr>
+                                        <tr>
+                                            <td>11/30/2016</td>
+                                            <td>000724</td>
+                                            <td>Account Charge</td>
+                                            <td></td>
+                                            <td>10.00</td>
+                                            <td>75.55</td>
+                                        </tr>
+                                        <tr>
+                                            <td>11/30/2016</td>
+                                            <td>000722</td>
+                                            <td>Account Charge</td>
+                                            <td></td>
+                                            <td>10.00</td>
+                                            <td>65.55</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5/26/2016</td>
+                                            <td>000496</td>
+                                            <td>Account Charge</td>
+                                            <td></td>
+                                            <td>55.00</td>
+                                            <td>55.55</td>
+                                        </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-10 clearfix brdgrey">
+                        <div class="col-md-12 text-right pdgt5">
+                            {{'COMMON.STARTING_BAL' | translate}}
+                            <input type="text" [maxlength]="'13'" (keypress)="IsAlphaNumeric($event,'startingbalance')" (click)="error=''" [(ngModel)]="startingBalance">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row mt-20 clearfix brdgrey">
+                        <div class="col-md-12 pdgt5">
+                            {{'CLIENT_EDIT.ACCOUNTS.STORE_CR' | translate}}
+                        </div>
+                    </div>
+                    <div class="row mt-20">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+
+                                <thead>
+                                    <tr>
+                                        <th class="thcss"></th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.TOKEN_PRE'|translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.EXPIRATION_DATE' | translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.PAYMENT_TYPE'|translate}}</th>
+                                        <th class="thcss">{{'CLIENT_EDIT.ACCOUNTS.COM_PAY_GATE' |translate}}</th>
+                                        <th class="thcss"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <button type="button" [routerLink]="['/client/createtoken/'+clientId]" class="save-btn">Create Token</button>
+                                        </td>
+                                        <td *ngIf='tokenPresentValaue == 0'>
+                                            <input type="checkbox" [(ngModel)]="tokenPresentValaue" disabled/>
+                                        </td>
+                                        <td *ngIf='tokenPresentValaue == 1'>
+                                            <input type="checkbox" [(ngModel)]="tokenPresentValaue" checked disabled/>
+                                        </td>
+                                        <td>{{tokenExpDate}}</td>
+                                        <td>{{paymentType}}</td>
+                                        <td>
+                                            <span *ngIf='tokenPresentValaue == 1'>{{paymentTypeGateWay}}</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" *ngIf='tokenPresentValaue == 1' (click)="removeToken()" class="cancel-btn">Remove Token</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
+            </div>
+            <!-- accounts div ends -->
+        </div>
+        <!-- client info modal starts -->
+        <div bsModal #lookupModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <button type="button" class="close" (click)="lookupCloseModal()" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body clearfix">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="input-group">
+                                <input type="text" style="width:100%" class="form-control searchinput" [(ngModel)]="searchKey" placeholder="Search for...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" (click)="searchClients()">Search!</button>
+                                </span>
+                            </div>
+                            <!-- /input-group -->
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <p-dataTable [responsive]="true" [value]="DataObj" [rows]="rowsPerPage" [paginator]="true" [pageLinks]="2" expandableRows="true">
+                                        <p-column field="Active__c" header="{{ 'COMMON.ACTIVE' | translate }}">
+                                            <ng-template let-user="rowData" pTemplate="body">
+                                                <span *ngIf='user.Active__c == 1'>
+                                                    <input type="checkbox" checked />
+                                                </span>
+                                                <span *ngIf='user.Active__c == 0'>
+                                                    <input type="checkbox" />
+                                                </span>
+                                            </ng-template>
+                                        </p-column>
+                                        <p-column field="FullName" header="{{'CLIENTS.FULL_NAME'| translate }}">
+                                            <ng-template let-user="rowData" pTemplate="body">
+
+                                                <span class="tbl-txt" (click)="getfullname(user);">
+                                                    {{user.FullName}}
+                                                </span>
+                                            </ng-template>
+                                        </p-column>
+
+                                        <p-column field="Phone" header="{{'CLIENTS.PRIMARY_PHONE'| translate }}"></p-column>
+                                        <p-column field="MobilePhone" header="{{'CLIENTS.MOBILE_PHONE'| translate }}"></p-column>
+                                        <p-column field="Email" header="{{'CLIENTS.PRIMARY_EMAIL'| translate }}"></p-column>
+                                    </p-dataTable>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+        </div>
+        <!-- client info modal ends -->
+        <!-- client profile modal starts -->
+        <div bsModal #profileModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>{{add}}</h4>
+                        <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                        </div>
+                        <div id="wrapper_setup">
+                            <div class="container form_cont">
+                                <div class="row mt-20">
+                                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                                        <label>{{'CLIENTS.SEARCH' | translate}}</label>
+                                    </div>
+                                    <div class="col-md-7 col-sm-8">
+                                        <input type="text" [(ngModel)]="searchKey" />
+                                    </div>
+                                    <div class="col-md-7 col-sm-8">
+                                        <button type="button" class="btn btn-primary" (click)="searchClients()">
+                                            <i class="fa fa-binoculars" aria-hidden="true"></i> {{ 'CLIENTS.SEARCH' | translate }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-20 res-mt-15" *ngIf='DataObj'>
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="thcss">Active</th>
+                                                    <th class="thcss">Full Name</th>
+                                                    <th class="thcss">Primary Phone</th>
+                                                    <th class="thcss">Mobile Phone</th>
+                                                    <th class="thcss">Primary Email</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor='let clientData of DataObj'>
+                                                    <td *ngIf='clientData.Active__c == 1'>
+                                                        <input type="checkbox" checked/>
+                                                    </td>
+                                                    <td *ngIf='clientData.Active__c == 0'>
+                                                        <input type="checkbox" />
+                                                    </td>
+                                                    <td class="tbl-txt" (click)="selectClient(clientData)">{{clientData.FullName}}</td>
+                                                    <td>{{clientData.Phone}}</td>
+                                                    <td>{{clientData.MobilePhone}}</td>
+                                                    <td>{{clientData.Email}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" align="center">
+                                                        <button class="cancel-btn" type="button" (click)='cancelModal()'>{{'BUTTON.CANCEL' | translate}}</button>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+        </div>
+        <div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+            role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Notes</h4>
+                        <button type="button" class="close" (click)="closeServiceNotesModal()" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea class="note" style="color:black" [(ngModel)]="updateNotes" id="notesTestareaId">{{updateNotes}}</textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="save-btn" (click)="saveNote()">Save</button>
+                        <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+        </div>
+        <div class="text-center commondistance">
+            <button type="button" class="save-btn" (click)="commonSave()">Save</button>
+            <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+            <a (click)="saveAndBook()" class="btn btn-default mb-5">
+                <i class="fa fa-calendar"></i> Save & Book</a>
+            <a (click)="showMergeClietPopUpModal()" class="btn btn-default mb-5">
+                <i class="fa fa-exchange"></i> Merge Client</a>
+            <!-- <a class="btn btn-default mb-5" (click)="deleteClient()">
+                    <i class="fas fa-trash-alt"></i> Delete</a> -->
+            <button type="button" class="cancel-btn" *ngIf="statuscode == '2041'" (click)="deleteClient()">Delete</button>
+        </div>
+    </section>
+</div>

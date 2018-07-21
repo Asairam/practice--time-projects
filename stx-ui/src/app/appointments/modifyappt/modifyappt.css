@@ -1,0 +1,60 @@
+#inner_cont {
+    margin-right: 6%;
+}
+.form_cont12{
+    text-align: center;
+    margin-top: -28px;
+}
+.form_cont12 h1 {
+    font-family: 'AvenirLTStdRoman';
+    font-size: 24px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 3px;
+    cursor: pointer;
+    outline: none;    
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select {
+    color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus {
+    color: black;
+}
+.form_cont .row-selected>td:first-child {
+    font-size: large;
+    font-weight: bold;
+}
+@media (min-width: 992px) {
+    .col-md-6 {
+        width: 50%; /* decrease width 50 then durations shown right of select list*/
+    margin-left: -11px;
+    }
+    .form_cont table {
+        font-size: 12px;
+    }
+    .padding-align {
+        padding-right:0px;
+    }
+}
+@media (device-width: 768px) {
+    .col-md-6 {
+        width: 101%;
+        padding-left: 2px;
+    }
+    #inner_cont {
+        margin-right: 10%;
+    }
+    .form_cont table {
+        font-size: 12px;
+    }
+}
+@media (device-width: 1024px) {
+    #inner_cont {
+        margin-right: 10%;
+    }
+    .col-md-6 {
+        width: 98%;
+        
+        }
+}

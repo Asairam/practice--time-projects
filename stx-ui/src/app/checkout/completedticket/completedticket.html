@@ -1,0 +1,746 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <div class="form_cont12" *ngIf="ticketNumber">
+        <h1> ticket# {{ticketNumber}} </h1>
+    </div>
+    <section>
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <tbody>
+                                <tr style="color:white; ">
+                                    <td style="width:23%">STX Beacon
+                                        <br/> 6901 TPC #100
+                                        <br/> Orlando FL 32822 US
+                                        <br/> (800) 766-4778
+                                        <br/> support@stxsoftware.com </td>
+                                    <td *ngIf="clientName !== null">
+                                        Full Name:
+                                        <span class="tbl-txt" [routerLink]="['/client/edit/'+ clientId]">{{clientName}}</span>
+                                    </td>
+                                    <td *ngIf="clientName ===null" style="text-decoration: none;cursor: inherit;"> Full Name:</td>
+                                    <td *ngIf="clientName ===null" style="text-decoration: none;cursor: inherit;">{{noclientLabel}}</td>
+                                    <td>Visit Type: {{visitType}}</td>
+                                    <td>Status: {{status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="row mt-20" *ngIf='TicketServiceData && TicketServiceData.length > 0'>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="5" class="thcss bggrey">Services
+                                        <span class="pull-right">Service Total {{serviceTotal | number: '2.2-4'}}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="thcss">
+                                    <td class="fontbold">Service Name</td>
+                                    <td class="fontbold">Worker</td>
+                                    <td class="fontbold">Price Each</td>
+                                    <td class="fontbold">Discounted Price</td>
+                                    <td class="fontbold">Service Tax</td>
+                                </tr>
+                                <tr *ngFor='let list of TicketServiceData' class="fontsmall">
+                                    <td>
+                                        <div>{{list.ServiceName}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.workerName}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Price__c}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Net_Price__c}}</div>
+                                    </td>
+                                    <td>{{list.Service_Tax__c}} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='ticketProductsList && ticketProductsList.length > 0'>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="8" class="thcss bggrey">Products
+                                        <span class="pull-right">Product Total {{productTotal | number: '2.2-4'}}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="thcss">
+                                    <td class="fontbold">Product Name</td>
+                                    <td class="fontbold">Size</td>
+                                    <td class="fontbold">Worker</td>
+                                    <td class="fontbold">Qty Sold</td>
+                                    <td class="fontbold">Price Each</td>
+                                    <td class="fontbold">Discounted Price</td>
+                                    <td class="fontbold">Subtotal</td>
+                                    <td class="fontbold">Product Tax</td>
+                                </tr>
+                                <tr *ngFor='let list of ticketProductsList' class="fontsmall">
+                                    <td>
+                                        <div>{{list.Name}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Size__c}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.workerName}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.quantity}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Price__c}} </div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Net_Price__c}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Net_Price__c * list.quantity}}</div>
+                                    </td>
+                                    <td>
+                                        <div> {{list.Product_Tax__c * list.quantity}} </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='workerTipsList && workerTipsList.length > 0'>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="8" class="thcss bggrey">Tips
+                                        <span class="pull-right">Tip Total {{tipTotal | number: '2.2-4'}}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="thcss">
+                                    <td class="fontbold">Worker</td>
+                                    <td class="fontbold">Tip Amount</td>
+                                </tr>
+                                <tr *ngFor='let list of workerTipsList' class="fontsmall">
+                                    <td>
+                                        <div>{{list.workerName}}({{list.Tip_Option__c}}) </div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Tip_Amount__c}}</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='ticketOthersList && ticketOthersList.length > 0'>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="8" class="thcss bggrey">Other
+                                        <span class="pull-right">Other Total {{otherTotal | number: '2.2-4'}}</span>
+                                    </th>
+                                </tr>
+                                <tbody>
+                                    <tr class="thcss">
+                                        <td class="fontbold">Transaction Type</td>
+                                        <td class="fontbold">Worker</td>
+                                        <td class="fontbold">Subtotal</td>
+                                        <td class="fontbold">Tax</td>
+                                    </tr>
+                                    <tr *ngFor='let list of ticketOthersList' class="fontsmall">
+                                        <td>
+                                            <div>{{list.Transaction_Type__c}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{list.workerName}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{list.Amount__c}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{list.Service_Tax__c}}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='includedTicketsList.length > 0'>
+                <div class="col-md-12">
+                    <div class="table-responsive included-tickets">
+                        <table class="table table-hover table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th colspan="8" class="thcss bggrey">
+                                        Included Tickets
+                                        <span class="pull-right">Included Tickets Total {{includedTicketsTotal | number: '2.2-4'}}</span>
+                                    </th>
+                                </tr>
+                                <tbody>
+                                    <tr class="thcss">
+                                        <td class="fontbold">Ticket #</td>
+                                        <td class="fontbold">Amount</td>
+                                    </tr>
+                                    <tr *ngFor='let list of includedTicketsList' class="fontsmall">
+                                        <td>
+                                            <div>{{list.Name}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{-list.Included_Ticket_Amount__c}}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='ticketPaymentList && ticketPaymentList.length > 0'>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="5" class="thcss bggrey">Payments
+                                        <span class="pull-right">Payment Total {{paymentTotal | number : '2.2-4'}}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="thcss">
+                                    <td class="fontbold">Payment Type</td>
+                                    <td class="fontbold">Merchant Account Name</td>
+                                    <td class="fontbold">Amount Paid</td>
+                                </tr>
+                                <tr *ngFor='let list of ticketPaymentList' class="fontsmall">
+                                    <td>
+                                        <div>{{list.paymentTypeName}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{merchantName}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.Amount_Paid__c}}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="bggrey">
+                                        <span class="pull-right">Balance Due {{balanceDue | number: '2.2-4'}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='clientRwdArray && clientRwdArray.length > 0'>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <tbody>
+                                <tr class="thcss">
+                                    <td class="fontbold">Rewards</td>
+                                    <td class="fontbold">Earned</td>
+                                    <td class="fontbold">Used</td>
+                                </tr>
+                                <tr *ngFor='let list of clientRwdArray' class="fontsmall">
+                                    <td>
+                                        <div>{{list.rwdName}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.points | number: '2.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{list.used | number: '2.2-2'}}</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="color:white;">
+                <div class="col-md-12"> Created Date:{{CreatedDate}}PM
+                    <br/> Last Modified Date:{{LastModifiedDate}}PM </div>
+            </div>
+            <div class="row mt-40">
+                <div class=" col-md-12 text-center">
+                    <a class="btn btn-default mb-5" [routerLink]="['/reports/transaction/ticketlist']">
+                        <i class="fa fa-check"></i> OK</a>
+                    <a [routerLink]="['/checkout/' + apptId]" class="btn btn-default mb-5">
+                        <i class="fa fa-pencil"></i> Edit</a>
+                    <!-- 
+                        [routerLink]="['/appointment/book/'+apptData.clientId+ '/' +apptData.apptid]" -->
+                    <a *ngIf='isRebook == true' class="btn btn-default mb-5" [routerLink]="['/appointment/book/'+apptData.clientId+ '/' +apptData.apptid]"
+                        [queryParams]="{bookingType:'rebook'}">Rebook</a>
+                    <a class="btn btn-default mb-5" (click)="showRecieptModal()">
+                        <i class="fa fa-envelope"></i> Email Receipt</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+    <!-- -------send email popup model----- -->
+    <div bsModal #recieptModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>
+                        <b style="font-weight: 400;">Email Receipt</b>
+                    </h4>
+                    <button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color:#FFFFFF ">
+                    <div class="row">
+                        <p class="red">{{error | translate }}</p>
+                        <div class="clearfix">
+                            <div class="col-md-2 text-right">
+                                <label>
+                                    <b style="font-weight: 400;">Client Name:</b>
+                                </label> 
+                            </div>
+                            <div class="col-md-4 text-left">
+                                {{!clientName ? noclientLabel:clientName}}
+                            </div>
+                            <!-- </div>
+                        <div class="clearfix"> -->
+
+                            <div class="col-md-2 text-right">
+                                <label>
+                                    <b style="font-weight: 500;">Client Email:</b>
+                                </label>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <input type="text" [(ngModel)]="clientEmail" (keypress) = "clearErrMsg()" style="width:100%; border-color: #000 !important;" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center mt-40">
+                            <button class="save-btn" type="button" (click)='sendEmailReciept()'>Send</button>
+                            <button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+    <!-- ----------------------popup ends ---------------- -->
+</div>
+
+<!-- ------------------for email template------------------- -->
+<!-- <!DOCTYPE html> -->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body style="display:none; " id="inner_cont">
+    <div class="main-head">
+        <div class="head1">
+            <div class="head11">
+                <p>
+                    <b>STX Beacon UAT 2017</b>
+                </p>
+                <p> 6901 TPC #100</p>
+                <p>Orlando FL 32822 US </p>
+                <p> (800) 766-4778</p>
+                <p> support@stxsoftware.com</p>
+            </div>
+        </div>
+
+        <div class="head2">
+            <p class="head-margin">
+                <b>Full Name:</b>
+            </p>
+            <p class="head-margin1"> {{!clientName ? noclientLabel:clientName}}</p>
+
+        </div>
+        <div class="head3">
+            <p class="head-margin">
+                <b>Visit Type:</b>
+            </p>
+            <p class="head-margin1"> {{visitType}}</p>
+
+        </div>
+        <div class="head4">
+
+            <p class="head-margin">
+                <b> Status:</b>
+            </p>
+            <p class="head-margin1"> {{status}}</p>
+        </div>
+        <div class="head5">
+            <p class="head-margin">
+                <b> Appointment Date/Time:</b>
+            </p>
+            <p class="head-margin1"> {{apptData?.apdate|date:'MM/dd/yyyy hh:mm a'}}</p>
+        </div>
+
+    </div>
+    <div class="reports-main">
+        <div class="reports" *ngIf='TicketServiceData && TicketServiceData.length > 0'>
+            <div>
+                <div class="reports-heading">
+                    <div class="reports-heading-left">
+                        <h4>Services</h4>
+                    </div>
+                    <div class="reports-heading-right">
+                        <h4>Service Total {{serviceTotal | number: '2.2-4'}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+                <table class="">
+                    <thead>
+                        <tr>
+                            <th>
+                                Service Name
+                            </th>
+                            <th>
+                                Worker
+                            </th>
+                            <th>
+                                Price Each
+                            </th>
+                            <th>
+                                Discounted Price
+                            </th>
+                            <th>
+                                Service Tax
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let list of TicketServiceData'>
+                            <td>
+                                {{list.ServiceName}}
+                            </td>
+                            <td>
+                                {{list.workerName}}
+                            </td>
+                            <td>
+                                {{list.Price__c}}
+                            </td>
+                            <td>
+                                {{list.Net_Price__c}}
+                            </td>
+                            <td> </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="reports" *ngIf='ticketProductsList && ticketProductsList.length > 0'>
+            <div>
+                <div class="reports-heading">
+                    <div class="reports-heading-left">
+                        <h4>Products</h4>
+                    </div>
+                    <div class="reports-heading-right">
+                        <h4>Product Total {{productTotal | number: '2.2-4'}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+                <table class="products">
+                    <thead>
+                        <tr>
+                            <th style="width:16%">
+                                Product Name
+                            </th>
+                            <th style="width:8%">
+                                Size
+                            </th>
+                            <th>
+                                Worker
+                            </th>
+                            <th>
+                                Qty Sold
+                            </th>
+                            <th>
+                                Price Each
+                            </th>
+                            <th>
+                                Discounted Price
+                            </th>
+                            <th>
+                                Sub Total
+                            </th>
+                            <th>
+                                Product Tax
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let list of ticketProductsList'>
+                            <td>
+                                {{list.Name}}
+                            </td>
+                            <td>
+                                {{list.Size__c}}
+                            </td>
+                            <td>
+                                {{list.workerName}}
+                            </td>
+                            <td>
+                                {{list.quantity}}
+                            </td>
+                            <td>
+                                {{list.Price__c}}
+                            </td>
+                            <td>
+                                {{list.Net_Price__c}}
+                            </td>
+                            <td>
+                                {{list.Net_Price__c * list.quantity}}
+                            </td>
+                            <td>
+                                {{list.Product_Tax__c * list.quantity}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="reports" *ngIf='workerTipsList && workerTipsList.length > 0'>
+            <div>
+                <div class="reports-heading">
+                    <div class="reports-heading-left">
+                        <h4>Tips</h4>
+                    </div>
+                    <div class="reports-heading-right">
+                        <h4>Tip Total {{tipTotal | number: '2.2-4'}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <table class="workertips payments">
+                    <thead>
+                        <tr>
+                            <th>Worker</th>
+                            <th style="text-align:right">Tip Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let list of workerTipsList'>
+                            <td>
+                                {{list.workerName}}({{list.Tip_Option__c}})
+                            </td>
+                            <td style="text-align:right">
+                                {{list.Tip_Amount__c}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="reports" *ngIf='ticketOthersList && ticketOthersList.length > 0'>
+            <div>
+                <div class="reports-heading">
+                    <div class="reports-heading-left">
+                        <h4>Other</h4>
+                    </div>
+                    <div class="reports-heading-right">
+                        <h4>Other Total {{otherTotal | number: '2.2-4'}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <table class="ticketothers">
+                    <thead>
+                        <tr>
+                            <th>Transaction Type</th>
+                            <th>Worker</th>
+                            <th>Subtotal</th>
+                            <th>Tax</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr *ngFor='let list of ticketOthersList'>
+                            <td>
+                                {{list.Transaction_Type__c}}
+                            </td>
+                            <td>
+                                {{list.Worker__c}}
+                            </td>
+                            <td>
+                                {{list.Amount__c}}
+                            </td>
+                            <td>
+                                {{list.Service_Tax__c}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="reports" *ngIf="includedTicketsList.length > 0">
+            <div>
+                <div class="reports-heading">
+                    <div class="reports-heading-left">
+                        <h4>Included Tickets</h4>
+                    </div>
+                    <div class="reports-heading-right">
+                        <h4>Included Tickets Total {{includedTicketsTotal}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+                <table class="payments">
+                    <thead>
+                        <tr>
+                            <th>
+                                Ticket #
+                            </th>
+                            <th style="text-align:right">
+                                Amount
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let list of includedTicketsList'>
+                            <td>
+                                {{list.Name}}
+                            </td>
+                            <td style="text-align:right">
+                                {{-list.Included_Ticket_Amount__c}}
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="reports" *ngIf='ticketPaymentList && ticketPaymentList.length > 0'>
+            <div>
+                <div class="reports-heading">
+                    <div class="reports-heading-left">
+                        <h4>Payments</h4>
+                    </div>
+                    <div class="reports-heading-right">
+                        <h4>Payments Total {{paymentTotal | number : '2.2-4'}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+                <table class="payments">
+                    <thead>
+                        <tr>
+                            <th>
+                                Payment Type
+                            </th>
+                            <th>
+                                Merchant Account
+                            </th>
+                            <th>
+                                Amount Paid
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let list of ticketPaymentList'>
+                            <td>
+                                {{list.paymentTypeName}}
+                            </td>
+                            <td>
+                                {{merchantName}}
+                            </td>
+                            <td>
+                                {{list.Amount_Paid__c}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="reports">
+            <div>
+                <div class="reports-heading">
+                    <div class="reports-heading-left">
+                    </div>
+                    <div class="reports-heading-right">
+                        <h4>Balance Due {{balanceDue}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="reports" *ngIf="clientRwdArray.length>0">
+            <div style="width:60%">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Rewards
+                            </th>
+                            <th>
+                                Earned
+                            </th>
+                            <th>
+                                Used
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let list of clientRwdArray' class="fontsmall">
+                            <td>
+                                {{list.rwdName}}
+                            </td>
+                            <td>
+                                {{list.points | number: '2.2-2'}}
+                            </td>
+                            <td>
+                                {{list.used | number: '2.2-2'}}
+                            </td>
+                        </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h4 style="margin-top:0px">&copy;STX Software LLC,2014-2017</h4>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mt-40">
+                    <div class="table-responsive">
+                        <!-- Hide table true starts -->
+                        <table [class.disabled]="disableEnable" class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="3" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input type="checkbox" ([ngModel])="inActive" (click)="getInactive($event)" id="c1" class="pull-left"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{'COMMON.SHOW_INACTIVE' | translate}}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                                    <td>{{'COMMON.NAME' | translate}}</td>
+                                </tr>
+                                <tr class="white" *ngFor="let suppliersData of suppliersList;  let i='index'" id="suppliersData{{i}}">
+                                    <td align="center" *ngIf="suppliersData.Active__c == 1">
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td align="center" *ngIf="suppliersData.Active__c == 0">
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(suppliersData)">
+                                        {{suppliersData.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="3">
+                                        <a class="white btn btn-hovr" (click)="addNew()">
+                                            <i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Hide table false ends-->
+                <!-- Add Suppliers div starts-->
+                <div class="col-md-8 pdgl30 mt-40" [class.disabled]="enableDisable" *ngIf="addDiv">
+                    <h1>{{'SETUP_INVENTORY.SETUP_SUPPLIERS' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="active"  (keydown)="clearErrMsg();">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="80" [(ngModel)]="name"  (keydown)="clearErrMsg();">
+                            <div class="red">{{error | translate }}</div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'SETUP_SUPPLIERS.ACCOUNT_NUMBER' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="20" [(ngModel)]="accountNumber" (keydown)="clearErrMsg();" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                (keydown)="clearErrMsg();">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.PHONE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" (keydown)="clearErrMsg();" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                id="mobile_id" (keypress)='hyphen_generate_mobile(phone);' [(ngModel)]="phone">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.EMAIL' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="email" maxlength="80" (keydown)="clearErrMsg();" name="email" [(ngModel)]="email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+                            <div class="red">{{ emailError | translate }}</div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'SETUP_SUPPLIERS.SALESCONSULTANT' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="40" (keydown)="clearErrMsg();" [(ngModel)]="salesConsultant">
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" (click)="createSuppliers();" class="save-btn" value="SUBMIT">{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add div ends-->
+                <!-- Edit div  starts-->
+                <div class="col-md-8 pdgl30 mt-40" [class.disabled]="enableDisable" *ngIf="editDiv">
+                    <h1>{{'SETUP_INVENTORY.SETUP_SUPPLIERS' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateActive == true">
+                            <input type="checkbox" checked [(ngModel)]="updateActive" (keydown)="clearErrMsg();">
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateActive == false">
+                            <input type="checkbox" [(ngModel)]="updateActive"  (keydown)="clearErrMsg();">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="80" (keydown)="clearErrMsg();" [(ngModel)]="updateSupplierName">
+                            <div class="text-danger">{{error | translate }}</div>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="hidden" [(ngModel)]="updateId">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'SETUP_SUPPLIERS.ACCOUNT_NUMBER' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="20" [(ngModel)]="updateAccountNumber"  (keydown)="clearErrMsg();" >
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.PHONE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" id="mobile_id" maxlength="13" (keypress)='hyphen_generate_mobile(updatePhone);'
+                                [(ngModel)]="updatePhone" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.EMAIL' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="80" (keydown)="clearErrMsg();" [(ngModel)]="updateEmail">
+                            <div class="red">{{ emailError | translate }}</div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'SETUP_SUPPLIERS.SALESCONSULTANT' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="40" [(ngModel)]="salesConsultant" (keydown)="clearErrMsg();">
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft white">
+                        <div class="col-sm-11">
+                            <button type="button" (click)="editSuppliers();" class="save-btn" value="SUBMIT">{{'BUTTON.SAVE' | translate}}</button>
+                            <button type="button" class="cancel-btn" (click)="cancel();">{{'BUTTON.CANCEL' | translate}}</button>
+                            <button type="button" *ngIf="statuscode == '2041'" class="cancel-btn" (click)="deleteSupplier()">{{'BUTTON.DELETE' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Edit div ends-->
+            </div>
+        </div>
+    </section>
+<app-rightbar></app-rightbar>    
+</div>

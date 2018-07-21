@@ -1,0 +1,70 @@
+.table-border-color .del {
+	background: transparent;
+	font-size: 22.5px;
+	margin-right: 5px;
+}
+.text-danger {
+    color: #ef0500;
+}
+.form_cont .table-border-color>tbody>tr>td {
+	/*border-color: #fff;*/
+	border-color: #111;
+}
+
+.form_cont .table-border-color>thead:first-child>tr:first-child>th {
+	border-top: solid 1px #111;
+}
+
+.form_cont .table-border-color>thead>tr>th {
+	border-color: #111;
+}
+
+.table-border-color .dark span {
+	border: 1px solid white;
+}
+
+.cursor-text:hover {
+	cursor: pointer;
+	color: #fff !important;
+}
+.timezone-align {
+	width: 550px !important;
+	min-width: 550px; 
+	max-width: 550px;
+}
+#wrapper_setup_new{
+	color: white;
+}
+.dark {
+    color: white !important;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+@media (min-width: 992px) {
+	.col-md-12 {
+   		 width: 92%;
+	}
+}
+@media (min-width: 1024px) {
+	.timezone-align {
+		min-width: 438px;
+		max-width: 438px;
+	}
+}
+@media (min-width: 768px) {
+	.timezone-align {
+		min-width: 400px;
+		max-width: 400px;
+	}
+	.col-sm-11 {
+		width: 88.666667%;
+	}
+	.table-border-color .dark span {
+		border: none;
+	}
+}
+

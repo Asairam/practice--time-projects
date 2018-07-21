@@ -1,0 +1,277 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.END_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="generateReport()" class="btn btn-primary">
+                        <i class="fa fa-cog" aria-hidden="true"></i> {{'BUTTON.GENERATE' | translate }}</button>
+                </div>
+            </div>
+            <hr />
+            <div class="row mt-20 res-mt-15 ml-5" *ngIf="itemsDisplay">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate }}</th>
+                                    <th class="thcss">{{'REPORTS.ABC_REPORT' | translate }}</th>
+                                    <th class="thcss">{{bsValue | date:'MM/d/y'}} - {{bsValue1 | date:'MM/d/y'}}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="background-color">{{'TOTAL_SHEETS.COMPANY_SALES' | translate }}</div>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'ABC_REPORT.ACCOUNT_BALANCE_TYPE' | translate }}</th>
+                                    <th class="thcss">{{'COMMON.AMOUNT' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Deposit</td>
+                                    <td>38.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Prepayment</td>
+                                    <td>34.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Received on Account</td>
+                                    <td>4905.26</td>
+                                </tr>
+                                <tr>
+                                    <td>Deposit Online</td>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr class="bg-color">
+                                    <td>Total</td>
+                                    <td>4977.26</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="background-color">{{'ABC_REPORT.ACCOUNT_BALANCES' | translate }}</div>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'TOTAL_SHEETS.SALES_TYPE' | translate}}</th>
+                                    <th class="thcss">{{'TOTAL_SHEETS.FULL_PRICE' | translate}}</th>
+                                    <th class="thcss">{{'TOTAL_SHEETS.DISCOUNTS' | translate}}</th>
+                                    <th class="thcss">{{'TOTAL_SHEETS.DISCOUNTED_SALES' | translate}}</th>
+                                    <th class="thcss">{{'TOTAL_SHEETS.TAX_TOTAL' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Class Sales</td>
+                                    <td>160.00</td>
+                                    <td>0.00</td>
+                                    <td>160.00</td>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Service Sales</td>
+                                    <td>6,675.00</td>
+                                    <td> - 83.75</td>
+                                    <td> 6,758.75</td>
+                                    <td> 13.50</td>
+                                </tr>
+                                <tr>
+                                    <td>Service Refunds</td>
+                                    <td>- 132.75 </td>
+                                    <td>0.00</td>
+                                    <td>- 132.75</td>
+                                    <td>0.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Product Sales</td>
+                                    <td>536.00</td>
+                                    <td>0.00</td>
+                                    <td>536.00</td>
+                                    <td>53.60</td>
+                                </tr>
+                                <tr class="bg-color">
+                                    <td>Total</td>
+                                    <td>7238.25</td>
+                                    <td>-83.75</td>
+                                    <td>7322.00</td>
+                                    <td>67.10</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="background-color">{{'COMMON.CLIENTS' | translate}}</div>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'TOTAL_SHEETS.WORKER_NAME' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.RECURRING_CLIENTS' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.NEW_CLIENTS' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.REBOOKED' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.BOOKED_ONLINE' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.NON_SERVICE' | translate }}</th>
+                                    <th class="thcss">{{'TOTAL_SHEETS.SERVICE_SALES' | translate }}</th>
+                                    <th class="thcss">{{'TOTAL_SHEETS.PRODUCT_SALES' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.NUMBER_OF_TICKETS' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.PRODUCT_PER_TICKET' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kymberly Bartlo</td>
+                                    <td>1</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>50</td>
+                                    <td>0.00</td>
+                                    <td>25.00</td>
+                                    <td>50.00 </td>
+                                    <td>1</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Brenda West </td>
+                                    <td>12</td>
+                                    <td>5</td>
+                                    <td></td>
+                                    <td>50 </td>
+                                    <td>1</td>
+                                    <td>1810.00</td>
+                                    <td>50.00 </td>
+                                    <td>1</td>
+                                    <td>6.33</td>
+                                </tr>
+                                <tr>
+                                    <td>Sally Worker </td>
+                                    <td>9</td>
+                                    <td>1</td>
+                                    <td>3</td>
+                                    <td> </td>
+                                    <td></td>
+                                    <td>1925.00</td>
+                                    <td> </td>
+                                    <td>10</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="bg-color">
+                                    <td>Totals</td>
+                                    <td>22</td>
+                                    <td>6</td>
+                                    <td>3</td>
+                                    <td>100</td>
+                                    <td>1</td>
+                                    <td>3760.00</td>
+                                    <td>100.00</td>
+                                    <td>12</td>
+                                    <td>6.3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="background-color">{{'TABS.VISIT_TYPES' | translate}}</div>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{'TOTAL_SHEETS.WORKER_NAME' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.RETAIL_ONLY' | translate }}</th>
+                                    <th class="thcss"> {{'VISIT_TYPE_OVERVIEW.NEW_REQUEST' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.NORMAL_REQUEST' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.WALKIN' | translate }}</th>
+                                    <th class="thcss">{{'VISIT_TYPE_OVERVIEW.REGULAR_REQUEST' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kymberly Bartlo</td>
+                                    <td>1</td>
+                                    <td> </td>
+                                    <td></td>
+                                    <td> </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Sally Worker</td>
+                                    <td></td>
+                                    <td>1</td>
+                                    <td>7</td>
+                                    <td>1 </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Brenda West</td>
+                                    <td></td>
+                                    <td>2</td>
+                                    <td>1 </td>
+                                    <td>1 </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Isabella Moran</td>
+                                    <td></td>
+                                    <td>6</td>
+                                    <td>4 </td>
+                                    <td>4 </td>
+                                    <td>3</td>
+                                </tr>
+                                <tr class="bg-color">
+                                    <td>Totals</td>
+                                    <td>1</td>
+                                    <td>9</td>
+                                    <td>12</td>
+                                    <td>6</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

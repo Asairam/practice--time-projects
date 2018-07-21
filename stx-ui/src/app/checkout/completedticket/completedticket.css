@@ -1,0 +1,36 @@
+.fontbold {
+    font-weight: bolder;
+}
+.fontsmall {
+    color: white;
+    font-size: small;
+}
+.table {
+    width: 92%
+}
+hr{
+    margin-right:8%;
+}
+.included-tickets table>tbody>tr>td:first-child{
+width:75%;
+}
+.form_cont12{
+    text-align: center;
+    margin-top: -28px;
+}
+.form_cont12 h1 {
+    font-family: 'AvenirLTStdRoman';
+    font-size: 24px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+@media (device-width: 768px){
+	.table {
+        width: 90%
+    }
+    hr{
+        margin-right:10%;
+    }
+}

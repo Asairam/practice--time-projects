@@ -1,0 +1,27 @@
+#inner_cont{
+    margin-right: 8%!important;
+    color: white;
+}
+.background-color {
+    background: black;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+@media (device-width: 768px){
+    .thcss {
+        font-size: 11px;
+    }
+    #inner_cont{
+        margin-right: 10%!important;
+    }
+    .ml-left{
+    margin-left: -32px;
+    }
+    hr {
+        display: none;
+    }
+}

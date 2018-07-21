@@ -1,0 +1,61 @@
+.setsubcont label {
+    color: white;
+}
+.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email],.setsubcont textarea, .setsubcont select, .tbl-txt{
+    color: white !important;
+ }
+ .setsubcont input[type=text]:focus, .setsubcont input[type=email]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=password]:focus, .setsubcont textarea:focus  {
+     
+     color: #000 !important;
+ }
+@media (min-width: 992px){
+    .width-align-d{
+        width: 100%;
+    }
+    .width_align {
+        width: 100%;
+    }
+    .table-bordered-light {
+        border: solid 1px #ccc;
+        /* text-transform: uppercase; */
+        font-family: 'AvenirLTStdRoman';
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+    .setsubcont select {
+        font-size: 15px;
+        width:100%;
+        color: white;
+    }
+    .col-md-8 {
+        width: 60.666667%;
+    }
+    .width-align {
+        width:100%
+    }
+    /* .setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email]{
+        color: block;
+    } */
+    
+    
+  
+}
+@media (device-width: 768px){
+    .align-select {
+        width:30%;
+    }
+    .setsubcont select {
+        font-size: 15px;
+        width:100%;
+        color: white;
+    }
+    .setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email]{
+        padding: 5px 15px 5px 10px; 
+    }
+}
+@media (device-width: 1024px) {
+    .col-md-12 {
+        width: 100%;
+        margin-left: -26px;
+    }
+}

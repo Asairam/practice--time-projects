@@ -1,0 +1,66 @@
+.form_cont select:focus{
+    border:1px solid #000;
+    background-color: #fff;
+    color:#000;
+}
+/* styles for ipad*/
+#inner_cont {
+    margin-right: 4%;
+}
+#box-align {
+    margin-right:-2%;
+}
+.button-align {
+    margin-left:35%;
+}
+.appt-box {
+    border: solid 1.5px #3583a1;
+    margin-bottom: 9px;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select {
+    color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus {
+    color: black;
+}
+.form_cont12{
+    text-align: center;
+    margin-top: -28px;
+}
+.form_cont12 h1 {
+    font-family: 'AvenirLTStdRoman';
+    font-size: 24px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+
+.form_cont .row-selected>td:first-child {
+    font-size: large;
+    font-weight: bold;
+}
+@media (device-width: 768px) {
+    #box-align {
+        margin-right:0px;
+    }
+    #inner_cont {
+        margin-right: 10%;
+    }
+}
+@media (device-width: 1024px) {
+    #inner_cont {
+        margin-right: 5%;
+    }
+    .button-align {
+        margin-left:15%;
+    }
+    #box-align {
+        margin-right:-2.5%;
+    }
+    .col-md-12 {
+        width: 105%;
+        margin-left: -10px;
+    } 
+}
+/* end of ipad styles */

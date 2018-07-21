@@ -1,0 +1,12 @@
+.clientedit-multi-select {
+    background-image: none;
+    height: 100px !important;
+}
+
+.clientedit-multi-select:focus {
+    background-image: none;
+}
+.note {
+    border : #000000 !important;
+    color:black;
+}

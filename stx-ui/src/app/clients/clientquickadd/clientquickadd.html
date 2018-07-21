@@ -1,0 +1,77 @@
+<div id="wrapper_setup_new">
+	<app-header></app-header>
+	
+		<section id="inner_cont">
+			<div class="container form_cont">
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>{{'CLIENT_QUICK_ADD.FIRST_NAME' | translate}}</label>
+						<span class="red">*</span>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<input type="text" value="" [(ngModel)]="firstName" (click)="clearErrMsg()" />
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>{{'CLIENT_QUICK_ADD.MIDDILE_NAME' | translate}}</label>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<input type="text" value="" [(ngModel)]="middileName" (click)="clearErrMsg()" />
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>{{'CLIENT_QUICK_ADD.LAST_NAME' | translate}}</label>
+						<span class="red">*</span>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<input type="text" value="" [(ngModel)]="lastName" (click)="clearErrMsg()" />
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>{{'CLIENT_QUICK_ADD.PRIMARY_PHONE' | translate}}</label>
+						<span class="red">*</span>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<input type="text" value="" [(ngModel)]="primaryEmail" (click)="clearErrMsg()" />
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>{{'CLIENT_QUICK_ADD.PRIMARY_EMAIL' | translate}}</label>
+						<span class="red">*</span>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<input type="text" value="" [(ngModel)]="primaryEmail" (click)="clearErrMsg()" />
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>{{'CLIENT_QUICK_ADD.MOBILE_PHONE' | translate}}</label>
+						<span class="red">*</span>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<input type="text" value="" [(ngModel)]="primaryEmail" (click)="clearErrMsg()" />
+					</div>
+				</div>
+				<!--error messages-->
+				<div class="col-sm-8">
+					<p class="red mb-0"> {{ error | translate }} </p>
+				</div>
+				<!----buttons---->
+				<div class="row mt-40">
+					<div class=" col-md-12 text-center">
+						<button type="button" class="save-btn" (click)="saveClientData()">{{'BUTTON.SAVE' | translate}}</button>
+						<button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{'BUTTON.CANCEL' | translate}}</button>
+						<a [routerLink]="['/client/edit']" class="btn btn-default mb-5">
+							<i class="fa fa-pencil"></i> {{'BUTTON.GO_TO_FULL_CLIENT_CARD' | translate}}</a>
+						<!-- <a href="book-appointment.php" class="btn btn-default mb-5">
+							<i class="fa fa-calendar"></i> Save &amp; Book</a> -->
+					</div>
+				</div>
+				<!----buttons end---->
+			</div>
+		</section>
+</div>

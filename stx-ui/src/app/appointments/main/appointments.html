@@ -1,0 +1,1226 @@
+<!doctype html>
+<html>
+<style>
+    .table-data {
+        padding: 2px 5px;
+        border-bottom: 1px solid #fff;
+    }
+
+    .table-data:last-child {
+        border: 0;
+    }
+
+    .data-time {
+        background: #0188bd;
+    }
+
+    .calender-table {
+        max-height: 600px;
+        overflow: auto;
+        margin-bottom: 25px;
+    }
+
+    span {
+        content: "\266A";
+    }
+
+    .calender-table table thead tr th {
+        border-right: 1px solid #fff;
+        min-width: 200px;
+    }
+
+    .calender-table table thead tr th:last-child {
+        border: 0;
+    }
+
+    .calender-table table td {
+        font-size: 13px;
+    }
+</style>
+
+<body class="drawer drawer--left">
+    <!-- <app-header></app-header>-->
+
+
+    <app-header [newMenu]="'noNav'"></app-header>
+    <div id="wrapper_setup_new">
+        <section id="inner_cont">
+            <div class="container form_cont" style="overflow: inherit;">
+
+                <div class="col-md-3 apointmnet-left">
+
+                    <!-- Select Date:-->
+                    <form #myForm="ngForm" novalidate>
+                        <my-date-picker name="mydate" [options]="myDatePickerOptions" [(ngModel)]="datePickerDate" (dateChanged)="onDateChanged($event); datepickerChange($event);"></my-date-picker>
+                    </form>
+
+                    <!-- <form #myForm="myForm" novalidate>
+                        <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="myDate"></my-date-picker>
+
+                    </form> -->
+
+                    <!-- Select Date:<input [minDate]="minDate" [(ngModel)]="calendarPicker" bsDatepicker #dp="bsDatepicker"> -->
+
+                    <div class="row mt-10">
+                        <div class="col-sm-12">
+                            <!-- <input class="btn btn-default" type="button" value="today">
+                            <button type="button" class="btn btn-default">1</button>
+                            <button type="button" class="btn btn-default">2</button>
+                            <button type="button" class="btn btn-default">3</button>
+                            <button type="button" class="btn btn-default">4</button>
+                            <button type="button" class="btn btn-default">5</button>
+                            <button type="button" class="btn btn-default">6</button>
+                            <button type="button" class="btn btn-default">7</button> -->
+                            <div class="apont-head">move weeks ahead</div>
+                            <table border="0" cellpadding="0" cellspacing="0" class="mb-10" width="100%">
+                                <tbody class="appointment-week-table">
+                                    <tr>
+                                        <!-- <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default" (click)="updateDatepicker(0)">Today</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default" (click)="updateDatepicker(1)">1</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default" (click)="updateDatepicker(2)">2</button>
+                                            </a>
+                                        </td> -->
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default btn-circle" (click)="updateDatepicker(3)">3</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default btn-circle" (click)="updateDatepicker(4)">4</button>
+                                            </a>
+                                        </td>
+                                        <!-- </tr> -->
+                                        <!-- <tr>
+                                        <td>&nbsp;</td> -->
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default btn-circle" (click)="updateDatepicker(5)">5</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default btn-circle" (click)="updateDatepicker(6)">6</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default btn-circle" (click)="updateDatepicker(7)">7</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a>
+                                                <button type="button" class="btn btn-default btn-circle" (click)="updateDatepicker(8)">8</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <!-- <div class="row mt-20">
+                        <div class="col-sm-12">
+                            <label>Show All Workers:</label>
+                            <input type="checkbox" class="appointment-margin-checkbox" />
+                        </div>
+                    </div> -->
+                    <div class="row mt-10">
+                        <!--<div class="col-sm-3">
+
+                            <label class="appointment-label">Worker:</label>
+                        </div>-->
+                        <div class="col-sm-12">
+                            <select [(ngModel)]="selWorker" (change)="fetchWorkerCalendar($event.target.value); fetchWorkerCalendarPerDay($event.target.value);"
+                                class="appointment-select-width select-bg">
+                                <option value="all">All</option>
+                                <option *ngFor="let workers of getWorker" value="{{workers.workerId}}${{workers.names}}">{{workers.names}} </option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <!-- <div class="apont-head mt-10">View By</div> -->
+                    <div class="view-by-calneder margin-btm" id="centerDiv">
+                        <ul>
+                            <!-- <li>
+                                <a>
+                                    <img (click)="fetchWeek($event.target.id)" id="One Day" class="img-responsive" src="assets/images/calender-icon-1.png" alt="img">
+                                    <span>day</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img (click)="fetchWeek($event.target.id)" id="One Week" class="img-responsive" src="assets/images/calender-icon-3.png" alt="img">
+                                    <span>week</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img (click)="fetchWeek($event.target.id)" id="One Weekday" class="img-responsive" src="assets/images/calender-icon-2.png"
+                                        alt="img">
+                                    <span>weekday</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <img (click)="fetchWeek($event.target.id)" id="month" class="img-responsive" src="assets/images/calender-icon-4.png" alt="img">
+                                    <span>month</span>
+                                </a>
+                            </li> -->
+                            <li *ngFor="let items of callenderIcons" [style.opacity]="items.opacity" style="cursor: pointer;">
+                                <a>
+                                    <img (click)="fetchWeek(items.id)" class="img-responsive" src="{{items.img}}" alt="img">
+                                    <span>{{items.name}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <!-- <div class="row mt-10">
+                        <div class="col-sm-12">
+                            <select class="appointment-select-width select-bg">
+                                <option>Service Group</option>
+                                <option> </option>
+                            </select>
+                        </div>
+                    </div> -->
+                    <!---  Weel Listing has been comments -->
+                    <div>
+                        <input type="hidden" id="click" />
+                    </div>
+
+
+                    <!-- <div class="row mt-10">
+                        <!--<div class="col-sm-3">
+                            <label class="appointment-label">View:</label>
+                        </div>-->
+                    <!-- <div class="col-sm-12">
+                            <select [(ngModel)]="selWeek" (change)="fetchWeek($event.target.value)" class="appointment-select-width select-bg">
+                                <option *ngFor="let apptView of apptViews">{{apptView}} </option>
+                            </select>
+                        </div>
+                    </div> -->
+                    <div class="row mt-10">
+                        <div class="col-md-12 appointment-button-sidenav">
+                            <a (click)="showBookApptModal()" class="btn btn-default btn-lg mb-10">
+                                FIND APPT</a>
+
+                            <a (click)="showBookStandingModal()" class="btn btn-default btn-lg mb-10">
+                                STANDING</a>
+
+                            <!-- <a [routerLink]="['/appointment/bookoutappointment']" class="btn btn-default mb-10">
+                                BOOK OUT TIME</a>
+
+                            <a [routerLink]="['/appointment/bookclass']" class="btn btn-default mb-10">
+                                BOOK CLASS</a> -->
+
+                            <a [routerLink]="['/appointment/waitinglist']" class="btn btn-default btn-lg mb-10">
+                                WAITING LIST </a>
+
+                            <a (click)="showMessageBoardModal()" class="btn btn-default btn-lg mb-10">
+                                MESSAGE BOARD</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!----------------------Message Board modal starts------------------------>
+                <div bsModal #msgBoardModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+                    role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4>Message Board: &nbsp; {{msgBoardDate}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="clearfix">
+                                        <div class="mt-20">
+                                            <div class="col-md-12">
+                                                <textarea rows="5" style="width:100%;" maxlength="300"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- clearfix end -->
+                                </div>
+                                <div class="row">
+                                    <div class="text-center mt-40">
+                                        <button class="save-btn" type="button" (click)='cancelModel()'>Close</button>
+                                        <button class="cancel-btn" type="button" (click)='cancelModel()'>{{'BUTTON.CANCEL' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                </div>
+                <!----------------------Message Board modal End------------------------>
+                <div class="col-md-9 apointmnet-right">
+                    <div class="row res-mt-15">
+                        <style>
+                            .stxBackgroundColor {
+                                background: #fff;
+                                padding: 10px;
+                                border-radius: 5px;
+                                margin-bottom: 15px;
+                            }
+                        </style>
+                        <div class="table-responsive clearfix">
+                            <!--<div class="col-xs-12">
+                                <div class="stxBackgroundColor">
+                                    <table class="" style="padding:0px;border-spacing:0px;width:100%;border-style:none;border-width:0px;">
+                                        <tbody>
+                                            <tr>
+                                                <td align="center" style="padding-left:0px;font-weight:bold;">5 Workers</td>
+                                                <td align="center" style="font-weight:bold;border-left-style:solid;border-width:1px">1 Appointment</td>
+                                                <td align="center" style="font-weight:bold;border-left-style:solid;border-width:1px">0% Rebooked</td>
+                                                <td align="center" style="font-weight:bold;border-left-style:solid;border-width:1px">0% Online</td>
+                                                <td align="center" style="font-weight:bold;border-left-style:solid;border-width:1px">
+                                                    2% Booked
+                                                </td>
+                                                <td align="center" style="font-weight:bold;border-left-style:solid;border-width:1px">$0.00 Booked</td>
+                                                <td align="center" style="font-weight:bold;border-left-style:solid;border-width:1px;border-color:grey;">$0.00 Ticketed</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>-->
+                        </div>
+                        <div class="col-md-12">
+                            <!-- <div class="table-responsive calender-table">
+                                <table class="table  table-bordered-white white">
+                                    <thead>
+                                        <tr>
+                                            <th> TIME </th>
+                                            <div *ngIf='allmembers == true'>
+                                                <th *ngFor="let workers of getWorker; let i = 'index'">{{workers.names}}</th>
+                                            </div>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor=" let time of finalTimes ">
+
+                                            <td style="padding:0; ">
+                                                <div class="table-data data-time ">{{time}} </div>
+                                 <div *ngFor="let books of book " class="table-data ">{{books}}</div> 
+                                            </td>
+
+                                            <td style="padding:0; " *ngFor="let workers of getWorker; let i='index' ">
+                                                <div class="table-data ">&nbsp; </div>
+                                                <div class="table-data " *ngFor="let books of book ">&nbsp;</div>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>  -->
+
+                            <div id='calendar' #calendar></div>
+
+                            <div class="apont-head-large  mb-50 mt-40">
+                                {{mainApptDate}}
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-no-bordered">
+                                    <!-- <thead>
+                                        <tr>
+                                        	<th class="thcss">Time</th>
+                                            <th class="thcss">Client</th>
+                                            <th class="thcss">Action</th>
+                                            <th class="thcss">Date</th>
+                                            
+                                            
+                                            <th class="thcss">Status</th>
+                                            <th class="thcss">Services</th>
+                                            <th class="thcss">Notes</th>
+                                        </tr>
+                                    </thead>-->
+                                    <tbody>
+                                        <tr *ngFor='let apptData of appointmentsList'>
+                                            <td style="min-width:106px; width:106px; opacity: 0.8;" class="font-400">{{ apptData.apdate | date: 'MM/dd/yyyy'}} {{apptData.apdate | date:'h:mm a'}}
+                                            </td>
+                                            <td style="min-width:200px" class="tbl-txt text-center font-400" style="cursor:pointer" *ngIf="apptData.clientId" width="15%"
+                                                [routerLink]="['/client/edit/'+apptData.clientId]">
+                                                <span style="display:inline-block; min-width:100px; text-align:center;">
+                                                    <div *ngIf="(apptData.clientpic && apptData.clientpic !== '')">
+                                                        <img class="appt-client-image" src="{{ apiEndPoints +'/'+ apptData.clientpic}}" width="50" onerror="this.onerror=null;this.src='assets/images/user-icon.png';">
+                                                    </div>
+                                                    <div *ngIf="(apptData.clientpic === null || apptData.clientpic === '')" class="font-400 mt-5 appnt-pro-image">
+                                                        <div class="appnt-pro-letter">
+                                                            <strong *ngIf="(apptData.clientName != null)"> {{ apptData.clientName[0].toUpperCase() }} </strong>
+                                                            <strong *ngIf="(apptData.clientName == null)"> {{ 'N'.toUpperCase() }} </strong>
+                                                        </div>
+                                                    </div>
+                                                    <div *ngIf="apptData.clientName" class="font-400 mt-5">
+                                                        {{apptData.clientName}}
+                                                    </div>
+
+
+                                                    <div *ngIf="!apptData.clientName" class="font-400 mt-5">
+                                                        <h6 class="font-400">NO CLIENT</h6>
+                                                    </div>
+                                                </span>
+                                            </td>
+                                            <td style="min-width:200px" class="tbl-txt text-center font-400" style="cursor:default" *ngIf="!apptData.clientId" width="15%">
+                                                <span style="display:inline-block; min-width:100px; text-align:center;">
+                                                    <div class="font-400 mt-5 appnt-pro-image">
+                                                        <div class="appnt-pro-letter">
+                                                            <strong> {{ 'N'.toUpperCase() }} </strong>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="font-400 mt-5">
+                                                        <h6 class="font-400">NO CLIENT</h6>
+                                                    </div>
+                                                </span>
+                                            </td>
+                                            <!-- <td style="min-width:100px" *ngIf="!apptData.clientId" style="cursor:default" class="tbl-txt">{{apptData.clientName}}</td> -->
+                                            <td style="min-width:100px" class="text-center">
+                                                <!--<a (click)="gotoRouting(apptData)" class="btn btn-default">
+                                                    <i class="fa fa-search"></i>
+                                                </a>-->
+                                                <!--<a *ngIf="apptData.Is_Booked_Out__c == 0 && apptData.apstatus != 'No Show'" style="font-size:30px" [routerLink]="['/appointment/book/'+apptData.clientId+ '/' +apptData.apptid]">
+                                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                </a>-->
+
+                                                <a style="min-width:100px;" *ngIf="((apptData.statusButtonValue != undefined) && (appointmentsList && apptData.statusButtonValue) && (apptData.Is_Booked_Out__c == 0))"
+                                                    class="btn btn-default" (click)="changeStatus(apptData)">{{apptData.statusButtonValue}}</a>
+
+                                                <!-- <a style="min-width:100px;" *ngIf="(apptData.statusButtonValue === undefined)" class="btn btn-default" (click)="changeStatus(apptData)">-</a> -->
+                                            </td>
+
+                                            <!--<td>{{apptData.apstatus}}</td>-->
+                                            <td style="min-width:200px; max-width:250px; color:#fff;" *ngIf='apptData.Is_Booked_Out__c == 0' class="font-400">
+                                                <span (click)="gotoRouting(apptData)" style="cursor: pointer;">{{apptData.workerName}}</span>
+                                            </td>
+                                            <td style="min-width:200px; max-width:250px; color:#fff;" *ngIf='apptData.Is_Booked_Out__c == 1' class="font-400">
+                                                <span (click)="gotoRouting(apptData)" style="cursor: pointer;">Book Out Time ({{apptData.bookoutName}}.)</span>
+                                            </td>
+
+                                            <td>
+                                                <span style="min-width:100px; cursor: default;">{{apptData.apstatus}}</span>
+                                            </td>
+                                            <td style="min-width:100px" class="text-right">
+
+                                                <!-- <div class="custom-tooltip white brdno">
+                                                    <i *ngIf="apptData.notes != ''  && apptData.notes != 'null' && apptData.notes != null && apptData.notes != undefined && apptData.notes != 'undefined'"
+                                                        style="background-color:yellow" class="fa fa-sticky-note-o">
+                                                        <span class="tooltiptext">{{apptData.notes}}</span>
+                                                    </i>
+                                                </div>
+
+                                                <a style="display:inline-block" (click)="gotoRouting(apptData)">
+                                                    <img src="assets/images/edit.png" width="25" alt="img">
+                                                </a>
+                                                <a style="display:inline-block" (click)="gotoRouting(apptData)">
+                                                </div> -->
+
+
+                                                <a data-toggle="tooltip" title="{{apptData.notes}}" data-placement="top" style="display:inline-block" (click)="gotoRouting(apptData)"
+                                                    *ngIf="apptData.notes != ''  && apptData.notes != 'null' && apptData.notes != null && apptData.notes != undefined && apptData.notes != 'undefined'">
+                                                    <img src="assets/images/notes.png" width="25" alt="img">
+                                                </a>
+                                                <a *ngIf="apptData.Is_Booked_Out__c == 0 && apptData.apstatus != 'No Show'" [routerLink]="['/appointment/modifyappt/' + apptData.clientId + '/' + apptData.apptid]"
+                                                    style="display:inline-block;cursor:pointer; vertical-align:middle; margin-right:10px;">
+                                                    <img src="assets/images/edit.png" width="16" alt="img">
+                                                </a>
+
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- <app-rightbar></app-rightbar> -->
+        <div class="sidebar1-icons">
+            <ul>
+                <li>
+                    <a [routerLink]="['/appointments']">
+                        <img src="assets/images/side-icon1.png" (click)="ngOnInit()" alt="img">
+                        <span>appt</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/checkout/newticket']">
+                        <img src="assets/images/side-icon2.png" alt="img">
+                        <span>check out</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/client']">
+                        <img src="assets/images/side-icon3.png" alt="img">
+                        <span>clients</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/inventory']">
+                        <img src="assets/images/side-icon4.png" alt="img">
+                        <span>inventory</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/marketing']">
+                        <img src="assets/images/side-icon5.png" alt="img">
+                        <span>marketing</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/reports']">
+                        <img src="assets/images/side-icon6.png" alt="img">
+                        <span>reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['/dashboard']">
+                        <img src="assets/images/side-icon7.png" alt="img">
+                        <span>dashboard</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!----------------------book Appt modal------------------------>
+    <button style="display: none" id="bookApptModalModalmyBtn">Open Modal</button>
+    <div id="bookApptModal" class="modal expressBooking bluemodal small-modal">
+        <div class="modal-content">
+            <span id="cancel1" (click)="closeBookApptModal()" class="close close-list">&times;</span>
+            <div class="modal-dialog ">
+                <div class="modal-body">
+                    <div class="clearfix">
+                        <div class="row mt-20 clearfix">
+
+                            <div class="col-md-12 col-sm-12 mb-10">
+                                <div class="staff-search staff125">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="Name, Phone, Email" [formControl]="searchField" autofocus class="form-control" id="FindApptSearchKeys"
+                                            style="background: none !important;">
+                                        <input type="hidden" id="bookingSlot" value="{{ booking }}">
+                                        <input type="hidden" id="cldDate" value="{{ cldDate }}">
+                                        <span class="input-group-addon">
+                                            <button type="submit" (click)="addNewClient()" [routerLink]="['/client/quick/add']" [queryParams]="{ actionMethod: 'findAppt' }">
+                                                <img src="assets/images/plus-icon.png" width="14" alt="Plus">
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <perfect-scrollbar style="max-height:300px;">
+                            <div class="staff-search-details mt-20">
+                                <div class="staff-search-details-in">
+                                    <div class="staff-search-list" *ngFor="let client of autoList">
+                                        <div class="staff-search-list-img" *ngIf="(client.image && client.image !== '')">
+                                            <img src="{{apiEndPoints | translate}}/{{client.image}}" width="61" onerror="this.onerror=null;this.src='assets/images/user-icon.png';"
+                                                height="61" alt="Profile">
+                                        </div>
+                                        <div class="staff-search-list-img" *ngIf="(client.image === null || client.image === '' || client.image === undefined)">
+                                            <div class="appnt-pro-letter" style="width:61px;height:61px;line-height: 57px;">
+                                                <strong> {{ client.FirstName[0].toUpperCase() }} </strong>
+                                            </div>
+                                        </div>
+                                        <div class="staff-search-list-name" (click)="getUserData(client)" [routerLink]="['/appointment/book']">
+                                            <span id="findApptClear">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
+                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
+                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </perfect-scrollbar>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!----------------------book Appt modal End------------------------>
+
+    <!--------------------book standing modal------------------------------>
+    <button style="display: none" id="bookStandingModalmyBtn">Open Modal</button>
+    <div id="bookStandingModal" class="modal expressBooking bluemodal small-modal">
+        <div class="modal-content">
+            <span id="cancel1" (click)="closeBookingStanding()" class="close close-list">&times;</span>
+            <div class="modal-dialog ">
+                <div class="modal-body">
+                    <div class="clearfix">
+                        <div class="row mt-20 clearfix">
+
+                            <div class="col-md-12 col-sm-12 mb-10">
+                                <div class="staff-search staff125">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="Name, Phone, Email" [formControl]="searchField" autofocus class="form-control" id="standingSearchKeys"
+                                            style="background: none !important;">
+                                        <input type="hidden" id="bookingSlot" value="{{ booking }}">
+                                        <input type="hidden" id="cldDate" value="{{ cldDate }}">
+                                        <span class="input-group-addon">
+                                            <button type="submit" (click)="addNewClient()" [routerLink]="['/client/quick/add']" [queryParams]="{ actionMethod: 'bookStanding' }">
+                                                <img src="assets/images/plus-icon.png" width="14" alt="Plus">
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <perfect-scrollbar style="max-height:300px;">
+                            <div class="staff-search-details mt-20">
+                                <div class="staff-search-details-in">
+                                    <div class="staff-search-list" *ngFor="let client of autoList">
+                                        <div class="staff-search-list-img" *ngIf="(client.image && client.image !== '')">
+                                            <img src="{{apiEndPoints | translate}}/{{client.image}}" width="61" onerror="this.onerror=null;this.src='assets/images/user-icon.png';"
+                                                height="61" alt="Profile">
+                                        </div>
+                                        <div class="staff-search-list-img" *ngIf="(client.image === null || client.image === '' || client.image === undefined)">
+                                            <div class="appnt-pro-letter" style="width:61px;height:61px;line-height: 57px;">
+                                                <strong> {{ client.FirstName[0].toUpperCase() }} </strong>
+                                            </div>
+                                        </div>
+                                        <div class="staff-search-list-name" (click)="bookStandingPage(client)">
+                                            <span id="bookStandingClear">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
+                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
+                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </perfect-scrollbar>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--------------------book standing modal End------------------------------>
+
+    <button style="display: none" id="myBtn">Open Modal</button>
+    <div id="myModal" class="modal expressBooking bluemodal small-modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span id="cancel1" (click)="closePopup()" class="close close-list">&times;</span>
+            <div class="modal-dialog ">
+                <div class="modal-body">
+                    <div class="clearfix">
+                        <div class="row mt-20 clearfix">
+
+                            <div class="col-md-12 col-sm-12 mb-10">
+                                <div class="staff-search staff125">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="Name, Phone, Email" [formControl]="searchField" autofocus class="form-control" id="searchKeys"
+                                            style="background: none !important;">
+                                        <input type="hidden" id="bookingSlot" value="{{ booking }}">
+                                        <input type="hidden" id="cldDate" value="{{ cldDate }}">
+                                        <span class="input-group-addon">
+                                            <!-- <button type="submit" (click)="searchClients()">
+                                                <img src="assets/images/search-icon.png" width="14" alt="Search">
+                                            </button> -->
+                                            &nbsp;
+                                            <button type="submit" (click)="newClient()">
+                                                <img src="assets/images/plus-icon.png" width="14" alt="Plus">
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button *ngIf="(expbookskipbutton == 'true' && expbookskipbutton != '')" type="button" class="btn btn-primary pull-left ml-10"
+                                        style="background: #0188bd;" (click)="skip()">Skip </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <perfect-scrollbar style="max-height:300px;">
+                            <div class="staff-search-details mt-20">
+                                <div class="staff-search-details-in">
+                                    <div class="staff-search-list" *ngFor="let client of autoList">
+                                        <div class="staff-search-list-img" *ngIf="(client.image && client.image !== '')">
+                                            <img src="{{apiEndPoints | translate}}/{{client.image}}" width="61" onerror="this.onerror=null;this.src='assets/images/user-icon.png';"
+                                                height="61" alt="Profile">
+                                        </div>
+                                        <div class="staff-search-list-img" *ngIf="(client.image === null || client.image === '' || client.image === undefined)">
+                                            <div class="appnt-pro-letter" style="width:61px;height:61px;line-height: 57px;">
+                                                <strong> {{ client.FirstName[0].toUpperCase() }} </strong>
+                                            </div>
+                                        </div>
+                                        <div class="staff-search-list-name" (click)="expressBookingGetUserData(client)">
+                                            <span id="firstLastClearData">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
+                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
+                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </perfect-scrollbar>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- New Client-->
+    <div id="expressModel" class="modal expressBooking bluemodal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span id="cancel1" (click)="closePopup()" class="close close-list">&times;</span>
+            <div class="modal-dialog ">
+
+                <div class="modal-body">
+                    <!-- <h4 class="mb-10"> Express Booking </h4> -->
+                    <h5 class="appoinment-heading">
+                        <span>APPOINTMENT DETAILS</span>
+                    </h5>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <label> Appointment Date:</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" class="form-control" value="" id="CalendarDate" disabled/>
+                            <input type="hidden" value="" id="startDateTime">
+                            <input type="hidden" value="" id="workername">
+                            <input type="hidden" value="" id="workerId">
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red">*</span>
+                            <label>Time:</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <select class="select-bg" id="times">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red">*</span>
+                            <label>{{ 'APPOINTMENTS_MAIN_PAGE.FIRST_NAME' | translate }} </label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" (keypress)="clearErrorMsg();" id="firstName" class="form-control" [(ngModel)]="firstName" />
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6>{{errorFirstName | translate}} </h6>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red">*</span>
+                            <label>{{ 'APPOINTMENTS_MAIN_PAGE.LAST_NAME' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" (keypress)="clearErrorMsg();" class="form-control" id="lastName" [(ngModel)]="lastName" />
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6> {{errorLastName | translate}}</h6>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red" *ngIf="allowQuickAddAccess == true && clientfieldMobilePhone == true">*</span>
+                            <label>{{ 'APPOINTMENTS_MAIN_PAGE.MOBILE' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" class="form-control" maxlength="15" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                id="mobileNumber" (keypress)='hyphen_generate_mobile(mobileNumber);clearErrorMsg();' name="mobileNumber"
+                                [(ngModel)]="mobileNumber">
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6> {{errormobilephone | translate}}</h6>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <label> {{ 'APPOINTMENTS_MAIN_PAGE.MOBILE_CARRIER' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <select class="select-bg" [(ngModel)]="mobileCarrier">
+                                <option *ngFor="let mobile of mobileCarrierslist" id="mobileCarrier" value="{{mobile}}">{{mobile}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red" *ngIf="allowQuickAddAccess == true && clientfieldPrimaryEmail == true">*</span>
+                            <label> {{'APPOINTMENTS_MAIN_PAGE.PRIMARY_EMAIL' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" (keypress)="clearErrorMsg();" id="primaryEmail" class="form-control" [(ngModel)]="primaryEmail" />
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6> {{errorEmail | translate}}</h6>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="appoinment-heading">
+                                <span>{{ 'APPOINTMENTS_MAIN_PAGE.SERVICES' | translate }}</span>
+                            </h5>
+                            <div class="mt-10">
+                                <div class="">
+
+                                    <div class="table-responsive mb-5 font-300">
+                                        <table class="table form_cont_one mb-5">
+                                            <tbody>
+
+
+                                                <tr *ngFor="let input of inputs; let i='index'">
+                                                    <td class="form_cont" style="border:0; padding-left:0;">
+                                                        <select class="select-bg" id='workerIds' [(ngModel)]="input.worker" (change)="expressService($event.target.value, i)" style="width:100%;">
+                                                            <option id="workerIdsOption" *ngFor="let workers of getWorker" value="{{workers.workerId}}">{{workers.names}} </option>
+                                                        </select>
+                                                    </td>
+
+                                                    <td class="form_cont" style="border:0;">
+                                                        <select class="select-bg" id="listServices" [(ngModel)]="input.serviceId" (change)="listServices($event.target.value ,i )"
+                                                            style=" width:100%;" required>
+                                                            <option id="amountDuration" *ngFor="let express of bookingExpress[i]" [value]="express.serviceId">{{express.Name}}</option>
+                                                        </select>
+                                                    </td>
+                                                    <!-- <td *ngIf='inputs.length < 6' class="text-center" style="border:0;">
+                                                        <a (click)="addInput(index)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                                                            <span class="add">
+                                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td> -->
+                                                    <td *ngIf='inputs.length > 1' class="text-center" style="border:0;  padding-right:0;">
+                                                        <a (click)="deleteFieldValue(i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                                                            <span class="wt-clr">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                        <div *ngIf='inputs.length < 6' class="text-center mb-20">
+                                            <button class="btn btn-gradient-txt" (click)="addInput(index)">
+                                                <span>ADD NEW SERVICES</span>
+                                            </button>
+                                        </div>
+                                        <p class="text-left font-500">
+                                            {{ 'APPOINTMENTS_MAIN_PAGE.TOTAL_PRICE' | translate }}
+                                            <strong>$ {{servicePrice}} </strong>
+                                            <input type="hidden" [(ngModel)]="servicePrice" id="servicePrice" value=" {{servicePrice}}" />
+                                            <span class="ml-10">
+                                                {{ 'APPOINTMENTS_MAIN_PAGE.TOTAL_DURATIONS' | translate }}
+                                                <strong> {{ serviceDurations }} Minutes</strong>
+                                                <input type="hidden" [(ngModel)]="sumDuration" id="expressSumDuration" value=" {{serviceDurations}}" />
+                                            </span>
+                                        </p>
+
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="form_cont pb-10">
+                                            <div class="col-md-3 ">
+                                                <label> {{ 'APPOINTMENTS_MAIN_PAGE.VISIT_TYPE' | translate }}</label>
+                                            </div>
+
+                                            <div class="col-md-5">
+                                                <select [(ngModel)]="expressVisitType" class="select-bg-option select-bg  ">
+                                                    <option *ngFor="let visitType of visitTypes" value="{{ visitType.visitType }}">{{visitType.visitType}}</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <textarea class="form-control mb-5" id="textArea" [(ngModel)]="textArea" style="width:100%;color:#fff; border-color:#fff;">
+                                        </textarea>
+
+                                    <p class="mb-5">*Express Booking may cause overbooking and/or conflicting appointments</p>
+                                    <div class="text-center">
+
+                                        <button class="btn btn-sucess btn-gradient-txt" (click)="saveExpressBooking()">
+                                            <span>Save</span>
+                                        </button>
+                                        <button class="btn btn-danger" (click)="closePopup()" id="cancelExpress2">
+                                            <span>Cancel</span>
+                                        </button>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- existing Client-->
+    <div id="existingExpressModel" class="modal existing bluemodal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span id="expressClose" (click)="closePopup()" class="close close-list">&times;</span>
+            <div class="modal-dialog ">
+
+                <div class="modal-body">
+                    <!-- <h4 class="mb-10"> Express Booking </h4> -->
+                    <h5 class="appoinment-heading">
+                        <span>APPOINTMENT DETAILS</span>
+                    </h5>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <label> Appointment Date:</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input class="form-control" type="text" value="" id="CalendarDate2" disabled/>
+                            <input type="hidden" value="" id="expressstartDateTime">
+                            <input type="hidden" value="" id="expressworkername">
+                            <input type="hidden" value="" id="expressworkerId">
+                            <input type="hidden" value="" [(ngModel)]="expressClientIds" id="expressClientIds">
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red">*</span>
+                            <label>Time:</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <select class="select-bg" id="expresstimes">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red">*</span>
+                            <label>{{ 'APPOINTMENTS_MAIN_PAGE.FIRST_NAME' | translate }} </label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" (keyPress)="clearErrorMsg();" disabled id="firstName" class="form-control" [(ngModel)]="firstName" style="border-color:#000; width:100%;"
+                            />
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6>{{errorFirstName | translate}}</h6>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red">*</span>
+                            <label>{{ 'APPOINTMENTS_MAIN_PAGE.LAST_NAME' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" (keyPress)="clearErrorMsg();" disabled class="form-control" id="lastName" [(ngModel)]="lastName" style="border-color:#000; width:100%;"
+                            />
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6> {{errorLastName | translate}}</h6>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <!-- <span class="red">*</span> -->
+                            <label>{{ 'APPOINTMENTS_MAIN_PAGE.MOBILE' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" class="form-control" id="mobileNumber" [(ngModel)]="mobileNumber" (keyPress)="clearErrorMsg();" />
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6> {{errormobilephone | translate}}</h6>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <label> {{ 'APPOINTMENTS_MAIN_PAGE.MOBILE_CARRIER' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <select class="select-bg" [(ngModel)]="mobileCarrier">
+                                <option *ngFor="let mobile of mobileCarrierslist" id="mobileCarrier" value="{{mobile}}">{{mobile}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <!-- <span class="red">*</span> -->
+                            <label> {{'APPOINTMENTS_MAIN_PAGE.PRIMARY_EMAIL' | translate }}</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" (keyPress)="clearErrorMsg();" id="primaryEmail" class="form-control" [(ngModel)]="primaryEmail" />
+                        </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6> {{errorEmail | translate}}</h6>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="appoinment-heading">
+                                <span> {{ 'APPOINTMENTS_MAIN_PAGE.SERVICES' | translate }}</span>
+                            </h5>
+                            <div class="mt-10">
+                                <div class="">
+
+                                    <div class="table-responsive mb-5" id="emptyRecord">
+                                        <table class="table form_cont_one mb-5">
+                                            <tbody>
+
+
+                                                <tr *ngFor="let input of inputs; let i='index'">
+                                                    <td class="form_cont" style="border:0; padding-left:0;">
+                                                        <select class="select-bg" id='ExpworkerIds' [(ngModel)]="input.worker" (change)="expressService($event.target.value, i)"
+                                                            style="width:100%;">
+                                                            <option *ngFor="let workers of getWorker" value="{{workers.workerId}}">{{workers.names}} </option>
+                                                        </select>
+                                                    </td>
+
+                                                    <td class="form_cont" style="border:0;">
+                                                        <select class="select-bg" [(ngModel)]="input.serviceId" (change)="listServices($event.target.value ,i )" style=" width:100%;">
+                                                            <option id="amountDuration2" *ngFor="let express of bookingExpress[i]" [value]="express.serviceId">{{express.Name}}</option>
+                                                        </select>
+                                                    </td>
+
+                                                    <!-- <td *ngIf='inputs.length < 6' class="text-center" style="border:0;">
+                                                        <a (click)="addInput(index)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                                                            <span class="add">
+                                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td> -->
+                                                    <td *ngIf='inputs.length > 1' class="text-center" style="border:0; padding-right:0;">
+                                                        <a (click)="deleteFieldValue(i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                                                            <span class="wt-clr">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                        <div *ngIf='inputs.length < 6' class="text-center mb-20">
+                                            <button class="btn btn-gradient-txt" (click)="addInput(index)">
+                                                <span>ADD NEW SERVICES</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p class="text-left font-500" id="sumDuration">
+                                        {{ 'APPOINTMENTS_MAIN_PAGE.TOTAL_PRICE' | translate }}
+                                        <strong>$ {{servicePrice}} </strong>
+                                        <input type="hidden" [(ngModel)]="servicePrice" id="servicePrice2" value=" {{servicePrice}}" />
+                                        <span class="ml-10">
+                                            {{ 'APPOINTMENTS_MAIN_PAGE.TOTAL_DURATIONS' | translate }}
+                                            <strong> {{ serviceDurations }} Minutes</strong>
+                                            <input type="hidden" [(ngModel)]="sumDuration2" id="sumDuration2" value=" {{ serviceDurations }}" />
+                                        </span>
+                                    </p>
+                                    <div class="clearfix row">
+                                        <div class=" form_cont pb-10">
+                                            <div class="col-md-3">
+                                                <label> {{ 'APPOINTMENTS_MAIN_PAGE.VISIT_TYPE' | translate }}</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select style=" width:100%;" class="select-bg" id="expressVisitType" [(ngModel)]="expressVisitType">
+                                                    <option *ngFor="let visitType of visitTypes" value="{{visitType.visitType}}">{{visitType.visitType}}</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <textarea class="form-control mb-5" style="width:100%;color:#fff;" id="textArea" [(ngModel)]="textArea">
+                                                </textarea>
+
+                                    <p class="mb-5">*Express Booking may cause overbooking and/or conflicting appointments</p>
+
+                                    <div class="text-center">
+
+                                        <button class="btn btn-sucess btn-gradient-txt" (click)="existingExpressBooking()">
+                                            <span>Save</span>
+                                        </button>
+                                        <button class="btn btn-danger" (click)="closePopup()" id="expressCancelExpress2">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- no Client-->
+
+    <div id="skipModel" class="modal expressBooking bluemodal">
+        <div class="modal-content">
+            <span id="cancel1" (click)="closePopup()" class="close close-list">&times;</span>
+            <div class="modal-dialog ">
+
+                <div class="modal-body">
+                    <!-- <h4 class="mb-10"> Express Booking </h4> -->
+                    <h5 class="appoinment-heading">
+                        <span>APPOINTMENT DETAILS</span>
+                    </h5>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <label> Appointment Date:</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <input type="text" class="form-control" value="" id="skipCalendarDate" disabled/>
+                            <input type="hidden" value="" id="skipdateAndTime">
+                            <input type="hidden" value="" id="skipworkername">
+                            <input type="hidden" value="" id="skipexpressworkerId">
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <span class="red">*</span>
+                            <label>Time:</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            <select class="select-bg" id="skiptimes">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-md-5">
+                            <label>Full Name</label>
+                        </div>
+                        <div class="col-md-7 mb-5">
+                            No Client
+                            <input type="hidden" class="form-control" value="NO CLIENT" id="noclient" [(ngModel)]="noclient" disabled />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="appoinment-heading">
+                                <span>{{ 'APPOINTMENTS_MAIN_PAGE.SERVICES' | translate }}</span>
+                            </h5>
+                            <div class="mt-10">
+                                <div class="">
+
+                                    <div class="table-responsive mb-5 font-300">
+                                        <table class="table form_cont_one mb-5">
+                                            <tbody>
+                                                <tr *ngFor="let input of inputs; let i='index'">
+                                                    <td class="form_cont" style=" border:0; padding-left:0;">
+                                                        <select class="select-bg" id='skipworkerIds' [(ngModel)]="input.worker" (change)="expressService($event.target.value, i)"
+                                                            style="width:100%;">
+                                                            <option *ngFor="let workers of getWorker" value="{{workers.workerId}}">{{workers.names}} </option>
+                                                        </select>
+                                                    </td>
+
+                                                    <td class="form_cont" style="border:0;">
+                                                        <select class="select-bg" id="listServices" [(ngModel)]="input.serviceId" (change)="listServices($event.target.value ,i )"
+                                                            style=" width:100%;" required>
+                                                            <option id="amountDuration" *ngFor="let express of bookingExpress[i]" [value]="express.serviceId">{{express.Name}}</option>
+                                                        </select>
+                                                    </td>
+
+                                                    <!-- <td *ngIf='inputs.length < 6' class="text-center" style="border:0;">
+                                                        <a (click)="addInput(index)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+                                                            <span class="add">
+                                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td> -->
+                                                    <td *ngIf='inputs.length > 1' class="text-center" style=" border:0; padding-right:0;">
+                                                        <a (click)="deleteFieldValue(i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                                                            <span class="wt-clr">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                        <div *ngIf='inputs.length < 6' class="text-center mb-20">
+                                            <button class="btn btn-gradient-txt" (click)="addInput(index)">
+                                                <span>ADD NEW SERVICES</span>
+                                            </button>
+                                        </div>
+
+                                        <p class="text-left font-500">
+                                            {{ 'APPOINTMENTS_MAIN_PAGE.TOTAL_PRICE' | translate }}
+                                            <strong>$ {{servicePrice}} </strong>
+                                            <input type="hidden" [(ngModel)]="skipPrice" id="skipPrice" value=" {{servicePrice}}" />
+                                            <span class="ml-10">
+                                                {{ 'APPOINTMENTS_MAIN_PAGE.TOTAL_DURATIONS' | translate }}
+                                                <strong> {{ serviceDurations }} Minutes</strong>
+                                                <input type="hidden" [(ngModel)]="skipDuration" id="skipDuration" value=" {{serviceDurations}}" />
+                                            </span>
+                                        </p>
+
+                                    </div>
+                                    <div class="clearfix row">
+                                        <div class=" form_cont pb-10">
+                                            <div class="col-md-3">
+                                                <label> {{ 'APPOINTMENTS_MAIN_PAGE.VISIT_TYPE' | translate }}</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select style=" width:100%;" class="select-bg" [(ngModel)]="skipVisitType">
+                                                    <option *ngFor="let visitType of visitTypes" value="{{ visitType.visitType }}">{{visitType.visitType}}</option>
+                                                </select>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                    <textarea class="form-control mb-5" id="skiptextArea" [(ngModel)]="skiptextArea" style="width:100%;color:#fff;">
+                                            </textarea>
+
+                                    <p class="mb-5">*Express Booking may cause overbooking and/or conflicting appointments</p>
+                                    <div class="text-center">
+
+                                        <button class="btn btn-success btn-gradient-txt" (click)="saveSkipExpBooking()">
+                                            <span>Save</span>
+                                        </button>
+                                        <button class="btn btn-danger" (click)="closePopup()" id="skipcancel">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>

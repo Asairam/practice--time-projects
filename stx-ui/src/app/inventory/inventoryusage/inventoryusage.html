@@ -1,0 +1,109 @@
+<div id="wrapper_setup_new">
+  <app-header [newMenu]="'noNav'"></app-header>
+  <section id="inner_cont">
+    <div class="container form_cont">
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'INVENTORY_USAGE.SKU' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input [(ngModel)]="searchKeyWord"  type="text" value="809"  (keyup.enter)="searchProduct()" (keypress)="clearErrMsg();keyPress($event)"/><span> <p class="red">{{showNoDataMsg}} </p></span>
+        </div>
+         
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          &nbsp;
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <button type="button" class="btn btn-primary" (click)="searchProduct()">
+            <i class="fa fa-binoculars" aria-hidden="true"></i> {{'BUTTON.SEARCH' | translate }}</button>
+        </div>
+      </div>
+      <div class="row mt-40" *ngIf='disableSelect == true'>
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'INVENTORY_USAGE.SELECT' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select [(ngModel)]="prdListMdl" (change)="productOnChange($event.target.value)">
+            <option *ngFor="let proData of productsListForSelect; let i = 'index'" value='{{proData.Product_Code__c}}'>{{proData.Name}} {{proData.Size__c}} {{proData.Unit_of_Measure__c}}</option>
+          </select>
+          <button type="button" class="btn btn-primary" (click)="searchOnSelect()"><i  aria-hidden="true"></i>{{'BUTTON.SELECT' | translate }}</button>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div *ngIf='resultDiv == true' class="container form_cont">
+      <div class="row mt-20 res-mt-15">
+        <div class="col-md-12">
+            <div>
+                <p class="red">{{error | translate}}</p>
+              </div>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th class="thcss">{{'MANAGE_INVENTORY.PRODUCT_NAME' | translate }}</th>
+                  <th class="thcss">{{'INVENTORY_USAGE.QUANTITY' | translate }}</th>
+                  <th class="thcss">{{'COMMON.COST_EACH' | translate }}</th>
+                  <th class="thcss">{{'INVENTORY_USAGE.USED_BY' | translate }}</th>
+                  <th class="thcss">{{'INVENTORY_USAGE.REMOVE' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of productsList; let i = 'index'" id="data{{i}}">
+                  <td>{{data.Name}}</td>
+                  <td>
+                    <input type="text" maxlength="3"  (keypress)="clearErrMsg(); keyPress1($event)" [(ngModel)]="data.Quantity_On_Hand__c">
+                  </td>
+                  <td>{{data.Standard_Cost__c}}</td>
+                  <td>
+                    <select #company (change)="onChangeUsedBy($event.target.value, i)" class="width-align">
+                      <option *ngFor="let usedData of usedByDataList; let i = 'index'" value='{{usedData.usedType}}' id="usedData{{i}}">{{usedData.usedType}}</option>
+                    </select>
+                    <br />
+                    <select class="width-align" *ngIf='userList && userList[i] && company.value!=="Company"' (change)="onChangeUser($event.target.value, i)">
+                      <option *ngFor="let userData of userList[i]; let i = 'index'" value='{{userData.Id}}' id="userData{{i}}">{{userData.FirstName}} {{userData.LastName}}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <a (click)="removeOne(data,i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                      <span class="del">
+                        <i class="fa fa-minus" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'INVENTORY_USAGE.CREATED_BY' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <label>{{firstName}} {{lastName}}</label>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>{{'INVENTORY_USAGE.CREATED_DATE' | translate }}</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <label>{{createdDate | date:'MM/dd/yyyy'}}</label>
+        </div>
+      </div>
+      <div class="row mt-30 res-mt-15 text-center res-tleft">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-7" *ngIf="productsList.length > 0">
+          <button type="button" class="save-btn" (click)="saveInventoryUsage()">{{'BUTTON.SAVE' | translate }}</button>
+          <button type="button" class="cancel-btn" (click)="cancel()"[routerLink]="['/inventory']">{{'BUTTON.CANCEL' | translate }}</button>
+          <button type="button" class="remove-btn" (click)="removeAll()">{{'BUTTON.REMOVE_ALL_ITEMS' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <app-rightbar></app-rightbar>
+</div>

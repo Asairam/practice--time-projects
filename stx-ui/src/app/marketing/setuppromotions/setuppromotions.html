@@ -1,0 +1,330 @@
+<div id="wrapper_setup_new">
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont" class="setsubcont">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-5 mt-40">
+					<div class="table-responsive">
+						<table class="table table-bordered-white" [class.disabled]="disableEnable">
+							<tbody>
+								<tr class="white">
+									<td colspan="4" valign="middle" height="60" style="padding-left: 10px;">
+										<input type="checkbox" [checked]="showIn" id="c1" class="pull-left" (click)='showInActive()'> &nbsp;&nbsp;
+										<label for="c1" class="c1">{{'SETUP_PROMOTIONS.SHOW_INACTIVE' | translate}}</label>
+									</td>
+								</tr>
+								<tr class="white">
+									<td>{{'COMMON.ACTIVE' | translate}}</td>
+									<td>{{'COMMON.NAME' | translate}}</td>
+									<td>{{'SETUP_PROMOTIONS.DISCOUNT' | translate}}</td>
+									<td>{{'COMMON.SORT_ORDER' | translate}}</td>
+								</tr>
+								<tr *ngFor='let promotionslist of promotionsList; let i = "index"' id="promotionslist{{i}}" [ngClass]="{ hideinactive: promotionslist.Active__c == 0 }"
+								 [class.showinactive]="showInactiveData">
+									<!-- <td class="tbl-txt" (click)="showData(promotionslist)">{{paymentData.Name}}</td> -->
+									<td align="center" *ngIf='promotionslist.Active__c == 1'>
+										<input type="checkbox" checked disabled>
+									</td>
+									<td align="center" *ngIf='promotionslist.Active__c == 0'>
+										<input type="checkbox" disabled>
+									</td>
+									<td class="tbl-txt" (click)="showData(promotionslist)">{{promotionslist.Name}}</td>
+									<td *ngIf="promotionslist.Discount_Percentage__c > 0 && promotionslist.Discount_Amount__c <= 0">{{promotionslist.Discount_Percentage__c}}%</td>
+									<td *ngIf="promotionslist.Discount_Amount__c > 0 && promotionslist.Discount_Percentage__c <= 0">${{promotionslist.Discount_Amount__c}}.00</td>
+									<td *ngIf="promotionslist.Discount_Percentage__c == 0 && promotionslist.Discount_Amount__c == 0"></td>
+									<td>
+										<input type="text" style="width:100%;" [(ngModel)]="promotionslist.Sort_Order__c" (keypress)="clear()"/>
+									</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="4">
+										<a class="white btn btn-hov" (click)="addNew()">
+											<i class="fa fa-plus"></i>{{'BUTTON.NEW' | translate}}</a> &nbsp;&nbsp;
+										<!-- <a class="white" (click)="sortData(promotionsList)"> -->
+										<a class="white" (click)="updateOrder()">
+											<i class="fa fa-check"></i>{{'COMMON.UPDATE_SORT_ORDER' | translate}} </a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<p class="red"> {{promotionError4}} </p>
+					</div>
+				</div>
+
+				<!--disable div starts -->
+				<div class="col-md-6 pdgl30 mt-40 disable" *ngIf="disableDiv==true">
+					<h1>{{'SETUP_PROMOTIONS.PROMOTION_DETAIL' | translate}}</h1>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" checked disabled>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.PROMOTION_NAME' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" disabled>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.AVAILABLE_ON_TICKET' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input id="t1" type="checkbox" disabled>
+							<label for="t1" class="mb-10">{{'SETUP_PROMOTIONS.SERVICE_DISCOUNT' | translate}}</label>
+							<br />
+							<input id="t2" type="checkbox" disabled>
+							<label for="t2">{{'SETUP_PROMOTIONS.PRODUCT_DISCOUNT' | translate}}</label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.DISCOUNT_AMOUNT' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" disabled/>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.DISCOUNT_PERCENTAGE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" disabled/>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.START_DATE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" disabled/>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.END_DATE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" disabled/>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.SORT_ORDER' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" disabled/>
+						</div>
+					</div>
+
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn" disabled>{{'BUTTON.SAVE' | translate}}</button>
+							<button type="button" class="cancel-btn" disabled>{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!-- disable div ends -->
+				<!-- add div starts -->
+				<div class="col-md-6 pdgl30 mt-40" *ngIf="addDiv==true">
+					<h1>{{'SETUP_PROMOTIONS.PROMOTION_DETAIL' | translate}}</h1>
+					<p class="red"> {{error | translate }} </p>
+					<p class="red">{{ promotionError2 | translate }}</p>
+					<p class="red">{{ promotionError3 | translate }}</p>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" checked [(ngModel)]="active">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.PROMOTION_NAME' | translate}}
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="promotionName" (keydown)='clear()'>
+							<div class="col-sm-12 red"> {{ promotionError | translate}}</div>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.AVAILABLE_ON_TICKET' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input id="t1" type="checkbox" [(ngModel)]="serviceDiscount">
+							<label for="t1" class="mb-10">{{'SETUP_PROMOTIONS.SERVICE_DISCOUNT' | translate}}</label>
+							<br />
+							<input id="t2" type="checkbox" [(ngModel)]="productDiscount">
+							<label for="t2">{{'SETUP_PROMOTIONS.PRODUCT_DISCOUNT' | translate}}</label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft" (keydown)='clear()'>
+							<label>{{'SETUP_PROMOTIONS.DISCOUNT_AMOUNT' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="discountAmount" (keydown)='clear()' />
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.DISCOUNT_PERCENTAGE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="discountPercentage" (keydown)='clear()' />
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.START_DATE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input style="min-width: 105px" type="text" class="form-control datefield" (click)="clear()" #dp="bsDatepicker" bsDatepicker
+							 [(bsValue)]="promotionStartDate" [bsConfig]="datePickerConfig" [(ngModel)]="promotionStartDate">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.END_DATE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input style="min-width: 105px" type="text" class="form-control datefield" (click)="clear()" #dp="bsDatepicker" bsDatepicker
+							 [(bsValue)]="promotionEndDate" [bsConfig]="datePickerConfig" [(ngModel)]="promotionEndDate">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.SORT_ORDER' | translate}}
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="sort" (keydown)='clear()' />
+							<div class="col-sm-12 red"> {{ promotionError1 | translate}}</div>
+						</div>
+					</div>
+
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn" (click)='createPromotion()'>{{'BUTTON.SAVE' | translate}}</button>
+							<button type="button" class="cancel-btn" (click)='cancel()'>{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!-- add div ends -->
+				<!-- edit div starts -->
+				<div class="col-md-6 pdgl30 mt-40" *ngIf="editDiv==true">
+					<h1>{{'SETUP_PROMOTIONS.PROMOTION_DETAIL' | translate}}</h1>
+					<p class="red"> {{error | translate }} </p>
+					<p class="red">{{ promotionError2 | translate }}</p>
+					<p class="red">{{ promotionError3 | translate }}</p>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" checked [(ngModel)]="updateActive">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.PROMOTION_NAME' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="updatePromotionName">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.AVAILABLE_ON_TICKET' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input id="t1" type="checkbox" [(ngModel)]="updateServiceDiscount">
+							<label for="t1" class="mb-10">{{'SETUP_PROMOTIONS.SERVICE_DISCOUNT' | translate}}</label>
+							<br />
+							<input id="t2" type="checkbox" [(ngModel)]="updateProductDiscount">
+							<label for="t2">{{'SETUP_PROMOTIONS.PRODUCT_DISCOUNT' | translate}}</label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.DISCOUNT_AMOUNT' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="updateDiscountAmount" />
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'SETUP_PROMOTIONS.DISCOUNT_PERCENTAGE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="updateDiscountPercentage" />
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.START_DATE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input style="min-width: 105px" type="text" class="form-control datefield" (click)="clear()" #dp="bsDatepicker" bsDatepicker
+							 [(bsValue)]="updatePromotionStartDate" [(ngModel)]="updatePromotionStartDate" [bsConfig]="datePickerConfig" />
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.END_DATE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input style="min-width: 105px" type="text" class="form-control datefield" (click)="clear()" #dp="bsDatepicker" bsDatepicker
+							 [(bsValue)]="updatePromotionEndDate" [(ngModel)]="updatePromotionEndDate" [bsConfig]="datePickerConfig" />
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.SORT_ORDER' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]="updateSortOrder" />
+						</div>
+					</div>
+
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn" (click)="editPromotion()">{{'BUTTON.SAVE' | translate}}</button>
+							<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!-- edit div ends -->
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

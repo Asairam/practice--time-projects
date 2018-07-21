@@ -1,0 +1,134 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-10 mt-40">
+                    <div class="table-responsive">
+                        <table [class.disabled]="disableEnable" class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white ">
+                                    <td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input id="c1" type="checkbox" ([ngModel])="showInactiveRecords" (click)="getInactiveResources($event);" class="pull-left"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{'COMMON.SHOW_INACTIVE' | translate}}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                                    <td>{{'COMMON.NAME' | translate}}</td>
+                                </tr>
+                                <tr class="white" *ngFor="let resourcelist of resourceList;  let i='index'" id="resourcelist{{i}}">
+                                    <td align="center" *ngIf="resourcelist.Active__c==0">
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td align="center" *ngIf="resourcelist.Active__c==1">
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(resourcelist)">{{resourcelist.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2" (click)="addNew()">
+                                        <a class="white btn btn-hovr">
+                                            <i class="fa fa-plus"></i> {{'COMMON.NEW' | translate}}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- ----------------addDiv------------- -->
+                <div class="col-md-8 pdgl30 mt-40" [class.disabled]="enableDisable" *ngIf="addDiv">
+                    <h1>{{'SETUP_RESOURCES.RESOURCE_DETAILS' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>
+                                <label>{{'COMMON.ACTIVE' | translate}}</label>
+                            </label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="resourceActive" checked>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [maxlength]="'30'" class="text-capitalize form-control input-sm" (keypress)="clearErrMsg();" [(ngModel)]="resourceName">
+                            <div class=" text-danger">
+                                {{error | translate }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'SETUP_RESOURCES.RESOURCE_NUMBER_AVILABLE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <select [(ngModel)]="numberAvailable">
+                                <option *ngFor="let number of resoucesNumber;let first=first" [ngValue]="number" [selected]="first">{{number}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" (click)="setupResourceData()" class="save-btn">{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+                            <button type="button" (click)="cancel();" class="cancel-btn" value="CANCEL">{{'BUTTON.CANCEL' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- ----------------------------editDiv---------------- -->
+                <div class="col-md-8 pdgl30 mt-40" [class.disabled]="enableDisable" *ngIf="editDiv">
+                    <h1>{{'SETUP_RESOURCES.RESOURCE_DETAILS' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>
+                                <label>{{'COMMON.ACTIVE' | translate}}</label>
+                            </label>
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateResourceActive == true">
+                            <input type="checkbox" checked [(ngModel)]="updateResourceActive">
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateResourceActive == false">
+                            <input type="checkbox" [(ngModel)]="updateResourceActive">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [maxlength]="'30'" class="text-capitalize form-control input-sm" (keypress)="clearErrMsg();" value="{{updateResourceName}}"
+                                [(ngModel)]="updateResourceName">
+                            <div class=" text-danger">
+                                {{error | translate }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'SETUP_RESOURCES.RESOURCE_NUMBER_AVILABLE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="col-sm-7">
+                                <select [(ngModel)]="updateNumberAvailable">
+                                    <option *ngFor="let number of resoucesNumber;" [ngValue]="number">{{number}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" (click)="editResourceService()" class="save-btn">{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+                            <button type="button" (click)="cancel();" class="cancel-btn" value="CANCEL">{{'BUTTON.CANCEL' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

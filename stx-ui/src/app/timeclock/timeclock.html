@@ -1,0 +1,135 @@
+<div id="wrapper_setup_new" style="color:white;">
+	<app-header  [newMenu]="currentDate | date:'EEEE MM/dd/yyyy'"></app-header>
+	<section id="inner_cont">
+		<div class="container form_cont">
+			<div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+				<ul class="nav nav-tabs">
+					<li class="tablinks {{activeTabClass[0]}}" id="Entrynav" (click)="updateTabs(0)">
+						<a data-toggle="tab">
+							<b>Entry</b>
+						</a>
+					</li>
+					<li class="tablinks {{activeTabClass[1]}}" id="Adjustmentsnav" (click)="updateTabs(1)">
+						<a data-toggle="tab">
+							<b>Adjustments</b>
+						</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div *ngIf="activeTab2[0]">
+						<div class="tab-pane fade in active">
+							<div class="table-responsive">
+								<div class="col-md-12">
+									<p class="red mb-0"> {{errorMessage }} </p>
+								</div>
+								<table class="table table-hover table-bordered">
+									<thead>
+										<tr>
+											<th class="thcss">Worker Pin</th>
+											<th class="thcss">Worker</th>
+											<th class="thcss">Time In</th>
+											<th class="thcss">Time Out</th>
+											<th class="thcss">Hours</th>
+											<th class="thcss">Schedule</th>
+											<th class="thcss">Apply Schedule</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<input type="password" [ngClass]="{'disabled':workerData}" (blur)="getWorkerByPin()" placeholder="****" [(ngModel)]="workerPin">
+												<button *ngIf='showButton == true' (click)="checkAction(buttonVale)">{{buttonVale}}</button>
+											</td>
+											<td>&nbsp;{{workerData?.userName}}</td>
+											<td>&nbsp;{{inTime}}</td>
+											<td>&nbsp;{{outTime}}</td>
+											<td>&nbsp;{{hours}}</td>
+											<td>&nbsp;{{schedule}}</td>
+											<td>&nbsp;
+												<input [(ngModel)]="isScheduleApplied" [ngClass]="{'disabled':!workerData}" (ngModelChange)="applySchedule()" type="checkbox">
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="text-center">
+								<button *ngIf="showSave == true" (click)="saveWorkerTimeClock()" type="button" class="save-btn">Save</button>
+								<button type="button" (click)="cancel()" class="cancel-btn">Cancel</button>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="activeTab2[1]">
+						<div class="col-md-12">
+							<p class="red mb-0"> {{adjustmentErrorMessage }} </p>
+						</div>
+						<div class="row mt-20">
+							<div class="col-md-8">
+								<label>Select Date:</label>
+							</div>
+							<div class="col-md-7 col-sm-8">
+								<input type="text" [(ngModel)]="selectedDate" (ngModelChange)="getWorkerTimeClock(selectedDate)" #dp="bsDatepicker" bsDatepicker
+								 [(bsValue)]="currentDate" [bsConfig]="datePickerConfig" class="datefield">
+							</div>
+						</div>
+						<div class="row mt-20">
+							<div class="table-responsive">
+								<table class="table table-hover table-bordered">
+									<thead>
+										<tr>
+											<th class="thcss">Worker</th>
+											<th class="thcss">Time In</th>
+											<th class="thcss">Time Out</th>
+											<th class="thcss">Hours</th>
+											<th class="thcss"></th>
+										</tr>
+									</thead>
+									<tbody>
+										<ng-container *ngFor="let row of rows; let i = 'index'">
+											<tr *ngIf="!row.Removed">
+												<td>
+													<select [(ngModel)]="row.Worker__c" *ngIf="row.isNew">
+														<option value="">--None--</option>
+														<option *ngFor='let list of workersList' value="{{list.Id}}">{{list.FirstName}} {{list.LastName}}</option>
+													</select>
+													<ng-container *ngIf="!row.isNew">{{row.Worker}}</ng-container>
+												</td>
+												<td>
+													<select [(ngModel)]='row.timeIn' (change)="clearErrorMsg()">
+														<option *ngIf='row.default1'>{{row.timeIn}}</option>
+														<option *ngFor='let timeData of timeData'>{{timeData}}</option>
+													</select>
+												</td>
+												<td>
+													<!-- <p-autoComplete [(ngModel)]="row.timeOut"></p-autoComplete> -->
+													<select [(ngModel)]='row.timeOut' (change)="clearErrorMsg()">
+														<option *ngIf='row.default2'>{{row.timeOut}}</option>
+														<option *ngFor='let timeData of timeData'>{{timeData}}</option>
+													</select>
+												</td>
+												<td>&nbsp;{{row.Hours__c}}</td>
+												<td>
+													<span class="f-plus" (click)="addRows()">
+														<i class="fa fa-plus "></i>
+													</span>
+													<span class="f-minus" (click)="deleteRow(i)">
+														<i class="fa fa-minus"></i>
+													</span>
+												</td>
+											</tr>
+										</ng-container>
+									</tbody>
+								</table>
+							</div>
+							<div class="text-center mt-15">
+								<button type="button" class="save-btn" (click)="saveMultipleWorkerTimeClock()">{{ 'BUTTON.SAVE' | translate }}</button>
+								<button type="button" (click)="cancel()" class="cancel-btn">{{ 'BUTTON.CANCEL' | translate }}</button>
+								<button type="button" class="save-btn" (click)="calculateHours()">Calculate Hours</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

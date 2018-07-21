@@ -1,0 +1,14 @@
+.mr-10{
+    margin-right: 8% !important;
+}
+.form_cont, .form_cont select{
+    color: white;
+}
+/* .form_cont table {
+    font-size: 13px;
+} */
+@media (max-width: 768px){
+	.mr-10{
+        margin-right: 10% !important;
+    }
+}

@@ -1,0 +1,228 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-10 mt-40">
+                    <div class="table-responsive">
+                        <!-- Hide table true starts -->
+                        <table [class.disabled]="disableEnable" class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="3" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input id="showinactiveId" name="showinactivename" type="checkbox" ([ngModel])="inActive" (click)="getInactiveServiceGroups($event)"
+                                            id="c1" class="pull-left"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{'COMMON.SHOW_INACTIVE' | translate}}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                                    <td>{{'COMMON.NAME' | translate}}</td>
+                                    <td>{{'COMMON.SORT_ORDER' | translate}} </td>
+                                </tr>
+                                <tr class="white" *ngFor="let servicelist of serviceGroupList; let i='index'" id="servicelist{{i}}">
+                                    <td align="center" *ngIf='servicelist.active == true'>
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td align="center" *ngIf='servicelist.active == false'>
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(servicelist)">
+                                        {{servicelist.serviceGroupName}}
+                                    </td>
+                                    <td>{{servicelist.sortOrder}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="3">
+                                        <a class="white btn btn-hovr" ([ngModel])="inActive" (click)="addNew()">
+                                            <i class="fa fa-plus"></i> {{'COMMON.NEW' | translate}}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Hide table true ends -->
+                    </div>
+                </div>
+                <!-- Add div starts-->
+                <div class="col-md-8 pdgl30 mt-40" [class.disabled]="enableDisable" *ngIf="addDiv">
+                    <h1>{{'SETUP_SERVICE_GROUPS.SERVICE_DETAILS' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="serviceActive" (keypress)="clearErrMsg();">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" maxlength="40" [(ngModel)]="serviceName" (keypress)="clearErrMsg();">
+                            <p class="red"> {{error | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.COLOR' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text"[ngClass]="{'my-class': color ==='#ffffff'}" [(ngModel)]="color" maxlength="7" [(colorPicker)]="color" [style.background]="color" [cpHeight]="'290px'"
+                                [value]="color" />
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.SORT_ORDER' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="number" [(ngModel)]="sortOrder" [(ngModel)]="numberAvailable">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ONLINE_NAME' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="onlineName" maxlength="25" (keypress)="clearErrMsgs();">
+                            <p class="red"> {{error1 | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" (click)="createServiceGroups();" value="SUBMIT" class="save-btn">{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add div ends-->
+                <!-- Edit div  starts-->
+                <div class="col-md-8 pdgl30 mt-40" [class.disabled]="enableDisable" *ngIf="editDiv">
+                    <h1>{{'SETUP_SERVICE_GROUPS.SERVICE_DETAILS' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateActive == true">
+                            <input type="checkbox" checked [(ngModel)]="updateActive">
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateActive == false">
+                            <input type="checkbox" [(ngModel)]="updateActive">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" value="{{updateSericeName}}" maxlength="40" [(ngModel)]="updateSericeName" (keypress)="clearErrMsg();">
+                            <p class="red"> {{error | translate }} </p>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="hidden" value="{{updateId}}" [(ngModel)]="updateId">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.COLOR' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [ngClass]="{'my-class': updateServiceColor ==='#ffffff'}" maxlength="7" [(ngModel)]="updateServiceColor"
+                                [(colorPicker)]="updateServiceColor" [style.background]="updateServiceColor" [cpHeight]="'290px'"
+                                value="{{updateServiceColor}}"> 
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.SORT_ORDER' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input id="sortorderId" type="number" value="{{updateSortOrder}}" [(ngModel)]="updateSortOrder">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ONLINE_NAME' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" value='{{updateOnlineName}}' maxlength="25" [(ngModel)]="updateOnlineName" (keypress)="clearErrMsgs();">
+                            <p class="red"> {{error1 | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-11">
+                            <button type="button" (click)="editServiceGroups();" value="SUBMIT" class="save-btn">{{'BUTTON.SAVE' | translate}}</button>
+                            <button type="button" class="cancel-btn" (click)="Editcancel();">{{'BUTTON.CANCEL' | translate}}</button>
+                            <button type="button" *ngIf="statuscode == '2041'" class="cancel-btn" (click)="deleteServiceGroup();">{{'BUTTON.DELETE' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 pdgl30 mt-40" *ngIf="issystemdiv == true">
+                    <h1>{{'SETUP_SERVICE_GROUPS.SERVICE_DETAILS' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateActive == true">
+                            <input type="checkbox" checked [(ngModel)]="updateActive" disabled>
+                        </div>
+                        <div class="col-sm-7" *ngIf="updateActive == false">
+                            <input type="checkbox" [(ngModel)]="updateActive" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" value="{{updateSericeName}}" [(ngModel)]="updateSericeName" disabled>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="hidden" value="{{updateId}}" [(ngModel)]="updateId">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.COLOR' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="updateServiceColor" [(colorPicker)]="updateServiceColor" [style.background]="updateServiceColor"
+                                maxlength="7" [cpHeight]="'290px'" value="{{updateServiceColor}}">
+                        </div>
+                    </div>
+                    <!--  *ngIf="issystem"-->
+                    <div class="row mt-20 res-mt-15" *ngIf="issystem == false">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.SORT_ORDER' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input id="sortorderId" type="number" value="{{updateSortOrder}}" [(ngModel)]="updateSortOrder" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15" *ngIf="issystem == false">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{'COMMON.ONLINE_NAME' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" value='{{updateOnlineName}}' maxlength="25" [(ngModel)]="updateOnlineName" (keypress)="clearErrMsgs();"
+                                disabled>
+                            <p class="red"> {{error1 | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-11">
+                            <button type="button" (click)="editServiceGroups();" value="SUBMIT" class="save-btn">{{'BUTTON.SAVE' | translate}}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel();">{{'BUTTON.CANCEL' | translate}}</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

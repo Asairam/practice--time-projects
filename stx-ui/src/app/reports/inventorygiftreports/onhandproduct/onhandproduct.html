@@ -1,0 +1,62 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SETUP_INVENTORY_PRODUCTS.PRODUCT_LINE'| translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option selected>American Crew</option>
+                        <option>Bio Elements</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="generateReport()" class="btn btn-primary">
+                        <i class="fa fa-cog" aria-hidden="true"></i>&nbsp;{{'BUTTON.GENERATE' | translate }}</button>
+                </div>
+            </div>
+            <!-- <hr> -->
+            <div class="row mt-20 mr-10" *ngIf='showProdList == true'>
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{'MANAGE_INVENTORY.PRODUCT_NAME'| translate }}</th>
+                                <th class="thcss">{{'COMMON.SIZE'| translate }}</th>
+                                <th class="thcss">{{'MANAGE_INVENTORY.QUANTITY_ON_HAND'| translate }}</th>
+                                <th class="thcss">{{'MANAGE_INVENTORY.MINIMUM_QUANTITY'| translate }}</th>
+                                <th class="thcss">{{'ONHAND_PRODUCT.AVERAGE_COST'| translate}}</th>
+                                <th class="thcss">{{'ONHAND_PRODUCT.ON_HAND_COST'| translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Daily Conditioner</td>
+                                <td>12.00</td>
+                                <td>7</td>
+                                <td>2</td>
+                                <td>$10.00</td>
+                                <td>$15.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- <div class="mb-20 clearfix brdgrey">
+                            <div class="col-md-12  pdgt5">
+                                Class Summery: 1 Classes / Total Amount $10.00
+                            </div>
+                        </div> -->
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

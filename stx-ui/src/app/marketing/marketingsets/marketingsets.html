@@ -1,0 +1,389 @@
+<div id="wrapper_setup_new">
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont" class="setsubcont">
+		<!--error messages-->
+		<div class="col-sm-8">
+			<p class="red mb-0"> {{ marketingError | translate }} </p>
+		</div>
+		<!--error messages end-->
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 col-sm-10 mt-40 " *ngIf='hideTable == true'>
+					<div class="table-responsive">
+						<table class="table table-bordered-white">
+							<tbody>
+								<tr class="white">
+									<td colspan="4" valign="middle" height="60" style="padding-left: 10px;">
+										<input type="checkbox" id="c1" class="pull-left" (click)='showInActive()'>&nbsp;&nbsp;
+										<label for="c1" class="c1 activelabel">
+											<span>{{ 'COMMON.SHOW' | translate }}</span>
+											<span>{{ 'COMMON.HIDE' | translate }}</span>{{'COMMON.SHOW_INACTIVE'| translate }} </label>
+									</td>
+								</tr>
+								<tr class="white">
+									<td>{{ 'COMMON.ACTIVE' | translate }}</td>
+									<td>{{'MARKETING_SETS.MARKETING_SET_NAME'| translate }}</td>
+									<td>{{'MARKETING_SETS.FREAQUENCY'| translate }}</td>
+								</tr>
+								<tr *ngFor='let marketingData of marketingUserList' [ngClass]="{ hideinactive: marketingData.Active__c == 0 }" [class.showinactive]="showInactiveData">
+									<td *ngIf='marketingData.Active__c == 1'>
+										<input type="checkbox" checked>
+									</td>
+									<td *ngIf='marketingData.Active__c == 0'>
+										<input type="checkbox">
+									</td>
+									<td class="td_active tbl-txt" (click)="showData(marketingData)">{{ marketingData.Name }}</td>
+									<td>{{ marketingData.Frequency__c }}</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="3">
+										<a class="white btn btn-hovr" (click)="addNew()">
+											<i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!--------------hide table------------------>
+				<div class="col-md-4 col-sm-10 mt-40 disable" *ngIf='hideTable == false'>
+					<div class="table-responsive">
+						<table class="table table-bordered-white">
+							<tbody>
+								<tr class="white">
+									<td colspan="4" valign="middle" height="60" style="padding-left: 10px;">
+										<input type="checkbox" id="c1" class="pull-left" (click)='showInActive()'>&nbsp;&nbsp;
+										<label for="c1" class="c1 activelabel">
+											<span>{{ 'COMMON.SHOW' | translate }}</span>
+											<span>{{ 'COMMON.HIDE' | translate }}</span>Show Inactive</label>
+									</td>
+								</tr>
+								<tr class="white">
+									<td>{{ 'COMMON.ACTIVE' | translate }}</td>
+									<td>{{'MARKETING_SETS.MARKETING_SET_NAME'| translate }}</td>
+									<td>{{'MARKETING_SETS.FREAQUENCY'| translate }}</td>
+								</tr>
+								<tr *ngFor='let marketingData of marketingUserList' [ngClass]="{ hideinactive: marketingData.Active__c == 0 }" [class.showinactive]="showInactiveData">
+									<td *ngIf='marketingData.Active__c == 1'>
+										<input type="checkbox" checked>
+									</td>
+									<td *ngIf='marketingData.Active__c == 0'>
+										<input type="checkbox">
+									</td>
+									<td class="td_active tbl-txt">{{ marketingData.Name }}</td>
+									<td>{{ marketingData.Frequency__c }}</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="3">
+										<a class="white btn btn-hovr">
+											<i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!--hide table end-->
+				<!--<div class="col-md-1">&nbsp;</div>-->
+
+				<!-- ------------addDiv== true--------------------------- -->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv==true'>
+					<h1>{{'MARKETING_SETS.MARKETING_SET_DETAIL'| translate }}</h1>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" checked [(ngModel)]='activeStatus'>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.MARKETING_SET_NAME'| translate }}
+								<span class="red">*</span>
+							</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]='merketingSetName' (click)="clearErrorMsg()">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.FREAQUENCY'| translate }}
+								<span class="red">*</span>
+							</label>
+						</div>
+						<div class="col-sm-7">
+							<select [(ngModel)]='marketingFrequency' (click)="clearErrorMsg()">
+								<option value="">{{'MARKETING_SETS.NONE'| translate }}</option>
+								<option *ngFor='let frequency of frequencyData'>{{ frequency.type }}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.GENERATE_EVERY'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" style="width:25%" [(ngModel)]='marketingGenereteEvery' (click)="clearErrorMsg()"> {{marketingFrequency==='Daily'?'Days':''}} {{marketingFrequency==='Monthly'?'Months':''}} {{marketingFrequency==='Weekly'?'Weeks':''}}
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.OUTPUT'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<select [(ngModel)]='outputMarketing' (click)="clearErrorMsg()" (change)="output($event.target.value);">
+								<option *ngFor='let output of outputData'>{{ output.type }}</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15" *ngIf='resEmail == true'>
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.MARKETING_EMAIL'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<select [(ngModel)]='marketingEmail.External_Email_Name__c' (click)="clearErrorMsg()">
+								<option *ngFor="let email of emailData" [value]="email.name">{{ email.name }}</option>
+								<!-- <option>Daily no show</option>
+									 <option>Holiday Hours</option>
+									 <option>Black Friday</option> -->
+							</select>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.NEXT_GENERATION'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" class="form-control datefield" #dp="bsDatepicker" bsDatepicker [(bsValue)]="promotionStartDate" [(ngModel)]="nextGenerationEvery"
+							 [minDate]="minDate" [bsConfig]="datePickerConfig">
+							<select [(ngModel)]='marketingTimes' class="marketing-time" (click)="clearErrorMsg()">
+								<option value=''>{{'MARKETING_SETS.NONE'| translate }}</option>
+								<option *ngFor="let time of TimeData" [value]="time.value">{{time.value}}</option>
+							</select>
+						</div>
+
+						<!-- <div class="col-sm-3">
+								<input type="text" [(ngModel)] = 'nextGenerationEvery' (click)="clearErrorMsg()"/>
+							</div> -->
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.LAST_GENERATED'| translate }}</label>
+						</div>
+						<div class="col-sm-7">&nbsp;</div>
+					</div>
+					<!-- buttons -->
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn" (click)="marketingSetsData()">{{'BUTTON.SAVE' | translate}}</button>
+							<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+							<button type="button" *ngIf="marketingSetId" class="cancel-btn" (click)="deleteMarketingSetsData()">{{'BUTTON.DELETE' | translate}}</button>
+							<button type="button" *ngIf="marketingSetId" class="btn add-filter-btn btn-default" (click)="goToSelectFilters()">{{'BUTTON.SELECT_FILTERS' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!--add Div end-->
+				<!----------Edit div== true-------------------->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf='editDiv==true'>
+					<h1>{{'MARKETING_SETS.MARKETING_SET_DETAIL'| translate }}</h1>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE' | translate}}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" checked [(ngModel)]='updateActiveStatus'>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.MARKETING_SET_NAME'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]='updateMerketingSetName' (click)="clearErrorMsg()">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.FREAQUENCY'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<select [(ngModel)]='updateMarketingFrequency' (click)="clearErrorMsg()">
+								<option>{{'MARKETING_SETS.NONE'| translate }}</option>
+								<option *ngFor='let frequency of frequencyData'>{{ frequency.type }}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.GENERATE_EVERY'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]='updateMarketingGenereteEvery' (click)="clearErrorMsg()">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.OUTPUT'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<select #selectMarketingType (change)="changeType(selectMarketingType.value)" [(ngModel)]='updateOutputMarketing' (click)="clearErrorMsg()">
+								<option *ngFor='let output of outputData' [value]="output.type">{{ output.type }}</option>
+							</select>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15" id="hidden_div" *ngIf="selectMarketingType.value==='Email'">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.MARKETING_EMAIL'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<select [(ngModel)]='updateMarketingEmail' (click)="clearErrorMsg()">
+								<option *ngFor="let email of emailData">{{ email.name }}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.NEXT_GENERATION'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" class="form-control datefield" #dp="bsDatepicker" bsDatepicker [(bsValue)]="updateNextGenerationEvery"
+							 value="{{ updateNextGenerationEvery | date:'MM/d/y'}}" [(ngModel)]="updateNextGenerationEvery" (click)="clearErrorMsg()"
+							 [bsConfig]="datePickerConfig">
+							<select [(ngModel)]='updateMarketingTimes' class="marketing-time" (click)="clearErrorMsg()">
+								<option value=''>{{'MARKETING_SETS.NONE'| translate }}</option>
+								<option *ngFor="let time of TimeData" [value]="time.value">{{time.value}}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.LAST_GENERATED'| translate }}</label>
+						</div>
+						<div class="col-sm-7">&nbsp; </div>
+					</div>
+					<!-- buttons -->
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn" (click)="editMarketingSetsData()">{{'BUTTON.SAVE' | translate}}</button>
+							<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!--edit div end-->
+				<!----------disabled div== true-------------------->
+				<div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+					<h1>{{'MARKETING_SETS.MARKETING_SET_DETAIL'| translate }}</h1>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'COMMON.ACTIVE'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="checkbox" checked [(ngModel)]='activeStatus'>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.MARKETING_SET_NAME'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]='merketingSetName' (click)="clearErrorMsg()">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.FREAQUENCY'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<select [(ngModel)]='marketingFrequency' (click)="clearErrorMsg()">
+								<option>{{'MARKETING_SETS.NONE'| translate }}</option>
+								<option>{{'MARKETING_SETS.DAILY'| translate }}</option>
+								<option>{{'MARKETING_SETS.WEEKLY'| translate }}</option>
+								<option>{{'MARKETING_SETS.MONTHLY'| translate }}</option>
+								<option>{{'MARKETING_SETS.ON_REQUEST'| translate }}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.GENERATE_EVERY'| translate }}Generate Every</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" [(ngModel)]='marketingGenereteEvery' (click)="clearErrorMsg()">
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.OUTPUT'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<select [(ngModel)]='outputmarketing' (click)="clearErrorMsg()">
+							</select>
+						</div>
+					</div>
+					<!-- <div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>Marketing Email</label>
+							</div>
+							<div class="col-sm-7">
+								<select [(ngModel)]='marketingEmail' (click)="clearErrorMsg()">
+									 <option>Daily no show</option>
+									 <option>Holiday Hours</option>
+									 <option>Black Friday</option>
+								</select>
+							</div>
+						</div> -->
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.NEXT_GENERATION'| translate }}</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text" class="datefield" [(ngModel)]='nextGenerationEvery' (click)="clearErrorMsg()" />
+							<select [(ngModel)]='marketingTimes' class="marketing-time" (click)="clearErrorMsg()">
+								<option>{{'MARKETING_SETS.NONE'| translate }}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>{{'MARKETING_SETS.LAST_GENERATED'| translate }}</label>
+						</div>
+						<div class="col-sm-7">&nbsp;</div>
+					</div>
+					<!-- buttons -->
+					<div class="row mt-40 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn" (click)="marketingSetsData()">{{'BUTTON.SAVE' | translate}}</button>
+							<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+				<!--disabled div end-->
+			</div>
+			<!--div class row end-->
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

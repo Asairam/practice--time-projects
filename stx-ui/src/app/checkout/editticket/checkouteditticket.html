@@ -1,0 +1,1197 @@
+<div id="wrapper_setup_new">
+	<app-header [newMenu]="'noNav'"></app-header>
+	<div class="form_cont12" *ngIf="ticketNumber">
+		<h1 class="ml-40"> ticket# {{ticketNumber}} </h1>
+	</div>
+	<section id="inner_cont">
+		<!-- <div>
+			<td class="tbl-txt">
+				<a style="color: white; margin-left: 19px;" [routerLink]="['/checkout']">Check Out List</a>
+			</td>
+		</div> -->
+		<!-- <div class="container form_cont">
+			<div class="row clear-fix">
+				<div class="col-md-12">
+
+					<div class="col-md-7"></div>
+					<div class="col-md-5  " *ngIf='!clientId'>
+						<div class="input-group staff-search"> -->
+		<!-- <input type="text" [(ngModel)]="searchKey" (input)="searchClient($event.target.value)" class="form-control" placeholder="Client Search"> -->
+		<!-- <input type="text" [formControl]="searchField" (input)="searchClient($event.target.value)" class="form-control" placeholder="Client Search">
+							<span class="input-group-addon">
+								<button type="submit">
+									<img src="assets/images/search-icon.png" width="14" alt="Search">
+								</button>
+							</span>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div> -->
+
+		<div class="container form_cont">
+			<div class="col-md-7">
+
+				<div id="vtab1" class="vertical_tabs" style="display:block;">
+					<ul class="nav nav-tabs">
+						<li class="tablinks {{activeTabClass[0]}}" id="favoritesnav" (click)="updateTabs(0)">
+							<a data-toggle="tab" style="padding: 6px 10px;">
+								<span>{{ 'HEADER.FAVORITES' | translate }}</span>
+							</a>
+						</li>
+						<li class="tablinks {{activeTabClass[1]}}" id="servicesnav" (click)="updateTabs(1)">
+							<a data-toggle="tab" style="padding: 6px 10px;">
+								<span>{{ 'HEADER.SERVICES' | translate }}</span>
+							</a>
+						</li>
+						<li class="tablinks {{activeTabClass[2]}}" id="productsnav" (click)="updateTabs(2)">
+							<a data-toggle="tab" style="padding: 6px 10px;">
+								<span>{{ 'CHECK_OUTS.PRODUCTS.PRODUCT' | translate }}</span>
+							</a>
+						</li>
+						<li class="tablinks {{activeTabClass[3]}}" id="othernav" (click)="updateTabs(3)">
+							<a data-toggle="tab" style="padding: 6px 10px;">
+								<span>{{ 'SETUP_WORKERS_DETAILS.OTHER' | translate }}</span>
+							</a>
+						</li>
+						<li class="tablinks {{activeTabClass[4]}}" id="viewbylevelnav" (click)="updateTabs(4)">
+							<a data-toggle="tab" style="padding: 6px 10px;">
+								<span>
+									MISC
+									<!-- <i class="fa fa-calculator"></i> -->
+								</span>
+							</a>
+						</li>
+						<li *ngIf='apptId' class="tablinks {{activeTabClass[5]}}" id="viewbyservicegroupnav" (click)="updateTabs(5)">
+							<a data-toggle="tab" [routerLink]="['/checkout/list/' + apptId]">
+								<span>
+									Include Ticket
+									<!-- <i class="fa fa-th" aria-hidden="true"></i> -->
+								</span>
+							</a>
+						</li>
+						<li class="tablinks {{activeTabClass[6]}}" id="paymentsnav" (click)="updateTabs(6)">
+							<a data-toggle="tab" style="padding: 6px 10px;">
+								<span>{{ 'CHECK_OUTS.PAYMENTS.PAYMENTS' | translate }}</span>
+							</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<!-- favourites tab starts -->
+						<div class="" *ngIf="activeTab[0]">
+							<div class="clearfix">
+								<div class="row mt-10 row-10">
+									<div class="col-md-2 mt-10 fav_box_main " *ngFor="let favoriteslist of favouritesData; let i='index'">
+										<a (click)="showFavoriteModal(favoriteslist,i)">
+											<div class="fav_box_img" *ngIf="favoriteslist.pic">
+												<img *ngIf="favoriteslist.pic" class="fav_box_img-view" (error)="imageErrorHandler(favoriteslist.name, i);" [src]="favoriteslist.pic"
+												 alt="product image">
+												<span>
+													<em>{{favoriteslist.name}}</em>
+													<small [style.backgroundColor]="favoriteslist.color"></small>
+												</span>
+											</div>
+											<div *ngIf="!favoriteslist.pic" [style.borderColor]="favoriteslist.color" [ngClass]="{'noplusbg': favoriteslist.id === ''}"
+											 class="fav_box fav_box-arrow">
+												<h4>{{favoriteslist.name}}</h4>
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- favourites tab Ends -->
+						<!-- services tab starts -->
+						<div class="tabcontent" *ngIf="activeTab[1]">
+							<div class="clearfix">
+								<div class="row mt-10 row-10">
+									<perfect-scrollbar style=" height: 650px;">
+										<div class="col-md-2 mt-10 fav_box_main" *ngFor='let serviceData of servicesData'>
+											<a (click)="addValues(serviceData)">
+												<div [style.borderColor]="serviceData.Service_Group_Color__c" (click)="showFavoriteModal(serviceData,i)" class="fav_box fav_box-arrow ">
+													<h4>{{serviceData.name}}</h4>
+												</div>
+											</a>
+										</div>
+									</perfect-scrollbar>
+								</div>
+								<div class="col-xs-12" style="color: white; margin-top: -90px;">{{ 'COMMON.SERVICE_GROUP' | translate }}:
+									<select (change)="serviceGroupOnChange($event.target.value)" style="width : 30%;color: white;">
+										<option *ngFor='let list of serviceGroupList' value="{{list.serviceGroupName}}">{{list.serviceGroupName}}</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<!-- services tab Ends -->
+						<!-- Product tab starts -->
+						<div class="tabcontent" *ngIf="activeTab[2]">
+							<div class="clearfix">
+								<div class="row mt-10 row-10">
+									<div class="">
+										<perfect-scrollbar style=" height: 555px;">
+											<div class="col-md-2 mt-10 fav_box_main" *ngFor="let productslist of productsList; let i='index'">
+												<!-- <a>
+												<div [style.borderColor]="productslist.Color__c" (click)="showProductModal(productslist,i)" class="fav_box ">
+													<h4>{{productslist.Name}}-{{productslist.Size__c}} {{productslist.Unit_of_Measure__c}}</h4>
+												</div>
+											</a> -->
+												<a (click)="showProductModal(productslist,i)">
+													<div class="fav_box_img" *ngIf="productslist.pic">
+														<img *ngIf="productslist.pic" class="fav_box_img-view" (error)="imageErrorHandler(productslist.name, i);" [src]="productslist.pic"
+														 alt="product image">
+														<span>
+															<em>{{productslist.Name}}</em>
+															<small [style.backgroundColor]="productslist.Color__c"></small>
+														</span>
+													</div>
+													<div *ngIf="!productslist.pic" [style.borderColor]="productslist.Color__c" [ngClass]="{'noplusbg': productslist.id === ''}"
+													 class="fav_box fav_box-arrow">
+														<h4>{{productslist.Name}}</h4>
+													</div>
+												</a>
+											</div>
+										</perfect-scrollbar>
+									</div>
+
+									<div class="clearfix">
+										<div class="col-md-12 form-inline">
+											<div class="form-group">
+												<label for="" style="color: white;margin-left: -9px;">{{ 'SETUP_INVENTORY_PRODUCTS.SKU#' | translate }}:</label>
+												<input type="text" style="width:68%;background-color: #1f3d8a;color: white;" class="form-control" [(ngModel)]="prodSku">
+											</div>
+
+											<button type="button" style="margin-left: -24px;" (click)="searchProduct()" class="btn btn-primary">
+												<i class="fa fa-binoculars" aria-hidden="true"></i> Search</button>
+
+										</div>
+										<div class="col-md-6 form-inline" *ngIf='productsData && productsData.length > 0' style="margin-top: -33px;margin-left: 290px;">
+											<div class="form-group">
+												<select style="width:74%;background-color: #1F3D8B;color: white;" class="form-control" (change)="productsDataOnChage($event.target.value)">
+													<option style="color: white" *ngFor='let plist of productsData' value="{{plist.Id}}${{plist.Name}}${{plist.Size__c}}${{plist.Unit_of_Measure__c}}${{plist.price}}${{plist.Taxable__c}}">{{plist.Name}}</option>
+												</select>
+											</div>
+											<div class="">
+												<button type="button" style="margin-top: -54px;width: 30%;height: 33px;margin-left: 162px;" (click)="dropdownSelectProduct()"
+												 class="btn btn-primary">{{ 'COMMON.SELECT' | translate }}</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Products tab ends -->
+						<!-- Other tab starts -->
+						<div class="tabcontent" *ngIf="activeTab[3]">
+							<p class="red">{{otherError | translate }}</p>
+							<p class="red">{{error | translate }}</p>
+							<div class="clearfix white-lable others-input">
+								<ng-container *ngIf="apptId && apptData && apptData.clientName">
+									<div class="row mt-10">
+
+										<div class="col-md-4 mt-15">
+											<label class="text-uppercase" style="font-size: 14px;">{{'CHECK_OUTS.OTHERS.DEPOSIT' | translate}}</label>
+										</div>
+
+										<div class="col-md-5 mt-10">
+											<input type="text" (click)="clearOtherError()" [placeholder]="" (keypress)="IsAlphaNumeric($event)" [(ngModel)]="deposit"
+											 style="width:100%;">
+										</div>
+
+										<div class="col-md-3 mt-10">
+											<!-- <input  value="" > -->
+											<button style="display:block;width: 100%;" class="btn btn-gradient-txt" type="button" (click)="addToTicketInOthers('deposit')">
+												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
+											</button>
+										</div>
+
+									</div>
+									<div class="row mt-10">
+
+										<div class="col-md-4 mt-15">
+											<label class="text-uppercase" style="font-size: 14px;">{{'CHECK_OUTS.OTHERS.PREPAYMENT' | translate}}</label>
+										</div>
+										<div class="col-md-5 mt-10">
+											<input type="text" (click)="clearOtherError()" [placeholder]="" (keypress)="IsAlphaNumeric($event)" [(ngModel)]="prePayment"
+											 style="width:100%;">
+										</div>
+
+										<div class="col-md-3 mt-10">
+											<!-- <input type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}" > -->
+											<button class="btn btn-gradient-txt" style="display:block;width: 100%;" type="button" (click)="addToTicketInOthers('prepayment')">
+												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
+											</button>
+										</div>
+
+									</div>
+									<div class="row mt-10">
+
+										<div class="col-md-4 mt-15">
+											<label class="text-uppercase" style="font-size: 14px;">{{'CHECK_OUTS.OTHERS.RECIEVED_ON_ACCOUNT' | translate}}</label>
+										</div>
+
+										<div class="col-md-5 mt-10">
+											<input type="text" (click)="clearOtherError()" [placeholder]=" " (keypress)="IsAlphaNumeric($event)" [(ngModel)]="recievedOnAccount"
+											 style="width:100%;">
+										</div>
+
+										<div class="col-md-3 mt-10">
+											<!-- <input type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}" > -->
+											<button class="btn btn-gradient-txt" type="button" style="display:block;width: 100%;" (click)="addToTicketInOthers('receivedOnAccount')">
+												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
+											</button>
+										</div>
+
+									</div>
+									<div class="row mt-10">
+
+										<div class="col-md-4 mt-15">
+											<label class="text-uppercase" style="font-size: 14px;">{{ 'CHECK_OUTS.OTHERS.PACKAGE' | translate }}</label>
+										</div>
+
+										<div class="col-md-5 mt-10">
+											<select class="select-bg" [(ngModel)]="packageId" style="width:100%;" (click)="clearOtherError()" (change)="onPackageChange()">
+												<option value="">None</option>
+												<option *ngFor="let package of packagesList" [value]="package.Id">{{package.Name}}</option>
+											</select>
+										</div>
+
+										<div class="col-md-3 mt-10">
+											<!-- <input type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}"> -->
+											<button class="btn btn-gradient-txt" type="button" style="display:block;width: 100%;" (click)="addToTicketInOthers('package')">
+												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
+											</button>
+										</div>
+
+									</div>
+									<div class="row mb-10">
+
+										<!-- <div class="col-md-2 mt-10">
+											<label>&nbsp;</label>
+										</div> -->
+
+										<div class="col-md-5 mt-10 pull-right text-right">
+											<label>{{ 'COMMON.AMOUNT' | translate }}:</label>
+											<label *ngIf="packageAmount===''">{{0| number: '1.2-4'}}</label>
+											<label *ngIf="packageAmount!==''">{{packageAmount| number: '1.2-4'}}</label>
+										</div>
+
+									</div>
+									<div class="gift-card-bar">
+										{{'CHECK_OUTS.OTHERS.GIFT_CERTIFICATE' | translate}}
+									</div>
+								</ng-container>
+								<div class="row mt-10">
+									<div class="col-md-9 mt-10">
+										<input type="text" [placeholder]="" (click)="clearOtherError()" [(ngModel)]="giftNumber" style="width:100%;">
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.GIFT_NUMBER' | translate}}</label>
+									</div>
+									<div class="col-md-3 mt-10">
+										<input type="text" [placeholder]=" " (click)="clearOtherError()" (keypress)="IsAlphaNumeric($event)" [(ngModel)]="giftAmount"
+										 style="width:100%;">
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.GIFT_AMOUNT' | translate}}</label>
+									</div>
+								</div>
+								<div class="row mt-10">
+									<div class="col-md-9 mt-10">
+										<input type="text" [placeholder]=" " (click)="clearOtherError()" [(ngModel)]="recepient" style="width:100%;">
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.RECIPIENT' | translate}}</label>
+									</div>
+									<div class="col-md-3 mt-10">
+										<input type="text" style="width:100%;" [placeholder]=" " (click)="clearOtherError()" [(bsValue)]="expireDate" bsDatepicker
+										 [minDate]="minDate" class="datefield" [bsConfig]="datePickerConfig" />
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.EXPIRES' | translate}}</label>
+									</div>
+								</div>
+								<div class="row mt-10">
+									<div class="col-md-4 mt-15" style="text-align: center; margin-top: 17px;">
+										<label class="text-uppercase" style="font-size: 14px;">{{ 'COMMON.WORKER' | translate }}</label>
+									</div>
+									<div class="col-md-5 mt-10">
+										<select class="select-bg" (click)="clearOtherError()" [(ngModel)]="workerId">
+											<option value="">None</option>
+											<option *ngFor="let worker of workersList" [value]="worker.Id">{{worker.FirstName+' '+worker.LastName}}</option>
+										</select>
+									</div>
+									<div class="col-md-3 mt-10">
+										<!-- <input class="pull-right"   type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}" (click)="addToTicketInOthers('gift')"> -->
+										<button style="display: block; width: 100%;" class="btn btn-gradient-txt" type="button" (click)="clearOtherError()" (click)="addToTicketInOthers('gift')">
+											<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Other tab Ends -->
+						<!-- Start of Misc Tab -->
+						<div class="tabcontent" *ngIf="activeTab[4]">
+							<p class="red">{{miscError | translate }}</p>
+							<div class="clearfix ">
+								<form>
+									<div class="col-md-6 calculater">
+										<div class="row-mt-20" style="width:100%;margin-bottom:5px;">
+											<input type="button" value=" 1 " (click)="updateMisc('1')" />
+											<input type="button" value=" 2 " (click)="updateMisc('2')" />
+											<input type="button" value=" 3 " (click)="updateMisc('3')" />
+										</div>
+										<div class="row-mt-20" style="width:100%;margin-bottom:5px;">
+											<input type="button" value=" 4 " (click)="updateMisc('4')" />
+											<input type="button" value=" 5 " (click)="updateMisc('5')" />
+											<input type="button" value=" 6 " (click)="updateMisc('6')" />
+										</div>
+										<div class="row-mt-20" style="width:100%;margin-bottom:5px;">
+											<input type="button" value=" 7 " (click)="updateMisc('7')" />
+											<input type="button" value=" 8 " (click)="updateMisc('8')" />
+											<input type="button" value=" 9 " (click)="updateMisc('9')" />
+										</div>
+										<div class="row-mt-20" style="width:100%;margin-bottom:5px;">
+											<input type="button" value=" 0 " (click)="updateMisc('0')" />
+											<input type="button" value=" ." (click)="updateMisc('.')" style="padding-right: 30px;" />
+											<button (click)="updateMisc('del')" class="button" type="button" style="padding-right: 23px;">
+												<em class="fa fa-long-arrow-left"></em>
+											</button>
+										</div>
+									</div>
+									<div *ngIf="misc.length > 0">
+										<div class="col-md-3">
+											<div class="row-mt-10" style="margin-top: 150px;color: white;font-size: 30px;">{{misc}}</div>
+										</div>
+										<div class="col-md-3" style="width:12%">
+											<div class="row-mt-10" style="margin-top: 150px;">
+												<input class="pull-left" type="button" (click)="saveMisc()" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}">
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<!-- End of Misc Tab -->
+						<!-- Payments tab starts -->
+						<div class="tabcontent" *ngIf="activeTab[6]">
+							<div class="clearfix">
+								<div class="row mt-10 row-10">
+									<div class="col-md-2 mt-10 fav_box_main" *ngFor="let paymentType of paymentsData; let i='index'">
+										<a>
+											<div (click)="showPaymentsModal(paymentType,i)" class="fav_box ">
+												<div class="text-center">
+													<!-- <{{apiEndPoint}} + {{paymentType.Icon_Document_Name__c}}</span> -->
+													<div *ngIf='paymentType.Icon_Name'>
+														<img [src]="paymentType.Icon_Name" (error)="imageErrorHandler('', i);" width="auto" height="50" style="display: inline-block;">
+													</div>
+													<div class="mt-10">
+														<span class="payment-txt">{{paymentType.Name}}</span>
+													</div>
+												</div>
+											</div>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Payments tab ends -->
+					</div>
+				</div>
+			</div>
+			<div class="col-md-5">
+				<div class="row clear-fix style-align">
+					<div class="col-md-12 " *ngIf='!clientId'>
+						<!-- <div class="col-md-5  " *ngIf='!clientId'> -->
+						<div class="input-group staff-search">
+							<!-- <input type="text" [(ngModel)]="searchKey" (input)="searchClient($event.target.value)" class="form-control" placeholder="Client Search"> -->
+							<input type="text" [formControl]="searchField" (input)="searchClient($event.target.value)" class="form-control" placeholder="Client Search">
+							<span class="input-group-addon">
+								<button type="submit" style="cursor: inherit;">
+									<img src="assets/images/search-icon.png" width="14" alt="Search">
+								</button>
+								<button type="submit" [routerLink]="['/client/quick/add']" [queryParams]="{ actionMethod: 'checkout' }">
+									<img src="assets/images/plus-icon.png" width="14" alt="Plus">
+								</button>
+							</span>
+
+
+						</div>
+
+						<!-- </div> -->
+					</div>
+				</div>
+				<div class="clearfix wt-clr">
+					<div class="clearfix mt-5 mb-5 row flex-row">
+						<div class=" drawer-button pull-left">
+							<button (click)="getCashDrawers()" class="btn" style="font-size: 12px; line-height: 16px; display: block;">
+								DRAWER 1</button>
+						</div>
+						<div class=" merchantDropDown  pull-left" *ngIf='merchantWorkerList&& merchantWorkerList.length>1'>
+							<!-- <select style="width:100%; border-color: #000 !important; " (change)="merchantOnChange($event.target.value)" class="form-control input-sm select"> -->
+							<select class="appointment-select-width select-bg text-uppercase merchantDropDown select" style=" padding-right: 35px;" (change)="merchantOnChange($event.target.value)">
+								<!-- <option value="">** None **</option> -->
+								<option *ngFor='let list of merchantWorkerList' value='{{list.FirstName}}${{list.LastName}}${{list.Payment_Gateway_Name__c}}'>{{list.FirstName}} {{list.LastName}}</option>
+							</select>
+						</div>
+					</div>
+					<div class=" checkoutlist text-right  pull-right mt-top">
+						<a style="font-size: 13px; line-height: 16px; color:white; font-weight: 500;" [routerLink]="['/checkout']">Go to CheckOut List</a>
+					</div>
+					<div *ngIf="searchData">
+						<table class="table table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>{{ 'COMMON.ACTIVE' | translate }}</th>
+									<th>{{ 'CLIENTS.FULL_NAME' | translate }}</th>
+									<th>{{ 'COMMON.EMAIL' | translate }}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let item of filterClient">
+									<td>
+										<span *ngIf='item.Active__c === 1'>
+											<input disabled type="checkbox" checked />
+										</span>
+										<span *ngIf="item.Active__c === 0 || item.Active__c === '' || item.Active__c === null">
+											<input disabled type="checkbox" />
+										</span>
+									</td>
+									<td style="text-decoration: underline;cursor: pointer;" (click)="addClientToAppt(item)">{{item.FullName}}</td>
+									<td>{{item.Email}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="profile-list-view-txt wt-bg blk-clr" *ngIf="profileList">
+						<div class="check-profile-list">
+							<div class="font-400 appnt-pro-image" *ngIf="clientImgPath != ''">
+								<!-- <webcam [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"></webcam>
+
+								<button class="actionBtn" (click)="triggerSnapshot();">Take A Snapshot</button>
+								<button class="actionBtn" (click)="toggleWebcam();">Toggle Webcam</button> -->
+								<div class="appnt-pro-letter">
+									<img [src]='clientImgPath' style="margin-top: -5px;" (error)="resourceImageErrorHandler($event);">
+								</div>
+							</div>
+
+							<div class="font-400 appnt-pro-image" *ngIf="clientImgPath == ''">
+
+								<div class="appnt-pro-letter">
+									<strong *ngIf="(apptData && apptData.clientName !== '' && apptData.clientName !== null)"> {{ apptData.clientName[0].toUpperCase() }} </strong>
+									<strong *ngIf="!(apptData && apptData.clientName !== '' && apptData.clientName !== null)"> {{ 'N'.toUpperCase() }} </strong>
+								</div>
+							</div>
+
+
+							<!-- <div class="snapshot" *ngIf="webcamImage">
+									<h2>Nice one!</h2>
+									<img [src]="webcamImage.imageAsDataUrl"/>
+								  </div> -->
+							<div *ngIf="(apptData && apptData.clientName && apptData.clientName !== '')" class="check-profile-list-name text-uppercase tbl-txt"
+							 [routerLink]="['/client/edit/'+ clientId]">{{apptData.clientName}}</div>
+							<div *ngIf="(!(apptData && apptData.clientName))" style="margin-left: 10px" class="check-profile-list-name text-uppercase">{{noclientLabel}}</div>
+						</div>
+						<div class="check-profile-details">
+							<div class="check-profile-details-in clearfix">
+
+								<div class="sub-item-main" style="min-height: 20px; margin-bottom: 15px;
+									">
+									<div *ngIf='clientId' class="sub-item-service">
+										<div class="sub-item1 text-uppercase">Account balance</div>
+										<div class="sub-item2"></div>
+										<div class="sub-item3">{{accountBal | number: '1.2-4'}}</div>
+									</div>
+								</div>
+								<perfect-scrollbar>
+
+									<!-- ----------------ticketservices List-- start----------------- -->
+									<div class="sub-item-main" *ngIf='TicketServiceData && TicketServiceData.length > 0'>
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">{{ 'HEADER.SERVICES' | translate }}</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{servicesCharge | number: '1.2-4'}}</div>
+										</div>
+										<div class="sub-item-sub">
+											<div class="sub-item-service" *ngFor='let listData of TicketServiceData'>
+												<div class="sub-item1 tbl-txt" (click)="showServiceListModal(listData)">{{listData.ServiceName}}</div>
+												<div class="sub-item2"></div>
+												<div class="sub-item3">{{listData.netPrice | number: '1.2-4'}}</div>
+											</div>
+										</div>
+									</div>
+									<!-- ----------------ticketservices List-- End----------------- -->
+									<!-- ----------------ticketProducts List-- start----------------- -->
+									<div class="sub-item-main" *ngIf='ticketProductsList && ticketProductsList.length > 0'>
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">{{ 'CHECK_OUTS.PRODUCTS.PRODUCT' | translate }}</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{productsCharge | number: '1.2-4'}}</div>
+										</div>
+										<div class="sub-item-sub">
+											<div class="sub-item-service" *ngFor='let ticketproductlist of ticketProductsList'>
+												<div class="sub-item1 tbl-txt" (click)="showListModal(ticketproductlist)">{{ticketproductlist.Name}}</div>
+												<div class="sub-item2"></div>
+												<div class="sub-item3">{{(ticketproductlist.Net_Price__c * ticketproductlist.quantity) | number: '1.2-4'}}</div>
+											</div>
+										</div>
+									</div>
+									<!-- ----------------ticketProducts List-- End----------------- -->
+
+									<!-- ----------------ticketothers List-- start----------------- -->
+									<ng-container *ngIf='(ticketOthersList && ticketOthersList.length > 0) || (packagesData && packagesData.length > 0)'>
+										<div class="sub-item-main" *ngIf='ticketOthersList && ticketOthersList.length > 0'>
+											<div class="sub-item-service">
+												<div class="sub-item1 text-uppercase" (click)="updateOthersModal(ticket)">Others</div>
+												<div class="sub-item2"></div>
+												<div class="sub-item3">{{othersCharge | number: '1.2-4'}}</div>
+											</div>
+											<div class="sub-item-sub">
+												<ng-container *ngFor='let ticket of ticketOthersList;let i=index'>
+													<div class="sub-item-service" *ngIf="ticket.Transaction_Type__c==='Package'">
+														<div class="sub-item1 tbl-txt" (click)="updateOthersModal(ticket)">{{ticket.packageName}}</div>
+														<div class="sub-item2"></div>
+														<!-- <div class="sub-item1">{{ticket.packageName}}</div> -->
+														<div class="sub-item3"> {{ticket.Package_Price__c}}</div>
+													</div>
+													<div class="sub-item-service" *ngIf="ticket.Transaction_Type__c!=='Package'">
+														<div class="sub-item1 tbl-txt" (click)="updateOthersModal(ticket)">{{ticket.Transaction_Type__c+' '}}{{ticket.Transaction_Type__c==='Gift'?ticket.Gift_Number__c:''}}</div>
+														<div class="sub-item2"></div>
+														<div class="sub-item3">{{ticket.Amount__c | number: '1.2-4'}}</div>
+													</div>
+												</ng-container>
+											</div>
+										</div>
+									</ng-container>
+									<!-- ----------------ticketOthers List-- End----------------- -->
+									<!-- ----------------tips List-- Start----------------- -->
+									<div class="sub-item-main" *ngIf='workerTipsList && workerTipsList.length > 0'>
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">{{ 'CHECK_OUTS.TIPS.TIP' | translate }}</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{tipsCharge | number: '1.2-4'}}</div>
+										</div>
+
+										<div class="sub-item-sub">
+											<div class="sub-item-service" *ngFor='let tip of workerTipsList'>
+												<div class="sub-item1 tbl-txt" (click)="updateWorkerTips(tip)">{{tip.workerName}}</div>
+												<div class="sub-item2"></div>
+												<div class="sub-item3">{{tip.Tip_Amount__c | number: '1.2-4'}}</div>
+											</div>
+										</div>
+									</div>
+									<!-- ----------------tips List-- End----------------- -->
+									<!-- ----------------ticketPaymentList-- Start----------------- -->
+									<div class="sub-item-main" *ngIf='ticketPaymentList && ticketPaymentList.length > 0'>
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">Payments</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{paymentCharge | number: '1.2-4'}}</div>
+										</div>
+
+										<div class="sub-item-sub">
+											<div class="sub-item-service" *ngFor="let list of ticketPaymentList ">
+												<div class="sub-item1 tbl-txt" *ngIf="list.paymentTypeName=='Gift Redemption'" (click)="showListPayModal(list)">{{list.paymentTypeName}} {{list.Gift_Number__c}}</div>
+												<div class="sub-item1 tbl-txt" *ngIf="list.paymentTypeName=='Cash' || list.paymentTypeName=='Card' || list.paymentTypeName=='Prepaid Package' || list.paymentTypeName=='Account Charge'"
+												 (click)="showListPayModal(list)">{{list.paymentTypeName}}</div>
+												<div class="sub-item2"></div>
+												<div class="sub-item2"></div>
+												<div class="sub-item3">-{{list.Amount_Paid__c | number: '1.2-4'}}</div>
+											</div>
+										</div>
+									</div>
+									<!-- ----------------ticketPaymentList-- End----------------- -->
+									<div class="sub-item-main">
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">Subtotal</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{ totalCharge | number: '1.2-4'}}</div>
+										</div>
+									</div>
+									<div class="sub-item-main">
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">Tax</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{totalTax | number: '1.2-4'}}</div>
+										</div>
+									</div>
+									<div class="sub-item-main" *ngIf="includedTicketAmount">
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">Incl Tckt Amt</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{apptData.Included_Ticket_Amount__c | number: '1.2-4'}}</div>
+										</div>
+									</div>
+
+								</perfect-scrollbar>
+							</div>
+
+						</div>
+
+						<div class="total-charge" *ngIf='chargeButton == true'>
+							<div class="col-md-4 col-sm-4 total">
+								<b>TOTAL:</b>
+							</div>
+							<div class="col-md-4 listcharge">
+								<h2 class="price-total mb-20">{{listCharge | number: '1.2-4'}}</h2>
+							</div>
+							<div class="col-md-4">
+								<button (click)="showPaymentModalByCharge();" type="button" class="btn btn-gradient btn-lg text-uppercase font-600 charge-btn">Charge</button>
+								<!-- <button *ngIf='ticketPaymentList.length === 0'(click) = "showPaymentsModal('button');" type="button" class="btn btn-primary">Charge {{charge | number: '1.2-4'}}</button> -->
+							</div>
+						</div>
+					</div>
+					<div class="row clearfix mt-10">
+						<div class="col-md-6 text-center desk-lft mb-10">
+							<button type="button" class="btn btn-gradient-txt" (click)="showPromotionsModal()">
+								<span style="font-size: 18px">+ Promo</span>
+							</button>
+							<button type="button" class="btn btn-gradient-txt" (click)="openTipsModal()">
+								<span style="font-size: 18px">+ {{ 'COMMON.TIPS' | translate }}</span>
+							</button>
+						</div>
+						<div class=" col-md-6 emotion-icons text-center desk-rgt">
+							<ul>
+								<li class="{{styleOnClickPoor}}" style="cursor: pointer">
+									<i class="fa fa-frown-o" aria-hidden="true" (click)="addTicketRating('Poor')"></i>
+								</li>
+								<li class="{{styleOnClickFair}}" style="cursor: pointer">
+									<i class="fa fa-meh-o" aria-hidden="true" (click)="addTicketRating('Fair')"></i>
+								</li>
+								<li class="{{styleOnClickGood}}" style="cursor: pointer">
+									<i class="fa fa-smile-o" aria-hidden="true" (click)="addTicketRating('Good')"></i>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- ----------misc modal starts----------- -->
+				<div bsModal #miscModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+				 (keyup.esc)="closeModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4>Update Misc Scale</h4>
+								<!-- <p class="red">{{productError | translate }}</p> -->
+								<button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<div class="row">
+									<div class="clearfix">
+
+										<div class="col-md-4 text-right">
+											<label>{{ 'COMMON.AMOUNT' | translate }}</label>
+
+										</div>
+										<div class="col-md-4 text-right">
+											<input type="number" [(ngModel)]="calAmount" style="width:100%; border-color: #000 !important;" />
+										</div>
+
+									</div>
+								</div>
+								<div class="row">
+									<div class="text-center mt-40">
+										<button class="save-btn" type="button" (click)='updateMiscTicket()'>Update Ticket</button>
+										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+										<button class="cancel-btn" type="button" (click)="deleteMiscTicket()">Remove</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!-- -------------misc modal ends------- -->
+				<!-- ----------------------------- Others Modal Starts------------------ -->
+				<div bsModal #othersModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+				 (keyup.esc)="closeModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4>Update {{updateOthersInfo.Transaction_Type__c}}</h4>
+								<!-- <p class="red">{{productError | translate }}</p> -->
+								<button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<p class="red">{{updateOthersInfo.error | translate }}</p>
+								<div class="row">
+									<div class="clearfix" *ngIf="updateOthersInfo.Transaction_Type__c!=='Package'">
+
+										<div class="col-md-4 text-right">
+											<label>Amount</label>
+
+										</div>
+										<div class="col-md-4 text-right">
+											<input type="text" (click)="updateOthersInfo.error=''" (keypress)="IsAlphaNumeric($event)" [(ngModel)]="updateOthersInfo.Amount__c"
+											 style="width:100%; border-color: #000 !important;" />
+										</div>
+
+									</div>
+									<div class="clearfix" *ngIf="updateOthersInfo.Transaction_Type__c==='Package'">
+
+										<div class="col-md-4 text-right">
+											<label>Package:</label>
+
+										</div>
+										<div class="col-md-4 text-right">
+											<select class="update-select" [(ngModel)]="updateOthersInfo.Package__c" style="width:100%;" (change)="updateTicketPackageChange()">
+												<!-- <option value="">None</option> -->
+												<option *ngFor="let package of packagesList" [value]="package.Id">{{package.Name}}</option>
+											</select>
+										</div>
+										<div class="col-md-4">
+											Price: {{updateOthersInfo.Amount__c}}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="text-center mt-40">
+										<button class="save-btn" type="button" (click)='updateOthersTicket()'>Update Ticket</button>
+										<button class="cancel-btn" (click)="commonCancelModal()" type="button">{{'BUTTON.CANCEL' | translate}}</button>
+										<button class="cancel-btn" type="button" (click)="deleteOthersTicket()">Remove</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!-- --------------Ticket other model Ends--------------			 -->
+				<!-- Products modal starts -->
+				<div bsModal #productModal="bs-modal" class="modal fade" tabindex="-1" [config]="{ backdrop: 'static', keyboard: false}"
+				 role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" (keyup.esc)="closeModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4>{{productAction}} Product - {{popupProductName}}</h4>
+								<p class="red">{{productError | translate }}</p>
+								<button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<p class="red">{{updateOthersInfo.error | translate }}</p>
+								<div class="row">
+									<div class="clearfix">
+										<div class="col-md-4">
+											<label>Worker</label>
+											<select [(ngModel)]="productWorkerId" style="width:100%; border-color: #000 !important; " class="form-control input-sm select"
+											 (change)="productWorkerOnChange($event.target.value);clearErrorMsg();">
+												<option value="">** None **</option>
+												<option *ngFor='let productWorkersList of productWorkersList' value='{{productWorkersList.Id}}'>{{productWorkersList.FirstName}} {{productWorkersList.LastName}}</option>
+											</select>
+										</div>
+										<div class="col-md-4">
+											<label>Price</label>
+											<div>
+												<input type="number" *ngIf="showPrice==true" (blur)="prodPriceOnClick();" style="width: 100%; border-color: #000 !important;"
+												 [(ngModel)]="productProRePrice">
+												<input type="number" *ngIf="showPrice==false" disabled (blur)="prodPriceOnClick();" style="width: 100%; background-color:gainsboro; border-color: #000 !important;"
+												 [(ngModel)]="productProRePrice">
+											</div>
+										</div>
+										<div class="col-md-4">
+											<label>Quantity</label>
+											<div>
+												<input type="number" style="width: 100%; border-color: #000 !important;" [(ngModel)]="productQuantity">
+											</div>
+										</div>
+										<div class="col-md-4" *ngIf="promotionsProdData.length > 0 || productRewards.length > 0">
+											<label>Promotion / Reward</label>
+											<select *ngIf="promotionsProdData && promotionsProdData.length>0" [(ngModel)]="promotionId" [disabled]="!showSelectPromotion"
+											 style="width: 100%; border-color: #000 !important;" class="form-control input-sm select" (change)="productPromotionOnChange($event.target.value, 'promotion');">
+												<option value="None">-- Select promotion --</option>
+												<option *ngFor='let promotion of promotionsProdData' value='{{promotion.Discount_Percentage__c}}${{promotion.Discount_Amount__c}}${{promotion.Id}}'>{{promotion.Name}}</option>
+											</select>
+											<select *ngIf="productRewards.length>0" [(ngModel)]="rewardId" [disabled]="!showSelectReward" style="width: 100%; border-color: #000 !important;"
+											 class="form-control input-sm select" (change)="productPromotionOnChange($event.target.value, 'reward');">
+												<option value="None">-- Select reward --</option>
+												<option *ngFor='let reward of productRewards' value='{{reward.Id}}'>{{reward.Name}}</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="text-center mt-40">
+										<button class="save-btn" type="button" *ngIf="productAction=='Add'" (click)='productAddToTicket()'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
+										<button class="save-btn" type="button" *ngIf="productAction=='Update'" (click)='productAddToTicket()'>Update Ticket</button>
+										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+										<button class="cancel-btn" type="button" *ngIf="productAction=='Update'" (click)="removeTicketProduct()">Remove</button>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!-- Products modal ends -->
+				<!--------------------ClientSearch modal------------------------------>
+				<div bsModal #clientSearchModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+				 role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" (keyup.esc)="closeModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div class="row">
+									<div class="clearfix">
+										<!-- data table starts -->
+										<div class="row mt-20 res-mt-15">
+											<div class="col-md-12">
+												<div class="table-responsive">
+													<p-dataTable [responsive]="true" [value]="DataObj" [rows]="rowsPerPage" [pageLinks]="2" expandableRows="true">
+														<p-column field="Active__c" header="{{ 'COMMON.ACTIVE' | translate }}">
+															<ng-template let-user="rowData" pTemplate="body">
+																<span *ngIf='user.Active__c == 1'>
+																	<input disabled type="checkbox" checked />
+																</span>
+																<span *ngIf='user.Active__c == 0'>
+																	<input disabled type="checkbox" />
+																</span>
+															</ng-template>
+														</p-column>
+														<p-column field="FullName" header="{{'CLIENTS.FULL_NAME'| translate }}">
+															<ng-template let-user="rowData" pTemplate="body">
+																<span>
+																	<a (click)="addClientToAppt(user)" class="appt-cursor">{{user.FullName}}</a>
+																</span>
+															</ng-template>
+														</p-column>
+														<p-column field="Phone" header="{{'CLIENTS.PRIMARY_PHONE'| translate }}"></p-column>
+														<p-column field="MobilePhone" header="{{'CLIENTS.MOBILE_PHONE'| translate }}"></p-column>
+														<p-column field="Email" header="{{'CLIENTS.PRIMARY_EMAIL'| translate }}"></p-column>
+													</p-dataTable>
+
+												</div>
+											</div>
+										</div>
+										<!-- data table end -->
+									</div>
+									<!-- clearfix end -->
+								</div>
+								<div class="row">
+									<div class="text-center mt-40">
+										<button class="save-btn" type="button" (click)="addNewClient()" [routerLink]="['/client/quick/add']">New</button>
+										<button class="cancel-btn" type="button" (click)='commonCancelModal()'>{{'BUTTON.CANCEL' | translate}}</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!--------------------ClientSearch modal End------------------------------>
+				<!-- services modal starts -->
+				<div bsModal #serviceModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+				 role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" (keyup.esc)="closeModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<!-- <h4>{{add}}</h4> -->
+								<h4>{{serviceAction}} Service - {{popUpServiceName}}</h4>
+								<p class="red">{{serviceError | translate }}</p>
+								<button type="button" class="close" aria-label="Close" (click)="commonCancelModal()">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<div class="row">
+									<div class="clearfix">
+										<div class="col-md-4">
+											<label>Worker</label>
+											<select [(ngModel)]='workerId' style="width:100%; border-color: #000 !important;" class="form-control input-sm select" (change)="workerOnChange($event.target.value);clearErrorMsg();">
+												<option value="">** None **</option>
+												<option *ngFor='let worker of workerList' value='{{worker.Price}}${{worker.Id}}'>{{worker.FullName}}</option>
+											</select>
+										</div>
+										<div class="col-md-4">
+											<label>Price</label>
+											<div>
+												<input type="number" *ngIf="showPrice == true" (blur)="servicePriceOnClick();" style="width: 100%; border-color: #000 !important;"
+												 [(ngModel)]="price">
+												<input type="number" *ngIf="showPrice == false" disabled (blur)="servicePriceOnClick();" style="width: 100%; background-color: gainsboro; border-color: #000 !important;"
+												 [(ngModel)]="price">
+											</div>
+										</div>
+										<div class="col-md-4" *ngIf="promotionsData.length>0 || serviceRewards.length>0">
+											<label>Promotion / Reward</label>
+											<select *ngIf="promotionsData.length>0" [(ngModel)]="promotionId" [disabled]="!showSelectPromotion" style="width: 100%; border-color: #000 !important;"
+											 class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'promotion');">
+												<option value="None">-- Select promotion --</option>
+												<option *ngFor='let promotion of promotionsData' value='{{promotion.Discount_Percentage__c}}${{promotion.Discount_Amount__c}}${{promotion.Id}}'>{{promotion.Name}}</option>
+											</select>
+											<select *ngIf="serviceRewards.length>0" [(ngModel)]="rewardId" [disabled]="!showSelectReward" style="width: 100%; border-color: #000 !important;"
+											 class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'reward');">
+												<option value="None">-- Select reward --</option>
+												<option *ngFor='let reward of serviceRewards' value='{{reward.Id}}'>{{reward.Name}}</option>
+											</select>
+										</div>
+
+									</div>
+									<div class="col-md-4">
+										<div>
+											<label>Service Notes</label>
+										</div>
+										<div>
+											<textarea [(ngModel)]="notes" style="width: 100%; border-color: #000 !important;"></textarea>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="text-center mt-40">
+										<button class="save-btn" type="button" *ngIf="serviceAction=='Add'" (click)='addToTicket()'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
+										<button class="save-btn" type="button" *ngIf="serviceAction=='Update'" (click)='addToTicket()'>Update Ticket</button>
+										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+										<button *ngIf="serviceAction == 'Update'" class="cancel-btn" type="button" (click)='removeTicketSerices()'>Remove</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!-- payments modal starts -->
+				<div bsModal #paymentsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" [config]="{ backdrop: 'static', keyboard: false}"
+				 aria-labelledby="myLargeModalLabel" aria-hidden="true" (keyup.esc)="closeModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4>{{paymentAction}} Payment - {{popUpPaymentName}}</h4>
+								<!-- <p class="red">{{productError | translate }}</p> -->
+								<button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<div class="row">
+									<div class="clearfix">
+										<div>
+											<p class="red">{{error | translate}}</p>
+										</div>
+										<div class="col-md-4" *ngIf="showRedAmount==false">
+											<label>Amount Paid</label>
+											<input type="number" id="chargeVal" [(ngModel)]="charge" (keyup)="calculateChangeback()" style="width:100%; border-color: #000 !important; "
+											 class="form-control input-sm select">
+										</div>
+										<div class="col-md-4" *ngIf="showRedAmount==true">
+											<label>Amount Paid</label>
+											<input type="number" [(ngModel)]="amountPaid" (keyup)="calculateChangeback()" style="width:100%; border-color: #000 !important; "
+											 class="form-control input-sm select">
+
+										</div>
+										<div class="col-md-4" *ngIf="enterManually == false && enterManuallyButton == true && popUpPaymentName!='Gift Redemption' && addCreditCardDevice !== 'MagTek'">
+											<label>&nbsp;</label>
+											<div>
+												<input type="text" style="width:30%; border-color: #000 !important; " *ngIf='enterManuallyButton == true'>
+											</div>
+										</div>
+										<div class="col-md-4" *ngIf="addCreditCardDevice== 'MagTek'">
+											<label>&nbsp;</label>
+											<div>
+												<input type="text" disabled style="width:30%; border-color: #000 !important; " *ngIf='enterManuallyButton == true'>
+											</div>
+										</div>
+										<div *ngIf="popUpPaymentName=='Gift Redemption'" class="col-md-4">
+											<label>Gift Number</label>
+											<div>
+												<input type="text" style="width: 100%; border-color: #000 !important;" [(ngModel)]="giftNumber">
+											</div>
+										</div>
+										<div class="col-md-4">
+											<label>Notes</label>
+											<div>
+												<input type="text" style="width: 100%; border-color: #000 !important;" [(ngModel)]="paymentNotes">
+											</div>
+										</div>
+										<div class="col-md-8" style="margin-top: 30px">
+											<div>
+												<label>Balance Due</label>
+												{{balanceDuePopUp | number: '1.2-4'}}
+											</div>
+											<div>
+												<label>Change Back</label>
+												<div style="display: inline">{{changeBack}}---</div>
+											</div>
+										</div>
+										<div class="pull-center col-md-5 col-sm-5" *ngIf="enterManuallyButton == true && popUpPaymentName!='Gift Redemption'">
+											<button style="margin-left: 200px" (click)="showManualOptions()">Enter Manually</button>
+										</div>
+
+									</div>
+								</div>
+								<div class="row" *ngIf="enterManually == true && popUpPaymentName!='Gift Redemption'">
+									<div class="col-md-10 col-md-offset-1 enter-manually">
+										<div class="clear-fix">
+											<div class="col-md-12 mt-15">
+												<div class="col-md-4 text-right">
+													<label>Cardholder Name</label>
+												</div>
+												<div class="col-md-8 text-left">
+													<input type="text" [(ngModel)]="clientName" style=" border-color: #000 !important; " class="form-control input-sm select">
+												</div>
+											</div>
+											<div class="col-md-12 mt-15">
+												<div class="col-md-4 text-right">
+													<label>Mailing Zip/Postal Code</label>
+												</div>
+												<div class="col-md-4 text-left">
+													<input type="text" style=" border-color: #000 !important;" [(ngModel)]="zipCode">
+												</div>
+											</div>
+											<div class="col-md-12 mt-15">
+												<div class="col-md-4 text-right">
+													<label>Card Number</label>
+												</div>
+												<div class="col-md-4 text-left">
+													<input type="text" style=" border-color: #000 !important;" [(ngModel)]="cardNumber">
+												</div>
+											</div>
+											<div class="col-md-12 mt-15">
+												<div class="col-md-4 text-right">
+													<label>CVV</label>
+												</div>
+												<div class="col-md-4 text-left">
+													<input type="text" style=" border-color: #000 !important;" [(ngModel)]="cvv">
+												</div>
+											</div>
+											<div class="col-md-12 mt-15">
+												<div class="col-md-4 text-right">
+													<label>{{'CREATE_TOKEN.EXPIRES' | translate}}</label>
+												</div>
+
+												<div class="col-md-4">
+													<select class="crt-tkn-select" style="width:100%; border-color: #000 !important;" [(ngModel)]="expMonth">
+														<option *ngFor="let month of monthList; let i='index'" value="{{i+1}}">{{month}}</option>
+													</select>
+												</div>
+												<div class="col-md-2">
+													<select class="crt-tkn-select" style="width:100%; border-color: #000 !important;" [(ngModel)]="expYear">
+														<option *ngFor="let year of yearList" value="{{year}}">{{year}}</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="text-center mt-40">
+										<button class="save-btn" type="button" *ngIf="enterManually == false && paymentAction == 'Add'" (click)='proceedToPayment()'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
+										<button class="save-btn" type="button" *ngIf="enterManually == false && paymentAction == 'Update'" (click)='proceedToPayment()'>Update Ticket</button>
+										<button class="save-btn" type="button" *ngIf="enterManually == true" (click)='proceedToPayment()'>Authorize</button>
+										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+										<button class="cancel-btn" *ngIf="enterManuallyButton == false && paymentAction == 'Update'" type="button" (click)='deleteTicketPayment()'>Remove</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!-- payments modal end -->
+				<!-- Promotions modal starts -->
+				<div bsModal #promotionsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+				 aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4>Add Promotion</h4>
+								<!-- <p class="red">{{productError | translate }}</p> -->
+								<button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<div class="row">
+									<div class="clearfix">
+										<div class="col-md-4">
+											<label>Promotion</label>
+											<select style="width:100%; border-color: #000 !important;" class="form-control input-sm select" (change)="PromotionOnChange($event.target.value);">
+												<option value="">** None **</option>
+												<option *ngFor='let pl of allPromData' value='{{pl.Id}}${{pl.End_Date__c}}${{pl.Start_Date__c}}${{pl.Service_Discount__c}}${{pl.Discount_Amount__c}}${{pl.Discount_Percentage__c}}${{pl.Product_Discount__c}}'
+												 id="pl{{i}}">{{pl.Name}}</option>
+											</select>
+										</div>
+
+									</div>
+								</div>
+								<div class="row">
+									<div class="text-center mt-40">
+										<button class="save-btn" type="button" (click)='promotionAdd()'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
+										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!-- Promotions modal ends -->
+				<!-- ----------Tips modal starts----------- -->
+				<div bsModal #tipsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+				 (keyup.esc)="closeModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4>{{'CHECK_OUTS.TIPS.ADD_TIP'|translate}}</h4>
+
+								<button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<p class="red">{{workerTips?.error | translate }}</p>
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<div class="row">
+									<div class="clearfix">
+										<div class="col-md-4 text-left">
+											<label>{{'CHECK_OUTS.TIPS.WORKER'|translate}}</label>
+											<select style="width:100%;" (click)="clearTipsError()" class="update-select" [(ngModel)]="workerTips.Worker__c">
+												<option value="">None</option>
+												<option *ngFor="let worker of workersList" [value]="worker.Id">{{worker.FirstName+' '+worker.LastName}}</option>
+											</select>
+										</div>
+										<div class="col-md-4 text-left">
+											<label>{{'COMMON.AMOUNT'|translate}}</label>
+											<input type="number" (click)="clearTipsError()" [(ngModel)]="workerTips.Tip_Amount__c" style="width:100%;border-color:#000 !important;"
+											/>
+
+										</div>
+										<div class="col-md-4 text-left">
+											<label>{{'CHECK_OUTS.TIPS.TIP_OPTIONS'|translate}}</label>
+											<select style="width:100%;" (click)="clearTipsError()" [(ngModel)]="workerTips.Tip_Option__c" class="update-select">
+												<option value="Tip Paid Out">Tip Paid Out</option>
+												<option value="Tip Left in Drawer">Tip Left in Drawer</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-30">
+									<div class="col-md-8">
+										<div class="col-md-1 col-md-offset-1">
+											<button class="btn per-btn btn-primary" type="button" (click)="calculateTipAmount(10)">10%</button>
+										</div>
+										<div class="col-md-1 col-md-offset-1">
+											<button class="btn per-btn btn-primary" type="button" (click)="calculateTipAmount(15)">15%</button>
+										</div>
+										<div class="col-md-1 col-md-offset-1">
+											<button class="btn per-btn btn-primary" type="button" (click)="calculateTipAmount(20)">20%</button>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="text-center mt-40" *ngIf="workerTips.status=='save'">
+										<button class="save-btn" type="button" (click)="addTipToWorker()">{{'CHECK_OUTS.TIPS.ADD_TO_TICKET'|translate}}</button>
+										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+									</div>
+									<div class="text-center mt-40" *ngIf="workerTips.status=='update'">
+										<button class="save-btn" type="button" (click)="updateTipToWorker()">{{'CHECK_OUTS.TIPS.UPDATE_TICKET'|translate}}</button>
+										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
+										<button class="cancel-btn" type="button" (click)="removeWorkerTip()">{{'CHECK_OUTS.TIPS.REMOVE'|translate}}</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /.modal-content -->
+					</div>
+				</div>
+				<!-- -------------Tips modal ends------- -->
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

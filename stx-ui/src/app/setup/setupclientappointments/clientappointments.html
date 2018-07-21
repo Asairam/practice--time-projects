@@ -1,0 +1,607 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+  <section id="inner_cont">
+    <div class="container form_cont">
+      <ul class="nav nav-tabs">
+        <li class="tablinks {{activeTabClass[0]}}" id="favoritesnav" (click)="updateTabs(0)">
+          <a data-toggle="tab">
+            <b>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING' | translate }}</b>
+          </a>
+        </li>
+        <li class="tablinks {{activeTabClass[1]}}" id="favoritesnav" (click)="updateTabs(1)">
+          <a data-toggle="tab">
+            <b>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS' | translate }}</b>
+          </a>
+        </li>
+        <li class="tablinks {{activeTabClass[2]}}" id="favoritesnav" (click)="updateTabs(2)">
+          <a data-toggle="tab">
+            <b>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS' | translate }}</b>
+          </a>
+        </li>
+        <li class="tablinks {{activeTabClass[3]}}" id="favoritesnav" (click)="updateTabs(3)">
+          <a data-toggle="tab">
+            <b>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING' | translate }}</b>
+          </a>
+        </li>
+        <li class="tablinks {{activeTabClass[4]}}" id="favoritesnav" (click)="updateTabs(4)">
+          <a data-toggle="tab">
+            <b>{{ 'SETUP_CLIENTOPPOINTMENTS.GIFTSONLINE' | translate }}</b>
+          </a>
+        </li>
+        <li class="tablinks {{activeTabClass[5]}}" id="favoritesnav" (click)="updateTabs(5)">
+          <a data-toggle="tab">
+            <b>{{ 'SETUP_CLIENTOPPOINTMENTS.REFERADFRIEND' | translate }}</b>
+          </a>
+        </li>
+      </ul>
+      <!-- <router-outlet name="nav"></router-outlet> -->
+      <!-- booking div starts -->
+      <div class="tab-content">
+        <div *ngIf="activeTab2[0]">
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered inptwdth">
+
+              <tbody>
+                <tr>
+                  <td width="40%">{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_INTERVAL' | translate }}
+                    <span class="text-danger">*</span>
+                  </td>
+                  <td>
+                    <input type="number" (keypress)="clearErrMsg();" [(ngModel)]="bookingIntervalMinutes" min="0" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false">
+                    <div class="red">
+                      <p>{{error1 | translate }}</p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_BOOKED' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="bookedStatusColor" [(colorPicker)]="bookedStatusColor" [style.background]="bookedStatusColor"
+                      [value]="bookedStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_REMINDER_SENT' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="reminderSentStatusColor" [(colorPicker)]="reminderSentStatusColor" [style.background]="reminderSentStatusColor"
+                      [value]="reminderSentStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CALLED' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="calledStatusColor" [(colorPicker)]="calledStatusColor" [style.background]="calledStatusColor"
+                      [value]="calledStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CONFIRMED' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="confirmedStatusColor" [(colorPicker)]="confirmedStatusColor" [style.background]="confirmedStatusColor"
+                      [value]="confirmedStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CANCELED' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="canceledStatusColor" [(colorPicker)]="canceledStatusColor" [style.background]="canceledStatusColor"
+                      [value]="canceledStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CHECKED_IN' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="checkedInStatusColor" [(colorPicker)]="checkedInStatusColor" [style.background]="checkedInStatusColor"
+                      [value]="checkedInStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_NO_SHOW' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="noShowStatusColor" [(colorPicker)]="noShowStatusColor" [style.background]="noShowStatusColor"
+                      [value]="noShowStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_COMPLETE' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="completeStatusColor" [(colorPicker)]="completeStatusColor" [style.background]="completeStatusColor"
+                      [value]="completeStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CONFLICTING' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="conflictingStatusColor" [(colorPicker)]="conflictingStatusColor" [style.background]="conflictingStatusColor"
+                      [value]="conflictingStatusColor" maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_PENDING_DEPOSIT' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="pendingDepositStatusColor" [(colorPicker)]="pendingDepositStatusColor" [style.background]="pendingDepositStatusColor"
+                      maxlength="7" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_MAX_AVAILABILITIES' | translate }}
+                    <span class="text-danger">*</span>
+                  </td>
+                  <td>
+                    <input type="number" (keypress)="clearErrMsg();" min='0' [(ngModel)]="maximumAvailableToShow" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false">
+
+                    <div class="red">
+                      <p>{{error2 | translate }}</p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_DISPLAY_AVAILABILITIES' | translate }}</td>
+                  <td>
+                    <select id="" (change)="getDisplayAvailabilitiesData($event.target.value);" class="form-control input-sm duration-list" [(ngModel)] = "availabilityOrder">
+                      <option *ngFor="let clang of DisplayAvailData; let i='index'" value="{{clang.booking}}" id="clang{{i}}">{{clang.booking}}</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mb-20 clearfix brdgrey">
+            <div class="col-md-7 col-sm-6  pdgt5">
+              {{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_EXPRESS_BOOKING_DOES_NOT_REQUIRE_CLIENT_NAME' | translate }}
+            </div>
+
+            <div class="col-md-4 col-sm-6 pdgt5">
+              <input type="checkbox" checked [(ngModel)]="expressBookingClientNameNotRequired">
+            </div>
+          </div>
+          <div class="red" style="text-align: center;">
+            <p>{{colorerror | translate }}</p>
+          </div>
+        </div>
+        <!-- booking div ends -->
+        <!-- notifications div  starts -->
+        <div *ngIf="activeTab2[1]">
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered inptwdth">
+              <tbody>
+                <tr>
+                  <td width="40%">{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_SEND_APPOINTMENT_NOTIFICATIONS' | translate }}</td>
+                  <td>
+                    <input type="checkbox" checked (keypress)="clearErrMsg();" [(ngModel)]="sendNotification">
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_TEXT_TAG' | translate }}</td>
+                  <td>
+                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="notificationTextTag">
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_TEXT_MESSAGE' | translate }}</td>
+                  <td>
+                    <textarea (keypress)="clearErrMsg();" [(ngModel)]="notificationTextMessage"> </textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_EMAIL_ADDRESS' | translate }}</td>
+                  <td>
+                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="notificationEmailAddress">
+                    <div class="red">
+                      <p>{{notificationError2 | translate }}</p>
+                    </div>
+                    <div class="red">{{notificationError | translate }}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_EMAIL_NAME' | translate }}</td>
+                  <td>
+                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="notificationEmailName">
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_SUBJECT' | translate }}
+                    <span class="text-danger">*</span>
+                  </td>
+                  <td>
+                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="subject">
+                    <br>
+                    <span class="text-center text-danger">
+                      {{notificationError1 | translate }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_MERGE_FIELD' | translate }}</td>
+                  <td>
+                    <select (change)="displayInTemplate($event.target.value, ckEditorId1);" style="display:inline">
+                      <option value="">-- None --</option>
+                      <option *ngFor="let mergefieldslist of mergeFieldsList; let i = index" value="{{mergefieldslist.fields}}" id="mergefieldslist{{i}}">{{mergefieldslist.fields}}</option>
+                    </select> {{mergeField}}
+                  </td>
+
+                </tr>
+                <tr>
+                  <td class="v-top">{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_EMAIL_TEMPLATE' | translate }}</td>
+                  <td>
+                    <ck-editor id="testID" #ckEditorId1 [config]="ckConfig" name="editor1" [(ngModel)]="editorValue" skin="moono-lisa" lang="en"
+                      [fullPage]="true"></ck-editor>
+                  </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>
+                    <button type="button" class="btn btn-primary" (click)='sendEmailNotifications();'>
+                      <i class="fa fa-envelope"></i> {{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_SEND_TEST_EMAIL' | translate }}</button>
+                    <span>{{ success | translate }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- notifications div ends -->
+        <!-- reminders div starts -->
+        <div *ngIf="activeTab2[2]">
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered inptwdth">
+              <tbody>
+                <tr>
+                  <td width="40%">{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_SEND_APPOINTMENT_REMINDERS' | translate }}</td>
+                  <td>
+                    <input type="checkbox" checked [(ngModel)]="sendReminders">
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_DAILY_REMINDERS_ARE_SENT_AT' | translate }}</td>
+                  <td>
+                    <!-- <select [(ngModel)]="getHourses" value="{{dailyRemindersAt}}"> -->
+                    <select [(ngModel)]="getHourses">
+                      <option>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_SELECT_TIME' | translate }}</option>
+                      <option *ngFor="let hrs of getHourse">{{hrs.NAME}} &nbsp;</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_WHEN' | translate }}</th>
+                  <th>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_TIME_BEFORE_APPT' | translate }}</th>
+                  <th>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_REMOVE' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let timeunit of timeUnit; let i = index" id="timeunit{{i}}">
+                  <td>
+                    <input type="text" [(ngModel)]="timeunit.howMuch">
+                  </td>
+                  <td>
+                    <select>
+                      <option>{{timeunit.timeUnit}}</option>
+                      <option value="hours">Hours</option>
+                      <option value="days">Days</option>
+                    </select>
+                  </td>
+                  <td>
+                    <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                      <span (click)="deleteFieldValue(i)" class="del">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+                <tr *ngFor="let input of inputs; let i = index">
+                  <td>
+                    <input type="text" [(ngModel)]="input.howMuch" (click)="clearErrMsg()">
+                  </td>
+                  <td>
+                    <select [(ngModel)]="input.timeUnit">
+                      <option value="hours">Hours</option>
+                      <option value="days">Days</option>
+                    </select>
+                  </td>
+                  <td>
+                    <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                      <span (click)="deleteFieldValue(i)" class="del">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="red">
+              <p>{{remainderError1 | translate }}</p>
+              <p>{{remainderError2 | translate }}</p>
+              <p>{{remainderError3 | translate }}</p>
+
+            </div>
+          </div>
+
+          <div class="">
+            <button id="" type="button" (click)="addInput()" class="btn btn-default res-mb10 mb-10">
+              <i class="fa fa-plus"></i> {{ 'BUTTON.ADD' | translate }}</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <tbody>
+                <tr>
+                  <td width="40%">{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_FROM_TEXT_TAG' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="reminderTextTag">
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_TEXT_MESSAGE' | translate }}</td>
+                  <td>
+                    <textarea [(ngModel)]="reminderTextMessage"></textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_EMAIL_ADDRESS' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="reminderEmailAddress" (keypress)="clearErrMsg()">
+                    <div class="red">
+                      <p>{{remainderError | translate }}</p>
+                      <p>{{remainderError4 | translate }}</p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_FROM_EMAIL_NAME' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="reminderEmailName">
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_SUBLECT' | translate }}</td>
+                  <td>
+                    <input type="text" [(ngModel)]="reminderSubject">
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_MERGE_FIELD' | translate }}</td>
+                  <td>
+                    <select (change)="displayInTemplateRemainder($event.target.value, ckEditorId2);" style="display:inline">
+                      <option value="">-- None --</option>
+                      <option *ngFor="let mergefieldslist of mergeFieldsList; let i = index" value="{{mergefieldslist.fields}}" id="mergefieldslist{{i}}">{{mergefieldslist.fields}}</option>
+                    </select> {{mergeFieldss}}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="v-top">{{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_EMAIL_TEMPLATE' | translate }}</td>
+                  <td>
+                    <ck-editor id="testID" #ckEditorId2 [config]="ckConfig" name="editor1" [(ngModel)]="reminderEmailTemplate" skin="moono-lisa"
+                      lang="en" [fullPage]="true"></ck-editor>
+                  </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>
+                    <button type="button" class="btn btn-primary" (click)="sendMail();">
+                      <i class="fa fa-envelope"></i> {{ 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_SEND_TEST_MAIL' | translate }}</button>
+                    <span>{{ success | translate }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- reminders div ends -->
+        <!-- online booking div starts -->
+        <div *ngIf="activeTab2[3]">
+          <div class="form_cont">
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_ENABLED' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="checkbox" checked [(ngModel)]="onlineBookingEnabled" disabled>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_URL' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                {{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_HTTP' | translate }}
+              </div>
+            </div>
+            <div class="row mt-20">
+              <h1 class="sub_titles">{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_BOOKING_OPTIONS' | translate }}</h1>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_BOOKING_WINDOW_STARTS' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="text" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                  maxlength="3" [(ngModel)]="windowStartTime" class="fl" (click)="clearErrMsg()">
+                <select (change)="formatData($event.target.value);" value="{{windowStarts}}" class="fl">
+                  <option *ngFor="let clang of timesData; let i='index'" value="{{clang.days}}" id="clang{{i}}">{{clang.days}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_BOOKING_WINDOW_ENDS' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="text" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                  maxlength="3" [(ngModel)]="windowEndTime" class="fl" (click)="clearErrMsg()">
+                <select (change)="formatDataForEnd($event.target.value);" value="{{windowEnds}}" class="fl">
+                  <option *ngFor="let clang of timesData; let i='index'" value="{{clang.days}}" id="clang{{i}}">{{clang.days}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="text-danger" style="text-align:center;"> {{onlineBookingError1 | translate }} </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_HOURS_FOR_ONLINE_BOOKING' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <select [(ngModel)]="hoursforOnlineBooking" class="fl">
+                  <option *ngFor="let clang of onlineValues;" value="{{clang.Id}}">{{clang.Name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_ALLOW_APPT_CANCELLATIONS' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="checkbox" [(ngModel)]="allowApptCancellations" checked>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_ALLOW_APPT_CHANGES' | translate }}</label>
+              </div>
+              <div class="col-md-4 col-sm-8">
+                <input type="checkbox" [(ngModel)]="allowApptChanges" checked>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <h1 class="sub_titles">{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_DISPLAY_OPTIONS' | translate }}</h1>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_SHOW_TOTAL_PRICE' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="checkbox" [(ngModel)]="ShowTotalPrice" checked>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_SHOW_TOTAL_DURATION' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="checkbox" [(ngModel)]="ShowTotalDuration" checked>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_MAX_AVAILABILITIES' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="NumberofAvailabilities" maxlength="5" value="5" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+              </div>
+              <div class="text-danger" style="text-align:center;"> {{onlineBookingError | translate }} </div>
+
+            </div>
+
+            <div class="row mt-20">
+              <h1 class="sub_titles">{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_LOGIN_MESSSGE' | translate }}</h1>
+            </div>
+            <div class="row">
+              <div class="col-md-5 col-sm-4 mt-20 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_TYPE_MESSAGE_HERE' | translate }}</label>
+                <br>
+                <em>
+                  <small>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_THE_MESSAGE' | translate }}</small>
+                </em>
+              </div>
+              <div class="col-md-7 col-sm-8 mt-20">
+                <textarea [(ngModel)]="OnlineBookingLoginMessage"></textarea>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <h1 class="sub_titles">{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_BOOKING_RESTRICTIONS' | translate }}</h1>
+            </div>
+            <div class="row">
+              <div class="col-md-5 col-sm-4 mt-20 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_TYPE_MESSAGE_HERE' | translate }}</label>
+                <br>
+                <em>
+                  <small>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_THE_MESSAGE_APPOINTMENT_ONLINE' | translate }}</small>.</em>
+              </div>
+              <div class="col-md-7 col-sm-8 mt-20">
+                <textarea [(ngModel)]="OnlineBookingLoginMessage1"></textarea>
+              </div>
+            </div>
+            <div class="row mt-20">
+              <h1 class="sub_titles">{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_PENDING_DEPOSITE_HANDLING' | translate }}</h1>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_AUTOMATICALLY_DELETE' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <input type="checkbox" [(ngModel)]="deleteFailedOnlineDeposits">
+              </div>
+            </div>
+            <div class="row mt-20">
+              <div class="col-md-5 col-sm-4 text-right res-tleft">
+                <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_SEND_NOTIFICATION_OF_FAILED' | translate }}</label>
+              </div>
+              <div class="col-md-7 col-sm-8">
+                <select [(ngModel)]="sendNotificationofFailed" class="fl" style="width:fit-content">
+                  <option *ngFor="let clang of dataByFields; let i='index'" value="{{clang.values}}">{{clang.values}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- online booking div ends -->
+        <!-- gifts online booking div starts -->
+        <div *ngIf="activeTab2[4]">
+          <div class="row mt-20">
+            <div class="col-md-5 col-sm-4 text-right res-tleft">
+              <label>{{'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_MERGE_FIELD' | translate }}</label>
+            </div>
+            <div class="col-md-7 col-sm-8">
+              <select (change)="displayGiftsOnlineTemplate($event.target.value, ckEditorId3);" style="display:inline">
+                <option value="None">None</option>
+                <option *ngFor="let mergefieldslist of mergeFieldsList; let i = index" value="{{mergefieldslist.fields}}" id="mergefieldslist{{i}}">{{mergefieldslist.fields}}</option>
+              </select> {{giftsMergeField}}
+            </div>
+          </div>
+          <div class="row mt-20" style="margin-bottom: 20px;">
+            <div class="col-md-5 col-sm-4 text-right res-tleft">
+              <label>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_EMAIL_TEMPLATE' | translate}}</label>
+            </div>
+            <div class="col-md-7 col-sm-8">
+              <ck-editor id="testID" #ckEditorId3 [config]="ckConfig" name="editor1" [(ngModel)]="giftsEmailTemplate" skin="moono-lisa"
+                lang="en" [fullPage]="true"></ck-editor>
+            </div>
+          </div>
+        </div>
+        <!-- gifts online booking div ends -->
+        <!-- refer friend div starts -->
+        <div *ngIf="activeTab2[5]">
+          <div class="row mt-20">
+            <div class="col-md-5 col-sm-4 text-right res-tleft">
+              <label>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_MERGE_FIELD' | translate }}</label>
+            </div>
+            <div class="col-md-7 col-sm-8">
+              <select (change)="displayFriendTemplate($event.target.value, ckEditorId4)" style="display:inline">
+                <option value="None">None</option>
+                <option *ngFor="let mergefieldslist of mergeFieldsList; let i = index" value="{{mergefieldslist.fields}}" id="mergefieldslist{{i}}">{{mergefieldslist.fields}}</option>
+              </select> {{friendMergeField}}
+            </div>
+          </div>
+          <div class="row mt-20" style="margin-bottom: 20px;">
+            <div class="col-md-5 col-sm-4 text-right res-tleft">
+              <label>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_EMAIL_TEMPLATE' | translate }}</label>
+            </div>
+            <div class="col-md-7 col-sm-8">
+              <ck-editor id="testID" #ckEditorId4 [config]="ckConfig" name="editor1" [(ngModel)]="friendEmailTemplate" skin="moono-lisa"
+                lang="en" [fullPage]="true"></ck-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- refer friend div ends -->
+      <div class="text-center mt-15">
+        <button type="button" class="save-btn" (click)="commonSave();">{{ 'BUTTON.SAVE' | translate }}</button>
+        <button type="button" (click)="cancel()" class="cancel-btn">{{ 'BUTTON.CANCEL' | translate }}</button>
+      </div>
+    </div>
+  </section>
+  <app-rightbar></app-rightbar>
+</div>

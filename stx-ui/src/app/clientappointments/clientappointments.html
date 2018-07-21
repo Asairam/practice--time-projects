@@ -1,0 +1,286 @@
+<div id="wrapper_setup_new" style="color:white;">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+	<div class="form_cont12" *ngIf="clientId != 'undefined' && clientId != 'null' && clientId">
+		<h1>{{showCliName}}</h1>
+	</div>
+	<section id="inner_cont">
+		<div class="col-sm-8">
+			<p class="red mb-0"> {{bookApptErr | translate }} </p>
+		</div>
+		<div class="container form_cont">
+			<div class="row">
+				<div class="col-md-6" id="box-align">
+					<div class="appt-box">
+						<h1 class="sub_titles">Appointment Search Start Date</h1>
+						<div class="mt-20">
+							<div class="col-md-4 col-sm-4 text-right res-tleft">
+								<label>Start Date:</label>
+								<span class="red">*</span>
+							</div>
+							<div class="col-md-8 col-sm-8" style="margin-bottom:3px;">
+								<!-- <input [(ngModel)] = "dateValue" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="dateValue" class="mb-25" value="vinod"/> -->
+								<!-- <pre>{{bsValue}}</pre> -->
+								<input type="text" [(ngModel)]="bsValue" (click)="clearErrMsg()" (ngModelChange)="getWorkersFromDate()" bsDatepicker [(bsValue)]="bsValue"
+								 [minDate]="minDate" [bsConfig]="datePickerConfig" class="datefield">
+							</div>
+							<div class="button-align">
+								<!-- <button type="button" class="btn btn-default" (click)="getTodayDate()">Today</button>
+								<button type="button" class="btn btn-default" (click)="calculationForOneWeek()">1</button>
+								<button type="button" class="btn btn-default" (click)="calculationForTwoWeeks()">2</button>
+								<button type="button" class="btn btn-default" (click)="calculationForThreeWeeks()">3</button>
+								<button type="button" class="btn btn-default" (click)="calculationForFourWeeks()">4</button>
+								<button type="button" class="btn btn-default" (click)="calculationForFiveWeeks()">5</button>
+								<button type="button" class="btn btn-default" (click)="calculationForSixWeeks()">6</button>
+								<button type="button" class="btn btn-default" (click)="calculationForSevenWeeks()">7</button>
+								<button type="button" class="btn btn-default" (click)="calculationForEightWeeks()">8</button> -->
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(0)">Today</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(1)">1</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(2)">2</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(3)">3</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(4)">4</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(5)">5</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(6)">6</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(7)">7</button>
+								<button type="button" class="btn btn-default" (click)="updateDatepicker(8)">8</button>
+
+							</div>
+						</div>
+
+						<div class="clearfix"></div>
+
+						<div class="mt-40">
+							<div class="col-md-4 col-sm-4 text-right res-tleft">
+								<label>Visit Type:</label>
+								<span class="red">*</span>
+							</div>
+							<div class="col-md-8">
+								<select (click)="clearErrMsg()" [(ngModel)]="visitTypeValue" (change)="onVisitTypeChange($event.target.value);">
+									<option value=''>--None--</option>
+									<option *ngFor="let listData of visitTypesList; let i='index'" value="{{listData.visitType}}" id="listData{{i}}">{{listData.visitType}}</option>
+								</select>
+							</div>
+							<div>
+								<p style='text-align: center;' class='red'>{{error8 | translate}}</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="appt-box">
+						<h1 class="sub_titles">Services</h1>
+
+						<div class="mt-20">
+							<div class="col-md-12">
+								<label>Add / Remove Services:</label>
+							</div>
+						</div>
+
+						<div class="mt-20">
+							<div class="col-md-12">
+								<div class="table-responsive">
+									<table class="table table-hover table-bordered form_cont_one">
+
+										<tbody>
+											<tr *ngFor="let row of rows; let i='index'">
+												<td>
+													<select [(ngModel)]="row.serviceGroup" style="width:100%;" (change)="categoryOfService($event.target.value, i);clear()">
+														<!-- <option>{{row.serviceGroupName}}</option>
+														<option>Select</option> -->
+														<option *ngFor="let groupData of serviceGroupList; let i='index'" value="{{groupData.serviceGroupName}}${{groupData.serviceGroupColor}}"
+														 id="groupData{{i}}">{{groupData.serviceGroupName}}</option>
+														<option value="-" disabled="disabled">--- Packages ---</option>
+														<option *ngFor="let values of packagesList; let i='index'" value="scale:{{values.Id}}" id="values{{i}}">{{values.Name}}</option>
+													</select>
+												</td>
+												<td>
+													<select [(ngModel)]="row.serviceName" *ngIf='(serviceDetailsList[i] && serviceDetailsList[i].length > 0 )' (click)="clearErrMsg()"
+													 style="width:100%;" (change)="servicesListOnChange($event.target.value, i);clear()">
+														<!-- <option *ngIf ='rows[i].Id' >{{row.Name}}</option> -->
+														<option value="">--Select--</option>
+														<option *ngFor="let serviceData of serviceDetailsList[i]; let i='index'" value="{{serviceData.Id}}" id="serviceData{{i}}">{{serviceData.Name}}</option>
+													</select>
+												</td>
+												<td>
+													<select [(ngModel)]="row.workerName" style="width:100%;" *ngIf='workerList[i]?workerList[i].length>0:false' (change)="workerListOnChange($event.target.value, i);clear()">
+														<!-- <option *ngIf ='rows[i].name'>{{row.name}}</option> -->
+														<option *ngFor="let workerData of workerList[i]; let i='index'" value="{{workerData.workername}}" id="serviceData{{i}}">{{workerData.name}}</option>
+													</select>
+												</td>
+												<td>
+													<a (click)="addServices(index)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+														<span class="add">
+															<i class="fa fa-plus" aria-hidden="true"></i>
+														</span>
+													</a>
+												</td>
+												<td *ngIf='rows && rows.length > 1'>
+													<a (click)="removeServices(row,i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+														<span class="del">
+															<i class="fa fa-minus" aria-hidden="true"></i>
+														</span>
+													</a>
+												</td>
+											</tr>
+
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<div class="col-md-12">
+								<label>Total Service duration: {{sumOfServiceDurations}} Minutes</label>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<div class="mt-10">
+							<div class="col-md-12 text-center">
+								<button type="button" class="btn btn-primary" (click)="searchForAppointment()">
+									<i class="fa fa-binoculars" aria-hidden="true"></i> Search for Appointment</button>
+								<div>
+									<p class='red'>{{error9 | translate}}</p>
+								</div>
+								<div>
+									<p class='red'>{{error10 | translate}}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6" id="box-align">
+					<div class="appt-box">
+						<h1 class="sub_titles">Notes</h1>
+
+						<div class="mt-20">
+							<div class="col-md-12">
+								<label>Client Notes:</label>
+							</div>
+							<div class="col-md-12">
+								&nbsp;
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<div class="mt-20">
+							<div class="col-md-12">
+								<label>Appointment Notes:</label>
+							</div>
+							<div class="col-md-12">
+								<textarea [(ngModel)]="apptNotes" class="w90"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="appt-box">
+						<h1 class="sub_titles">Appointment Search Results</h1>
+						<div class="col-md-12 mt-20 text-center">
+							<button type="button" class="save-btn" (click)="bookAppointment()" *ngIf='showScheduleButton == true && apptSearchData.length!==0'>Schedule Appointment</button>
+							<button type="button" class="save-btn" (click)="bookAppointment()" *ngIf="reScheduleButton == true && apptSearchData.length!==0">{{isRebooking?'Rebook':'ReSchedule'}}</button>
+							<button type="button" class="cancel-btn" [routerLink]="['/appointments']">Cancel</button>
+							<button *ngIf='showWaitinglist == true && apptSearchData.length!==0' type="button" class="add-btn">Add to Waiting List</button>
+						</div>
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-hover table-bordered form_cont_one">
+									<thead>
+										<tr>
+											<th class="thcss">Select Appointment Date / Time</th>
+											<th class="thcss">Rank</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let searchData of apptSearchData; let i = 'index'" [ngClass]="{ 'row-selected': (selectedIndex === i) }">
+											<td (click)="scheduleButtonShow(apptSearchData[i].value, i)" >{{searchData.value}}</td>
+											<td (click)="scheduleButtonShow(apptSearchData[i].value, i)" >{{searchData.rank}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>
+
+<!-- ----------------------popup--------- -->
+<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+ role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="width: 590px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<!-- <button type="button" class="close" (click)="closeServiceNotesModal()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button> -->
+			</div>
+			<table>
+				<tbody>
+					<tr>
+						<td style="padding: 10px;">
+							<img src="assets/images/declinedIcon.png">
+						</td>
+						<td>
+							There is a booking alert for this client.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<label style="margin: 0px 12px;">{{clientData?.FirstName+' '+clientData?.LastName}} has a booking alert for the following reason(s):</label>
+			<table style="margin-left:100px">
+				<tbody>
+					<tr *ngIf="clientData?.BR_Reason_No_Email__c === 1">
+						<td>
+							<label>No Email</label>
+						</td>
+					</tr>
+					<tr *ngIf="clientData?.BR_Reason_Account_Charge_Balance__c === 1">
+						<td>
+							<label>Account Charge Balance</label>
+						</td>
+					</tr>
+					<tr *ngIf="clientData?.BR_Reason_Deposit_Required__c === 1">
+						<td>
+							<label>Deposit Required</label>
+						</td>
+					</tr>
+					<tr *ngIf="clientData?.BR_Reason_No_Show__c === 1">
+						<td>
+							<label>Persistant No Show</label>
+						</td>
+					</tr>
+					<tr *ngIf="clientData?.BR_Reason_Other__c === 1">
+						<td>
+							<label>Other</label>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<label style="margin: 0px 12px;" *ngIf="clientData?.BR_Reason_Other_Note__c">Notes : {{clientData?.BR_Reason_Other_Note__c}}</label>
+			<div class="modal-footer">
+				<table>
+					<tbody>
+						<tr>
+
+							<td>
+								<button class="save-btn" *ngIf="clientData?.Booking_Restriction_Type__c !== 'Do Not Book'" value="Book Anyway" (click)="bookAnyWay()">
+									Book Anyway</button>
+								<button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{clientData?.Booking_Restriction_Type__c === 'Do Not Book'?'Ok':'Don\'t Book'}}</button>
+								<a *ngIf='clientId' [routerLink]="['/client/edit/' + clientId]" [queryParams]="{action:'findappt'}" class="btn btn-default mb-5">
+									<i class="fa fa-pencil"></i> Go To Full Client Card</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+</div>

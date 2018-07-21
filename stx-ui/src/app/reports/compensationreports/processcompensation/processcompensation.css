@@ -1,0 +1,41 @@
+.mt-top {
+    margin-top: 20px;
+}
+#inner_cont {
+    margin-right: 8%;
+    color: white;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+@media (device-width: 768px){
+    #inner_cont {
+        margin-right: 11%;
+    }
+	.table>thead>tr>th {
+        padding: 8px;
+    }
+    .thcss {
+        font-size: 10px;
+    }
+    .form_cont table {
+        font-size: 11px;
+    }
+    .ml-5{
+        margin-left: -22px;
+    }
+    .form_cont_one input[type=text], .form_cont_one input[type=email], .form_cont_one input[type=number], .form_cont_one input[type=password] {
+        width: 100% !important;
+    }
+    .width-align{
+        width: 76.666667%;
+    }
+}
+@media (device-width: 1024px){
+    #inner_cont {
+        margin-right: 9%;
+    }
+}

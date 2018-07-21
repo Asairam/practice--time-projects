@@ -1,0 +1,168 @@
+<div class="drawer drawer--left">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+		<section id="inner_cont">
+			<div class="container form_cont">
+				<div class="row">
+					<div class="col-md-12">
+						<h1 class="sub_titles">Class</h1>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Select Class / Worker</label>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<div class="row">
+							<div class="col-sm-4">
+								<select style="width:165%;" (change) = "onChangeClass($event.target.value)">
+									<option value = ''>--Select--</option>
+									<option *ngFor = "let class of classData; let i= 'index' " value = "{{class.Id}}">{{class.Name}}</option>
+								</select>
+							</div>
+							<div class="col-sm-4">
+								<select style="width:165%;" *ngIf = 'workerData && workerData.length > 0'>
+										<option *ngFor = "let worker of workerData; let i= 'index' " value = "{{worker.workerId}}">{{worker.workerName}}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Total Duration:</label>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						{{classDur}} Minutes
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 mt-25">
+						<h1 class="sub_titles">Class Start Date and Time</h1>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Start Date:</label>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<input class="datefield" type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [minDate]="minDate"  [bsConfig]="datePickerConfig">
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Start Time:</label>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<select class="select-ar-none" (click) = "onChangeTimes($event.target.value)">
+							<option></option>
+							<option *ngFor = 'let times of TimeData'>{{times}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label># of Classes:</label>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<select>
+							<option>4</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Every:</label>
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<div class="row">
+							<div class="col-sm-4">
+								<select class="align-width-i">
+									<option>1</option>
+								</select>
+							</div>
+
+							<div class="col-sm-4">
+								<select class="align-width">
+									<option>Weeks</option>
+								</select>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<small>
+							<em>*These options will have an End Date of 12/23/2017 11:00 AM</em>
+						</small>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						&nbsp;
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<button type="button" class="btn btn-primary">
+							<i class="fa fa-binoculars" aria-hidden="true"></i> Search</button>
+					</div>
+				</div>
+				<hr />
+				<div class="row">
+					<div class="col-md-12">
+						<h1 class="sub_titles">Book</h1>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-12">
+						<div class="table-responsive">
+							<table class="table table-hover table-bordered form_cont_one">
+								<thead>
+									<tr>
+										<th class="thcss">Date</th>
+										<th class="thcss">Start</th>
+										<th class="thcss">Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>12/2/2017</td>
+										<td>11:00 AM</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr>
+										<td>12/9/2017</td>
+										<td>11:00 AM</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr>
+										<td>12/16/2017</td>
+										<td>11:00 AM</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr>
+										<td>12/23/2017</td>
+										<td>11:00 AM</td>
+										<td>&nbsp;</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						&nbsp;
+					</div>
+					<div class="col-md-7 col-sm-8">
+						<button type="button" class="save-btn">Schedule Available</button>
+						<button type="button" class="cancel-btn" [routerLink]="['/appointments']">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</section>
+		<app-rightbar></app-rightbar>
+</div>

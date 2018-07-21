@@ -1,0 +1,198 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header>    -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mt-40">
+                        <div class="table-responsive">
+                            <table class="table table-bordered-white" *ngIf="hideTable == false">
+                                <tbody>
+                                    <td colspan="3" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input id="c1" type="checkbox" ([ngModel])="inActive" class="pull-left" (click)="getInactiveSetupMemberships($event)"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                    </td>
+                                    <tr class="white">
+                                        <td>{{'COMMON.ACTIVE' | translate}}</td>
+                                        <td>{{'COMMON.NAME' | translate}}</td>
+                                    </tr>
+                                    <tr *ngFor="let membershiplist of membershipsList; let i='index'" id="productlinelist{{i}}">
+                                        <td align="center" *ngIf='membershiplist.Active__c == 1' >
+                                            <input type="checkbox" checked disabled> 
+                                        </td>
+                                        <td align="center" *ngIf='membershiplist.Active__c == 0' >
+                                            <input type="checkbox" disabled>
+                                        </td>
+                                        <td class="tbl-txt">
+                                            <a style="color: white;" (click)="showData(membershiplist)">{{membershiplist.Name}}</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center" colspan="2">
+                                            <a class="white btn btn-hovr" (click)="addNew()">
+                                                <i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered-white disable" *ngIf="hideTable == true">
+                                    <tbody>
+                                            <td colspan="3" valign="middle" height="60" style="padding-left: 10px;">
+                                                    <input id="c1" type="checkbox" ([ngModel])="inActive" class="pull-left" disabled> &nbsp;&nbsp;
+                                                    <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                                </td>
+                                        <tr class="white">
+                                            <td>{{'COMMON.ACTIVE' | translate}}</td>
+                                            <td>{{'COMMON.NAME' | translate}}</td>
+                                        </tr>
+                                        <tr *ngFor="let membershiplist of membershipsList; let i='index'" id="productlinelist{{i}}">
+                                            <td align="center" *ngIf='membershiplist.Active__c == 1'>
+                                                <input type="checkbox" checked>
+                                            </td>
+                                            <td align="center" *ngIf='membershiplist.Active__c == 0'>
+                                                <input type="checkbox">
+                                            </td>
+                                            <td>
+                                                <a  style="color: white;">{{membershiplist.Name}}</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" colspan="2">
+                                                <a class="white">
+                                                    <i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            
+                        </div>
+                    </div>
+                    <!-- add div starts -->
+                    <div class="col-md-8 pdgl30 mt-40" *ngIf="addDiv==true">
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-8 res-tleft">
+                                <h1>{{ 'SETUP_MEMBERSHIPS.MEMBERSHIP_DETAILS' | translate }}</h1>
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{'COMMON.NAME' | translate}} *</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="text" placeholder="New Membership" [(ngModel)]="Name" maxlength="25" (keypress)="clearmessage();">
+                                <p class="red"> {{error | translate }} </p>
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{'COMMON.ACTIVE' | translate}}</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="checkbox" [(ngModel)]="active" (click)="clearmessage();">
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{ 'COMMON.PRICE' | translate }}</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="text" placeholder="0.00" min="0" maxlength="9" [(ngModel)]="price" (keypress)="IsAlphaNumeric($event);">
+                                <p class="red"> {{error1 | translate }} </p>
+                            </div>
+                        </div>
+                        <div class="row mt-30 res-mt-15 text-center res-tleft">
+                            <div class="col-sm-10">
+                                <button type="button" class="save-btn" (click)="createMemberships()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                                <button type="button" class="cancel-btn" (click)="cancel();">{{ 'BUTTON.CANCEL' | translate }}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- add div ends -->
+                    <!-- disable div starts -->
+                    <div class="col-md-8 pdgl30 mt-40 disable" *ngIf="disableDiv==true">
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-8 res-tleft">
+                                <h1>{{ 'SETUP_MEMBERSHIPS.MEMBERSHIP_DETAILS' | translate }}</h1>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="red"> {{error | translate }} </p>
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{ 'COMMON.NAME' | translate }}</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="text" placeholder="New Membership" disabled>
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{'COMMON.ACTIVE' | translate}}</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="checkbox" disabled>
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{ 'COMMON.PRICE' | translate }}</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="text" placeholder="0.00" disabled>
+                            </div>
+                        </div>
+                        <div class="row mt-30 res-mt-15 text-center res-tleft">
+                            <div class="col-sm-10">
+                                <button type="button" class="save-btn" disabled>{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                                <button type="button" class="cancel-btn" disabled>{{ 'BUTTON.CANCEL' | translate }}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- disable div ends -->
+                    <!-- edit div starts -->
+                    <div class="col-md-8 pdgl30 mt-40" *ngIf="editDiv==true">
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-8 res-tleft">
+                                <h1>{{ 'SETUP_MEMBERSHIPS.MEMBERSHIP_DETAILS' | translate }}</h1>
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{'COMMON.NAME' | translate}} *</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="text" [(ngModel)]="updateName" maxlength="25" (keypress)="clearmessage();">
+                                <p class="red"> {{error | translate }} </p>
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{'COMMON.ACTIVE' | translate}}</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="checkbox" [(ngModel)]="updateActive" (click)="clearmessage();">
+                            </div>
+                        </div>
+                        <div class="row mt-20 res-mt-15">
+                            <div class="col-sm-3 text-right res-tleft">
+                                <label>{{ 'COMMON.PRICE' | translate }}</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="text" [(ngModel)]="updatePrice" min="0" maxlength="9"   (keypress)="IsAlphaNumeric($event)">
+                                <p class="red"> {{error1 | translate }} </p>
+                            </div>
+                        </div>
+                        <div class="row mt-30 res-mt-15 text-center res-tleft">
+                            <div class="col-sm-10">
+                                <button type="button" class="save-btn" (click)="editMemberships();">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                                <button type="button" class="cancel-btn" (click)="cancel();">{{ 'BUTTON.CANCEL' | translate }}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- edit div ends -->
+                </div>
+            </div>
+        </section>
+<app-rightbar></app-rightbar>           
+</div>

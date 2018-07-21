@@ -1,0 +1,466 @@
+<div id="wrapper_setup_new">
+  <!-- <app-header></app-header> -->
+  <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+      <div class="container form_cont">
+        <ul class="nav nav-tabs">
+          <li class="tablinks {{activeTabClass[0]}}" id="favoritesnav" (click)="updateTabs(0)">
+              <a data-toggle="tab">
+                <b>{{ 'TABS.CLIENT_FIELDS' | translate }}</b>
+              </a>
+            </li>
+            <li class="tablinks {{activeTabClass[1]}}" id="favoritesnav" (click)="updateTabs(1)">
+              <a data-toggle="tab">
+                <b>{{ 'TABS.VISIT_TYPES' | translate }}</b>
+              </a>
+            </li>
+            <li class="tablinks {{activeTabClass[2]}}" id="favoritesnav" (click)="updateTabs(2)">
+              <a data-toggle="tab">
+                <b>{{ 'TABS.CLIENT_FLAGS' | translate }}</b>
+              </a>
+            </li>
+            <li class="tablinks {{activeTabClass[3]}}" id="favoritesnav" (click)="updateTabs(3)">
+              <a data-toggle="tab">
+                <b>{{ 'TABS.OCCUPATIONS' | translate }}</b>
+              </a>
+            </li>
+            <li class="tablinks {{activeTabClass[4]}}" id="favoritesnav" (click)="updateTabs(4)">
+              <a data-toggle="tab">
+                <b>{{ 'TABS.MOBILE_CARRIERS' | translate }}</b>
+              </a>
+            </li>
+        </ul>
+        <!-- <router-outlet name="nav"></router-outlet> -->
+        <!-- client fields tab starts -->
+        <div class="tab-content">
+        <div *ngIf="activeTab2[0]">
+          <div class="tab-pane fade in active">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered table-blue-bordered ">
+                <thead>
+                  <tr>
+                    <th colspan="3" class="thcss">{{'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_QUICK_ADD_REQUIRED_FIELDS' | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="40%">{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_ALLOW_QUICK_ADD' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickAddAllow">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_PRIMARY_PHONE' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickaddprimaryphone">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_MOBILE_PHONE' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickaddmobilephone">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_BIRTHDATE' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickaddbirthdate">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_MAILING_ADDRESS' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickaddmailingaddress">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_PRIMARY_EMAIL' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickaddprimaryemail">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_SECONDARY_EMAIL' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickaddsecondaryemail">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_GENDER' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="quickaddgender">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive mt-10">
+              <table class="table table-hover table-bordered table-blue-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="3" class="thcss">{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_CLIENT_CARD_REQUIRED_FIELDS' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td width="40%">{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_PRIMARY_PHONE' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="clientcardprimaryphone">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_MOBILE_PHONE' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="clientcardmobilephone">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_BIRTHDATE' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="clientcardbirthdate">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_MAILING_ADDRESS' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="clientcardmailingaddress">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_PRIMARY_EMAIL' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="clientcardprimaryemail">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_SECONDARY_EMAIL' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="clientcardsecondaryemail">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_GENDER' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="clientcardgender">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive mt-10">
+              <table class="table table-hover table-bordered table-blue-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="3" class="thcss">{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_ONLINE_BOOKING_REQUIRED_FIELDS' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_NEW_REGISTRATION_REQUIRE_APPROVAL' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="onlinebookingnewreg">&nbsp;{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_APPROVAL_LINK' | translate }}</td>
+                  </tr>
+                  <tr>
+                    <td>{{ 'SETUP_CLIENT_PREFERENCES.CLIENTFIELDS_MOBILE_PHONE' | translate }}</td>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="onlinebookingmobilephone">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- client fields tab ends -->
+        <!-- visit types tab starts -->
+        <div *ngIf="activeTab2[1]">
+          <div class="tab-pane fade in active">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered table-blue-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="3" class="thcss">{{'TAB.VISIT_TYPES' | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="info-new">
+                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                    <td>{{'COMMON.NAME' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs0">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData0" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs1">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData1" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs2">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData2" (keypress)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs3">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData3" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs4">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData4" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs5">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData5" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs6">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData6" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs7">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData7" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs8">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData8" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBoxs9">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="visitTypesData9" (click)="clearVisitTypeErrorDuplicate();">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- visit types tab ends -->
+        <!-- client flags tab starts -->
+        <div *ngIf="activeTab2[2]">
+          <div class="tab-pane fade in active">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered table-blue-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="3" class="thcss">{{'SETUP_CLIENT_PREFERENCES.CLIENT_FLAGS' | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="info-new">
+                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                    <td>{{'COMMON.NAME' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox0">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox0" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox11">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox11" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox12">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox12" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox13">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox13" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox14">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox14" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox15">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox15" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox16">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox16" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox17">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox17" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input type="checkbox" [(ngModel)]="checkBox18">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="textBox18" (keypress)="clearClientFlagsErrorDuplicate();">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- client flags tab ends -->
+        <!-- occupations tab starts -->
+        <div *ngIf="activeTab2[3]">
+          <div class="tab-pane fade in active">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered table-blue-bordered">
+                <thead>
+                  <tr>
+                    <th colspan="3" class="thcss">{{'SETUP_CLIENT_PREFERENCES.OCCUPATIONS' | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="info-new">
+                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                    <td>{{'COMMON.NAME' | translate}}</td>
+                  </tr>
+                  <tr *ngFor="let input of inputs">
+                    <td>
+                      <input type="checkbox" [(ngModel)]="input.active">
+                    </td>
+                    <td>
+                      <input type="text" [maxlength]="'25'" [(ngModel)]="input.occupationName" (click)=clearOccupationErrorDuplicate();>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="">
+              <button id="addrow_occupations" type="button" class="btn btn-default res-mb10" (click)="addInput()">
+                <i class="fa fa-plus"></i> {{ 'BUTTON.ADD' | translate }}</button>
+            </div>
+          </div>
+        </div>
+        <!-- occupations tab ends -->
+        <!-- mobile carriers tab starts -->
+        <div *ngIf="activeTab2[4]">
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered table-blue-bordered" id="mobile_carriers">
+              <thead>
+                <tr>
+                  <th colspan="3" class="thcss">{{ 'TABS.MOBILE_CARRIERS' | translate }}</th>
+                </tr>
+              </thead>
+              <div class="text-danger text-center">{{ mobileError | translate }}</div>
+              <tbody>
+                <tr class="info-new">
+                  <td>Active</td>
+                  <td>Name</td>
+                </tr>
+                <tr *ngFor="let input of mobileInputs">
+                  <td>
+                    <input type="checkbox" [(ngModel)]="input.active">
+                  </td>
+                  <td>
+                    <select [(ngModel)]="input.mobileCarrierName" (click)=clearMobileCarrierErrorDuplicateMobile();>
+                      <option value="">--None--</option>
+                      <option *ngFor="let clang of mobileCarriersList; let i='index'" value="{{clang.NAME}}">{{clang.NAME}}</option>
+                    </select>
+                  </td>
+                  <!-- <td> -->
+                  <!-- <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+                    <span (click)="deleteFieldValue(i)" class="del">
+                      <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </span>
+                  </a> -->
+                  <!-- </td> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="">
+            <button id="addrow_mobile_carriers"  type="button" *ngIf="mobileInputs.length < 25" (click)="addMobileInput()" class="btn btn-default res-mb10">
+              <i class="fa fa-plus"></i> {{ 'BUTTON.ADD' | translate }}</button>
+          </div>
+          <!-- mobile carriers tab ends -->
+          <div></div>
+        </div>
+        </div>
+        <!-- Error Messages -->
+        <div class="text-danger text-center">{{error1 | translate}} </div>
+        <div class="text-danger text-center">{{error0 | translate}} </div>
+        <div class="text-danger text-center">{{ Required3 | translate }}</div>
+        <div class="text-danger text-center">{{ error | translate }} </div>
+        <div class="text-danger text-center">{{ Uniqueness | translate }} </div>
+        <div class="text-danger text-center">{{ Uniqueness1 | translate}} </div>
+        <div class="text-danger text-center">{{ Required2 | translate }} </div>
+        <div class="text-danger text-center">{{ Uniqueness2 | translate }}</div>
+        <div class="text-danger text-center">{{ Uniqueness3 | translate}} </div>
+        <!-- Error Messages End -->
+        <!-- Buttons -->
+        <div class="text-center">
+          <button type="button" (click)="commonSave()" class="save-btn">{{ 'BUTTON.SAVE' | translate }}</button>
+          <button type="button" (click)="cancel()" class="cancel-btn">{{ 'BUTTON.CANCEL' | translate }}</button>
+        </div>
+        <!-- Buttons End -->
+      </div>
+    </section>
+<app-rightbar></app-rightbar>    
+</div>

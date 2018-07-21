@@ -1,0 +1,26 @@
+.mr-10{
+    margin-right: 8%;
+}
+.container, .form_cont {
+    color: white!important;
+}
+.font-weight{
+    /* background: rgb(76, 141, 184); */
+    font-weight: bolder;
+}
+.font-wght {
+font-size: 13px;
+}
+/* below css style is used to remove table border */
+
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+@media (max-width: 768px){
+	.mr-10{
+        margin-right: 10%;
+    }
+}

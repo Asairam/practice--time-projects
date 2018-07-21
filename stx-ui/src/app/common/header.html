@@ -1,0 +1,251 @@
+<header>
+    <div class="top-header" [ngStyle]="{ 'background-color': newMenu ? 'transparent' : '#000'}">
+        <div class="container">
+            <div class="row">
+                <div class="mt-15" [ngClass]="{ 'col-md-2 col-sm-2 col-xs-2 head-ham': newMenu ,'col-md-8 col-sm-8 col-xs-8': !newMenu}"  >
+                    <a href="javascript:void(0);" (click)="openNav()" class="menu-link drawer-toggle">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                    <span class="page-title hidden-xs" *ngIf="!newMenu" id="displayNameId">{{displayName}}</span>
+                </div>
+                <div class="col-md-4 col-sm-4" *ngIf="newMenu">
+                    <img src="assets/images/logo.png" class="header-logo" width="150" [routerLink]="['/home']" style="cursor: pointer;" title="Home">                   
+                </div>
+                <div class="col-md-4 col-sm-4 width-align " *ngIf="displayName==='Time Clock'">
+                    <span class="page-title hidden-xs">Time Clock - {{newMenu}}</span>
+                </div>
+
+                <!-- <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top: -30px" *ngIf="newMenu === 'nav'">
+
+                    <div *ngFor="let navPage of navPages; let i = index" class="header-nav">
+                        <div *ngIf="i<navPages.length-1" class="header-url">
+                            <a [routerLink]="[navPage.link]">{{navPage.displayName}}</a>
+                            <i class="fa fa-angle-right header-nav-icon"></i>
+                        </div>
+                        <div *ngIf="i==navPages.length-1" class="header-url">
+
+                            <span id="headerBCId{{i}}">{{navPage.displayName}}</span>
+
+                        </div>
+                    </div>
+
+                </div> -->
+                <div id="mySidenav" class="sidenav">
+                    <li>
+                        <a routerLinkActive="active" [routerLink]="['/home']">
+                            <img src="assets/images/home.png" class="header-sidenav-img"> {{ 'HEADER.HOME' | translate }}</a>
+                    </li>
+                    <!-- <li>
+                        <a routerLinkActive="active" [routerLink]="['/favourites']" >
+                            <img src="assets/images/favorities.png" class="header-sidenav-img">{{ 'HEADER.FAVORITES' | translate }}</a>
+                    </li> -->
+                    <li>
+                        <a routerLinkActive="active" [routerLink]="['/dashboard']">
+                            <img src="assets/images/dashboard.png" class="header-sidenav-img">{{ 'HEADER.DASHBOARD' | translate }}</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+                    </li>
+                    <li class="dropdown-span" (click)="admMenuShow()" [class.open]="activeClass">
+                        <a class="submenu" href="javascript:void(0)">
+                            <img src="assets/images/setup.png" class="header-sidenav-img">{{ 'HEADER.SETUP' | translate }}
+                            <span>&nbsp;</span>
+                        </a>
+                        <!-- <ul *ngIf='show == true'> -->
+                        <ul class="dropdown">
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup']">{{ 'HEADER.SETUP1' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/company']">{{ 'HEADER.SETUPCOMPANY' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/clientpreference']">{{ 'HEADER.SETUP_CLIENT_PREFERENCES' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/appointments']">{{ 'HEADER.SETUP_APPOINTMENTS_EMAILS' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/services']">{{ 'HEADER.SETUP_SERVICES' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/inventory']">{{ 'HEADER.SETUP_INVENTORY' | translate }}</a>
+                            </li>
+                            <!-- </ul> -->
+                            <li>
+                                <a> Setup Favorites</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/memberships']">{{ 'HEADER.SETUP_MEMBERSHIPS' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/workers']">{{ 'HEADER.SETUP_WORKERS' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/setup/ticketpreferences']">{{ 'HEADER.SETUP_TICKET_PREFERENCES' | translate }}</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a routerLinkActive="active" [routerLink]="['/client']">
+                            <img src="assets/images/clients.png" style="height:36px" class="header-sidenav-img">{{ 'HEADER.CLIENTS' | translate }}</a>
+                    </li>
+                    <li>
+                        <a routerLinkActive="active" [routerLink]="['/appointments']">
+                            <img src="assets/images/appointments.png" class="header-sidenav-img"> {{ 'HEADER.APPOINTMENTS' | translate }}</a>
+                    </li>
+                    <li>
+                        <a routerLinkActive="active" [routerLink]="['/membercheckin']">
+                            <img src="assets/images/membercheckin.png" class="header-sidenav-img"> {{ 'HEADER.MEMBER_CHECK_IN' | translate }}</a>
+                    </li>
+                    <li>
+                        <a routerLinkActive="active" [routerLink]="['/giftbalances']">
+                            <img src="assets/images/gift.png" class="header-sidenav-img"> {{ 'HEADER.GIFT_BALANCES' | translate }}</a>
+                    </li>
+                    <li class="dropdown-span" (click)="admMenuShowForInventory()" [class.open]="activeClass1">
+                        <a class="submenu" href="javascript:void(0)">
+                            <img src="assets/images/inventory.png" style="width: 45px;" class="header-sidenav-img"> {{ 'HEADER.INVENTORY' | translate }}
+                            <span>&nbsp;</span>
+                        </a>
+                        <ul class="dropdown">
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/inventory']">{{ 'HEADER.INVENTORY' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/inventory/manage']">{{ 'HEADER.MANAGE' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/inventory/purchaseorders']">{{ 'HEADER.PURCHASEORDER' | translate }}</a>
+                            </li>
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/inventory/usage']">{{ 'HEADER.USAGE' | translate }}</a>
+                            </li>
+                        </ul>
+                        <li>
+                            <a routerLinkActive="active" [routerLink]="['/checkout/newticket']">
+                                <img src="assets/images/checkout.png" class="header-sidenav-img">{{ 'HEADER.CHECK_OUT' | translate }}</a>
+                        </li>
+                        <li>
+                            <a routerLinkActive="active" [routerLink]="['/reports']">
+                                <img src="assets/images/reports.png" class="header-sidenav-img">{{ 'HEADER.REPORTS' | translate }}</a>
+                        </li>
+                        <li class="dropdown-span" (click)="admMenuShowForMarketing()" [class.open]="marketingActiveClass">
+                            <a class="submenu" href="javascript:void(0)">
+                                <img src="assets/images/marketing.png" class="header-sidenav-img">{{ 'HEADER.MARKETING' | translate }}
+                                <span>&nbsp;</span>
+                            </a>
+                            <ul class="dropdown">
+                                <li>
+                                    <a routerLinkActive="active" [routerLink]="['/marketing']">{{ 'HEADER.MARKETING' | translate }}</a>
+                                </li>
+                                <li>
+                                    <a routerLinkActive="active" [routerLink]="['/marketing/setuppromotions']">{{ 'HEADER.SETUP_MARKETING_PROMOTIONS' | translate }}</a>
+                                </li>
+                                <li>
+                                    <a routerLinkActive="active" [routerLink]="['/marketing/setuprewards']">{{ 'HEADER.SETUP_REWARDS' | translate }}</a>
+                                </li>
+                                <li>
+                                    <a routerLinkActive="active" [routerLink]="['/marketing/email']">{{ 'HEADER.SETUP_MARKETING_EMAIL' | translate }}</a>
+                                </li>
+                                <li>
+                                    <a routerLinkActive="active" [routerLink]="['/marketing/sets']">{{ 'HEADER.SETUP_MARKETING_SETS' | translate }}</a>
+                                </li>
+                                <li>
+                                    <a routerLinkActive="active" [routerLink]="['/marketing/reports']">{{ 'HEADER.SETUP_MARKETING_REPORTS' | translate }}</a>
+                                </li>
+                                <li>
+                                    <a routerLinkActive="active" [routerLink]="['/marketing/emailactivity']">{{ 'HEADER.EMAIL_ACTIVITY' | translate }}</a>
+                                </li>
+                            </ul>
+                            <!-- <li><a> <img src="assets/images/marketing.png"> {{ 'HEADER.MARKETING' | translate }} </a></li> -->
+                            <li>
+                                <a routerLinkActive="active" [routerLink]="['/timeclock']">
+                                    <img src="assets/images/timeclock.png" class="header-sidenav-img"> {{ 'HEADER.TIME_CLOCK' | translate }}</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="" (click)="logout()">
+                                    <img src="assets/images/icon-lock.png" class="header-sidenav-img"> {{ 'HEADER.LOGOUT' | translate }}</a>
+                            </li>
+                </div>
+                
+                <div class="col-md-4 col-sm-4 col-xs-4" *ngIf="!newMenu">
+                    <ul>
+                        <li>
+                            <a routerLinkActive="active" [routerLink]="['/setup']">
+                                <img src="./assets/images/icon-setting.png" width="">
+                            </a>
+                        </li>
+                        <li>
+                            <a [routerLink]="" (click)="logout()">
+                                <img src="./assets/images/icon-lock.png">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <img src="./assets/images/timeclock.png">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="btm-header" *ngIf="!newMenu">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="logo">
+                        <a [routerLink]="['/home']">
+                            <img [src]="comapanyLogo" (error)="imageErrorHandler($event);" style="width: 150px; height: 45px; margin-top: 4px;">
+
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 text-right res-tleft title">
+                    <div *ngFor="let navPage of navPages; let i = index" class="header-nav">
+                        <div *ngIf="i<navPages.length-1">
+                            <a [routerLink]="[navPage.link]">{{navPage.displayName}}</a>
+                            <i class="fa fa-angle-right header-nav-icon"></i>
+                        </div>
+                        <div *ngIf="i==navPages.length-1">
+                            <span id="headerBCId{{i}}">{{navPage.displayName}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-bottom-div" id="header-elements" *ngIf="!newMenu">
+        <ul class="header-bottom-ul">
+            <li>
+                <a routerLinkActive="active" [routerLink]="['/appointments']">
+                    <img src="assets/images/appointments-h.png">&nbsp;&nbsp;&nbsp;{{ 'HEADER.APPOINTMENTS' | translate }}</a>
+            </li>
+            <li>
+                <a routerLinkActive="active" [routerLink]="['/checkout/newticket']">
+                    <img src="assets/images/checkout-h.png">&nbsp;&nbsp;&nbsp;{{ 'HEADER.CHECK_OUT' | translate }}</a>
+            </li>
+            <li>
+                <a routerLinkActive="active" [routerLink]="['/client']">
+                    <img src="assets/images/clients-h.png" style="width:30px;height:30px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ 'HEADER.CLIENTS' | translate }}</a>
+            </li>
+            <li>
+                <a routerLinkActive="active" [routerLink]="['/inventory']">
+                    <img src="assets/images/inventory-navh.png">&nbsp;&nbsp;&nbsp;&nbsp;{{ 'HEADER.INVENTORY' | translate }}</a>
+            </li>
+            <li>
+                <a routerLinkActive="active" [routerLink]="['/marketing']">
+                    <img src="assets/images/marketing-navh.png">&nbsp;&nbsp;&nbsp;{{ 'HEADER.MARKETING' | translate }}</a>
+            </li>
+            <li>
+                <a routerLinkActive="active" [routerLink]="['/reports']">
+                    <img src="assets/images/reports-navh.png">&nbsp;&nbsp;&nbsp;{{ 'HEADER.REPORTS' | translate }}</a>
+            </li>
+            <li>
+                <a routerLinkActive="active" [routerLink]="['/timeclock']">
+                    <img src="assets/images/timeclock-blk.png">&nbsp;&nbsp;&nbsp;{{ 'HEADER.TIME_CLOCK' | translate }}</a>
+            </li>
+        </ul>
+    </div>
+</header>

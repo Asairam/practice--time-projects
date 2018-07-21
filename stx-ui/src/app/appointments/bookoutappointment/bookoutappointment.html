@@ -1,0 +1,175 @@
+<div id="wrapper_setup_new">
+  <!-- <app-header></app-header> -->
+  <app-header [newMenu]="'noNav'"></app-header>
+  <section id="inner_cont">
+    <div class="container form_cont">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="sub_titles">Worker</h1>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>Select Worker:
+            <span class="red">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select class="form-control input-sm" (click)="clearErrorMsg()" (change)="workerListOnChange($event.target.value)">
+            <option value="">--Select Worker--</option>
+            <option *ngFor="let workerList of workerList; let i='index'" value="{{workerList.Id}}">{{workerList.FirstName+' '+workerList.LastName}}</option>
+          </select>
+          <div>
+            <p class='red'>{{error | translate}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 mt-25">
+          <h1 class="sub_titles">Start Date and Time</h1>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>Start Date:
+            <span class="red">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <input class="datefield" (click)="clearData()" type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [minDate]="minDate"
+            [bsConfig]="datePickerConfig">
+          <div>
+            <p class='red'>{{error1 | translate}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>Start Time:
+            <span class="red">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select [(ngModel)]='bookOutStartTime' (click)="clearErrorMsg()">
+            <option>--None--</option>
+            <option *ngFor="let time of TimeData" [selected]="time == bookOutStartTime">{{time}}</option>
+          </select>
+          <div>
+            <p class='red'>{{error2 | translate}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>End Time:
+            <span class="red">*</span>
+          </label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select [(ngModel)]='bookOutEndTime' (click)="clearErrorMsg()">
+            <option>--None--</option>
+            <option *ngFor="let time of TimeData" [selected]="time == bookOutStartTime">{{time}}</option>
+          </select>
+          <div>
+            <p class='red'>{{error3 | translate}}</p>
+          </div>
+          <div>
+            <p class='red'>{{error4 | translate}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label># of Book Outs:</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <select [(ngModel)]='numberOfBookOuts' (click)="clearErrorMsg()">
+            <option>--None--</option>
+            <option *ngFor="let number of numberOfBooks">{{number.availability}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          <label>Every:</label>
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <div class="row">
+            <div class="col-sm-4">
+              <select [(ngModel)]='bookOutEvery' (click)="clearErrorMsg()" class="align-width-i">
+                <option>--None--</option>
+                <option *ngFor="let number of bookEvery">{{number.value}}</option>
+              </select>
+            </div>
+            <div class="col-sm-4" >
+              <select [(ngModel)]='bookEvery1' (click)="clearData()" class="align-width">
+                <option *ngFor='let data1 of bookEveryData'>{{ data1.type }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <small>
+            <em>*These options will have an End Date of {{bsValue | date:'MM/dd/yyyy'}} {{bookOutEndTime}}</em>
+          </small>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          &nbsp;
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <button type="button" (click)="searchForAppointmentAction()" class="btn btn-primary">
+            <i class="fa fa-binoculars" aria-hidden="true"></i> Search</button>
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="sub_titles">Book</h1>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-12">
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered form_cont_one">
+              <thead>
+                <tr>
+                  <th class="thcss">Date</th>
+                  <th class="thcss">Start</th>
+                  <th class="thcss">Status</th>
+                </tr>
+              </thead>
+              <ng-container *ngIf='apptBookoutData.length> 0'>
+                <tbody>
+                  <tr *ngFor="let bookoutData of apptBookoutData; let i='index'">
+                    <td>{{selectedStartDates[i] | date:'MM/d/yyyy'}}</td>
+                    <td>{{bookoutData.bookOutStartTime}}</td>
+                    <td *ngIf="bookoutData.Status__c == 'Booked'">{{''}}</td>
+                    <td *ngIf="bookoutData.Status__c == 'Closed' || bookoutData.Status__c == 'Conflicting'">{{bookoutData.FullName}}({{bookoutData.Status__c}})</td>
+                    <!-- <td *ngIf="bookoutData.Status__c == 'Closed'">{{bookoutData.FullName}}({{bookoutData.Status__c}})</td>
+                    <td *ngIf="bookoutData.Status__c == 'Conflicting'">{{bookoutData.FullName}}({{bookoutData.Status__c}})</td> -->
+                  </tr>
+                </tbody>
+              </ng-container>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-20">
+        <div class="col-md-5 col-sm-4 text-right res-tleft">
+          &nbsp;
+        </div>
+        <div class="col-md-7 col-sm-8">
+          <button type="button" *ngIf='showScheduleAvailableButton == true && apptBookoutData.length> 0' (click)='scheduleAvailable()' class="save-btn">Schedule Available</button>
+          <button type="button" class="cancel-btn" [routerLink]="['/appointments']">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <app-rightbar></app-rightbar>
+</div>

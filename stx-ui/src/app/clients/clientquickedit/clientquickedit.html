@@ -1,0 +1,168 @@
+<div id="wrapper_setup_new">
+    <app-header></app-header>
+    <section id="inner_cont">
+
+        <div class="container form_cont">
+            <div class="row mt-20" *ngIf='isNewClient == true'>
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>First Name</label>
+                    <span class="red">*</span>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" [(ngModel)]="firstName" (click)="clearQuickAddErrMsg()" />
+                    <div class="col-sm-8">
+                        <p class="red mb-0"> {{quickaddErr | translate }} </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='isNewClient == true'>
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>Middle Name</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" [(ngModel)]="middleName" />
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='isNewClient == true' (click)="clearQuickAddErrMsg()">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>Last Name</label>
+                    <span class="red">*</span>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" [(ngModel)]="lastName" (click)="clearQuickAddErrMsg()" />
+                    <div class="col-sm-8">
+                        <p class="red mb-0"> {{quickaddErr1 | translate }} </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-20" *ngIf='isNewClient == false'>
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>Full Name</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    {{fullName}}
+                </div>
+            </div>
+
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>Primary Phone</label>
+                    <span class="red">*</span>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input id="phone_id" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                        (keypress)='hyphen_generate_phone(primaryPhone);clearQuickAddErrMsg();' type="text" [(ngModel)]="primaryPhone"
+                        (click)="clearQuickAddErrMsg()" />
+                    <div class="col-sm-8">
+                        <p class="red mb-0"> {{quickaddErr2 | translate }} </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>Mobile Phone</label>
+                    <span class="red">*</span>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input id="mobile_id" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                        type="text" (keypress)='hyphen_generate_mobile(mobilePhone);clearQuickAddErrMsg();' [(ngModel)]="mobilePhone"
+                        (click)="clearQuickAddErrMsg()" />
+                    <div class="col-sm-8">
+                        <p class="red mb-0"> {{quickaddErr3 | translate }} </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-20 mb-40">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>Primary Email</label>
+                    <span class="red">*</span>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" [(ngModel)]="email" (click)="clearQuickAddErrMsg()" />
+                    <div class="col-sm-8">
+                        <p class="red mb-0"> {{quickaddErr4 | translate }} </p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="red mb-0"> {{quickaddErr5 | translate }} </p>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <div *ngIf='isNewClient == false'>
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>Last Visit:</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        {{lastVists | date: 'MM/dd/yyyy, h:mm a'}} {{serviceName}}
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>Balances:</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        ${{clientBalances | number:'3.2-5'}}
+                        <br /> Negative amount indicates a Credit due.
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>Next Appointment:</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                            {{nextapptDate | date: 'MM/dd/yyyy, h:mm a'}} {{nextServiceName}}
+                    </div>
+                </div>
+
+                <div class="row mt-20">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>Rewards:</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">Rewards Program</th>
+                                        <th class="thcss">Available Points</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor='let rewardData of clientRewardData'>
+                                        <td>{{rewardData.Name}}</td>
+                                        <td>{{rewardData.Points_c}}</td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-40">
+                <div class=" col-md-12 text-center">
+                    <button type="button" class="save-btn" (click)="editClientData()">Save</button>
+                    <button type="button" (click)="cancel()" class="cancel-btn">Cancel</button>
+                    <a *ngIf='clientId' [routerLink]="['/client/edit/' + clientId]" class="btn btn-default mb-5">
+                        <i class="fa fa-pencil"></i> Go To Full Client Card</a>
+                    <a *ngIf='!clientId' [routerLink]="['/client/add']" class="btn btn-default mb-5">
+                        <i class="fa fa-pencil"></i> Go To Full Client Card</a>
+                    <a (click)="bookAppointment()" class="btn btn-default mb-5" *ngIf='isNewClient == false'>
+                        <i class="fa fa-calendar"></i> Book Appt</a>
+                    <a (click)="saveAndBook()" class="btn btn-default mb-5" *ngIf='isNewClient == false'>
+                        <i class="fa fa-calendar"></i> Save &amp; Book</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

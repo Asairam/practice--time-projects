@@ -1,0 +1,359 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mt-40" *ngIf='hideTable == true'>
+                    <div class="table-responsive">
+                        <table class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                </tr>
+                                <tr *ngFor="let scalesdata of scalesData; let i='index'" id="scalesdata{{i}}">
+                                    <td *ngIf='scalesdata.Active__c==1'>
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td *ngIf='scalesdata.Active__c==0'>
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(scalesdata)">{{scalesdata.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2" (click)="createNewRecord()">
+                                        <a class="white">
+                                            <i class="fa fa-plus"></i> {{ 'BUTTON.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- -------------------------hide table-------------------- -->
+                <div class="col-md-4 mt-40 disable" *ngIf='hideTable == false'>
+                    <div class="table-responsive">
+                        <table class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate}}</td>
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                </tr>
+                                <tr *ngFor="let scalesdata of scalesData; let i='index'" id="scalesdata{{i}}">
+                                    <td *ngIf='scalesdata.Active__c==1'>
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td *ngIf='scalesdata.Active__c==0'>
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td class="tbl-txt">
+                                        {{scalesdata.Name}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2">
+                                        <a class="white" disabled>
+                                            <i class="fa fa-plus"></i>{{ 'BUTTON.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--<div class="col-md-1">&nbsp;</div>-->
+                <!-- ---------------addDiv == true------------ -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv == true'>
+                    <h1>{{'SETUP_COMPENSATION_SCALES.COMPENSATION_DETAIL' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'COMMON.NAME' | translate}}
+                                <span class="red">*</span>
+                            </label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="name" (keypress)="clearErrMsg()">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15 text-center">
+                        <div class="col-sm-10">
+                            <p class="red"> {{error | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="active">
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="red"> {{error1 | translate }} </p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="red"> {{error2 | translate }} </p>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td>{{'SETUP_COMPENSATION_SCALES.OVER' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.UP_TO' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.PERCENT' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.ACTIONS' | translate}}</td>
+                                        </tr>
+                                        <tr *ngFor="let scale of scales; let i='index'" id="scale{{i}}">
+                                            <td>
+                                               {{scale.over}}
+                                            </td>
+                                            <td>
+                                                <input type="text" [(ngModel)]="scale.upTo" (keypress)="clearErrMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                                            </td>
+                                            <td>
+                                                <input type="text" [(ngModel)]="scale.percent" (keypress)="clearErrMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                                            </td>
+                                            <td>
+                                                <a style="color: #000;" (click)="addNew()" *ngIf='showPlus == true'>
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                                <a *ngIf='showPlus == false'>
+                                                    <!-- <span class="del">
+                                                                    <i class="fa fa-plus disable" aria-hidden="true"></i>
+                                                                </span> -->
+                                                </a>
+                                                <a (click)="deleteFieldValue(scale, i)" *ngIf='hideDelete==true' data-toggle="tooltip" data-placement="top" title="Remove">
+                                                    <span class="del">
+                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <!-- <div class="col-sm-7">
+                                                <a style="color: #000;" (click)="addNew()">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </div> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'SETUP_COMPENSATION_SCALES.PERIOD' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7"></div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'SETUP_COMPENSATION_SCALES.BASIS' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <select (change)="basisDataList($event.target.value);">
+                                <option *ngFor=" let basisdata of basisData; let i='index'" id="basisdata{{i}}">{{basisdata.type}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-40 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)="saveCompansationScales()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- ------------------------disable div-------------------- -->
+                <div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+                    <h1>{{'SETUP_COMPENSATION_SCALES.COMPENSATION_DETAIL' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="name" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="active" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td>{{'SETUP_COMPENSATION_SCALES.OVER' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.UP_TO' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.PERCENT' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.ACTIONS' | translate}}</td>
+                                        </tr>
+                                        <tr *ngFor="let scale of scales">
+                                            <td>0</td>
+                                            <td>
+                                                <input type="text" [(ngModel)]="scale.upTo" disabled>
+                                            </td>
+                                            <td>
+                                                <input type="text" [(ngModel)]="scale.percent" disabled>
+                                            </td>
+                                            <td>
+                                                <a data-toggle="tooltip" data-placement="top" title="Remove">
+                                                    <span class="del">
+                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                                <a style="color: #000;">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <!-- <div class="col-sm-7">
+                                            <a style="color: #000;" (click)="addNew()">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                        </div> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'SETUP_COMPENSATION_SCALES.PERIOD' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7"></div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'SETUP_COMPENSATION_SCALES.BASIS' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <select [(ngModel)]="test" (change)="basisDataList($event.target.value);" disabled>
+                                <option *ngFor=" let basisdata of basisData; let i='index'" id="basisdata{{i}}">{{basisdata.type}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-40 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" disabled (click)="saveCompansationScales()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" disabled>{{ 'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- -------------------editDiv--------------------- -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='editDiv == true'>
+                    <h1>{{'SETUP_COMPENSATION_SCALES.COMPENSATION_DETAIL' | translate}}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'COMMON.NAME' | translate}}</label>
+                            <span class="red">*</span>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="updateName" (keypress)="clearErrMsg()">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15 text-center">
+                        <div class="col-sm-10">
+                            <p class="red"> {{error | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'COMMON.ACTIVE' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="updateActive" (click)="clearErrMsg1()">
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="red"> {{error1 | translate }} </p>
+                    </div>
+                    <div class="col-sm-8">
+                        <p class="red"> {{error2 | translate }} </p>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td>{{'SETUP_COMPENSATION_SCALES.OVER' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.UP_TO' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.PERCENT' | translate}}</td>
+                                            <td>{{'SETUP_COMPENSATION_SCALES.ACTIONS' | translate}}</td>
+                                        </tr>
+                                        <tr *ngFor="let scale of updateScales; let i='index'" id="scale{{i}}">
+                                            <td *ngIf="scale.over !=''">{{scale.over}}</td>
+                                            <td *ngIf="scale.over ==''" value='0'>0</td>
+                                            <td>
+                                                <input type="number" [(ngModel)]="scale.upTo" (keypress)="clearErrMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                                            </td>
+                                            <td>
+                                                <input type="number" [(ngModel)]="scale.percent" (keypress)="clearErrMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                                            </td>
+                                            <td>
+                                                <a style="color: #000;" (click)="editAddNew()" *ngIf='showPlus == true'>
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                                <a *ngIf='showPlus == false'>
+                                                    <!-- <span class="del">
+                                                            <i class="fa fa-plus disable" aria-hidden="true"></i>
+                                                        </span> -->
+                                                </a>
+                                                <a (click)="editDeleteFieldValue(scale, i)" *ngIf='hideDelete==true' data-toggle="tooltip" data-placement="top" title="Remove">
+                                                    <span class="del">
+                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <!-- <div class="col-sm-7">
+                                            <a style="color: #000;" (click)="addNew()">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                        </div> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'SETUP_COMPENSATION_SCALES.PERIOD' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7"><b>Pay Period</b></div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft">
+                            <label>{{'SETUP_COMPENSATION_SCALES.BASIS' | translate}}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <select [(ngModel)]="updateBasis" (change)="basisDataList($event.target.value);">
+                                <option *ngFor=" let basisdata of basisData; let i='index'" id="basisdata{{i}}">{{basisdata.type}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-40 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)="editCompansationScales()">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel();clearErrMsg();">{{ 'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

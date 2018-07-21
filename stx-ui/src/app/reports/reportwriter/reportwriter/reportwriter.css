@@ -1,0 +1,9 @@
+#inner_cont {
+    margin-right: 8%;
+    color: white;
+}
+@media (device-width: 768px){
+	#inner_cont {
+        margin-right: 10%;
+    }
+}

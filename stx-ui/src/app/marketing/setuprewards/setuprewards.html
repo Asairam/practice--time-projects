@@ -1,0 +1,295 @@
+<div id="wrapper_setup_new">
+	<app-header [newMenu]="'noNav'"></app-header>
+	<section id="inner_cont" class="setsubcont">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-5 mt-40">
+					<div class="table-responsive">
+						<table class="table table-bordered-white" [class.disabled]="disableEnable">
+							<tbody>
+								<tr class="white">
+									<td>{{'COMMON.ACTIVE' | translate }}</td>
+									<td>{{'SETUP_REWARDS.REWARD_NAME' | translate }}</td>
+								</tr>
+								<tr *ngFor="let rewardData of rewardDataList;  let i='index'">
+									<td>
+										<input type="checkbox" checked disabled *ngIf="rewardData.Active__c == 1">
+										<input type="checkbox" disabled *ngIf="rewardData.Active__c == 0">
+									</td>
+									<td (click)="rewardfullview(rewardData)" class="tbl-txt">
+										{{rewardData.Name}}
+									</td>
+								</tr>
+								<tr>
+									<td align="center" colspan="2">
+										<a class="white" (click)="addNew()">
+											<i class="fa fa-plus"></i>{{'BUTTON.NEW' | translate }}</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<!--<div class="col-md-1">&nbsp;</div>-->
+
+
+				<div class="col-md-6 pdgl30 mt-40" [class.disabled]="enableDisable" style="width: 70%">
+					<form [formGroup]="rewardForm">
+						<h1>{{'SETUP_REWARDS.REWARD_DETAIL' | translate }}</h1>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'SETUP_REWARDS.REWARD_NAME' | translate }}</label>
+								<span class="text-danger">*</span>
+							</div>
+							<div class="col-sm-7">
+								<input type="text" (keydown)="clearErrMsg()" [formControl]="rewardForm.controls['name']">
+							</div>
+						</div>
+						<p class="red" style="text-align:center;"> {{rewardnameerror | translate }} </p>
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'COMMON.ACTIVE' | translate }}</label>
+							</div>
+							<div class="col-sm-7">
+								<input type="checkbox" checked value="1" [formControl]="rewardForm.controls['active_c']" *ngIf="rewardForm.controls['active_c'].toString() == '1'">
+								<input type="checkbox" value="0" [formControl]="rewardForm.controls['active_c']" *ngIf="rewardForm.controls['active_c'].toString() != '1'">
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-md-12 col-sm-12">
+								<div class="text-center">
+									<label>{{'SETUP_REWARDS.AWARD_RULES' | translate }}</label>
+								</div>
+								<div class="table-responsive">
+									<table class="table table-bordered-light">
+										<tbody>
+											<tr class="grey_th">
+												<td>{{'SETUP_REWARDS.AWARD_POINTS' | translate }}</td>
+												<td>{{'SETUP_REWARDS.FOR_EVERY' | translate }}</td>
+												<td>{{'COMMON.ITEM' | translate }}</td>
+												<td>{{'COMMON.START_DATE' | translate }}</td>
+												<td>{{'COMMON.END_DATE' | translate }}</td>
+												<td>&nbsp;</td>
+											</tr>
+
+											<!-- edit Award Rules -->
+											<ng-container *ngIf="!addDiv">
+												<tr *ngFor="let award of awardArrayData; let i=index">
+													<td style="width: 102px;">
+														<input type="number" min="0" [(ngModel)]="award.awardPoints" [ngModelOptions]="{standalone: true}" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false"
+														 style="width: 88%;">
+													</td>
+													<td style="width: 197px;">
+														<select [(ngModel)]="award.forEvery" [ngModelOptions]="{standalone: true}" class="form-control input-sm" style="width: 100%;">
+															<option *ngFor="let item of forevery; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td style="width: 125px;">
+														<select style="width: 100%" [(ngModel)]="award.item" [ngModelOptions]="{standalone: true}" class="form-control input-sm">
+															<option value=""></option>
+															<option *ngFor="let item of awardrulesitem; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="award.startDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="award.startDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="award.endDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="award.endDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<a (click)="addInput()" data-toggle="tooltip" data-placement="top" title="Add">
+															<span class="add">
+																<i class="fa fa-plus" aria-hidden="true"></i>
+															</span>
+														</a>
+														<a (click)="deleteFieldValue(i)" data-toggle="tooltip" data-placement="top" title="Remove" *ngIf="awardArrayData.length > 1">
+															<span class="del">
+																<i class="fa fa-minus" aria-hidden="true"></i>
+															</span>
+														</a>
+													</td>
+												</tr>
+											</ng-container>
+
+											<!-- new Award Rules -->
+											<ng-container *ngIf="addDiv">
+												<tr *ngFor="let award of awardArrayData; let i=index">
+													<td style="width: 102px;">
+														<input type="number" min="0" [(ngModel)]="award.awardPoints" [ngModelOptions]="{standalone: true}" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false"
+														 style="width: 88%;">
+													</td>
+													<td style="width: 197px;">
+														<select [(ngModel)]="award.forEvery" [ngModelOptions]="{standalone: true}" class="form-control input-sm" style="width: 100%;">
+															<option *ngFor="let item of forevery; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td style="width: 125px;">
+														<select style="width: 100%" [(ngModel)]="award.item" [ngModelOptions]="{standalone: true}" class="form-control input-sm">
+															<option value=""></option>
+															<option *ngFor="let item of awardrulesitem; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="award.startDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="award.startDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="award.endDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="award.endDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<a (click)="addInput()" data-toggle="tooltip" data-placement="top" title="Add">
+															<span class="add">
+																<i class="fa fa-plus" aria-hidden="true"></i>
+															</span>
+														</a>
+														<a (click)="deleteFieldValue(i)" data-toggle="tooltip" data-placement="top" title="Remove" *ngIf="awardArrayData.length > 1">
+															<span class="del">
+																<i class="fa fa-minus" aria-hidden="true"></i>
+															</span>
+														</a>
+													</td>
+												</tr>
+											</ng-container>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<p class="red" style="text-align:center;" *ngFor="let item of awardpointerror"> {{item.error}} </p>
+						<p class="red" style="text-align:center;" *ngFor="let item of itemerror"> {{item.error}} </p>
+						<p class="red" style="text-align:center;" *ngFor="let item of dateBeginError"> {{item.error}} </p>
+						<div class="row mt-20 res-mt-15">
+							<div class="col-md-12">
+								<div class="text-center">
+									<label>{{'SETUP_REWARDS.REDEEM_RULES' | translate }}</label>
+								</div>
+								<div class="table-responsive">
+									<table class="table table-bordered-light">
+										<tbody>
+											<tr class="grey_th">
+												<td>{{'COMMON.NAME' | translate }}</td>
+												<td>{{'SETUP_REWARDS.REDEEM_POINTS' | translate }}</td>
+												<td>{{'COMMON.DISCOUNT' | translate }}</td>
+												<td>{{'SETUP_REWARDS.ON_ONE_ITEM' | translate }}</td>
+												<td>{{'COMMON.START_DATE' | translate }}</td>
+												<td>{{'COMMON.END_DATE' | translate }}</td>
+												<td>&nbsp;</td>
+											</tr>
+											<!-- edit Redeem Rules -->
+											<ng-container *ngIf="!addDiv">
+												<tr *ngFor="let redeem of redeemArrayData; let i=index">
+													<td style="width: 135px">
+														<input type="text" [(ngModel)]="redeem.redeemName" [ngModelOptions]="{standalone: true}" style="width: 100%" (keydown)="clearErrMsg()">
+													</td>
+													<td style="width: 93px;">
+														<input type="number" min="0" [(ngModel)]="redeem.redeemPoints" [ngModelOptions]="{standalone: true}" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false"
+														 style="width:100%;">
+													</td>
+													<td style="width: 200px;">
+														<input type="number" min="0" [(ngModel)]="redeem.discount" [ngModelOptions]="{standalone: true}" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false"
+														 style="width: 43%;float: left;">
+														<select [(ngModel)]="redeem.discountType" [ngModelOptions]="{standalone: true}" class="form-control input-sm" style="width: 57%;">
+															<option *ngFor="let item of discountList; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td style="width: 127px;">
+														<select style="width: 100%;" [(ngModel)]="redeem.onOneItem" [ngModelOptions]="{standalone: true}" class="form-control input-sm">
+															<option *ngFor="let item of OnOneItemList; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="redeem.startDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="redeem.startDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="redeem.endDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="redeem.endDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<a (click)="addRedeemInput()" data-toggle="tooltip" data-placement="top" title="Add">
+															<span class="add">
+																<i class="fa fa-plus" aria-hidden="true"></i>
+															</span>
+														</a>
+														<a (click)="deleteRedeemField(i)" data-toggle="tooltip" data-placement="top" title="Remove" *ngIf="redeemArrayData.length > 1">
+															<span class="del">
+																<i class="fa fa-minus" aria-hidden="true"></i>
+															</span>
+														</a>
+													</td>
+												</tr>
+											</ng-container>
+
+											<!-- new Redeem Rules -->
+											<ng-container *ngIf="addDiv">
+												<tr *ngFor="let redeem of redeemArrayData; let i=index">
+													<td style="width: 135px">
+														<input type="text" [(ngModel)]="redeem.redeemName" [ngModelOptions]="{standalone: true}" style="width: 100%" (keydown)="clearErrMsg()">
+													</td>
+													<td style="width: 93px;">
+														<input type="number" min="0" [(ngModel)]="redeem.redeemPoints" [ngModelOptions]="{standalone: true}" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false"
+														 style="width:100%;">
+													</td>
+													<td style="width: 200px;">
+														<input type="number" min="0" [(ngModel)]="redeem.discount" [ngModelOptions]="{standalone: true}" onkeydown="var key = window.event ? event.keyCode : event.which; if(!((key > 95 && key < 106)|| (key > 47 && key < 58) || key == 8)) return false"
+														 style="width: 43%;float: left;">
+														<select [(ngModel)]="redeem.discountType" [ngModelOptions]="{standalone: true}" class="form-control input-sm" style="width: 57%;">
+															<option *ngFor="let item of discountList; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td style="width: 127px;">
+														<select style="width: 100%;" [(ngModel)]="redeem.onOneItem" [ngModelOptions]="{standalone: true}" class="form-control input-sm">
+															<option *ngFor="let item of OnOneItemList; let i='index'" value="{{item.value}}">{{item.name}}</option>
+														</select>
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="redeem.startDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="redeem.startDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<input type="text" [(ngModel)]="redeem.endDate" [ngModelOptions]="{standalone: true}" bsDatepicker [(bsValue)]="redeem.endDate"
+														 [bsConfig]="datePickerConfig" class="datefield" style="width: 100%;">
+													</td>
+													<td>
+														<a (click)="addRedeemInput()" data-toggle="tooltip" data-placement="top" title="Add">
+															<span class="add">
+																<i class="fa fa-plus" aria-hidden="true"></i>
+															</span>
+														</a>
+														<a (click)="deleteRedeemField(i)" data-toggle="tooltip" data-placement="top" title="Remove" *ngIf="redeemArrayData.length > 1">
+															<span class="del">
+																<i class="fa fa-minus" aria-hidden="true"></i>
+															</span>
+														</a>
+													</td>
+												</tr>
+
+											</ng-container>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<p class="red" style="text-align:center;" *ngFor="let item of redeemNameError"> {{item.error}} </p>
+						<p class="red" style="text-align:center;"> {{reedemnameerror}} </p>
+
+						<div class="row mt-40 res-mt-15 text-center res-tleft">
+							<div class="col-sm-10">
+								<button type="button" class="save-btn" (click)="rewardformsave()">{{'BUTTON.SAVE' | translate}}</button>
+								<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
+</div>

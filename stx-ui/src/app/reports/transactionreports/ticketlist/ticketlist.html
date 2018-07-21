@@ -1,0 +1,108 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.BEGIN_DATE'| translate}}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ startDate | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="startDate" [(ngModel)]="startDate" [bsConfig]="datePickerConfig"
+                        class="datefield" (ngModelChange)="getTicketDetailsReport()" (click)="clear()">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.END_DATE'| translate}}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ endDate | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="endDate" [(ngModel)]="endDate" [bsConfig]="datePickerConfig"
+                        class="datefield" (ngModelChange)="getTicketDetailsReport()" (click)="clear()">
+                </div>
+            </div>
+            <p class="red" style="text-align:center;"> {{SdateEdateError | translate}}</p>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="getTicketDetailsReport()" class="btn btn-primary">
+                        {{'TICKET_DETAILS.TODAY'| translate}} </button>
+                </div>
+            </div>
+            <hr />
+            <div class="row mt-20 mr-10 res-mt-15">
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.DATE'| translate}}</th>
+                                        <th class="thcss">{{'POS_DEVICES.DRAWER'| translate}}</th>
+                                        <th class="thcss">{{'TICKET_DETAILS.CASH_IN_OR_OUT'| translate}}</th>
+                                        <th class="thcss">{{'COMMON.AMOUNT'| translate}}</th>
+                                        <th class="thcss">{{'TICKET_DETAILS.TRANSACTION_BY'| translate}}</th>
+                                        <th class="thcss">{{'TICKET_DETAILS.TO_AND_FROM'| translate}}</th>
+                                        <th class="thcss">{{'TICKET_DETAILS.REASON'| translate}}</th>
+                                    </tr>
+                                    <tr *ngFor="let cashInOutObj of cashInOutdata">
+                                        <td>{{cashInOutObj.CreatedDate | date: 'M/dd/yyyy '}}</td>
+                                        <td>{{cashInOutObj.Drawer_Name__c}} {{cashInOutObj.Drawer_Number__c}}</td>
+                                        <td>{{cashInOutObj.Type__c}}</td>
+                                        <td align="right">{{cashInOutObj.Amount__c | number: '1.2-4'}}</td>
+                                        <td>{{cashInOutObj.Transaction_By__c}}</td>
+                                        <td *ngIf="cashInOutObj.From__c">{{cashInOutObj.From__c}}</td>
+                                        <td *ngIf="cashInOutObj.To__c">{{cashInOutObj.To__c}}</td>
+                                        <td>{{cashInOutObj.Reason__c}}</td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.DATE'| translate}}</th>
+                                        <th class="thcss">{{'COMMON.TICKET'| translate}}</th>
+                                        <th class="thcss">{{'COMMON.CLIENT'| translate}} </th>
+                                        <th class="thcss">{{'TICKET_DETAILS.VISIT_TYPE'| translate}} </th>
+                                        <th class="thcss">{{'COMMON.SERVICE'| translate}}</th>
+                                        <th class="thcss">{{'COMMON.PRODUCT'| translate}}</th>
+                                        <th class="thcss">{{'TICKET_DETAILS.OTHER'| translate}} </th>
+                                        <th class="thcss">{{'TICKET_DETAILS.INCLUDE_TICKET'| translate}} </th>
+                                        <th class="thcss">{{'COMMON.TOTAL'| translate}} </th>
+                                        <th class="thcss">{{'TICKET_DETAILS.PAYMENT_TYPE'| translate}}</th>
+                                    </tr>
+                                    <ng-container *ngIf="apptData.length > 0">
+                                        <tr *ngFor='let data of apptData'>
+                                            <td> {{data.Appt_Date_Time__c | date: 'M/dd/yyyy '}}</td>
+                                            <td class="tbl-txt" style="text-decoration: underline;" [routerLink]="['/checkout/'+ data.appId]" *ngIf="data.Status__c == 'Checked In'">{{data.Name}}</td>
+                                            <td class="tbl-txt" style="text-decoration: underline;" [routerLink]="['/completedticketdetailsview/'+ data.appId]" *ngIf="data.Status__c == 'Complete'">{{data.Name}}</td>
+                                            <td [routerLink]="['/client/edit/' + data.Client__c]" style="text-decoration: underline;cursor:pointer;" *ngIf="data.FullName !== null">{{data.FullName}}</td>
+                                            <td *ngIf="data.FullName === null" >NO CLIENT</td>
+
+                                            <td>{{data.Client_Type__c}}</td>
+                                            <td>{{data.Service_Sales__c}}</td>
+                                            <td>{{data.Product_Sales__c}}</td>
+                                            <td>{{data.Other_Sales__c}}</td>
+                                            <td>{{data.Included_Ticket_Amount__c}}</td>
+                                            <td>{{data.Ticket_Total__c}}</td>
+                                            <td>{{data.Abbreviation__c}}</td>
+                                        </tr>
+                                    </ng-container>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

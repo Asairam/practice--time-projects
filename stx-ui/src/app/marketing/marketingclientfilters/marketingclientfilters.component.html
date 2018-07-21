@@ -1,0 +1,639 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+
+        <div class="col-xs-4 col-sm-3 col-md-4 col-lg-4">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                <h3 class="filter-heading">{{'MARKETING_FILTERS.AVAILABLE_FILTERS'| translate }}</h3>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 select-filter">
+                <accordion [closeOthers]="true" style="margin-top:5px;">
+                    <accordion-group #clients>
+                        <div accordion-heading class="reports-uppercase" style="width:100%;">
+                            {{'COMMON.CLIENTS'| translate }}
+                            <i class="pull-right float-xs-right glyphicon" [ngClass]="{'glyphicon-chevron-down': !clients?.isOpen, 'glyphicon-chevron-up': clients?.isOpen}"></i>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.Active.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('Active')">{{'BUTTON.ACTIVE'| translate }}</button>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.Birthdate.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('Birthdate')">{{'BUTTON.BIRTHDATE'| translate }}</button>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.PrimaryEmail.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('PrimaryEmail')">{{'BUTTON.PRIMARY_EMAIL'| translate }}</button>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.ClientFlags.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('ClientFlags')">{{'BUTTON.CLIENT_FLAGS'| translate }}</button>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.Gender.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('Gender')">{{'BUTTON.GENDER'| translate }}</button>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.MyReferrals.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('MyReferrals')">{{'BUTTON.MY_REFERRALS'| translate }}</button>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.WasReferred.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('WasReferred')">{{'BUTTON.WAS_REFERRED'| translate }}</button>
+                        </div>
+
+                    </accordion-group>
+                    <accordion-group #appointments>
+                        <div accordion-heading class="reports-uppercase" style="width:100%;">
+                            {{'MARKETING_FILTERS.APPOINTMENTS'| translate }}
+                            <i class="pull-right float-xs-right glyphicon" [ngClass]="{'glyphicon-chevron-down': !appointments?.isOpen, 'glyphicon-chevron-up': appointments?.isOpen}"></i>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags['Status/Service'].flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('Status/Service')">Status / Service</button>
+                        </div>
+                    </accordion-group>
+                    <accordion-group #balances>
+                        <div accordion-heading class="reports-uppercase" style="width:100%;">
+                            {{'MARKETING_FILTERS.BALANCES'| translate }}
+                            <i class="pull-right float-xs-right glyphicon" [ngClass]="{'glyphicon-chevron-down': !balances?.isOpen, 'glyphicon-chevron-up': balances?.isOpen}"></i>
+                        </div>
+                        <div class="col-md-6 mt-10" *ngIf="clientFlags.CurrentBalance.flag">
+                            <button type="button" class="btn btn-large btn-block btn-primary" (click)="selectFilterParam('CurrentBalance')">Current Balance</button>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+
+
+
+        </div>
+
+
+
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 filter-params">
+
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                    <h3 class="filter-heading">{{'MARKETING_FILTERS.FILTER_PARAMETERS'| translate }}</h3>
+                </div>
+                <p class="red">{{error}}</p>
+                <ng-container [ngSwitch]="filterSelected">
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'Active'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-6 ">
+                                    <label>{{'COMMON.ACTIVE'| translate }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4 text-right">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left m">
+                                    <label>
+                                        <input name="gender" [value]="true" type="radio" [(ngModel)]="clientFlags['Active']['booleanValue']"> {{'MARKETING_FILTERS.YES'| translate }}
+                                    </label>
+                                    <label>
+                                        <input name="gender" [value]="false" [(ngModel)]="clientFlags['Active']['booleanValue']" type="radio" checked="checked"> {{'MARKETING_FILTERS.NO'| translate }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn add-filter-btn btn-primary" (click)="addFilter('Active')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'Birthdate'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-6 ">
+                                    <label>{{'MARKETING_FILTERS.BIRTHDATE'| translate }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4 text-right">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left">
+                                    <select (focus)="clearError()" class="form-control" #dateSelector [(ngModel)]="clientFlags['Birthdate']['dateSelector']">
+                                        <option value="Specified">{{'MARKETING_FILTERS.SPECIFIED'| translate }}</option>
+                                        <option value="Last Month">{{'MARKETING_FILTERS.LAST_MONTH'| translate }}</option>
+                                        <option value="Last Week">{{'MARKETING_FILTERS.LAST_WEEK'| translate }}</option>
+                                        <option value="This Month">{{'MARKETING_FILTERS.THIS_MONTH'| translate }}</option>
+                                        <option value="This Week">{{'MARKETING_FILTERS.THIS_WEEK'| translate }}</option>
+                                        <option value="Yesterday">{{'MARKETING_FILTERS.YESTERDAY'| translate }}</option>
+                                        <option value="Today">{{'MARKETING_FILTERS.TODAY'| translate }}</option>
+                                        <option value="Tomorrow">{{'MARKETING_FILTERS.TOMORROW'| translate }}</option>
+                                        <option value="Next Month">{{'MARKETING_FILTERS.NEXT_MONTH'| translate }}</option>
+                                        <option value="Next Week">{{'MARKETING_FILTERS.NEXT_WEEK'| translate }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <ng-container *ngIf="dateSelector.value==='Specified'">
+                                <div class="col-md-12 mt-15">
+                                    <div class="col-md-4 text-right">
+                                        <label>{{'MARKETING_FILTERS.MONTH'| translate }}</label>
+                                    </div>
+                                    <div class="col-md-8 text-left">
+                                        <select class="form-control" (focus)="clearError()" [(ngModel)]="clientFlags['Birthdate']['monthNumber']" (change)="showDatesAccToMonths($event)">
+                                            <option [value]="0">{{'MARKETING_FILTERS.NONE'| translate }}</option>
+                                            <option value="1">{{'MARKETING_FILTERS.JANUARY'| translate }}</option>
+                                            <option value="2">{{'MARKETING_FILTERS.FEBRUARY'| translate }}</option>
+                                            <option value="3">{{'MARKETING_FILTERS.MARCH'| translate }}</option>
+                                            <option value="4">{{'MARKETING_FILTERS.APRIL'| translate }}</option>
+                                            <option value="5">{{'MARKETING_FILTERS.MAY'| translate }}</option>
+                                            <option value="6">{{'MARKETING_FILTERS.JUNE'| translate }}</option>
+                                            <option value="7">{{'MARKETING_FILTERS.JULY'| translate }}</option>
+                                            <option value="8">{{'MARKETING_FILTERS.AUGUST'| translate }}</option>
+                                            <option value="9">{{'MARKETING_FILTERS.SEPTEMBER'| translate }}</option>
+                                            <option value="10">{{'MARKETING_FILTERS.OCTOBER'| translate }}</option>
+                                            <option value="11">{{'MARKETING_FILTERS.NOVEMBER'| translate }}</option>
+                                            <option value="12">{{'MARKETING_FILTERS.DECEMBER'| translate }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-15">
+                                    <div class="col-md-4 text-right">
+                                        <label>{{'MARKETING_FILTERS.DAY'| translate }}</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="crt-tkn-select day" (focus)="clearError()" #beginDay (change)="changeBirthDay($event)" [(ngModel)]="clientFlags['Birthdate']['beginDay']"
+                                            style="width:100%; border-color: #000 !important;">
+                                            <ng-container *ngFor="let number of numbers">
+                                                <option [disabled]="endDay.value!=0?number>+endDay.value:null" *ngIf="number<=daysInAMonth" [value]="number">{{number===0?'None':number}}</option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="crt-tkn-select day" (focus)="clearError()" #endDay [disabled]="beginDay.value=='null'" [(ngModel)]="clientFlags['Birthdate']['endDay']"
+                                            style="width:100%; border-color: #000 !important;">
+                                            <ng-container *ngFor="let number of numbers">
+                                                <option  [value]="number" *ngIf="number<=daysInAMonth" [disabled]="number<+beginDay.value">{{number===0?'None':number}}</option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-15">
+                                    <div class="col-md-4 text-right">
+                                        <label>{{'MARKETING_FILTERS.YEAR'| translate }}</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="number" (focus)="clearError()" class="form-control" (keypress)="IsNumeric($event)" [min]='1900' [(ngModel)]="clientFlags['Birthdate']['yearNumber']">
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" (click)="addFilter('Birthdate')" class="btn add-filter-btn btn-primary">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'PrimaryEmail'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-6 ">
+                                    <label>{{'MARKETING_FILTERS.PRIMARY_EMAIL'| translate }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4 text-right">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left m">
+                                    <label>
+                                        <input type="radio" name="isEmail" [value]="true" [(ngModel)]="clientFlags['PrimaryEmail']['booleanValue']"> {{'MARKETING_FILTERS.YES'| translate }}
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="isEmail" [value]="false" [(ngModel)]="clientFlags['PrimaryEmail']['booleanValue']"> {{'MARKETING_FILTERS.NO'| translate }}
+                                    </label>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left mt-20">
+                                    <label>
+                                        <input type="radio" [value]="true" name="validEmail" [(ngModel)]="clientFlags['PrimaryEmail']['validEmail']"> {{'MARKETING_FILTERS.VALID'| translate }}
+                                    </label>
+                                    <label>
+                                        <input type="radio" [value]="false" name="validEmail" [(ngModel)]="clientFlags['PrimaryEmail']['validEmail']"> {{'MARKETING_FILTERS.INVALID'| translate }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn add-filter-btn btn-primary" (click)="addFilter('PrimaryEmail')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'ClientFlags'">
+                        <div class="clear-fix">
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                    <label>{{'MARKETING_FILTERS.CLIENT_FLAGS'| translate}}</label>
+                                </div>
+                                <div class="col-md-8 text-left">
+                                    <select class="form-control" [(ngModel)]="clientFlags['ClientFlags']['stringValue']">
+                                        <option *ngFor="let Cflags of clientFlagsList; let i = 'index'" value='{{Cflags.flagName}}'>{{Cflags.flagName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" *ngIf="clientFlagsList.length>0" class="btn add-filter-btn btn-primary" (click)="addFilter('ClientFlags')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'Gender'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <label>{{'MARKETING_FILTERS.GENDER'| translate}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4 text-right">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left">
+                                    <label>
+                                        <input type="radio" name="gender" (ngModelChange)="clearError()" [value]="'Male'" [(ngModel)]="clientFlags['Gender']['genderValue']"> {{'MARKETING_FILTERS.MALE'| translate}}
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="gender" (ngModelChange)="clearError()" [value]="'Female'" [(ngModel)]="clientFlags['Gender']['genderValue']"> {{'MARKETING_FILTERS.FEMALE'| translate}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn add-filter-btn btn-primary" (click)="addFilter('Gender')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'MyReferrals'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <label>{{'MARKETING_FILTERS.MY_REFERRALS'| translate}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4 text-right">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left">
+                                    <select [(ngModel)]="clientFlags['MyReferrals']['comparator']">
+                                        <option value=">">{{'MARKETING_FILTERS.GREATER_THAN'| translate}}</option>
+                                        <option value=">=">{{'MARKETING_FILTERS.GREAT_THAN_OR_EQUAL_TO'| translate}}</option>
+                                        <option value="<">{{'MARKETING_FILTERS.LESS_THAN'| translate}}</option>
+                                        <option value="<=">{{'MARKETING_FILTERS.LESS_THAN_OR_EQUAL_TO'| translate}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 text-right mt-20">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left mt-20">
+                                    <input type="number" [(ngModel)]="clientFlags['MyReferrals']['amountValue']">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn add-filter-btn btn-primary" (click)="addFilter('MyReferrals')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'WasReferred'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'MARKETING_FILTERS.WAS_REFERRED'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <select #dateSelector (change)="removeOrAddMaxDate(dateSelector.value,'WasReferred');clearError()" [(ngModel)]="clientFlags['WasReferred']['dateSelector']">
+                                        <option value="Any">{{'MARKETING_FILTERS.ANY'| translate}}</option>
+                                        <option value="Last Month">{{'MARKETING_FILTERS.LAST_MONTH'| translate}}</option>
+                                        <option value="Last Week">{{'MARKETING_FILTERS.LAST_WEEK'| translate}}</option>
+                                        <option value="This Month">{{'MARKETING_FILTERS.THIS_MONTH'| translate}}</option>
+                                        <option value="This Week">{{'MARKETING_FILTERS.THIS_WEEK'| translate}}</option>
+                                        <option value="Today">{{'MARKETING_FILTERS.TODAY'| translate}}</option>
+                                        <option value="Next Month">{{'MARKETING_FILTERS.NEXT_MONTH'| translate}}</option>
+                                        <option value="Next Week">{{'MARKETING_FILTERS.NEXT_WEEK'| translate}}</option>
+                                        <option value="On">{{'MARKETING_FILTERS.ON'| translate}}</option>
+                                        <option value="Before">{{'MARKETING_FILTERS.BEFORE'| translate}}</option>
+                                        <option value="After">{{'MARKETING_FILTERS.AFTER'| translate}}</option>
+                                        <option value="Between">{{'MARKETING_FILTERS.BETWEEN'| translate}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20" *ngIf="dateSelector.value==='Before'||dateSelector.value==='On'||dateSelector.value==='After'||dateSelector.value==='Between'">
+                                <div class="col-md-6 text-right">
+                                    <label *ngIf="dateSelector.value==='Between'">{{'MARKETING_FILTERS.BEGIN_DATE'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <input style="min-width: 105px" (ngModelChange)="clearError()" type="text" class="form-control datefield" #dp="bsDatepicker" bsDatepicker 
+                                        [(ngModel)]="clientFlags['WasReferred']['beginDate']" [maxDate]="clientFlags['WasReferred']['endDate']" [bsConfig]="datePickerConfig">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20" *ngIf="dateSelector.value==='Between'">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'COMMON.END_DATE'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <input style="min-width: 105px" (ngModelChange)="clearError();" type="text" class="form-control datefield" #dps="bsDatepicker" bsDatepicker 
+                                        [(ngModel)]="clientFlags['WasReferred']['endDate']" [minDate]="clientFlags['WasReferred']['beginDate']" [bsConfig]="datePickerConfig">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn add-filter-btn btn-primary" (click)="addFilter('WasReferred')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually status-service" *ngSwitchCase="'Status/Service'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <label>{{'MARKETING_FILTERS.STATUS_OR_SERVICE'| translate}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'MARKETING_FILTERS.TYPE'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <select #type [(ngModel)]="clientFlags['Status/Service']['apptType']" (change)="changeTypeInStatus($event);clearError()">
+                                        <option [value]="apptType.value" *ngFor="let apptType of apptTypes" >{{apptType.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'COMMON.SERVICE_GROUP'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <select #servicegroup [(ngModel)]="clientFlags['Status/Service']['serviceGroup']" [ngClass]="{'disabled':service.value!=='Any'}" [disabled]="service.value!=='Any'" (change)="serviceChange($event,'service-group');clearError()">
+                                        <option value="Any">{{'MARKETING_FILTERS.ANY'| translate}}</option>
+                                        <option *ngFor="let groupData of serviceGroupList; let i='index'" value="{{groupData.serviceGroupName}}" id="groupData{{i}}">{{groupData.serviceGroupName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'MARKETING_FILTERS.SERVICE'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <select #service [(ngModel)]="clientFlags['Status/Service']['serviceName']" (change)="serviceChange($event,'service');clearError()" [ngClass]="{'disabled':servicegroup.value!=='Any'}" [disabled]="servicegroup.value!=='Any'">
+                                        <option value="Any">{{'MARKETING_FILTERS.ANY'| translate}}</option>
+                                        <option *ngFor="let service of servicesList; let i='index'" value="{{service.Name}}" id="groupData{{i}}">{{service.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'MARKETING_FILTERS.WORKER'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <select [(ngModel)]="clientFlags['Status/Service']['worker']" (change)="changeWorker($event);clearError()">
+                                        <option value="Any">{{'MARKETING_FILTERS.ANY'| translate}}</option>
+                                        <option *ngFor="let worker of workersList; let i='index'" value="{{worker.Id}}" id="groupData{{i}}">{{worker.FirstName+' '+worker.LastName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'COMMON.STATUS'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <select [(ngModel)]="clientFlags['Status/Service']['status']" *ngIf="type.value==='Any'" >
+                                        <option value="Any">{{'MARKETING_FILTERS.ANY'| translate}}</option>
+                                        <option value="Booked">{{'MARKETING_FILTERS.BOOKED'| translate}}</option>
+                                        <option value="Called">{{'MARKETING_FILTERS.CALLED'| translate}}</option>
+                                        <option value="Canceled">{{'MARKETING_FILTERS.CANCELED'| translate}}</option>
+                                        <option value="Complete">{{'MARKETING_FILTERS.COMPLETE'| translate}}</option>
+                                        <option value="Confirmed">{{'MARKETING_FILTERS.CONFIRMED'| translate}}</option>
+                                        <option value="Checked In">{{'MARKETING_FILTERS.CHECKED_IN'| translate}}</option>
+                                        <option value="Conflicting">{{'MARKETING_FILTERS.CONFLICTING'| translate}}</option>
+                                        <option value="No Show">{{'MARKETING_FILTERS.NO_SHOW'| translate}}</option>
+                                        <option value="Reminder Sent">{{'MARKETING_FILTERS.REMINDER_SENT'| translate}}</option>
+                                    </select>
+                                    <select  *ngIf="type.value!=='Any'" [ngClass]="{'disabled':type.value!=='Any'}" disabled>
+                                        <option [value]="Any" selected>{{'MARKETING_FILTERS.ANY'| translate}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-20">
+                                <div class="col-md-6 text-right">
+                                    <label>{{'COMMON.DATE'| translate}}</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <select #dateSelector (change)="removeOrAddMaxDate(dateSelector.value,'Status/Service');" [(ngModel)]="clientFlags['Status/Service']['dateSelector']">
+                                        <option value="Any">{{'MARKETING_FILTERS.ANY'| translate}}</option>
+                                        <option value="Last Month">{{'MARKETING_FILTERS.LAST_MONTH'| translate}}</option>
+                                        <option value="Last Week">{{'MARKETING_FILTERS.LAST_WEEK'| translate}}</option>
+                                        <option value="This Month">{{'MARKETING_FILTERS.THIS_MONTH'| translate}}</option>
+                                        <option value="This Week">{{'MARKETING_FILTERS.THIS_WEEK'| translate}}</option>
+                                        <option value="Yesterday">{{'MARKETING_FILTERS.YESTERDAY'| translate}}</option>
+                                        <option value="Today">{{'MARKETING_FILTERS.TODAY'| translate}}</option>
+                                        <option value="Tomorrow">{{'MARKETING_FILTERS.TOMORROW'| translate}}</option>
+                                        <option value="Next Month">{{'MARKETING_FILTERS.NEXT_MONTH'| translate}}</option>
+                                        <option value="Next Week">{{'MARKETING_FILTERS.NEXT_WEEK'| translate}}</option>
+                                        <option value="On">{{'MARKETING_FILTERS.ON'| translate}}</option>
+                                        <option value="Before">{{'MARKETING_FILTERS.BEFORE'| translate}}</option>
+                                        <option value="After">{{'MARKETING_FILTERS.AFTER'| translate}}</option>
+                                        <option value="Between">{{'MARKETING_FILTERS.BETWEEN'| translate}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 mt-20" *ngIf="dateSelector.value==='Before'||dateSelector.value==='On'||dateSelector.value==='After'||dateSelector.value==='Between'">
+                                    <div class="col-md-6 text-right">
+                                        <label *ngIf="dateSelector.value==='Between'">{{'MARKETING_FILTERS.BEGIN_DATE'| translate}}</label>
+                                    </div>
+                                    <div class="col-md-6 text-left">
+                                        <input style="min-width: 105px" (ngModelChange)="clearError()" type="text" class="form-control datefield" #dp="bsDatepicker" bsDatepicker 
+                                            [(ngModel)]="clientFlags['Status/Service']['beginDate']" [maxDate]="clientFlags['Status/Service']['endDate']" [bsConfig]="datePickerConfig">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-20" *ngIf="dateSelector.value==='Between'">
+                                    <div class="col-md-6 text-right">
+                                        <label>{{'COMMON.END_DATE'| translate}}</label>
+                                    </div>
+                                    <div class="col-md-6 text-left">
+                                        <input style="min-width: 105px" (ngModelChange)="clearError();" type="text" class="form-control datefield" #dps="bsDatepicker" bsDatepicker 
+                                            [(ngModel)]="clientFlags['Status/Service']['endDate']" [minDate]="clientFlags['Status/Service']['beginDate']" [bsConfig]="datePickerConfig">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn add-filter-btn btn-primary" (click)="addFilter('Status/Service')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" *ngSwitchCase="'CurrentBalance'">
+                        <div class="clear-fix">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <label>{{'COMMON.CURRENT_BALANCE'| translate}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-4 text-right">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left">
+
+                                    <select [(ngModel)]="clientFlags['CurrentBalance']['comparator']">
+                                        <option value=">">{{'MARKETING_FILTERS.GREATER_THAN'| translate}}</option>
+                                        <option value=">=">{{'MARKETING_FILTERS.GREAT_THAN_OR_EQUAL_TO'| translate}}</option>
+                                        <option value="<">{{'MARKETING_FILTERS.LESS_THAN'| translate}}</option>
+                                        <option value="<=">{{'MARKETING_FILTERS.LESS_THAN_OR_EQUAL_TO'| translate}}</option>
+                                    </select>
+
+
+                                </div>
+                                <div class="col-md-4 text-right mt-20">
+                                    <!-- <label>Primary Email</label> -->
+                                </div>
+                                <div class="col-md-8 text-left mt-20">
+                                    <input type="number" [(ngModel)]="clientFlags['CurrentBalance']['amountValue']">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-15">
+                                <div class="col-md-4 text-right">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn add-filter-btn btn-primary" (click)="addFilter('CurrentBalance')">{{'BUTTON.SELECT>>'| translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 enter-manually" style="height:300px" *ngSwitchDefault>
+              
+                    </div>
+                </ng-container>
+            <div class="row mt-40 res-mt-15 text-center res-tleft save-filters text-center">
+                <div class="col-sm-12 mt-20">
+                    <button type="button" class="save-btn" (click)="saveMarketingFilters()">{{'BUTTON.SAVE'| translate}}</button>
+                    <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL'| translate}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-3 col-sm-4 col-md-3 col-lg-3 added-filter">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                <h3 class="filter-heading">{{'MARKETING_FILTERS.SLECTED_FILTERS'| translate}}</h3>
+            </div>
+            <div *ngFor="let record of clientFilterData;let j=index" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" (click)="updateFilter(j,record)">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="col-md-10 panel-title">{{record.filterName}}
+                            <ng-container *ngIf="record.filterName==='Active'">
+                                -{{record.booleanValue?'Yes':'No'}}
+                            </ng-container>
+                            <ng-container *ngIf="record.filterName==='Birthdate'">
+                                {{record.dateSelector==='Specified'?'':'-'+record.dateSelector}}
+                            </ng-container>
+                            <ng-container *ngIf="record.filterName==='Primary Email'">
+                                -{{record.booleanValue?'Yes':'No'}}
+                            </ng-container>
+                            <ng-container *ngIf="record.filterName==='Client Flags'">
+                                -{{record.stringValue}}
+                            </ng-container>
+                            <ng-container *ngIf="record.filterName==='Gender'">
+                                -{{record.genderValue}}
+                            </ng-container>
+                            <ng-container *ngIf="record.filterName==='Was Referred'">
+                                -{{record.dateSelector}}
+                            </ng-container>
+                        </h3>
+                        <h3 class="text-right remove-icon">
+                            <span class="del" (click)="removeFilter(j)">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </span>
+                        </h3>
+                    </div>
+                    <ng-container *ngIf="record.filterName==='Birthdate' && record?.dateSelector==='Specified'">
+                        <div class="panel-body">
+                            <ng-container *ngFor="let obj of record|keys;let i=index">
+                                <ng-container *ngIf="obj.key!==('booleanValue' && 'flag' && 'dateSelector')&&obj.value">
+                                 
+                                    <p *ngIf="obj.key==='monthNumber'">{{'MARKETING_FILTERS.MONTH'| translate}}: {{obj.value}}</p>
+                                    <p *ngIf="obj.key==='beginDay' && !record['endDay']">
+                                        {{'MARKETING_FILTERS.DAY'| translate}}: {{record['beginDay']}}
+                                    </p>
+                                    <p *ngIf="obj.key==='beginDay' && record['endDay']">
+                                        {{'MARKETING_FILTERS.DAY'| translate}}: {{record['beginDay']}} {{' - '+record['endDay']}}
+                                    </p>
+                                    <p *ngIf="obj.key==='yearNumber'">{{'MARKETING_FILTERS.YEAR'| translate}}: {{obj.value}}</p>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="record.filterName==='Primary Email'">
+                        <div class="panel-body">
+                            <p>
+                                {{record['validEmail']?'Valid':'Invalid'}}
+                            </p>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="record.filterName==='My Referrals'">
+                        <div class="panel-body">
+                            <p>
+                                {{record['comparator']}} {{record['amountValue']?record['amountValue']:0}}
+                            </p>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="record.filterName==='Was Referred'">
+                        <div class="panel-body" *ngIf="record.dateSelector==='On'||  record.dateSelector==='Before' || record.dateSelector==='Between' || record.dateSelector==='After'">
+                            <p *ngIf="record.dateSelector==='On'||  record.dateSelector==='Before' || record.dateSelector==='Between' || record.dateSelector==='After'">
+                                {{record.dateSelector==='Between'?'Begin date :':''}}{{record.beginDate!=='null' && record.beginDate?(record.beginDate|date:'MM/dd/yyyy'):''}}
+                            </p>
+                            <p *ngIf="record.dateSelector==='Between'">
+                                {{'COMMON.END_DATE'| translate}} {{record.endDate!=='null' && record.endDate?(record.endDate|date:'MM/dd/yyyy'):''}}
+                            </p>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="record.filterName==='Current Balance'">
+                        <div class="panel-body">
+                            <p>
+                                {{record['comparator']}} {{record['amountValue']?record['amountValue']:0}}
+                            </p>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="record.filterName==='Status / Service'">
+                        <div class="panel-body">
+                            <p>{{'MARKETING_FILTERS.TYPE'| translate}} : {{(record.apptType!=='null' && record.apptType)?record.apptType:'Any'}}</p>
+                            <p>{{'COMMON.SERVICE_GROUP'| translate}} : {{(record.serviceGroup!=='null'&& record.serviceGroup)?record.serviceGroup:'Any'}}</p>
+                            <p>{{'MARKETING_FILTERS.SERVICE'| translate}} : {{record.serviceName!=='null'&& record.serviceName?record.serviceName:'Any'}}</p>
+                            <p>{{'MARKETING_FILTERS.WORKER'| translate}} : {{record.worker!=='Any' && record.worker?workerName:'Any'}}</p>
+                            <p>{{'COMMON.STATUS'| translate}} : {{record.status!=='null' && record.status?record.status:'Any'}}</p>
+                            <p>{{'COMMON.DATE'| translate}} : {{record.dateSelector!=='null' && record.dateSelector?record.dateSelector:'Any'}}</p>
+                            <p *ngIf="record.dateSelector==='On'||  record.dateSelector==='Before' || record.dateSelector==='Between' || record.dateSelector==='After'">
+                                {{record.dateSelector==='Between'?'Begin date :':' '}}{{record.beginDate!=='null' && record.beginDate?(record.beginDate|date:'MM/dd/yyyy'):''}}
+                            </p>
+                            <p *ngIf="record.dateSelector==='Between'">
+                                {{'COMMON.END_DATE'| translate}} : {{record.endDate!=='null' && record.endDate?(record.endDate|date:'MM/dd/yyyy'):''}}
+                            </p>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

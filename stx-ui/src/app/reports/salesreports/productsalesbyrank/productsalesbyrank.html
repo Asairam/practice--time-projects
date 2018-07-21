@@ -1,0 +1,197 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.END_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option>Issued</option>
+                        <option>Expired</option>
+                        <option>No Issued Date</option>
+                        <option>No Expired Date</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'PRODUCT_SALES_BY_RANK.INCLUDE_UNSOLD_PRODUCTS' | translate }} </label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="checkbox" />
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SETUP_INVENTORY_PRODUCTS.PRODUCT_LINE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option>All</option>
+                        <option>American Crew</option>
+                        <option>Bio Elements</option>
+                        <option>BKR Test Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.WORKER' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select disabled>
+                        <option disabled>Select worker</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="generate()" class="btn btn-primary">
+                        <i class="fa fa-binoculars" aria-hidden="true"></i> Generate</button>
+                </div>
+            </div>
+
+            <hr />
+            <div class="row mt-20 res-mt-15" *ngIf="itemsDisplay">
+
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">A- Product Name</th>
+                                        <th class="thcss">{{'COMMON.SIZE' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_INVENTORY_PRODUCTS.UNIT_OF_MEASURE' | translate }}</th>
+                                        <th class="thcss">{{'INVENTORY_USAGE.QUANTITY' | translate }}</th>
+                                        <th class="thcss">{{'TOTAL_SHEETS.DISCOUNTED_SALES' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>BKR Injectibles</td>
+                                        <td>1.000 </td>
+                                        <td>ea</td>
+                                        <td>1 </td>
+                                        <td>100.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gold Mine</td>
+                                        <td>1.000 </td>
+                                        <td>ml</td>
+                                        <td>1 </td>
+                                        <td>100.00</td>
+                                    </tr>
+                                    <tr class="background-color">
+                                        <td>A- Subtotal</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>200.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">B- Product Name</th>
+                                        <th class="thcss">{{'COMMON.SIZE' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_INVENTORY_PRODUCTS.UNIT_OF_MEASURE' | translate }}</th>
+                                        <th class="thcss">{{'INVENTORY_USAGE.QUANTITY' | translate }}</th>
+                                        <th class="thcss">{{'TOTAL_SHEETS.DISCOUNTED_SALES' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Instant Emollient</td>
+                                        <td>4.000 </td>
+                                        <td>ml</td>
+                                        <td>1 </td>
+                                        <td>40.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Daily Conditioner</td>
+                                        <td>12.000 </td>
+                                        <td>oz</td>
+                                        <td>1 </td>
+                                        <td>36.00</td>
+                                    </tr>
+                                    <tr  class="background-color">
+                                        <td>B- Subtotal</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>76.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">c- Product Name</th>
+                                        <th class="thcss">{{'COMMON.SIZE' | translate }}</th>
+                                        <th class="thcss">{{'SETUP_INVENTORY_PRODUCTS.UNIT_OF_MEASURE' | translate }}</th>
+                                        <th class="thcss">{{'INVENTORY_USAGE.QUANTITY' | translate }}</th>
+                                        <th class="thcss">{{'TOTAL_SHEETS.DISCOUNTED_SALES' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Shine On Conditioner</td>
+                                        <td>8.000 </td>
+                                        <td>oz</td>
+                                        <td>1 </td>
+                                        <td>12.00</td>
+                                    </tr>
+                                    <tr  class="background-color">
+                                        <td>c- Subtotal</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>12.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

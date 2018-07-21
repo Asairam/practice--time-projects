@@ -1,0 +1,12 @@
+.setsubcont{
+    margin-right: 10%;
+}
+#wrapper_setup_new{
+	color: white;
+}
+.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email],.setsubcont select {
+    color: white;
+}
+.setsubcont input[type=text]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=email]:focus{
+    color: black;
+}

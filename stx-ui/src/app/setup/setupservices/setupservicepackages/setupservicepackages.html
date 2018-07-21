@@ -1,0 +1,533 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row mb-40">
+                <div class="col-md-4 col-sm-10 mt-40" *ngIf='hideTable == true'>
+                    <div class="table-responsive">
+                        <table class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input type="checkbox" ([ngModel])="inActive" (click)="getInactiveRecords($event)" id="c1" class="pull-left"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate }}</td>
+                                    <td>{{'COMMON.NAME' | translate }}</td>
+                                </tr>
+                                <tr *ngFor="let serviceslist of packagesList; let i='index'" id="serviceslist{{i}}">
+                                    <td align="center" *ngIf="serviceslist.Active__c==0">
+                                        <input type="checkbox" disabled/>
+                                    </td>
+                                    <td align="center" *ngIf="serviceslist.Active__c==1">
+                                        <input type="checkbox" checked disabled/>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(serviceslist)">{{serviceslist.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2" (click)="addNew()">
+                                        <a class="white">
+                                            <i class="fa fa-plus"></i> {{'SETUP_PACKAGES.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- ----------------hide table---------------- -->
+                <div class="col-md-4 col-sm-10 mt-40 disable" *ngIf='hideTable == false'>
+                    <div class="table-responsive">
+                        <table class="table table-bordered-white">
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input type="checkbox" id="c1" class="pull-left" disabled> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{'COMMON.ACTIVE' | translate }}</td>
+                                    <td>{{'COMMON.NAME' | translate }}</td>
+                                </tr>
+                                <tr *ngFor="let serviceslist of packagesList; let i='index'" id="serviceslist{{i}}">
+                                    <td align="center" *ngIf="serviceslist.Active__c==0">
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td align="center" *ngIf="serviceslist.Active__c==1">
+                                        <input type="checkbox" checked disabled>
+                                        <td class="tbl-txt" disabled>{{serviceslist.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2" (click)="addNew()">
+                                        <a class="white">
+                                            <i class="fa fa-plus"></i> {{'SETUP_PACKAGES.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Add Div Starts -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv==true'>
+                    <h1>{{'SETUP_PACKAGES.PACKAGE_DESCRIPTION' | translate }}</h1>
+                    <div class="red">
+                        {{error | translate }}
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" [(ngModel)]="packageActive">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'COMMON.NAME' | translate }}</label>
+                            <span class="text-danger">*</span>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" (keypress)="clearErrMsg();" class="text-capitalize form-control input-sm" [(ngModel)]="packageName">
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15">
+                        <div class="col-sm-12">
+                            <h1>{{'SETUP_PACKAGES.PACKAGE_SERVICE' | translate }}</h1>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.AVAILABLE_FOR_ONLINE_PURCHASE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" [(ngModel)]="availableforOnlinePurchase">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.AVAILABLE_FOR_CLIENT_SELF_BOOKING' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" [(ngModel)]="availableforClientSelfBooking">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.CLIENT_FACING_NAME' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" (click)="clearErrMsg()" class="text-capitalize form-control input-sm" [(ngModel)]="clientFacingName">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.DESCRIPTION' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <textarea [(ngModel)]="description"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12 col-sm-11">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td style="width:30%">{{'SETUP_PACKAGES.SERVICE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.REPS' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.PRICE_EACH' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.DISCOUNTED_PRICE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.TAXABLE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.ADD_REMOVE' | translate }}</td>
+                                        </tr>
+                                        <tr *ngFor="let input of inputs; let i='index'">
+                                            <td>
+                                                <select id="" class="form-control input-sm width-align-d" (click)="clearErrMsg();" (change)="getServicePackages($event.target.value, i);">
+                                                    <option value=''>{{'COMMON.SELECT' | translate }}</option>
+                                                    <option *ngFor="let servicedetailslist of serviceDetailsList; let i='index'" value="{{servicedetailslist.Id}}" id="servicedetailslist{{i}}">{{servicedetailslist.Name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" style="width:100%" (blur)="packageValueCaluculationBeforeDiscounts(i)" (click)="clearErrMsg();" [(ngModel)]="input.reps">
+                                            </td>
+                                            <td>
+                                                <input type="text" style="width:100%"  [(ngModel)]="input.priceEach" disabled>
+                                            </td>
+                                            <td>
+                                                <input type="number" min="1"  style="width:100%" (blur)="discountedPackageCaluculation()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;"
+                                                    [(ngModel)]="input.discountPriceEach">
+                                            </td>
+                                            <td *ngIf='input.taxable!=1'>
+                                                <input type="checkbox" disabled>
+                                            </td>
+                                            <td *ngIf='input.taxable==1'>
+                                                <input type="checkbox" checked disabled>
+                                            </td>
+                                            <td>
+                                                <a (click)="addInput()" data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                                <a (click)="deleteFieldValue(i);packageValueCaluculationBeforeDiscounts(i);discountedPackageCaluculation();" data-toggle="tooltip" *ngIf="inputs.length >1" data-placement="top" title="Remove">
+                                                    <span class="del">
+                                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.PACKAGE_VALUE_BEFORE_DISCOUNTS' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" placeholder="0.00" [(ngModel)]="packageValueBeforeDiscounts" disabled>
+
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.DISCOUNTED_PACKAGE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label></label>
+                            <input type="text" [(ngModel)]="discountedPackage" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.TAX_PERCENT' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>{{taxPercent | number: '1.2-2'}} %</label>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.TAX' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>$ {{serviceTaxValue | number:'1.2-2'}}</label>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)='savePackages()'>{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)='cancel()'>{{'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- ---------------------   Edit Div---------------------- -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='editDiv==true'>
+                    <h1>{{'SETUP_PACKAGES.PACKAGE_DESCRIPTION' | translate }}</h1>
+                    <div class="red">
+                        {{error | translate }}
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" [(ngModel)]="updatePackageActive">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'COMMON.NAME' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" (keypress)="clearErrMsg();" class="text-capitalize form-control input-sm" [(ngModel)]="updatePackageName">
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15">
+                        <div class="col-sm-12">
+                            <h1>{{'SETUP_PACKAGES.PACKAGE_SERVICE' | translate }}</h1>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.AVAILABLE_FOR_ONLINE_PURCHASE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" [(ngModel)]="updateAvailableforOnlinePurchase">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.AVAILABLE_FOR_CLIENT_SELF_BOOKING' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" [(ngModel)]="updateAvailableforClientSelfBooking">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.CLIENT_FACING_NAME' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" (click)="clearErrMsg()" class="text-capitalize form-control input-sm" [(ngModel)]="updateClientFacingName">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.DESCRIPTION' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <textarea [(ngModel)]="updateDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12 col-sm-11">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td width="30%">{{'SETUP_PACKAGES.SERVICE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.REPS' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.PRICE_EACH' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.DISCOUNTED_PRICE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.TAXABLE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.ADD_REMOVE' | translate }}</td>
+                                        </tr>
+                                        <tr *ngFor="let input of inputs; let i='index'">
+                                            <td>
+                                                <select id="" [(ngModel)]="input.serviceId" class="form-control input-sm" (click)="clearErrMsg();" (change)="getServicePackages($event.target.value, i);">
+                                                    <option value=''>{{'COMMON.SELECT' | translate }}</option>
+                                                    <option *ngFor="let servicedetailslist of serviceDetailsList; let i='index'" value="{{servicedetailslist.Id}}" id="servicedetailslist{{i}}">{{servicedetailslist.Name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" style="width:100%" (blur)="packageValueCaluculationBeforeDiscounts(i)" (click)="clearErrMsg();" [(ngModel)]="input.reps">
+                                            </td>
+                                            <td>
+                                                <input type="number" style="width:100%" [(ngModel)]="input.priceEach" disabled>
+                                            </td>
+                                            <td>
+                                                <input type="number" min="1" style="width:100%" (blur)="discountedPackageCaluculation()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;"
+                                                    [(ngModel)]="input.discountPriceEach">
+                                            </td>
+                                            <td *ngIf='input.taxable!=1'>
+                                                <input type="checkbox" disabled>
+                                            </td>
+                                            <td *ngIf='input.taxable==1'>
+                                                <input type="checkbox" checked disabled>
+                                            </td>
+                                            <td>
+                                                <a (click)="addInput()" data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                                <a (click)="deleteFieldValue(i); packageValueCaluculationBeforeDiscounts(i);discountedPackageCaluculation();" data-toggle="tooltip" *ngIf="inputs.length >1" data-placement="top" title="Remove">
+                                                    <span class="del">
+                                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.PACKAGE_VALUE_BEFORE_DISCOUNTS' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" placeholder="0.00" [(ngModel)]="packageValueBeforeDiscounts" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.DISCOUNTED_PACKAGE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label> </label>
+                            <input type="number" min="1" [(ngModel)]="discountedPackage" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;"
+                                [(ngModel)]="updateDiscountedPackage" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.TAX_PERCENT' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>{{taxPercent | number: '1.2-2'}} %</label>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.TAX' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>$ {{serviceTaxValue | number:'1.2-2'}}</label>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)='editData()'>{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)='cancel()'>{{'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- ----------------------Disable Div--------------------- -->
+                <div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+                    <h1>{{'SETUP_PACKAGES.PACKAGE_DESCRIPTION' | translate }}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'COMMON.NAME' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15">
+                        <div class="col-sm-12">
+                            <h1>{{'SETUP_PACKAGES.PACKAGE_SERVICE' | translate }}</h1>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.AVAILABLE_FOR_ONLINE_PURCHASE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.AVAILABLE_FOR_CLIENT_SELF_BOOKING' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.CLIENT_FACING_NAME' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.DESCRIPTION' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <textarea disabled></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12 col-sm-11">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td style="width:30%">{{'SETUP_PACKAGES.SERVICE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.REPS' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.PRICE_EACH' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.DISCOUNTED_PRICE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.TAXABLE' | translate }}</td>
+                                            <td>{{'SETUP_PACKAGES.ADD_REMOVE' | translate }}</td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td>
+                                                <select id="" class="form-control input-sm" (change)="getServicePackages($event.target.value);" disabled>
+                                                    <option value=''>{{'COMMON.SELECT' | translate }}</option>
+                                                    <option *ngFor="let servicedetailslist of serviceDetailsList; let i='index'" value="{{servicedetailslist._id}}" id="servicedetailslist{{i}}">{{servicedetailslist.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" [(ngModel)]="reps" disabled>
+                                            </td>
+                                            <td>
+                                                <input type="text" disabled disabled>
+                                            </td>
+                                            <td>
+                                                <input type="text" disabled>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" disabled>
+                                            </td>
+                                            <td>
+                                                <a (click)="addInput()" data-toggle="tooltip" data-placement="top" title="Add" disabled>
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                                <a (click)="deleteFieldValue(i)" data-toggle="tooltip" data-placement="top" title="Remove" disabled>
+                                                    <span class="del">
+                                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.PACKAGE_VALUE_BEFORE_DISCOUNTS' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" placeholder="0.00" [(ngModel)]="packageValueBeforeDiscounts" value='{{reps*priceValue}}' disabled disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.DISCOUNTED_PACKAGE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label placeholder="0.00"> </label>
+                            <input type="text" placeholder="0.00" [(ngModel)]="packageValueBeforeDiscounts" value='{{reps*priceValue}}' disabled disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.TAX_PERCENT' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>0.00%</label>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-4 text-right res-tleft">
+                            <label>{{'SETUP_PACKAGES.TAX' | translate }}</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <label>0.00%</label>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)='editData()' disabled>{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" disabled>{{'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

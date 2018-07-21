@@ -1,0 +1,181 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'CLIENT_RETENTION.RETENTION_TYPE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option>New Clients</option>
+                        <option>Recurring Clients</option>
+                    </select>
+                    <br> {{'CLIENT_RETENTION.RETENTION_DETAIL' | translate }}
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.END_DATE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
+                        class="datefield">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'CLIENT_RETENTION.NUMBER_OF_VISITS_REQUIRED' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="text">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select>
+                        <option>Company</option>
+                        <option>Worker</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft">
+                    <label>{{'COMMON.WORKER' | translate }}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select disabled>
+                        <option>select worker</option>
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="generateReport()" class="btn btn-primary">
+                        <i class="fa fa-cog" aria-hidden="true"></i> {{'BUTTON.GENERATE' | translate }}</button>
+                </div>
+            </div>
+            <hr />
+            <div class="row mt-20 res-mt-15" *ngIf="itemsDisplay">
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate }}</th>
+                                        <th class="thcss">Gift List Report: Issued</th>
+                                        <th class="thcss"> 03/21/2018 - 03/29/2018</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'CLIENT_RETENTION.RETENTION_RATE' | translate }}</th>
+                                        <th class="thcss"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Total New Visits</td>
+                                        <td>13</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Retained</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Percentage Retained</td>
+                                        <td>8%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-20 res-mt-15">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'ELECTRONIC_PAYMENT_DETAILS.CLIENT_NAME' | translate }}</th>
+                                        <th class="thcss">{{'CLIENT_RETENTION.FIRST_VISIT' | translate }}</th>
+                                        <th class="thcss">{{'CLIENT_RETENTION.LAST_VISIT' | translate }}</th>
+                                        <th class="thcss">{{'CLIENT_RETENTION.NUMBER_OF_VISITS_AFTER_BEGIN_DATE' | translate }}</th>
+                                        <th class="thcss">{{'CLIENT_RETENTION.NUMBER_OF_WORKERS_SEEN' | translate }}</th>
+                                        <th class="thcss">{{'CLIENT_RETENTION.AVERAGE_NUMBER_OF_DAYS_BETWEEN_VISITS' | translate }}</th>
+                                        <th class="thcss"> {{'CLIENT_RETENTION.NUMBER_OF_DAYS_SINCE_LAST_VISIT' | translate }}</th>
+                                        <th class="thcss">{{'CLIENT_RETENTION.RETAINED' | translate }} </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Jack Moran trrr</td>
+                                        <td>1/23/2018</td>
+                                        <td>1/30/2018</td>
+                                        <td>2</td>
+                                        <td>1 </td>
+                                        <td>8</td>
+                                        <td>3</td>
+                                        <td>
+                                            <input type="checkbox" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>tonya</td>
+                                        <td>1/23/2018</td>
+                                        <td>2/28/2018</td>
+                                        <td>5 </td>
+                                        <td>2 </td>
+                                        <td>15</td>
+                                        <td>5</td>
+                                        <td>
+                                            <input type="checkbox" checked/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tom</td>
+                                        <td>1/23/2018</td>
+                                        <td>2/28/2018</td>
+                                        <td> 6</td>
+                                        <td>3 </td>
+                                        <td>20</td>
+                                        <td>7</td>
+                                        <td>
+                                            <input type="checkbox" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

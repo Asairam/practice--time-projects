@@ -1,0 +1,173 @@
+
+<div id="wrapper_setup_new">
+	<!-- <app-header></app-header> -->
+	<app-header [newMenu]="'noNav'"></app-header>
+		<section id="inner_cont" class="setsubcont">
+			<div class="container" style="color: white;">
+				<div class="row">
+					<div class="col-md-4 mt-40" [class.disabled]="addDisableEnable" *ngIf="updateList">
+						<div class="table-responsive">
+							<div>
+								<p class="red">{{error5 | translate }}</p>
+							</div>
+							<table class="table table-bordered-white">
+								<tbody>
+									<tr class="white">
+										<td colspan="3" valign="middle" height="60" style="padding-left: 10px;">
+											<input id="c1" type="checkbox" class="pull-left" (click)='showInActive()'> &nbsp;&nbsp;
+											<label for="c1" class="c1">
+												Show Inactive</label>
+											<!-- <label *ngIf="hideupdate" for="c1" class="c1">Hide Inactive</label> -->
+										</td>
+									</tr>
+									<tr class="white black-header">
+										<td>{{'COMMON.NAME'| translate }}</td>
+										<td>{{'COMMON.ACTIVE'| translate }}</td>
+										<td>{{'COMMON.SORT_ORDER'| translate }}</td>
+									</tr>
+									<tr *ngFor='let paymentData of paymentList; let i = "index"' id="paymentData{{i}}" [ngClass]="{ hideinactive: paymentData.Active__c == 0 }"
+									 [class.showinactive]="showInactiveData">
+										<td class="tbl-txt" (click)="showData(paymentData)">{{paymentData.Name}}</td>
+										<td align="center" *ngIf='paymentData.Active__c == 1'>
+											<input type="checkbox" checked disabled>
+										</td>
+										<td align="center" *ngIf='paymentData.Active__c == 0'>
+											<input type="checkbox" disabled>
+										</td>
+										<td>
+											<input type="number" min="1" max="101" value="1" (keypress)="clear();" [(ngModel)]="paymentData.Sort_Order__c" />
+										</td>
+									</tr>
+									<tr>
+										<td align="center" colspan="3">
+											<button class= "btn btn-info" (click)="newRow()">
+												<i class="fa fa-plus"></i> New</button>&nbsp;&nbsp;
+											<button class= "btn btn-info"(click)="sortData(paymentList)">
+												<i class="fa fa-check"></i>{{'COMMON.UPDATE_SORT_ORDER'| translate }}</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- <p class="red text-center"> {{error5 | translate }} </p> -->
+						</div>
+					</div>
+
+					<!--<div class="col-md-1">&nbsp;</div>-->
+
+
+					<div class="col-md-8 pdgl30 mt-40 payment-detail" [class.disabled]="addEnableDisable" *ngIf='editlist'>
+							<h1>{{'SETUPPAYMENT.PAYMENT_TYPE_DETAIL'| translate }}</h1>
+						<p class="red"> {{error | translate }} </p>
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'COMMON.ACTIVE' | translate }}</label>
+							</div>
+							<div class="col-sm-7">
+									<input *ngIf = 'activeStatus == 1 'type="checkbox" [(ngModel)]="activeStatus" [disabled]="isEditable" checked>
+									<input *ngIf = 'activeStatus == 0 'type="checkbox" [(ngModel)]="activeStatus" [disabled]="isEditable">
+								<!-- <input type="checkbox" [(ngModel)]="activeStatus" *ngIf = "isEditable == false" disabled> -->
+								<!-- <input type="checkbox" [(ngModel)]="activeStatus" *ngIf = "isEditable == true"> -->
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'SETUPPAYMENT.PAYMENT_NAME'| translate }}
+									<span class="text-danger">*</span>
+								</label>
+							</div>
+							<div class="col-sm-7">
+								<!-- <input type="text" *ngIf = "isEditable == true"  (click)="clearError1();" (keypress)="clear();" [(ngModel)]="paymentName"> -->
+								<input type="text" (click)="clearError1();" (keypress)="clear();" [(ngModel)]="paymentName" [disabled]="isEditable">
+								<div class="col-sm-12 text-danger"> {{error1 | translate}}</div>
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'SETUPPAYMENT.ABBREVIATION' | translate}}
+									<span class="text-danger">*</span>
+								</label>
+							</div>
+							<div class="col-sm-7">
+								<input type="text" (click)="clearError2();" (keypress)="clear();" [(ngModel)]="abbreviation" [disabled]="isEditable">
+								<!-- <input type="text" (click)="clearError2();" (keypress)="clear();" [(ngModel)]="abbreviation" *ngIf = "isEditable == true"> -->
+								<div class="col-sm-12 text-danger"> {{error2 | translate}}</div>
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'SETUPPAYMENT.PROCESS_ELECTRONICALLY_STORE' | translate}}</label>
+							</div>
+							<div class="col-sm-7">
+								<!-- <input type="checkbox" [(ngModel)]="processElectronicallyInStore" *ngIf = "isEditable == true"> -->
+								<input type="checkbox" [(ngModel)]="processElectronicallyInStore" [disabled]="isEditable">
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'SETUPPAYMENT.PROCESS_ELECTRONICALLY_ONLINE' | translate}}</label>
+							</div>
+							<div class="col-sm-7">
+								<input type="checkbox" [(ngModel)]="processElectronicallyOnline" [disabled]="isEditable">
+								<!-- <input type="checkbox" [(ngModel)]="processElectronicallyOnline" *ngIf = "isEditable == true"> -->
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'COMMON.SORT_ORDER' | translate}}
+									<span class="text-danger">*</span>
+								</label>
+							</div>
+							<div class="col-sm-7">
+								<input type="number" name="age" min="1" max="101" value="1" (keydown)="clearError3();" (keypress)="clear();" [(ngModel)]="sortOrder">
+								<div class="col-sm-12 text-danger"> {{error3 | translate}}</div>
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>{{'SETUPPAYMENT.ICON' | translate}}</label>
+							</div>
+							<div class="col-sm-7">
+								<img [src]="iconDocumentName" width="auto" height="50" style="display: inline-block;" (error)="$event.target.src = '/assets/images/no-preview.png';" />
+							</div>
+						</div>
+
+						<div class="row mt-20 res-mt-15">
+							<div class="col-sm-3 text-right res-tleft">
+								<label>&nbsp;</label>
+							</div>
+
+							<div class="col-md-6 col-sm-6">
+								<!-- <input data-label="Upload" class="filepicker-bootstrap" type="file"  [(ngModel)]="sortFile"/> -->
+								<input style="display: none" id="fileUpload" (click)="clearError4();" (change)="fileChange($event)" type="file" />
+          						<label class="uploadButton" for="fileUpload">Choose File</label><div class="chooseFileName">{{fileName}}</div>
+								<!-- <img [src]="iconDocumentName"/> -->
+								<div class="col-md-12 text-danger"> {{error4 | translate }} </div>
+								<div class="col-md-12 text-danger"> {{imageTypeError | translate }} </div>
+								<div class="col-md-12 text-danger"> {{imageError | translate }}</div>
+							</div>
+						</div>
+						<div class="row mt-30 res-mt-15 text-center res-tleft">
+							<div class="col-sm-10">
+								<div class="savelistview" *ngIf='savelistview'>
+									<button type="button" class="save-btn" (click)="savePaymentType()">{{'BUTTON.SAVE' | translate }}</button>
+									<button type="button" class="cancel-btn" (click)="cancelPaymentType()">{{'BUTTON.CANCEL' | translate }}</button>
+								</div>
+								<div class="editlistview" *ngIf='editlistview'>
+									<button type="button" class="save-btn" (click)="editSavePaymentType()">{{'BUTTON.SAVE' | translate }}</button>
+									<button type="button" class="cancel-btn" (click)="cancelPaymentType()">{{'BUTTON.CANCEL' | translate }}</button>
+									<button type="button" class="btn-deleted" *ngIf="statuscode == '2041' && this.paymentName !== 'AMEX' && this.paymentName !== 'Credit Card' && isEditable !== true" (click)="deletePaymentType()">{{'BUTTON.DELETE' | translate }}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<app-rightbar></app-rightbar>
+</div>

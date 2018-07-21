@@ -1,0 +1,18 @@
+.setsubcont {
+    margin-right: 10%;
+}
+.table-bordered-white>tbody>tr>td {
+    color: white;
+}
+.table-bordered-light>tbody>tr>td {
+    color: white;
+}
+
+.setsubcont input[type=text],.setsubcont label, .setsubcont input[type=number], .setsubcont input[type=email],.setsubcont select{
+    color: white;
+}
+.setsubcont input[type=text]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=email]:focus{
+    color: black;
+}
+
+    

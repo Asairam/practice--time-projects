@@ -1,0 +1,12 @@
+.setsubcont {
+    margin-right: 10% !important;
+}
+.setsubcont select{
+    color: white;
+}
+.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email] {
+    color: white;
+}
+.setsubcont input[type=text]:focus, .setsubcont input[type=email]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=password]:focus, .setsubcont textarea:focus  {
+	color: #000 !important;
+}

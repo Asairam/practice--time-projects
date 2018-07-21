@@ -1,0 +1,164 @@
+/* Start of Home CSS */
+
+.h-box-cont h2, .h-box-cont-two h2 {
+	font-size: 25px;
+}
+
+.circle-cont .circle .circle-inner h2 {
+	font-size: 22px
+}
+
+.circle-cont .circle .circle-inner span {
+	font-size: 20px
+}
+
+.circle-cont .circle .circle-inner img {
+	height: 45px;
+}
+
+.h-box:hover, .h-box-two:hover, .circle-cont li:hover {
+	/* background: #0084b7; */
+	background: rgb(255, 255, 255);
+	transition: all 0.3s;
+}
+
+.h-box:hover h2, .h-box-two:hover h2, .circle-inner:hover h2 {
+	background: -webkit-linear-gradient(0deg, #16337d 0, #05c9d0 100%);
+	background: -moz-linear-gradient(90deg, #16337d 0, #05c9d0 100%);
+	background: linear-gradient(90deg, #16337d 0, #05c9d0 100%);
+	background-position: 50% 50%;
+	-webkit-background-origin: padding-box;
+	background-origin: padding-box;
+	-webkit-background-clip: border-box;
+	background-clip: border-box;
+	-webkit-background-size: auto auto;
+	background-size: auto auto;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	-moz-background-clip: text;
+	-moz-text-fill-color: transparent;
+	-ms-background-clip: text;
+	-ms-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.h-box:hover img, .h-box-two:hover img, .circle-inner:hover img {
+	filter: invert(80%)sepia(100%) hue-rotate(190deg) saturate(800%);
+}
+
+/* End of Home CSS */
+
+/* Start of Reports CSS */
+
+:host ::ng-deep .form_cont .panel-default>.panel-heading {
+	color: #fff;
+}
+
+:host ::ng-deep .panel-heading .accordion-toggle:after {
+	font-family: 'Glyphicons Halflings';
+	content: none;
+	float: right;
+	color: #fff;
+}
+
+:host ::ng-deep .reports .panel-title>a {
+	color: #fff;
+	padding: 15px 15px;
+	display: block;
+	letter-spacing: 1px;
+	transition: all 0.4s;
+}
+
+:host ::ng-deep .reports .panel-heading {
+	transition: all 0.4s;
+	background-color: transparent;
+	padding-left: 10px;
+	height: 40px;
+}
+
+:host ::ng-deep .reports .panel-body {
+	background: none;
+	border: 1px solid #000 !important;
+	transition: all 0.4s;
+}
+
+:host ::ng-deep .reports .set_box_inner {
+	font-family: 'BonvenoCFLight';
+}
+
+:host ::ng-deep .reports-panel .panel {
+	border-style: none;
+}
+
+:host ::ng-deep .form_cont .product-lines {
+	padding: 16px
+}
+
+:host ::ng-deep .form_cont .set_box_inner1 h1 {
+	font-size: 16px;
+	font-weight: 500;
+	font-family: 'BonvenoCFLight';
+}
+
+:host ::ng-deep .reports-panel .panel-heading.card-header {
+	background: #000
+}
+
+.reports-uppercase {
+	text-transform: uppercase;
+}
+
+/* End of Reports CSS */
+/* Start of CSS added after Favourites remove */
+.circle-cont li:nth-child(1) {
+	width: 215px;
+	height: 215px;
+}
+.circle-cont li:nth-child(1) .circle  {
+	min-height: 215px;
+}
+.circle-cont li:nth-child(2) {
+	width: 240px;
+	height: 240px;
+}
+
+.circle-cont li:nth-child(2) .circle {
+	min-height: 240px;
+}
+
+.circle-cont li:nth-child(3) {
+	width: 240px;
+	height: 240px;
+	border: solid 2px #fff
+}
+
+.circle-cont li:nth-child(3) .circle {
+	min-height: 240px;
+}
+
+.circle-cont li:nth-child(4) {
+	width: 215px;
+	height: 215px;
+}
+
+.circle-cont li:nth-child(4) .circle {
+	min-height: 215px;
+}
+/* End of CSS added after Favourites remove */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+	.circle-cont .circle .circle-inner h2 {
+		font-size: 13px;
+	}
+	.circle-cont .circle .circle-inner span {
+		font-size: 11.5px;
+	}
+	.h-box-cont h2, .h-box-cont-two h2 {
+		font-size: 19px;
+	}
+}
+.setup_box_four4:hover span img {
+	content: url(/assets/images/setuplogohover.png);
+}
+.setup_box_four4 {
+	border: solid 2px #fff
+}

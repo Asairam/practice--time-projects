@@ -1,0 +1,385 @@
+<div id="wrapper_setup_new">
+    <!-- <app-header></app-header> -->
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" class="setsubcont">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mt-40">
+                    <div class="table-responsive">
+                        <!-- table enable starts -->
+                        <table class="table table-bordered-white" *ngIf="hideTable == false">
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="3" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input id="c1" type="checkbox" ([ngModel])="inActive" (click)="getInactiveProductLine($event)" class="pull-left"> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{ 'COMMON.ACTIVE' | translate }}</td>
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                    <td>{{ 'COMMON.COLOR' | translate }}</td>
+                                </tr>
+                                <tr class="white" *ngFor="let productlinelist of productLineList; let i='index'" id="productlinelist{{i}}">
+                                    <td align="center" *ngIf='productlinelist.Active__c == defaultActive'>
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td align="center" *ngIf='productlinelist.Active__c == defaultInActive'>
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td class="tbl-txt" (click)="showData(productlinelist);">{{productlinelist.Name}}</td>
+                                    <td>
+                                        <input type="text" (keypress)="clear();" [(ngModel)]="productlinelist.Color__c" [(colorPicker)]="productlinelist.Color__c"
+                                            [style.background]="productlinelist.Color__c" [cpHeight]="'290px'" [value]="productlinelist.Color__c"
+                                            disabled maxlength="7"  [style.color]="productlinelist.Color__c === '#ffffff' ? 'black' : 'white'"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="3">
+                                        <a class="white btn btn-hovr" (click)="addNew()">
+                                            <i class="fa fa-plus"></i> {{'COMMON.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- table enables ends -->
+                        <!-- table disable starts -->
+                        <table class="table table-bordered-white disable" *ngIf="hideTable == true">
+                            <tbody>
+                                <tr class="white">
+                                    <td colspan="3" valign="middle" height="60" style="padding-left: 10px;">
+                                        <input id="c1" type="checkbox" ([ngModel])="inActive" class="pull-left" disabled> &nbsp;&nbsp;
+                                        <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
+                                    </td>
+                                </tr>
+                                <tr class="white">
+                                    <td>{{ 'COMMON.ACTIVE' | translate }}</td>
+                                    <td>{{ 'COMMON.NAME' | translate }}</td>
+                                    <td>{{ 'COMMON.COLOR' | translate }}</td>
+                                </tr>
+                                <tr class="white" *ngFor="let productlinelist of productLineList; let i='index'" id="productlinelist{{i}}">
+                                    <td align="center" *ngIf='productlinelist.Active__c == defaultActive' disabled>
+                                        <input type="checkbox" checked disabled>
+                                    </td>
+                                    <td align="center" *ngIf='productlinelist.Active__c == defaultInActive' disabled>
+                                        <input type="checkbox" disabled>
+                                    </td>
+                                    <td>{{productlinelist.Name}}</td>
+                                    <td disabled>
+                                        <input type="text" (keypress)="clear();" [(ngModel)]="productlinelist.Color__c" [(colorPicker)]="productlinelist.Color__c"
+                                            [style.background]="productlinelist.Color__c" [cpHeight]="'290px'" [value]="productlinelist.Color__c"
+                                            disabled maxlength="7"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="3">
+                                        <a class="white btn btn-hovr">
+                                            <i class="fa fa-plus"></i> {{'COMMON.NEW' | translate }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- table disable ends -->
+                    </div>
+                </div>
+                <!-- add div starts -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv == true'>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-8 text-right res-tleft">
+                            <h1>{{ 'SETUP_INVENTORY_PRODUCT_LINE.PRODUCT_LINE_DETAIL' | translate }}</h1>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="red"> {{error | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="active" (click)='clearmessage();'>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_INVENTORY_PRODUCT_LINE.PRODUCT_LINE_NAME' | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="productLineName" maxlength="18" (keypress)='clearmessage();'>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.COLOR' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" (keypress)="clear();" [(ngModel)]="productColor" (blur)="colorCheck();" [(colorPicker)]="productColor" [style.background]="productColor"
+                                maxlength="7" [cpHeight]="'290px'" [value]="productColor" (click)='clearmessage();' [style.color]="productColor === '#ffffff' ? 'black' : 'white'"/>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td width="30%">{{ 'SETUP_INVENTORY_PRODUCT_LINE.INVENTORY_GROUPS' | translate }}
+                                                <span class="text-danger">*</span>
+                                            </td>
+                                            <td>{{ 'COMMON.REMOVE' | translate }}</td>
+                                        </tr>
+                                        <tr *ngFor="let row of rows">
+                                            <td>
+                                                <select [(ngModel)]="row.inventoryGroups" (click)='clearmessage();'>
+                                                    <option value='Select'>{{ 'COMMON.SELECT' | translate }}</option>
+                                                    <option *ngFor="let inventorygrouplist of inventoryGroupList; let i='index'" id="inventorygrouplist{{i}}">{{inventorygrouplist.inventoryGroupName}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="f-minus">
+                                                    <i class="fa fa-minus" (click)="deleteFieldValue(i)"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <a data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true" (click)="addRows()"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="grey_th">
+                                            <td width="30%" colspan="2">{{ 'SETUP_INVENTORY_PRODUCT_LINE.UNITS_OF_MEEASURE' | translate }}</td>
+                                        </tr>
+                                        <tr *ngFor='let measure of measures'>
+                                            <td>
+                                                <input type='text' [(ngModel)]='measure.unitOfMeasures' (keypress)='clearmessage();' maxlength="10" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <a data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true" (click)='addMeasures();'></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)="createProductLine();">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel();">{{ 'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- add div ends -->
+                <!-- disable div starts -->
+                <div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+                    <h1>{{ 'SETUP_INVENTORY_PRODUCT_LINE.PRODUCT_LINE_DETAIL' | translate }}</h1>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_INVENTORY_PRODUCT_LINE.PRODUCT_LINE_NAME' | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" disabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.COLOR' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7" diabled>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td width="30%">{{ 'SETUP_INVENTORY_PRODUCT_LINE.INVENTORY_GROUPS' | translate }}
+                                                <span class="text-danger">*</span>
+                                            </td>
+                                            <td>{{ 'COMMON.REMOVE' | translate }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <a data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="grey_th">
+                                            <td width="30%" colspan="2">{{ 'SETUP_INVENTORY_PRODUCT_LINE.UNITS_OF_MEEASURE' | translate }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <a data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" disabled>{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" disabled>{{ 'BUTTON.CANCEL' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- disble div ends -->
+                <!-- edit div starts -->
+                <div class="col-md-8 pdgl30 mt-40" *ngIf='editDiv == true'>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-8 text-right res-tleft">
+                            <h1>{{ 'SETUP_INVENTORY_PRODUCT_LINE.PRODUCT_LINE_DETAIL' | translate }}</h1>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="red"> {{error | translate }} </p>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.ACTIVE' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="checkbox" [(ngModel)]="updateActive" (keypress)="clearmessage()">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'SETUP_INVENTORY_PRODUCT_LINE.PRODUCT_LINE_NAME' | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="updateProductLineName" (keypress)="clearmessage()">
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-sm-3 text-right res-tleft white">
+                            <label>{{ 'COMMON.COLOR' | translate }}</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input type="text" (keypress)="clearmessage()" [(ngModel)]="updateProductColor" (blur)="updatecolorCheck();" [(colorPicker)]="updateProductColor" [style.background]="updateProductColor"
+                                [cpHeight]="'290px'" [value]="updateProductColor" maxlength="7" [style.color]="updateProductColor === '#ffffff' ? 'black' : 'white'"/>
+                        </div>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered-light">
+                                    <tbody>
+                                        <tr class="grey_th">
+                                            <td width="30%">{{ 'SETUP_INVENTORY_PRODUCT_LINE.INVENTORY_GROUPS' | translate }}</td>
+                                            <td>{{ 'COMMON.REMOVE' | translate }}</td>
+                                        </tr>
+                                        <tr *ngFor="let updatelist of updateInventoryGroupsList; let i='index'" id="updatelist{{i}}" >
+                                            <td>
+                                                <select [ngClass] = "{'disabled': updatelist?.isDependency}" [(ngModel)]="updatelist.inventoryGroups" (click)="clearmessage()">
+                                                    <option>{{updatelist.inventoryGroups}}</option>
+                                                    <option *ngFor="let inventorygrouplist of inventoryGroupList; let i='index'" id="inventorygrouplist{{i}}">{{inventorygrouplist.inventoryGroupName}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="f-minus">
+                                                    <i class="fa fa-minus" [ngClass] = "{'disabled': updatelist?.isDependency}" (click)="deleteFieldValue2(updatelist, i)"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr *ngFor="let updaterow of updaterows">
+                                            <td>
+                                                <select [(ngModel)]="updaterow.inventoryGroups" (click)="clearmessage()">
+                                                    <option *ngFor="let inventorygrouplist of inventoryGroupList; let i='index'" id="inventorygrouplist{{i}}">{{inventorygrouplist.inventoryGroupName}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="f-minus">
+                                                    <i class="fa fa-minus" (click)="deleteFieldValue1(i)"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <a data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true" (click)="addUpdateRows()"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="grey_th">
+                                            <td width="30%">{{ 'SETUP_INVENTORY_PRODUCT_LINE.UNITS_OF_MEEASURE' | translate }}</td>
+                                            <td>{{ 'COMMON.REMOVE' | translate }}</td>
+                                        </tr>
+                                        <tr *ngFor='let updatemeasure of updateUnitOfMeasures'>
+                                            <td>
+                                                <input type='text' (keypress)="clearmessage()" value='{{updatemeasure.unitOfMeasures}}' [(ngModel)]="updatemeasure.unitOfMeasures"
+                                                    maxlength="10" />
+                                            </td>
+                                        </tr>
+                                        <tr *ngFor='let updatemeasure of updatemeasures'>
+                                            <td>
+                                                <input type='text' [(ngModel)]='updatemeasure.unitOfMeasures' (keypress)='clearmessage();' maxlength="10"/>
+                                            </td>
+                                            <td>
+                                                <span class="f-minus">
+                                                    <i class="fa fa-minus" (click)="deleteFieldValue3(i)"></i>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <a data-toggle="tooltip" data-placement="top" title="Add">
+                                                    <span class="add">
+                                                        <i class="fa fa-plus" aria-hidden="true" (click)='addUpdateMeasures();'></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-30 res-mt-15 text-center res-tleft">
+                        <div class="col-sm-10">
+                            <button type="button" class="save-btn" (click)="editInventoryProductLines();">{{ 'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+                            <button type="button" class="cancel-btn" (click)="cancel();">{{ 'BUTTON.CANCEL' | translate }}</button>
+                            <button type="button" *ngIf="statuscode == '2041'" class="cancel-btn" (click)="deleteProductLine();">{{'BUTTON.DELETE' | translate }}</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- edit div ends -->
+            </div>
+        </div>
+    </section>
+<app-rightbar></app-rightbar>    
+</div>

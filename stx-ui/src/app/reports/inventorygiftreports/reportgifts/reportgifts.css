@@ -1,0 +1,25 @@
+#inner_cont{
+    margin-right: 8%;
+    color: white;
+}
+.background-color {
+    background-color:#808080;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+@media (device-width: 768px){
+	#inner_cont{
+        margin-right: 10%;
+    }
+    .ml-5 {
+        margin-left: -3%;
+    }
+    .form_cont table {
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+}

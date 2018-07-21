@@ -1,0 +1,89 @@
+<div class="signup-maindiv">
+  <div class="signup-middle">
+    <img src="assets/images/logo.png" class="signup-logo" />
+  </div>
+  <div class="signup-caption">
+    Thank you for your interest in a Free Trial!
+    <!-- <hr />
+    <b>No Downloads. No Software to Install.</b>
+    <br />
+    <br />
+    <b>Register now and you'll have access to many of the features and capabilities that make STX Cloud great.</b>
+    <br />
+    <em>(Online booking, credit card processing, and marketing are enabled after subscribing)</em>
+    <br />
+    <br /> * These fields are required -->
+  </div>
+  <div class="apont-head-large mb-10 mt-10 text-uppercase">
+    About You
+  </div>
+  <div class="staff-cont-rgt col-xs-12 col-sm-12 col-md-12 form-new">
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <input class="form-control" type="text" placeholder="Business Owner First Name *">
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <input class="form-control" type="text" placeholder="Business Owner Last Name *">
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <input class="form-control" type="email" placeholder="Email *">
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <input class="form-control" type="text" placeholder="Phone *">
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <input class="form-control" type="text" placeholder="Company Name *">
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <select class="form-control signup-options" style="text-align-last: center;">
+        <option value=''>Employees *</option>
+        <option value="1">1 Employee</option>
+        <option value="5">2 - 5 Employees</option>
+        <option value="10">6 - 10 Employees</option>
+        <option value="20">11 - 20 Employees</option>
+        <option value="30">21 - 30 Employees</option>
+        <option value="50">Over 30 Employees</option>
+      </select>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <select class="form-control signup-options" [(ngModel)]="country" style="text-align-last: center;" (change)="getStates($event.target.value);">
+        <option value="">Country *</option>
+        <option *ngFor="let mailingcountrieslist of allCountry; let i='index'" value="{{mailingcountrieslist.NAME}}"
+          id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
+      </select>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <select class="form-control signup-options" [(ngModel)]="MailingState" style="text-align-last: center;">
+        <option value="">State</option>
+        <option *ngFor="let stateslist of statesList; let i='index'" value="{{stateslist.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{stateslist.STATE}}</option>
+      </select>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+      <select class="form-control signup-options" style="text-align-last: center;">
+        <option value="">-- How did you hear of us? --</option>
+        <option value="STX Website">STX Website</option>
+        <option value="Other Website">Other Website</option>
+        <option value="Search Engine">Search Engine</option>
+        <option value="Advertisement">Advertisement</option>
+        <option value="Apple Store">Apple Store</option>
+        <option value="Current STX User">Current STX User</option>
+        <option value="Facebook">Facebook</option>
+        <option value="Marketing Email">Marketing Email</option>
+        <option value="Product Manufacturer">Product Manufacturer</option>
+        <option value="Product Supplier">Product Supplier</option>
+        <option value="Referral">Referral</option>
+        <option value="Trade Group">Trade Group</option>
+        <option value="Trade Show">Trade Show</option>
+        <option value="Word of Mouth">Word of Mouth</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-12 signup-middle">
+    <a class="btn btn-default mt-5 mb-5 signup-submit">
+      <i class="fa fa-check"></i> SIGN UP</a>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-6 form-group signup-font-white">
+    * These fields are required&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a class="signup-a" href="http://stxsoftware.com/privacy-policy/">Privacy Policy</a>
+  </div>
+</div>

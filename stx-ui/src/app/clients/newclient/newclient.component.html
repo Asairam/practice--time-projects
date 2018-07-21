@@ -1,0 +1,1378 @@
+<div id="wrapper_setup_new">
+  <app-header [newMenu]="'noNav'"></app-header>
+  <section id="inner_cont">
+    <div class="container form_cont" style="margin-top: -15px;">
+
+      <div class="staff-cont-details clearfix">
+        <div class="staff-cont-lft col-xs-12 col-sm-12 col-md-4">
+          <div class="staff-search mb-20">
+            <div class="input-group">
+              <input type="text" class="form-control" autofocus placeholder="Name, Phone, Email" [(ngModel)]="searchKeyValue" [formControl]="searchField"
+                (input)="searchclient($event.target.value)">
+              <span class="input-group-addon">
+                <button type="submit" style="cursor: inherit;">
+                  <img src="assets/images/search-icon.png" width="14" alt="Search">
+                </button>
+                <button type="submit" (click)="addNewClient()">
+                  <img src="assets/images/plus-icon.png" width="14" alt="Plus">
+                </button>
+              </span>
+            </div>
+
+          </div>
+
+          <span style="margin-top: -90px;" [ngStyle]="{display:displayddl}">
+            <perfect-scrollbar style=" height: 425px;">
+              <div class="staff-search-details mt-20">
+                <div class="staff-search-details-in" *ngIf="searchKeyValue != ''">
+                  <div class="staff-search-list" *ngFor="let client of filterClient; let i='index'" (click)="getClientProfile(client, i)">
+                    <div class="staff-search-list-img" *ngIf="(client.Client_Pic__c && client.Client_Pic__c !== '')">
+                      <img name="filterImage" src="{{this.imgPath | translate}}/{{client.Client_Pic__c}}" width="61" 
+                        height="61" alt="Profile" (error)="errorHandler($event,i)">
+                    </div>
+                    <div class="staff-search-list-img" *ngIf="(client.Client_Pic__c === null || client.Client_Pic__c === '' || client.Client_Pic__c === undefined)">
+                      <div class="appnt-pro-letter" style="width:61px;height:61px;line-height: 57px;">
+                        <strong> {{ client.FullName[0].toUpperCase() }} </strong>
+                      </div>
+                    </div>
+                    <div class="staff-search-list-name">{{client.FullName}}</div>
+                  </div>
+                </div>
+              </div>
+            </perfect-scrollbar>
+          </span>
+        </div>
+
+        <!-- search client profile -->
+        <div class="staff-cont-rgt col-xs-12 col-sm-12 col-md-8" *ngIf="leftProfile" style="margin-top: -90px;" [ngStyle]="{display:displayddl}">
+          <div class="staff-details-view">
+            <div class="staff-details-view-lft">
+              <!-- profile pic Upload -->
+              <img [src]="clientPictureFileView" *ngIf="avProPic" (error)="errorHandlerLeftPro($event)" width="245"
+                height="245" alt="Profile">
+              <div class="client-pro-letter" *ngIf="noProPic" style="user-select: none;">
+                <strong> {{ clienProfile.name[0].toUpperCase() }} </strong>
+              </div>
+              <label class="custom-file-upload">
+                <!-- if profile pic is Not available -->
+                <label for="file-upload">
+                  <div class="picEdit" *ngIf="noProPic">
+                    <img src="assets/images/edit.png" width="20" alt="pencil" style="width:14px !important;">{{'CLIENTS.UPLOAD' | translate}}
+                  </div>
+                </label>
+                <!-- if profile pic is available -->
+                <div class="picEdit" *ngIf="avProPic" style="padding: 4px;">
+                  <label for="file-upload">
+                    <span style="font-weight: 600;font-size: 13px;cursor: pointer;">
+                      <img src="assets/images/edit.png" width="10" alt="pencil">{{'BUTTON.EDIT' | translate}}</span>
+                  </label>&nbsp; | &nbsp;
+                  <span (click)="removeProPic()">
+                    <i class="fa fa-times" style="margin-right:3px;color: red;"></i>{{'COMMON.REMOVE' | translate}}</span>
+                </div>
+              </label>
+              <input type="file" id="file-upload" #fileInput placeholder="Upload image..." (change)="uploadProfilePic($event)" accept="image/*"
+                style="display:none;" />
+            </div>
+            <div class="staff-details-view-rgt">
+              <h1>{{clienProfile.name}}</h1>
+
+              <p>
+                <span class="text-uppercase">{{'CLIENTS.CLIENT_SINCE' | translate}}</span> {{clienProfile.client_since | date : 'MMMM dd, yyyy'}}</p>
+              <ul>
+                <li>
+                  <img class="staff-details-img-icon" src="assets/images/phone-icon.png" width="15" alt="icon">{{clienProfile.phone}}</li>
+                <li>
+                  <img class="staff-details-img-icon" src="assets/images/message-icon.png" width="15" alt="icon"> {{clienProfile.email}}</li>
+                <li>
+                  <img class="staff-details-img-icon" src="assets/images/scissor-icon.png" width="15" alt="icon"> {{getnextApptWorker}}</li>
+                <li>
+                  <img class="staff-details-img-icon" src="assets/images/notes-icon.png" width="15" alt="icon">{{clienProfile.note}}</li>
+              </ul>
+              <p>
+                <span class="text-uppercase">{{'CLIENTS.NEXT_APPOINTMENT' | translate}}</span> {{getnextAppt | date : 'MMMM dd, yyyy'}}</p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- add new client table -->
+        <div class="staff-cont-rgt col-xs-12 col-sm-12 col-md-8 form-new" *ngIf="AddNewClient">
+          <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+            <input class="form-control" type="text" [(ngModel)]="clientEditObj.FirstName" (keypress)="updateErrMsg(0);" name="" placeholder="First Name">
+          </div>
+          <!-- <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+            <input class="form-control" type="text" [(ngModel)]="NewClient.middlename" name="" placeholder="Middle Name">
+          </div> -->
+          <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+            <input class="form-control" type="text" [(ngModel)]="clientEditObj.LastName" name="" (keypress)="updateErrMsg(2);" placeholder="Last Name">
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+            <input class="form-control" type="email" [(ngModel)]="clientEditObj.Email" name="" placeholder="Primary Email" (keypress)="updateErrMsg(5);">
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+            <input class="form-control" type="text" id="phone_id" maxlength="13" [(ngModel)]="clientEditObj.Phone" name="" (keypress)='hyphen_generate_phone(clientEditObj.Phone);updateErrMsg(3);'
+              placeholder="Primary Phone" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+            <input class="form-control" type="text" id="mobile_id" maxlength="13" [(ngModel)]="clientEditObj.MobilePhone" (keypress)='hyphen_generate_mobile(clientEditObj.MobilePhone);updateErrMsg(4);'
+              onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+              name="" placeholder="Mobile Phone">
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+            <select class="form-control" [(ngModel)]="clientEditObj.Gender__c" style="text-align-last: center;">
+              <option value=''>{{'CLIENT_EDIT.CLIENT_PROFILE.GENDER' | translate}}</option>
+              <option value='Male'>{{'COMMON.MALE' | translate}}</option>
+              <option value='Female'>{{'COMMON.FEMALE' | translate}}</option>
+            </select>
+          </div>
+          <!-- error -->
+          <p class="red" style="text-align:center;">{{ClientProError[0].value}}</p>
+          <p class="red" style="text-align:center;">{{ClientProError[2].value}}</p>
+          <p class="red" style="text-align:center;">{{ClientProError[3].value}}</p>
+          <p class="red" style="text-align:center;">{{ClientProError[4].value}}</p>
+          <p class="red" style="text-align:center;">{{ClientProError[5].value}}</p>
+          <p class="red" style="text-align:center;">{{ClientProError[12].value}}</p>
+
+          <div class="col-xs-12 col-sm-12 col-md-12" style="text-align:center;">
+            <a class="btn btn-default mb-5" (click)="AddClient()" style="background-color:#35c31b;">
+              <i class="fa fa-check"></i>{{'BUTTON.SAVE' | translate}}</a>
+            &nbsp;
+            <a class="btn btn-default mb-5" (click)="cancel()" style="background-color:red;">
+              <i class="fa fa-remove"></i> {{'BUTTON.CANCEL' | translate}}</a>
+            &nbsp;
+            <a class="btn btn-default mb-5" (click)="newClientSaveAndBook()" *ngIf="actionmethod !== 'checkout'">
+              <i class="fa fa-calendar"></i> {{'BUTTON.SAVE_AND_BOOK' | translate}}</a>
+            &nbsp;
+            <a class="btn btn-default mb-5" (click)="goToFullClientCard()">
+              <i class="fa fa-plus"></i> {{'BUTTON.FULL_CARD' | translate}}</a>
+
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="staff-tab-list" *ngIf="isEdit">
+        <div class="staff-tab-list-in">
+          <ul class="nav nav-tabs mb-20">
+            <li class="{{activeTabClass[0]}}" (click)="updateTabs(0)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.CLIENT_INFO' | translate}}</span>
+              </a>
+            </li>
+            <li class="{{activeTabClass[1]}}" (click)="updateTabs(1)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.CLIENT_PROFILE' | translate}}</span>
+              </a>
+            </li>
+            <li class="{{activeTabClass[2]}}" (click)="updateTabs(2)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.APPOINTMENTS' | translate}}</span>
+              </a>
+            </li>
+            <li class="{{activeTabClass[3]}}" (click)="updateTabs(3)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.COMMUNICATION' | translate}}</span>
+              </a>
+            </li>
+            <li class="{{activeTabClass[4]}}" (click)="updateTabs(4)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.PRODUCTS' | translate}}</span>
+              </a>
+            </li>
+            <li class="{{activeTabClass[5]}}" (click)="updateTabs(5)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.SERVICES' | translate}}</span>
+              </a>
+            </li>
+            <li class="{{activeTabClass[6]}}" (click)="updateTabs(6)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.CLASSES' | translate}}</span>
+              </a>
+            </li>
+            <li class="{{activeTabClass[7]}}" (click)="updateTabs(7)">
+              <a data-toggle="tab">
+                <span>{{'CLIENTS.ACCOUNTS' | translate}}</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <!-- client info tab start -->
+            <div *ngIf="activeTab2[0]" class="tab-pane fade in active">
+              <div class="staff-details-inputs form-new mb-30">
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.FirstName" type="text" name="" placeholder="First Name" (keypress)="updateErrMsg(6)">
+                    <p class="red" style="text-align:center;">{{ClientProError[6].value}}</p>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.LastName" type="text" name="" placeholder="Last Name" (keypress)="updateErrMsg(7)">
+                    <p class="red" style="text-align:center;">{{ClientProError[7].value}}</p>
+                  </div>
+                </div>
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.MailingStreet" type="text" name="" placeholder="Address" (keypress)="updateErrMsg(16)">
+                    <p class="red" style="text-align:center;">{{ClientProError[16].value}}</p>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.MailingCity" type="text" name="" placeholder="City">
+                  </div>
+                </div>
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <!-- <input class="form-control" [(ngModel)]="clientEditObj.MailingCountry" readonly type="text" name="" placeholder="Country"> -->
+                    <select class="form-control" [(ngModel)]="clientEditObj.MailingCountry" style="text-align-last: center;" (change)="getCountry($event.target.value);">
+                      <option value="">{{'CLIENTS.COUNTRY' | translate}}</option>
+                      <option *ngFor="let mailingcountrieslist of mailingCountriesList; let i='index'" value="{{mailingcountrieslist.NAME}}" id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <!-- <input class="form-control" [(ngModel)]="clientEditObj.MailingState" readonly type="text" name="" placeholder="State"> -->
+                    <select class="form-control" [(ngModel)]="clientEditObj.MailingState" style="text-align-last: center;">
+                      <option value="">{{'CLIENTS.STATES' | translate}}</option>
+                      <option *ngFor="let stateslist of statesList; let i='index'" value="{{stateslist.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{stateslist.STATE}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <div class="input-group form-input-group-list">
+                      <span class="input-group-addon">
+                        <img src="assets/images/primary_phone.png" width="50">
+                      </span>
+                      <input class="form-control" [(ngModel)]="clientEditObj.Phone" type="text" name="" maxlength="13" placeholder="Primary Phone"
+                        onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                        id="workPhone" (keypress)='hyphen_generate_Wphone(clientEditObj.Phone);updateErrMsg(13)'>
+                    </div>
+                    <p class="red" style="text-align:center;">{{ClientProError[13].value }}</p>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <div class="input-group form-input-group-list">
+                      <span class="input-group-addon">
+                        <img src="assets/images/sms-message.png" width="50">
+                      </span>
+                      <input class="form-control" [(ngModel)]="clientEditObj.MobilePhone" type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                        id="mobile_id1" (keypress)='hyphen_generate_mobile1(clientEditObj.MobilePhone);updateErrMsg(8)' name=""
+                        placeholder="Mobile Phone">
+                    </div>
+                    <p class="red" style="text-align:center;">{{ClientProError[8].value}}</p>
+                  </div>
+                  <!-- <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                          <input class="form-control" [(ngModel)]="clientEditObj.HomePhone" type="text" name="" placeholder="Home Phone" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                            id="homePhone" (keypress)='hyphen_generate_home(clientEditObj.HomePhone);' maxlength="13">
+                        </div> -->
+                </div>
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <select class="form-control" [(ngModel)]="clientEditObj.Mobile_Carrier__c" style="text-align-last: center;">
+                      <option value=''>{{'CLIENTS.MOBILE_CARRIERS' | translate}}</option>
+                      <option *ngFor="let  mobileCarrier of mobileCarriersList; let i = 'index'" value='{{ mobileCarrier.NAME}}'>{{ mobileCarrier.NAME}}</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.MailingPostalCode" type="text" name="" placeholder="Zip">
+                  </div>
+                </div>
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6  form-group">
+                    <div class="check-new check-position">
+                      <input id="c_noemail" type="checkbox" [(ngModel)]="clientEditObj.No_Email__c" *ngIf="clientEditObj.No_Email__c === 0 || clientEditObj.No_Email__c === false || clientEditObj.No_Email__c === ''"
+                        (change)="Cli_No_Email($event.target.checked)">
+                      <input id="c_noemail" type="checkbox" [(ngModel)]="clientEditObj.No_Email__c" checked *ngIf="clientEditObj.No_Email__c === 1 || clientEditObj.No_Email__c === true"
+                        (change)="Cli_No_Email($event.target.checked)">
+                      <label for="c_noemail">{{'CLIENTS.NO_EMAIL' | translate}}</label>
+                    </div>
+                    <input class="form-control" [(ngModel)]="clientEditObj.Email" type="email" name="" (keypress)="updateErrMsg(9)" placeholder="Primary Email"
+                      [disabled]="noEmailBool">
+                    <p class="red" style="text-align:center;">{{ClientProError[9].value}}</p>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.Secondary_Email__c" type="email" name="" (keypress)="updateErrMsg(11)"
+                      placeholder="Secondary Email" [disabled]="noEmailBool">
+                    <p class="red" style="text-align:center;">{{ClientProError[11].value}}</p>
+                  </div>
+
+                </div>
+
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-12 form-group">
+                    <textarea name="" class="CP_Note" placeholder="Notes" [(ngModel)]="clientEditObj.Notes__c"></textarea>
+                  </div>
+                </div>
+                <!-- <div class="row clearfix">
+                      <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <input class="form-control" [(ngModel)]="clientEditObj.Phone" type="text" name="" maxlength="13" placeholder="Work Phone"
+                          onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                          id="workPhone" (keypress)='hyphen_generate_Wphone(clientEditObj.Phone);'>
+                      </div>
+                      <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <select class="form-control" [(ngModel)]="clientEditObj.Title" style="text-align-last: center;">
+                          <option value=''>-- Occupation --</option>
+                          <option *ngFor="let ocupations of occupationData; let i = 'index'" value='{{ocupations.occupationName}}'>{{ocupations.occupationName}}</option>
+                        </select>
+                      </div>
+                    </div> -->
+                <!-- <div class="row clearfix">
+                      <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <input class="form-control" [(ngModel)]="clientEditObj.Birthdate" type="text" name="" placeholder="Birthday" bsDatepicker
+                          [bsConfig]="datePickerConfig">
+                      </div>
+                      <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                        <input class="form-control" [(ngModel)]="clientEditObj.MailingPostalCode" type="text" name="" placeholder="Zip">
+                      </div>
+                    </div> -->
+
+                <div class="row clearfix" *ngIf="clienProfile.id === undefined">
+                  <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="staff-details-view-lft client-view-cha">
+                      <!-- new client profile pic Upload -->
+                      <img src="assets/images/user-icon.png" alt="Profile" style="width: 100px;height: 100px;" *ngIf="(clientEditObj.FirstName === '' || clientEditObj.FirstName === undefined) && (newclientPictureFileView === '' || newclientPictureFileView === undefined)">
+                      <img [src]="newclientPictureFileView" alt="Profile" style="width: 100px;height: 100px;" *ngIf="newclientPictureFileView !== '' && newclientPictureFileView !== undefined && newclientPictureFileView !== null">
+                      <div class="new-client-pro-letter" style="user-select: none;" *ngIf="clientEditObj.FirstName !== '' || clientEditObj.FirstName !== undefined">
+                        <strong> {{ clientEditObj.FirstName[0] }} </strong>
+                      </div>
+                      <label class="custom-file-upload">
+                        <!-- if profile pic is Not available -->
+                        <label for="file-upload">
+                          <div class="picEdit cli_pic" *ngIf="newclientPictureFileView === '' || newclientPictureFileView === undefined || newclientPictureFileView === null">
+                            <img src="assets/images/edit.png" width="20" alt="pencil" style="width:10px !important;">{{'CLIENTS.UPLOAD' | translate}}
+                          </div>
+                        </label>
+                        <!-- if profile pic is available -->
+                        <div class="picEdit cli_pic" *ngIf="newclientPictureFileView !== '' && newclientPictureFileView !== undefined && newclientPictureFileView !== null"
+                          style="padding: 4px;">
+                          <label for="file-upload">
+                            <span style="font-weight: 600;font-size: 13px;cursor: pointer;" title="Edit">
+                              <img src="assets/images/edit.png" width="10" alt="pencil">
+                            </span>
+                          </label>&nbsp; | &nbsp;
+                          <span (click)="removePic()" title="Remove">
+                            <i class="fa fa-times" style="margin-right:3px;color: red;"></i>
+                          </span>
+                        </div>
+                      </label>
+                      <input type="file" id="file-upload" #fileInput placeholder="Upload image..." (change)="selectFile($event)" accept="image/*"
+                        style="display:none;" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="apont-head-large mb-20 text-uppercase">
+                {{'CLIENTS.EMERGENCY_CONTACT_INFO' | translate}}
+              </div>
+              <div class="staff-details-inputs form-new mb-30">
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.Emergency_Name__c" type="text" name="" placeholder="Emergency Contact Name">
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.Relationship" type="text" name="" placeholder="Relationship">
+                  </div>
+                </div>
+                <div class="row clearfix">
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.Emergency_Primary_Phone__c" type="text" name="" placeholder=" Primary Phone">
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [(ngModel)]="clientEditObj.Emergency_Secondary_Phone__c" type="text" name="" placeholder=" Secondary Phone">
+                  </div>
+                </div>
+
+              </div>
+              <div class="apont-head-large mb-20 text-uppercase">
+                {{'CLIENTS.RESPONSIBLE_PARTY' | translate}}
+              </div>
+              <!-- ------------------------Responsible Party By started---------------------- -->
+              <div style="height: 100px;">
+                <span *ngIf="clientEditObj.ResponsibleClient">
+                  <div class="staff-search-list staff12" style="cursor: inherit;margin-left: 30%;">
+                    <div class="staff-search-list-img" *ngIf="(clientEditObj.ResponsibleClientPic && clientEditObj.ResponsibleClientPic !== '')">
+                      <img src="{{apiEndPoint}}/{{clientEditObj.ResponsibleClientPic}}" width="61" height="61" alt="Profile" onerror="this.onerror=null;this.src='assets/images/user-icon.png';">
+                    </div>
+                    <div class="staff-search-list-img" *ngIf="(clientEditObj.ResponsibleClientPic === null || clientEditObj.ResponsibleClientPic === '' || clientEditObj.ResponsibleClientPic === undefined)">
+                      <div class="appnt-pro-letter">
+                        <strong> {{ clientEditObj.ResponsibleClient[0].toUpperCase() }} </strong>
+                      </div>
+                    </div>
+                    <div class="staff-search-list-name">{{clientEditObj.ResponsibleClient}}
+                      <!-- <div>{{clientEditObj.Referred_On_Date__c|date:'MM/dd/yyyy'}}</div> -->
+                    </div>
+                  </div>
+                  <div class=" col-md-2 clearfix" style="margin-top: 18px;">
+                    <button (click)="clearLookUp('responsible-party')" type="button" class="btn btn-large btn-block btn-default">{{'BUTTON.CLEAR' | translate}}</button>
+                  </div>
+                </span>
+                <div class="staff-search-list" *ngIf="!clientEditObj.ResponsibleClient" style="margin-left: 40%;">
+                  <div class="col-md-2 clearfix staff-reffer-progress-nav">
+                    <!-- <button type="button" class="btn btn-large btn-block btn-default" (click)="openLookupModal('responsible-party');">LookUp</button> -->
+                    <ul>
+                      <li>
+                        <button class="active" (click)="openLookupModal('responsible-party');">
+                          <strong>{{'CLIENTS.LOOKUP' | translate}}</strong>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+
+              </div>
+              <!-- <ng-container *ngIf="clientEditObj.ResponsibleClient">
+                <div class="staff-search-details mt-20">
+                  <perfect-scrollbar style=" max-height: 430px;" [config]="config">
+
+                    <div class="staff-search-details-in">
+
+                      <div class="staff-search-list" style="cursor: inherit;">
+                        <div class="staff-search-list-img" *ngIf="(clientEditObj.ResponsibleClientPic && clientEditObj.ResponsibleClientPic !== '')">
+                          <img src="{{apiEndPoint}}/{{clientEditObj.ResponsibleClientPic}}" width="61" height="61" alt="Profile" onerror="this.onerror=null;this.src='assets/images/user-icon.png';">
+                        </div>
+                        <div class="staff-search-list-img" *ngIf="(clientEditObj.ResponsibleClientPic === null || clientEditObj.ResponsibleClientPic === '' || clientEditObj.ResponsibleClientPic === undefined)">
+                          <div class="appnt-pro-letter">
+                            <strong> {{ clientEditObj.ResponsibleClient[0].toUpperCase() }} </strong>
+                          </div>
+                        </div>
+                        <div class="staff-search-list-name">{{clientEditObj.ResponsibleClient}}
+                        </div>
+                      </div>
+                    </div>
+
+                  </perfect-scrollbar>
+                </div>
+                <div class="col-md-offset-4 col-md-4 clearfix">
+                  <button (click)="clearLookUp('responsible-party')" type="button" class="btn btn-large btn-block btn-default">Clear</button>
+                </div>
+              </ng-container>
+              <div class="staff-search-list" *ngIf="!clientEditObj.ResponsibleClient">
+                <div class="col-md-offset-4 col-md-4 clearfix">
+                  <button type="button" class="btn btn-large btn-block btn-default" (click)="openLookupModal('responsible-party');">LookUp</button>
+                </div>
+              </div> -->
+              <!-- ------------------------Responsible Party By ended---------------------- -->
+            </div>
+            <!-- client info tab end -->
+
+            <!-- client profile tab start -->
+            <div *ngIf="activeTab2[1]" class="tab-pane fade in active">
+
+              <div class="staff-reffer-progress-nav text-center marketing_info">
+                <ul>
+                  <li>
+                    <button [ngClass]="{'active':clientEditObj.Gender__c==='Female'}" #femaleBtn [value]="'Female'" (click)="genderBtn('Female');updateErrMsg(14)">
+                      <strong>{{'COMMON.FEMALE' | translate}}</strong>
+                    </button>
+                  </li>
+                  <li>
+                    <button [ngClass]="{'active':clientEditObj.Gender__c==='Male'}" #maleBtn [value]="'Male'" (click)="genderBtn('Male');updateErrMsg(14)">
+                      <strong>{{'COMMON.MALE' | translate}}</strong>
+                    </button>
+                  </li>
+                  <li>
+                    <div style="float: left;">
+                      <small class="client-flags">
+                        <img src="assets/images/market-icon1.png" alt="img">
+                      </small>
+                    </div>
+                    <!-- <select class="clientedit-multi-select" multiple [(ngModel)]="clientEditObj.selectedFlags">
+                      <option *ngFor="let Cflags of clientFlags; let i = 'index'" value='{{Cflags.flagName}}'>{{Cflags.flagName}}</option>
+                    </select> -->
+                    <div style="float: left;margin-left: 8px;width: 200px;">
+                      <ng-multiselect-dropdown [placeholder]="'Select Flag'" [data]="clientFlags" [(ngModel)]="selectedFlagItems" [settings]="dropdownSettings">
+                      </ng-multiselect-dropdown>
+                    </div>
+                  </li>
+                  <li>
+                    <div style="float: left;">
+                      <small>
+                        <img src="assets/images/market-icon2.png" alt="img">
+                      </small>
+                    </div>
+                    <div style="float: left;width: 118px;">
+                      <input class="form-control bday" [(ngModel)]="clientEditObj.Birthdate" type="text" name="" placeholder="Birthday" bsDatepicker
+                        [bsConfig]="datePickerConfig" (click)="updateErrMsg(15)">
+                    </div>
+                  </li>
+                  <li>
+                    <div style="float: left;">
+                      <small>
+                        <img src="assets/images/market-icon3.png" alt="img">
+                      </small>
+                    </div>
+                    <div style="float: left;">
+                      <select class="form-control bday" [(ngModel)]="clientEditObj.Title" style="text-align-last: center;">
+                        <option value=''>{{'CLIENTS.OCCUPATION' | translate}}</option>
+                        <option *ngFor="let ocupations of occupationData; let i = 'index'" value='{{ocupations.occupationName}}'>{{ocupations.occupationName}}</option>
+                      </select>
+                    </div>
+                  </li>
+                  <p class="red" style="text-align:ceter;">
+                    {{ClientProError[14].value}} {{ClientProError[15].value}}
+                  </p>
+                </ul>
+
+              </div>
+              <div class="C_p_active_Che check-new">
+                <input id="c_active" type="checkbox" [(ngModel)]="clientEditObj.Active__c" *ngIf="clientEditObj.Active__c === 0 || clientEditObj.Active__c === false">
+                <input id="c_active" type="checkbox" [(ngModel)]="clientEditObj.Active__c" checked *ngIf="clientEditObj.Active__c === 1  || clientEditObj.Active__c === true">
+                <label for="c_active">{{'COMMON.ACTIVE' | translate}} </label>
+              </div>
+              <br>
+              <div class="clearfix staff-reffer-progress mb-50">
+                <div class="apont-head-large mb-20 text-uppercase" style="height: 42px;text-align: inherit;">
+                  <div class="col-xs-4 col-sm-4 col-md-4">
+                    {{'CLIENTS.REFERRED_BY' | translate}}
+                  </div>
+                  <div class="col-xs-8 col-sm-8 col-md-8">
+                    {{'CLIENTS.REFERRED' | translate}}
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4 staff-reffer-progress-lft">
+                  <!-- ------------------------Reffred By ---------------------- -->
+                  <ng-container *ngIf="clientEditObj.ReferredClient">
+                    <div class="staff-search-details mt-20">
+                      <perfect-scrollbar style=" max-height: 430px;" [config]="config">
+
+                        <div class="staff-search-details-in">
+
+                          <div class="staff-search-list" style="cursor: inherit;">
+                            <div class="staff-search-list-img" *ngIf="(clientEditObj.ReferredClientPic && clientEditObj.ReferredClientPic !== '')">
+                              <img src="{{apiEndPoint}}/{{clientEditObj.ReferredClientPic}}" width="61" height="61" alt="Profile" onerror="this.onerror=null;this.src='assets/images/user-icon.png';">
+                            </div>
+                            <div class="staff-search-list-img" *ngIf="(clientEditObj.ReferredClientPic === null || clientEditObj.ReferredClientPic === '' || clientEditObj.ReferredClientPic === undefined)">
+                              <div class="appnt-pro-letter">
+                                <strong> {{ clientEditObj.ReferredClient[0].toUpperCase() }} </strong>
+                              </div>
+                            </div>
+                            <div class="staff-search-list-name">{{clientEditObj.ReferredClient}}
+                              <div>{{clientEditObj.Referred_On_Date__c|date:'MM/dd/yyyy'}}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </perfect-scrollbar>
+                    </div>
+                    <div class="col-md-offset-4 col-md-4 clearfix">
+                      <button (click)="clearLookUp('refferd')" type="button" class="btn btn-large btn-block btn-default">{{'BUTTON.CLEAR' | translate}}</button>
+                    </div>
+                  </ng-container>
+                  <div class="staff-search-list" *ngIf="!clientEditObj.ReferredClient">
+                    <div class="col-md-offset-4 col-md-4 clearfix staff-reffer-progress-nav">
+                      <ul>
+                        <li>
+                          <button class="active" (click)="openLookupModal('refferd');">
+                            <strong>{{'CLIENTS.LOOKUP' | translate}}</strong>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <!-- ------------------------Reffred By ended---------------------- -->
+
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4 staff-reffer-progress-mid">
+                  <div class="staff-search-details mt-20">
+                    <perfect-scrollbar style=" max-height: 430px;" [config]="config">
+                      <div class="staff-search-details-in">
+                        <div class="staff-search-list" *ngFor="let clientdata of clientReferedDataList" style="cursor: inherit;">
+                          <div class="staff-search-list-img" *ngIf="(clientdata.clientImage && clientdata.clientImage !== '')">
+                            <img src="{{apiEndPoint}}/{{clientdata.clientImage}}" onerror="this.onerror=null;this.src='assets/images/user-icon.png';"
+                              width="61" height="61" alt="Profile">
+                          </div>
+                          <div class="staff-search-list-img" *ngIf="(clientdata.clientImage === null || clientdata.clientImage === '' || clientdata.clientImage === undefined)">
+                            <div class="appnt-pro-letter">
+                              <strong> {{ clientdata.name[0].toUpperCase() }} </strong>
+                            </div>
+                          </div>
+                          <div class="staff-search-list-name">{{clientdata.name}}
+                            <div>{{clientdata.referedDate|date:'MM/dd/yyyy'}}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </perfect-scrollbar>
+                  </div>
+                </div>
+                <!-- <div class="col-xs-12 col-sm-12 col-md-4 staff-reffer-progress-rgt">
+                  <div class="circle-chart">
+                    <img src="assets/images/chart-circle.png" alt="img">
+                    <p class="text-center">30 pts from $15 off</p>
+                  </div>
+                </div> -->
+              </div>
+              <div class="table-responsive no-border mb-50">
+                <table class="table table-new">
+                  <thead>
+                    <tr>
+                      <th>{{'COMMON.MARKETING' | translate}}</th>
+                      <th>{{'COMMON.NOTIFICATIONS'| translate}}</th>
+                      <th>{{'COMMON.REMINDER'|translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td (click)="checkOrUnCheck('Marketing_Opt_Out__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Marketing_Opt_Out__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.PREFERENCES.OPT_OUT' | translate}}</td>
+                      <td (click)="checkOrUnCheck('Notification_Opt_Out__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Notification_Opt_Out__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.PREFERENCES.OPT_OUT' | translate}}</td>
+                      <td (click)="checkOrUnCheck('Reminder_Opt_Out__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Reminder_Opt_Out__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.PREFERENCES.OPT_OUT' | translate}}</td>
+                    </tr>
+                    <tr>
+                      <td (click)="checkOrUnCheck('Marketing_Mobile_Phone__c')">
+                        <i class="fa fa-times-circle" [ngClass]="clientEditObj.Marketing_Mobile_Phone__c?'fa-check-circle':'fa-times-circle'"></i>{{'COMMON.MOBILE_PHONE' | translate}}</td>
+                      <td (click)="checkOrUnCheck('Notification_Mobile_Phone__c')">
+                        <i class="fa fa-times-circle" [ngClass]="clientEditObj.Notification_Mobile_Phone__c?'fa-check-circle':'fa-times-circle'"></i>{{'COMMON.MOBILE_PHONE' | translate}}</td>
+                      <td (click)="checkOrUnCheck('Reminder_Mobile_Phone__c')">
+                        <i class="fa fa-times-circle" [ngClass]="clientEditObj.Reminder_Mobile_Phone__c?'fa-check-circle':'fa-times-circle'"></i>{{'COMMON.MOBILE_PHONE' | translate}}</td>
+                    </tr>
+                    <tr>
+                      <td (click)="checkOrUnCheck('Marketing_Primary_Email__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Marketing_Primary_Email__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}</td>
+                      <td (click)="checkOrUnCheck('Notification_Primary_Email__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Notification_Primary_Email__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}</td>
+                      <td (click)="checkOrUnCheck('Reminder_Primary_Email__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Reminder_Primary_Email__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.PRIMARY_EMAIL' | translate}}</td>
+                    </tr>
+                    <tr>
+                      <td (click)="checkOrUnCheck('Marketing_Secondary_Email__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Marketing_Secondary_Email__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.SECONDARY_EMAIL'|translate}}</td>
+                      <td (click)="checkOrUnCheck('Notification_Secondary_Email__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Notification_Secondary_Email__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.SECONDARY_EMAIL'|translate}}</td>
+                      <td (click)="checkOrUnCheck('Reminder_Secondary_Email__c')">
+                        <i class="fa" [ngClass]="clientEditObj.Reminder_Secondary_Email__c?'fa-check-circle':'fa-times-circle'"></i>{{'CLIENT_EDIT.SECONDARY_EMAIL'|translate}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- client profile tab end -->
+
+            <!-- appointments tab start -->
+            <form>
+              <div *ngIf="activeTab2[2]" class="tab-pane fade in active">
+                <div class="apont-head-large mb-20 text-uppercase">
+                  {{'CLIENTS.BOOKING_RESTRICTIONS' | translate}}
+                </div>
+
+                <div class="staff-reffer-progress-nav text-center ">
+                  <ul class="mb-50">
+                    <li *ngFor="let item of restrictions">
+                      <button class="{{item.active}}" (click)="booking_restrictions(item.value)">
+                        <strong>{{item.name}}</strong>
+                      </button>
+                    </li>
+                  </ul>
+
+                </div>
+
+                <div class="staff-reffer-progress-nav text-center ">
+                  <ul class="mb-50">
+                    <li>
+                      <div class="check-new">
+                        <input id="NoEmail" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="noEmailAppt" *ngIf="noEmailAppt === 1 || noEmailAppt === true">
+                        <input id="NoEmail" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="noEmailAppt" *ngIf="noEmailAppt === 0 || noEmailAppt === false">
+                        <label for="NoEmail"> {{'CLIENTS.NO_EMAIL' | translate}}</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="check-new">
+                        <input id="AccountChargeBalance" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="accoutChargeBalance"
+                          *ngIf="accoutChargeBalance === 1 || accoutChargeBalance === true">
+                        <input id="AccountChargeBalance" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="accoutChargeBalance"
+                          *ngIf="accoutChargeBalance === 0 || accoutChargeBalance === false">
+                        <label for="AccountChargeBalance">{{'CLIENTS.ACCOUNT_CHARGE_BALANCE' | translate}}</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="check-new">
+                        <input id="DepositRequired" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="depositRequired" *ngIf="depositRequired === 1 || depositRequired === true">
+                        <input id="DepositRequired" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="depositRequired" *ngIf="depositRequired === 0 || depositRequired === false">
+                        <label for="DepositRequired">{{'CLIENTS.DEPOSIT_REQUIRED' | translate}}</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="check-new">
+                        <input id="PersistantNoShow" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="persistanceNoShow" *ngIf="persistanceNoShow === 1 || persistanceNoShow === true">
+                        <input id="PersistantNoShow" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="persistanceNoShow" *ngIf="persistanceNoShow === 0 || persistanceNoShow === false">
+                        <label for="PersistantNoShow">{{'CLIENTS.PERSISTANT_NO_SHOW' | translate}}</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="check-new">
+                        <input id="Other" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="other" *ngIf="other === 1 || other === true">
+                        <input id="Other" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="other" *ngIf="other === 0 || other === false">
+                        <label for="Other">{{'SETUP_WORKERS_DETAILS.OTHER' | translate}}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <h2 class="head-tile-write_N text-uppercase mb-30">
+                  <span (click)="showNotesModalApp()" style="cursor:pointer;" title="{{apptNotes}}">
+                    <img src="assets/images/notes.png" width="17" alt="notes"> {{'CLIENTS.WRITE_NOTE' | translate}}</span>
+                </h2>
+                <hr style="width: 85%;">
+                <div class="staff-details-inputs">
+                  <div class="row clearfix">
+                    <div class="col-xs-12 col-sm-12 col-md-6 form-group form-new ">
+                      <div style="float:left;width: 70px;margin-left: 62px;">
+                        <h2 class="head-tile-nobg text-uppercase mb-30">{{'CLIENTS.PIN' | translate}}</h2>
+                      </div>
+                      <div style="float:left;width: 110px;">
+                        <input class="form-control" [ngModelOptions]="{standalone: true}" type="password" style="width:35%;" [(ngModel)]="pin" value="123456">
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 form-group form_cont">
+                      <div class="check-new">
+                        <input id="standing" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="hasStandingAppt" *ngIf="hasStandingAppt === 1 || hasStandingAppt === true"
+                        />
+                        <input id="standing" type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="hasStandingAppt" *ngIf="hasStandingAppt === 0 || hasStandingAppt === false"
+                        />
+                        <label for="standing" class="standing" style="font-size: 23px !important;">
+                          {{'CLIENTS.HAS_STANDING_APPT' | translate}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="table-responsive no-border mb-50 apptSer">
+                  <table class="table table-new">
+                    <thead>
+                      <tr class="app12">
+                        <th>{{'COMMON.DATE' | translate}}</th>
+                        <th>{{'COMMON.TIME' | translate}}</th>
+                        <th>{{'SETUP_WORKERS_DETAILS.SERVICE' | translate}}</th>
+                        <th>{{'CLIENTS.STYLIST' | translate}}</th>
+                        <th>{{'COMMON.DURATION' | translate}}</th>
+                        <th>Status</th>
+                        <th style="width: 310px;">{{'CLIENTS.PREFERRED_DURATION' | translate}}</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor='let apptData of clientServicesData|slice:0:loadmore;let i =index;'>
+                        <td style="text-decoration: underline;cursor: pointer;" (click)="gotoApptDetail(apptData)">{{apptData.AptDate|date:'MM/dd/yyyy'}}</td>
+                        <td>{{apptData.Time|date:'h:mm a'}}</td>
+                        <td>{{apptData.ServiceName}}</td>
+                        <td>{{apptData.WorkerName}}</td>
+                        <td>{{apptData.Duration__c}}</td>
+                        <td>{{apptData.Status__c}}</td>
+                        <td>
+                          <input type="checkbox" checked [ngModelOptions]="{standalone: true}" [(ngModel)]="apptData.PrefDur" (click)="updateApptServicelist(i)"
+                            *ngIf="apptData.PrefDur === 1 || apptData.PrefDur === true">
+                          <input type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="apptData.PrefDur" (click)="updateApptServicelist(i)"
+                            *ngIf="apptData.PrefDur === 0 || apptData.PrefDur === false">
+                        </td>
+                      </tr>
+                      <tr *ngIf="clientServicesData.length===0" [attr.colspan]="5">
+                        <td>{{'CLIENTS.NO_RECORDS' | translate}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="text-center">
+                    <button class="load-more-button" *ngIf="clientServicesData.length > 10" [style.visibility]="(hideLoadMoreButt === true) ? 'hidden' : 'visible' "
+                      (click)="showLoadMore(clientServicesData)">
+                      {{'CLIENTS.LOAD_MORE' | translate}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <!-- appointments tab end -->
+
+            <!-- communication tab start -->
+            <div *ngIf="activeTab2[3]" class="tab-pane fade in active">
+              <div class="table-responsive no-border mb-50 ">
+                <table class="table table-new table-services">
+                  <thead>
+                    <tr>
+                      <th>{{'CLIENT_EDIT.COMMUNICATION.DATE' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.COMMUNICATION.TIME' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.COMMUNICATION.COMMUNICATION' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.COMMUNICATION.TYPE'| translate}}</th>
+                      <th>{{'CLIENT_EDIT.COMMUNICATION.RESPONSE' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let record of clientCommunicationList | slice:0:loadmore;let i=index">
+                      <td>{{record.Sent__c|date:'MM/dd/yyyy'}}</td>
+                      <td>{{record.Sent__c|date:'hh:mm a'}}</td>
+                      <td>{{record.Name}}</td>
+                      <td>{{record.Type__c}}</td>
+                      <td>{{record.Tracking__c}}</td>
+                    </tr>
+                    <tr *ngIf="clientCommunicationList.length===0" [attr.colspan]="5">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-center">
+                  <button class="load-more-button" *ngIf="clientCommunicationList.length > 10" [style.visibility]="(hideLoadMoreButt === true) ? 'hidden' : 'visible' "
+                    (click)="showLoadMore(clientCommunicationList)">
+                    {{'CLIENTS.LOAD_MORE' | translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- communication tab end -->
+
+            <!-- products tab start -->
+            <div *ngIf="activeTab2[4]" class="tab-pane fade in active">
+              <div class="table-responsive no-border mb-50 ">
+                <table class="table table-new table-services">
+                  <thead>
+                    <tr>
+                      <th>{{'COMMON.DATE' | translate}}</th>
+                      <th>{{'COMMON.TIME' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate}}</th>
+                      <th>{{'COMMON.WORKER'|translate}}</th>
+                      <th>PRODUCT / SIZE</th>
+                      <th>{{'CLIENT_EDIT.PRODUCT_LOG.QTY_SOLD' | translate}}</th>
+                      <th>{{'COMMON.PROMOTION' |translate}}</th>
+                      <th>{{'COMMON.AMOUNT' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let clientProduct of clientProductList | slice:0:loadmore; let i='index'">
+                      <td>{{clientProduct.Appt_Date_Time__c | date:'MM/dd/yyyy'}}</td>
+                      <td>{{clientProduct.Appt_Date_Time__c | date:'hh:mm a'}}</td>
+                      <td style="text-decoration: underline;cursor: pointer;" (click)="navigateTicketDetail(clientProduct.Appt_Ticket__c)">{{clientProduct.apptName}}</td>
+                      <td>{{clientProduct.Username}}</td>
+                      <td>{{clientProduct.Size__c}}</td>
+                      <td>{{clientProduct.Qty_Sold__c}}</td>
+                      <td>{{clientProduct.promotionName}}</td>
+                      <td>${{clientProduct.Price__c}}</td>
+                    </tr>
+
+                    <tr *ngIf="clientProductList.length===0" [attr.colspan]="6">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-center">
+                  <button class="load-more-button" *ngIf="clientProductList.length > 10" [style.visibility]="(hideLoadMoreButt === true) ? 'hidden' : 'visible' "
+                    (click)="showLoadMore(clientProductList)">
+                    {{'CLIENTS.LOAD_MORE' | translate}}
+                  </button>
+                </div>
+                <div class="mb-20 apont-head-large  clearfix brdgrey" style="text-align: inherit;margin-top:10px;" *ngIf="clientProductList.length > 0">
+                  <div class="col-md-12  pdgt5">
+                    {{'CLIENTS.PRODUCT_SUMMARY' | translate}} : {{totalQtySold}} {{'CLIENTS.PRODUCT_OR_TOTALAMT' | translate}} ${{proTotalPrice}}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <!-- products tab end -->
+
+            <!-- services tab start -->
+            <div *ngIf="activeTab2[5]" class="tab-pane fade in active">
+              <div class="table-responsive no-border mb-50 ">
+                <table class="table table-new table-services">
+                  <thead>
+                    <tr>
+                      <th>{{'CLIENTS.TICKET_NUMBER' | translate}}</th>
+                      <th>{{'COMMON.DATE' | translate}}</th>
+                      <th>{{'COMMON.TIME' | translate}}</th>
+                      <th>{{'CLIENTS.STYLIST' | translate}}</th>
+                      <th>{{'SETUP_WORKERS_DETAILS.SERVICE' | translate}}</th>
+                      <th>Promotion</th>
+                      <th>{{'CLIENTS.PAID' | translate}}</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let service of clientServicesList| slice:0:loadmore; let i = index">
+                      <td style="text-decoration: underline;cursor: pointer;" (click)="navigateTicketDetail(service.apptId)">{{service.apptNumber}}</td>
+                      <td>{{service.Service_Date_Time__c | date:'MM/dd/yyyy'}} </td>
+                      <td>{{service.Service_Date_Time__c | date:'hh:mm a'}}</td>
+                      <td>{{service.workerName}}</td>
+                      <td>{{service.serviceName}}</td>
+                      <td>{{service.promName}}</td>
+                      <td>${{service.Net_Price__c}}</td>
+                      <td>
+                        <span>
+                          <img src="/assets/images/notes.png" width="17" title="{{service.Notes__c}}">
+                        </span>
+                        <ng-container>
+                          <span *ngIf="!service.Notes__c" (click)='showNotesModal(service);'>
+                            <img src="/assets/images/plus-icon.png" width="17">
+                          </span>
+                          <i class="fa fa-pencil" (click)='showNotesModal(service);' aria-hidden="true" *ngIf="service.Notes__c"></i>
+                        </ng-container>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="clientServicesList.length===0" [attr.colspan]="6">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-center">
+                  <button class="load-more-button" *ngIf="clientServicesList.length > 10" [style.visibility]="(hideLoadMoreButt === true) ? 'hidden' : 'visible' "
+                    (click)="showLoadMore(clientServicesList)">
+                    {{'CLIENTS.LOAD_MORE' | translate}}
+                  </button>
+                </div>
+                <div *ngIf="clientServicesList.length > 0" class="mb-20 apont-head-large  clearfix brdgrey" style="text-align: inherit;margin-top:10px;">
+                  <div class="col-md-12  pdgt5">
+                    {{'CLIENTS.SERVICE_SUMMARY' | translate}}: {{serviceLogLength}} {{'CLIENTS.SERVICE_OR_TOTAL_AMOUNT' | translate}} ${{serviceTotal}}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+            <!-- services tab end -->
+
+            <!-- classes tab start -->
+            <div *ngIf="activeTab2[6]" class="tab-pane fade in active">
+              <div class="table-responsive no-border mb-50 ">
+                <table class="table table-new table-services">
+                  <thead>
+                    <tr>
+                      <th>{{'COMMON.DATE' | translate}}</th>
+                      <th>{{'COMMON.TIME' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.CLASS_LOG.CLASS' | translate}}</th>
+                      <th>{{'COMMON.WORKER'|translate}}</th>
+                      <th>{{'COMMON.CLASS' | translate}}</th>
+                      <th>{{'COMMON.PRICE'| translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let record of clientClassList | slice:0:loadmore; let i='index'">
+                      <td>{{record.ClassLogDate|date:"MM/dd/yyyy"}}</td>
+                      <td>{{record.ClassLogDate|date:"hh:mm a"}}</td>
+                      <td>{{record.Class__c}}</td>
+                      <td>{{record.Username}}</td>
+                      <td>{{record.className}}</td>
+                      <td>{{record.Amount__c}}</td>
+                    </tr>
+
+
+                    <tr *ngIf="clientClassList.length===0" [attr.colspan]="6">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-center">
+                  <button class="load-more-button" *ngIf="clientClassList.length > 10" [style.visibility]="(hideLoadMoreButt === true) ? 'hidden' : 'visible' "
+                    (click)="showLoadMore(clientClassList)">
+                    {{'CLIENTS.LOAD_MORE' | translate}}
+                  </button>
+                </div>
+                <div class="mb-20 apont-head-large  clearfix brdgrey" style="text-align: inherit;margin-top:10px;" *ngIf="clientClassList.length > 0">
+                  <div class="col-md-12  pdgt5">
+                    {{'CLIENTS.CLASS_SUMMARY' | translate}}: {{classLogLength}} {{'CLIENTS.CLASSES_OR_TOTAL_PRICE' | translate}} $0
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- classes tab end -->
+
+            <!-- accounts tab start -->
+            <div *ngIf="activeTab2[7]" class="tab-pane fade in active">
+
+              <div class="table-responsive no-border mb-50 ">
+
+                <div class="apont-head-large mb-20 text-uppercase">
+                  {{'COMMON.REWARDS' | translate}}
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-6 form-group  form_cont rewards">
+                  <div class="check-new">
+                    <!-- <input id="standing" (click)="checkOrUnCheck('Active_Rewards__c')" type="checkbox" [checked]="clientEditObj.Active_Rewards__c"> -->
+                    <input id="standing"  type="checkbox" checked disabled>
+                    <label for="standing" class="standing">
+                      {{'COMMON.ACTIVE_REWARDS' | translate}}
+                    </label>
+                  </div>
+                </div>
+                <!-- <div class="col-md-12 mt-10">
+                  {{'COMMON.ACTIVE_REWARDS' | translate}}
+                  <i class="fa"  [ngClass]="clientEditObj.Active_Rewards__c?'fa-check-circle':'fa-times-circle'"></i>
+                </div> -->
+
+
+                <table class="table table-new table-services">
+                  <thead>
+                    <tr>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.REWARD_PRO' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.POINTS_BAL' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.ADJUST_POINT' | translate}}</th>
+                      <th>{{'COMMON.DESCRIPTION' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let record of clientRewardData; let i='index'">
+
+                      <td>{{record.Name}}</td>
+                      <td>{{record.Points_Balance__c}}</td>
+                      <td>
+                        <input type="text" [(ngModel)]="record.adjustPoints" />
+                      </td>
+                      <td>
+                        <input type="text" [(ngModel)]="record.rewardDesc" />
+                      </td>
+                    </tr>
+                    <tr *ngIf="clientRewardData.length===0" [attr.colspan]="4">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}} </td>
+                    </tr>
+                    <tr *ngFor="let record1 of clientRewardData1; let i='index'">
+                      <td>
+                        <select [(ngModel)]="record1.Reward__c" class="form-control" style="color: white;">
+                          <option *ngFor='let data of filteredRwds' value="{{data.Id}}">{{data.Name}}</option>
+                        </select>
+                      </td>
+                      <td>
+                        <!-- <input type="text" /> -->
+                      </td>
+                      <td>
+                        <input type="text" [(ngModel)]="record1.adjustPoints" />
+                      </td>
+                      <td>
+                        <input type="text" [(ngModel)]="record1.rewardDesc" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr />
+                <div class="apont-head-large mb-20 text-uppercase">
+                  {{'COMMON.MEMBERSHIP' | translate}}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 form-group  form_cont rewards">
+                  <div class="check-new">
+                    <label for="standing" class="standing">
+                      {{'COMMON.MEMBERSHIP_ID'| translate}}
+                    </label>
+                    <input type="text" [(ngModel)]="clientEditObj.Membership_ID__c" (keypress)="updateErrMsg(10)" />
+                  </div>
+                  <p class="red" style="text-align:center;">{{ClientProError[10].value}}</p>
+                </div>
+
+                <table class="table table-new table-services">
+
+                  <thead>
+                    <tr>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.MEMBERSHIP_PRO' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.PURCHASE_DATE' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.MEMBERSHIP_PRICE' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.AUTO_BILL'|translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.BILLING_STATUS'|translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.NEXT_BILL_DATE' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor='let record of clientMemberShipsData'>
+                      <td>{{record.Name}}</td>
+                      <td>12/21/2015</td>
+                      <td>{{record.Membership_Price__c}}</td>
+                      <td>
+                        <input type="checkbox" [(ngModel)]="record.Auto_Bill__c" *ngIf="record.Auto_Bill__c === 1 || record.Auto_Bill__c === true"
+                          checked>
+                        <input type="checkbox" [(ngModel)]="record.Auto_Bill__c" *ngIf="record.Auto_Bill__c === 0 || record.Auto_Bill__c === false">
+                      </td>
+                      <td width="20%">{{'CLIENTS.APPROVED' | translate}}</td>
+                      <td>
+                        <input type="text" value="{{ record.Next_Bill_Date__c | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="record.Next_Bill_Date__c"
+                          class="datefield">
+                        <!-- <input type="text" [(ngModel)] ="clientMemberShipsData.Next_Bill_Date__c" /> -->
+                      </td>
+                    </tr>
+                    <tr *ngIf="clientMemberShipsData.length===0" [attr.colspan]="6">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr />
+                <div class="apont-head-large mb-20 text-uppercase">
+                  {{'COMMON.PACKAGES' |translate}}
+                </div>
+
+                <table class="table table-new table-services">
+
+                  <thead>
+                    <tr>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.DATE_PUR' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.PACKAGE_NAME' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.UNUSED'| translate}}</th>
+                      <th>{{'COMMON.ITEM' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.UNUSED_VALUE' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor='let record of clientPackagesData'>
+                      <td>{{record.CreatedDate | date:'MM/dd/yyyy'}}</td>
+                      <td>{{record.TicketName}}</td>
+                      <td>{{record.Name}}</td>
+                      <td>{{record.unused}}</td>
+                      <td>{{record.serviceName}}</td>
+                      <td>{{record.unusedValue}}</td>
+                    </tr>
+                    <tr *ngIf="clientPackagesData.length===0" [attr.colspan]="6">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="apont-head-large mb-20 text-right text-uppercase ">
+                  {{'CLIENT_EDIT.ACCOUNTS.TOTAL_UNUSED_VALUE' | translate}} {{totalUnUsedValue}}
+                </div>
+                <hr />
+                <div class="apont-head-large mb-20 text-uppercase account-bal">
+                  <div class="col-md-6 text-left">
+                    {{'COMMON.ACC_BAL' | translate}}
+                  </div>
+                  <div class="col-md-6 text-right">
+                    {{'CLIENT_EDIT.ACCOUNTS.NEGATIVE_AMOUNT' | translate}}
+                  </div>
+                </div>
+
+                <table class="table table-new table-services">
+                  <thead>
+                    <tr>
+                      <th>{{'COMMON.DATE'| translate}}</th>
+                      <th>{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.DEBIT_TYPE' |translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.CREDIT_TYPE' |translate}}</th>
+                      <th>{{'COMMON.AMOUNT_PAID' | translate}}</th>
+                      <th>{{'COMMON.CURRENT_BAL' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor='let acctData of clientAccountsData'>
+                      <td>{{acctData.dateTime | date:'MM/dd/yyyy'}}</td>
+                      <td style="text-decoration: underline;cursor: pointer;" [routerLink]="['/completedticketdetailsview/' + acctData.Appt_Ticket__c]">{{acctData.TicketName}}</td>
+                      <td>{{acctData.debitType}}</td>
+                      <td>{{acctData.Transaction_Type__c}}</td>
+                      <td>{{acctData.Amount_Paid__c}}</td>
+                      <td>{{acctData.Amount__c}}</td>
+                    </tr>
+                    <tr *ngIf="clientAccountsData.length===0" [attr.colspan]="6">
+                      <td>{{'CLIENTS.NO_RECORDS' | translate}} </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="apont-head-large mb-20 text-uppercase">
+                  <!-- <div class="col-xs-12 col-sm-12 col-md-8 form-group  form_cont rewards text-right"> -->
+                  <div class="check-new text-right">
+
+                    {{'COMMON.STARTING_BAL' | translate}}
+                    <input type="text" [maxlength]="'13'" (keypress)="IsAlphaNumeric($event,'startingbalance')" [(ngModel)]="clientEditObj.Starting_Balance__c"
+                      *ngIf="StartingBalanceDisable === false">
+                    <span *ngIf="StartingBalanceDisable === true">{{clientEditObj.Starting_Balance__c}}</span>
+
+                  </div>
+                  <!-- </div> -->
+                </div>
+
+
+                <hr />
+                <div class="apont-head-large mb-20 text-uppercase text-left">
+                  {{'CLIENT_EDIT.ACCOUNTS.STORE_CR' | translate}}
+                </div>
+
+
+                <table class="table table-new table-services">
+
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.TOKEN_PRE'|translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.EXPIRATION_DATE' | translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.PAYMENT_TYPE'|translate}}</th>
+                      <th>{{'CLIENT_EDIT.ACCOUNTS.COM_PAY_GATE' |translate}}</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <button type="button" (click)="createToken()" class="save-btn">{{'BUTTON.CREATE_TOKEN' | translate}}</button>
+                      </td>
+                      <td>
+                        <input type="checkbox" [(ngModel)]="clientEditObj.Token_Present__c" *ngIf="clientEditObj.Token_Present__c === 1 || clientEditObj.Token_Present__c === true"
+                          checked disabled/>
+                        <input type="checkbox" [(ngModel)]="clientEditObj.Token_Present__c" *ngIf="clientEditObj.Token_Present__c === 0 || clientEditObj.Token_Present__c === '' || clientEditObj.Token_Present__c === false "
+                          disabled/>
+                      </td>
+
+
+                      <td>{{clientEditObj.Token_Expiration_Date__c}}</td>
+                      <td>{{clientEditObj.Payment_Type_Token__c}}</td>
+                      <td>
+                        <span *ngIf='clientEditObj.Token_Present__c == 1'>{{paymentTypeGateWay}}</span>
+                      </td>
+                      <td>
+                        <button type="button" *ngIf='clientEditObj.Token_Present__c == 1' class="cancel-btn" (click)="removeToken()">{{'BUTTON.REMOVE_TOKEN' | translate}}</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- accounts tab end -->
+
+            <!-- <div id="appointments" class="tab-pane fade">
+                  <h3>appointments</h3>
+                  <p>Some content in menu 2.</p>
+                </div>
+                <div id="communication" class="tab-pane fade">
+                  <h3>communication</h3>
+                  <p>Some content in menu 2.</p>
+                </div>
+                <div id="products" class="tab-pane fade">
+                  <h3>products</h3>
+                  <p>Some content in menu 2.</p>
+                </div>
+                <div id="services" class="tab-pane fade">
+                  <h3>services</h3>
+                  <p>Some content in menu 2.</p>
+                </div>
+                <div id="classes" class="tab-pane fade">
+                  <h3>classes</h3>
+                  <p>Some content in menu 2.</p>
+                </div>
+                <div id="accounts" class="tab-pane fade">
+                  <h3>accounts</h3>
+                  <p>Some content in menu 2.</p>
+                </div> -->
+
+
+          </div>
+        </div>
+        <!-- commonSave button -->
+        <div style="text-align:center;margin-top:20px;">
+          <!-- <button type="button" class="save-btn" (click)="commonSave()" *ngIf="CommonSaveBut">Submit</button> -->
+          <a class="btn btn-default mb-5" (click)="commonSave();redirectTokenPage=false;" style="background-color:#35c31b;">
+            <i class="fa fa-check"></i> {{'BUTTON.SAVE' | translate}}</a>
+          &nbsp;
+          <a class="btn btn-default mb-5" (click)="cancel()" style="background-color:red;">
+            <i class="fa fa-remove"></i> {{'BUTTON.CANCEL' | translate}}</a>
+          &nbsp;
+          <a class="btn btn-default mb-5" (click)="saveAndBook()" *ngIf="actionmethod !== 'checkout'">
+            <i class="fa fa-calendar"></i> {{'BUTTON.SAVE_AND_BOOK' | translate}}</a>
+          &nbsp;
+          <a class="btn btn-default mb-5" *ngIf="clienProfile.id === undefined" (click)="QuickAdd()">
+            <i class="fa fa-plus"></i> {{'BUTTON.QUICK_ADD' | translate}}</a>
+
+        </div>
+      </div>
+
+
+
+      <!-- Service Notes Modal Pop Up Starts -->
+      <div bsModal #notesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1" role="dialog"
+        aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4>{{'CLIENTS.NOTES' | translate}}</h4>
+              <button type="button" class="close" (click)="closeServiceNotesModal()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <textarea class="note" style="color:black" [(ngModel)]="notesTestareaNote"></textarea>
+            </div>
+            <div class="text-center">
+              <!-- <button type="button" class="save-btn" (click)="saveNote()">Save</button>
+                            <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button> -->
+              <button type="button" class="save-btn" (click)="saveNotesService()">{{'BUTTON.SAVE' | translate}}</button>
+              <button type="button" class="cancel-btn" (click)="closeServiceNotesModal()">{{'BUTTON.CANCEL' | translate}}</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+      </div>
+      <!-- Service Notes Modal Pop Up Ends -->
+
+      <!-- Appointment Notes Modal Pop Up Starts -->
+      <div bsModal #notesAppModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+        role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4>{{'CLIENTS.NOTES' | translate}}</h4>
+              <button type="button" class="close" (click)="closeAppNotesModal()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <textarea class="note" style="color:black" [(ngModel)]="apptNotes" maxlength="1000"></textarea>
+            </div>
+            <div class="text-center">
+              <button type="button" class="save-btn" (click)="ApptNotesSave(apptNotes)">{{'BUTTON.SAVE' | translate}}</button>
+              <button type="button" class="cancel-btn" (click)="closeAppNotesModal()">{{'BUTTON.CANCEL' | translate}}</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+      </div>
+      <!-- Appointment Notes Modal Pop Up Ends -->
+    </div>
+  </section>
+  <app-rightbar></app-rightbar>
+</div>
+
+<!-- lookup modal starts -->
+<div bsModal #lookupModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <button type="button" class="close" (click)="lookupCloseModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body clearfix">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="form-group">
+              <label for="">{{'CLIENTS.SEARCH' | translate}}</label>
+              <input type="text"  class="form-control modal-form-control" placeholder="Search Client" [formControl]="searchLookupField" [(ngModel)]="searchLookupKeyValue" (input)="searchLookupclient($event.target.value)">
+            </div>
+          <!-- /input-group -->
+        </div>
+        <div class="clearfix"></div>
+        <div class="row mt-20 res-mt-15" *ngIf="filterlookupClient.length > 0">
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <p-dataTable [responsive]="true" [value]="filterlookupClient" [rows]="10" [paginator]="true" [pageLinks]="2" expandableRows="true">
+                <p-column field="Active__c" header="{{ 'COMMON.ACTIVE' | translate }}">
+                  <ng-template let-user="rowData" pTemplate="body">
+                    <span *ngIf='user.Active__c == 1'>
+                      <input type="checkbox" checked />
+                    </span>
+                    <span *ngIf='user.Active__c == 0'>
+                      <input type="checkbox" />
+                    </span>
+                  </ng-template>
+                </p-column>
+                <p-column field="FullName" header="{{'CLIENTS.FULL_NAME'| translate }}">
+                  <ng-template let-user="rowData" pTemplate="body">
+
+                    <span class="tbl-txt" (click)="selectClient(user,lookUpType);">
+                      {{user.FullName}}
+                    </span>
+                  </ng-template>
+                </p-column>
+
+                <p-column field="Phone" header="{{'CLIENTS.PRIMARY_PHONE'| translate }}"></p-column>
+                <p-column field="MobilePhone" header="{{'CLIENTS.MOBILE_PHONE'| translate }}"></p-column>
+                <p-column field="Email" header="{{'CLIENTS.PRIMARY_EMAIL'| translate }}"></p-column>
+              </p-dataTable>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+</div>
+<!-- lookup modal ends -->

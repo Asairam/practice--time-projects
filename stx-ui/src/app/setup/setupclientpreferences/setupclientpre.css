@@ -1,0 +1,23 @@
+.save-btn {
+    margin-top:10px;
+  }
+  /* style used for responsive */
+#inner_cont {
+  margin-right: 10% !important;
+}
+#wrapper_setup_new{
+	color: white;
+}
+.form_cont input[type=text], .tab-content, .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
+	color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
+	color: black;
+}
+
+.nav-tabs>li {
+  cursor: pointer;
+}
+.form_cont .btn-default {
+  margin-bottom: 5px;
+}

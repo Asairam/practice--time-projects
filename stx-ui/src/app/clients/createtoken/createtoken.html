@@ -1,0 +1,150 @@
+<div id="wrapper_setup_new">
+    <app-header></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="sub_titles">{{'CREATE_TOKEN.PROCESS_PAYMENT' | translate}}</h1>
+                </div>
+            </div>
+            <div class="row mt-15">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    <label>{{'CREATE_TOKEN.CARD_PRESENT' | translate}}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input type="checkbox" class="crt-tkn-chkbox" [(ngModel)]="checkboxFlag" />
+                </div>
+            </div>
+            <div *ngIf="!checkboxFlag">
+                <div class="row">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <h2>{{'CREATE_TOKEN.BILL_INFO' | translate}}</h2>
+                    </div>
+                    <div class="col-md-7 col-sm-8"></div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.CARD_NAME' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" maxlength="50" [(ngModel)]="clientName" (keypress)="updateErrMsg(0);" />
+                        <div class="red crt-tkn-error">{{errorMsgAry[0]}}</div>
+                    </div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.MAIL_STREET' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <textarea maxlength="255" [(ngModel)]="mailStreet" (keypress)="updateErrMsg(1);"></textarea>
+                        <div class="red crt-tkn-error">{{errorMsgAry[1]}}</div>
+                    </div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.MAIL_CITY' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" maxlength="50" [(ngModel)]="mailCity" (keypress)="updateErrMsg(2);" />
+                        <div class="red crt-tkn-error">{{errorMsgAry[2]}}</div>
+                    </div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.MAIL_COUNTRY' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <select [(ngModel)]="mailCountry" (change)="updateErrMsg(3);">
+                            <option value="">{{'COMMON.SELECT_COUNTRY' | translate}}</option>
+                            <option *ngFor="let country of countriesList" value="{{country.NAME}}">{{country.NAME}}</option>
+                        </select>
+                        <div class="red crt-tkn-error">{{errorMsgAry[3]}}</div>
+                    </div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.MAIL_STATE' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" maxlength="100" [(ngModel)]="mailState" (keypress)="updateErrMsg(4);" />
+                        <div class="red crt-tkn-error">{{errorMsgAry[4]}}</div>
+                    </div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.MAIL_ZIP' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="text" maxlength="20" [(ngModel)]="mailZIP" (keypress)="updateErrMsg(5);" />
+                        <div class="red crt-tkn-error">{{errorMsgAry[5]}}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <h2>{{'CREATE_TOKEN.PAYMENT_INFO' | translate}}</h2>
+                    </div>
+                    <div class="col-md-7 col-sm-8"></div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.CARD_NUMBER' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input type="number" [(ngModel)]="cardNum" (keypress)="updateErrMsg(6);" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onKeyDown="if(this.value.length==20 && event.keyCode!=8) return false;"/>
+                        <small>{{'CREATE_TOKEN.NO_DASHES' | translate}}</small>
+                        <div class="red crt-tkn-error">{{errorMsgAry[6]}}</div>
+                    </div>
+                </div>
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.EXPIRES' | translate}}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <select class="crt-tkn-select" [(ngModel)]="expMonth" (click)="updateErrMsg(8);">
+                            <option *ngFor="let month of monthList; let i='index'" value="{{i+1}}">{{month}}</option>
+                        </select>
+                        <select class="crt-tkn-select" [(ngModel)]="expYear" (click)="updateErrMsg(8);">
+                            <option *ngFor="let year of yearList" value="{{year}}">{{year}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="red crt-tkn-error" style="text-align:center;"> {{errorMsgAry[8]}} </div>                
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.CVV' | translate}}</label>
+                        <span class="red">*</span>
+                    </div>
+                    <div class="col-md-7 col-sm-8 ">
+                        <input class="crt-tkn-cvv" type="number" [(ngModel)]="cardCVV" (keypress)="updateErrMsg(7);" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onKeyDown="if(this.value.length==4 && event.keyCode!=8) return false;"/>
+                        <div class="red crt-tkn-error">{{errorMsgAry[7]}}</div>
+                    </div>
+                </div>
+                <div class="row mt-25">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <button type="button" class="save-btn" (click)="saveCrtTkn()">Save</button>
+                    </div>
+                    <div class="col-md-7 col-sm-8 ">
+                        <button type="button" class="cancel-btn" (click)="cancelCrtTkn()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="checkboxFlag">
+                <div class="row mt-15">
+                    <div class="col-md-5 col-sm-4 text-right res-tleft">
+                        <label>{{'CREATE_TOKEN.READY_SWIPE' | translate}}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <input class="crt-tkn-cvv" type="password" [(ngModel)]="swipePwd" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

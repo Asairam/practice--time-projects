@@ -1,0 +1,74 @@
+<div id="wrapper_setup_new">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont">
+        <div class="container form_cont">
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-2 text-right res-tleft">
+                    <!-- <label>Select Date</label>
+                    <span class="text-danger">*</span> -->
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <label>Select Date</label>
+                    <span class="text-danger">*</span>
+                    <input type="text" bsDatepicker [maxDate]="maxdate" [(ngModel)]="bsValue" class="datefield" [bsConfig]="datePickerConfig"
+                        (ngModelChange)="generateReport(bsValue)">
+                </div>
+            </div>
+            <!-- <div class="row mt-20">
+                <div class="col-md-5 col-sm-4 text-right res-tleft">
+                    &nbsp;
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <button type="button" (click)="generateReport()" class="btn btn-primary">
+                        <i class="fa fa-binoculars" aria-hidden="true"></i> Generate</button>
+                </div>
+            </div> -->
+
+            <hr />
+            <div class="row mt-20 mr-10 res-mt-15" *ngIf="itemsDisplay">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">STX Beacon UAT 2017</th>
+                                    <th class="thcss">Daily Cash Drawer Report</th>
+                                    <th class="thcss"> {{sendDate | date: 'MM/dd/yy'}}</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+
+                <!-- <div class="row mt-20 res-mt-15"> -->
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" >
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">Drawer #</th>
+                                        <th class="thcss">Drawer Name</th>
+                                        <th class="thcss">Opening Cash</th>
+                                        <th class="thcss">Closing Cash</th>
+                                        <th class="thcss">Cash Over/Under</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of cashDrawerData">
+                                        <td>{{item.Drawer}}</td>
+                                        <td>{{item.DrawerName}}</td>
+                                        <td>{{item.OpeningCash}}</td>
+                                        <td>{{item.ClosingCash}}</td>
+                                        <td>{{item.CashOverUnder}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <!-- </div> -->
+            </div>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

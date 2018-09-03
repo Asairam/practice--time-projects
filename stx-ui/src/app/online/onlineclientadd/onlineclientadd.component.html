@@ -1,0 +1,130 @@
+<div class="signup-maindiv">
+    <div class="signup-middle">
+        <img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
+        />
+    </div>
+    <div class="signup-caption">
+        Online Appointment Booking
+    </div>
+    <div class="apont-head-large mb-10 mt-10 text-uppercase">
+        Welcome to {{companyName}}
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 signup-middle login-label">
+        Profile Center
+    </div>
+    <br>
+    <ng-container *ngIf="!isClientSaved">
+        <div class="apont-head-large mb-10 mt-10 text-uppercase">
+            My Personal Information
+        </div>
+        <div>
+            <div class="client-label-info">
+                Add your personal information here. Once you have entered your information, click the save button.
+            </div>
+        </div>
+        <div autocomplete="off" class="staff-cont-rgt col-xs-12 col-sm-12 col-md-12 form-new">
+            <div class="col-sm-8">
+                <p class="red mb-0"> {{clientErr | translate }} </p>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                <div class="input-group form-input-group-list">
+                    <span class="input-group-addon starImg">
+                        <i class="fa fa-star" aria-hidden="true" style="color: red;"></i>
+                    </span>
+                    <input (input)="clearError()" class="form-control" [(ngModel)]="clientInfo.email" type="text" placeholder="Your Email" maxlength="40">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                <div class="input-group form-input-group-list">
+                    <span class="input-group-addon starImg">
+                        <i class="fa fa-star" aria-hidden="true" style="color: red;"></i>
+                    </span>
+                    <input (input)="clearError()" [maxlength]="40" class="form-control" [(ngModel)]="clientInfo.firstname" type="text" placeholder="First Name"
+                        maxlength="40">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                <div class="input-group form-input-group-list">
+                    <span class="input-group-addon starImg">
+                        <i class="fa fa-star" aria-hidden="true" style="color: red;"></i>
+                    </span>
+                    <input (input)="clearError()" [maxlength]="40" class="form-control" type="text" [(ngModel)]="clientInfo.lastname" placeholder="Last Name"
+                        maxlength="40">
+                </div>
+            </div>
+        </div>
+        <div class="client-label-info">
+            We will never rent or sell your email addresses.
+        </div>
+        <div class="apont-head-large mb-10 mt-10 text-uppercase">
+            My Preferences
+        </div>
+        <div class="client-label-info">
+            Indicate your appointment and marketing preferences here. Once you have entered your information, click the Save button.
+        </div>
+        <div class="bottom-elements setsubcont">
+            <div class="col-xs-12 col-sm-12 col-md-6">
+                Send appointment notification via email
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6">
+                <input type="checkbox" [checked]="clientInfo.Notification_Opt_Out__c" (click)="assaignValues('Notification_Opt_Out__c')">
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6">
+                Send appointment reminders via email
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6">
+                <input type="checkbox" [checked]="clientInfo.Marketing_Opt_Out__c" (click)="assaignValues('Marketing_Opt_Out__c')">
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6">
+                Send marketing via email
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6">
+                <input type="checkbox" [checked]="clientInfo.Reminder_Opt_Out__c" (click)="assaignValues('Reminder_Opt_Out__c')">
+            </div>
+            <div autocomplete="off" class="staff-cont-rgt col-xs-12 col-sm-12 col-md-12 form-new">
+                <div class="col-xs-12 col-sm-12 col-md-6 form-group">
+                    <input class="form-control" [maxlength]="40" [(ngModel)]="clientInfo.primaryPhone" type="text" placeholder="Mobile Phone"
+                        maxlength="40">
+                </div>
+            </div>
+        </div>
+        <div class="signup-middle" style="margin-top: 110px; margin-bottom: 30px;">
+            <button class="btn btn-gradient-txt" type="button" (click)="saveProfile()">
+                <span style="font-size: 17px">
+                    <i class="fa fa-check"></i> Save Profile</span>
+            </button>
+            <button [routerLink]="['/clientlogin/'+dbName]" class="btn btn-gradient-txt" type="button" style="margin-left: 30px;">
+                <span style="font-size: 17px">
+                    <i class="fa fa-close"></i> Cancel</span>
+            </button>
+        </div>
+    </ng-container>
+    <div class="container form_cont" *ngIf="isClientSaved">
+        <div class="col-md-12 thcss mt-20">
+            <p>
+                Thank you!
+                <br> Your profile and preferences have been successfully saved.
+                <br> A 4-digit PIN has been emailed to you. Use your email address and the PIN to login for online appointment
+                booking.
+            </p>
+        </div>
+        <div class="col-md-12 text-center mt-20">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                <button type="button" class="btn btn-gradient-txt" (click)="login()">
+                    <span>Login</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <hr>
+    </div>
+
+    <div class="col-md-12 thcss mt-20">
+        <p>
+            Arrivals -
+            <br> Please arrive at least 20 minutes prior to your scheduled appointment. This will ensure that we have enough
+            time to check you in, and have you sign or read any necessary forms.
+        </p>
+    </div>
+</div>

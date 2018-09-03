@@ -1,0 +1,270 @@
+<div class="signup-maindiv">
+    <div class="signup-middle">
+        <img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
+        />
+    </div>
+    <div class="signup-caption">
+        Online Gift Purchase
+    </div>
+    <div class="apont-head-large mb-10 mt-10 text-uppercase">
+        Welcome to {{companyName}}
+    </div>
+    <div class="container form_cont gift-purchase" *ngIf='!mainDiv'>
+        <div class="col-md-12 appt-box-one mt-20">
+            <div class="mb-10 mt-10 col-md-12 ">
+                <span class="pull-left" style="font-size: 20px; color: white">Thank you! Your payment was successfully processed</span>
+            </div>
+            <div class="mb-10 mt-10 col-md-12 text-uppercase">
+                <a class="btn btn-default mb-5" [routerLink]="['/onlinebook/']" style="background-color:#35c31b;color: white">
+                    <i class="fa fa-check"></i>OK</a>
+            </div>
+
+        </div>
+    </div>
+    <p id="countdown" style="float: right;font-size: 20px;color: white;"></p>
+    <div class="container form_cont gift-purchase" *ngIf='mainDiv'>
+        <div *ngIf="!showPayment" class="col-md-12 appt-box-one mt-20">
+            <div class="mb-10 mt-10 text-uppercase">
+                <span class="pull-left" style="font-size: 20px;">eGift Card</span>
+            </div>
+            <div class="col-md-12">
+                <p class="red mb-0"> {{giftErr}} </p>
+            </div>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="clear-fix">
+                        <div class="col-md-12 col-sm-12 mt-20 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Amount</label>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left">
+                                <select (change)="amountChange()" class="select-bg" [(ngModel)]="giftPurchaseObj.listedAmount">
+                                    <option *ngFor="let amount of amountList" [value]="amount">{{amount}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left" *ngIf="giftPurchaseObj.listedAmount === 'other'">
+                                <input (input)="clearErr()" type="text" placeholder="Amount" style="width:30%" [(ngModel)]="giftAmount">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-20 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Delivery Type</label>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left">
+                                <select (change)="clearErr()" class="select-bg" [(ngModel)]="giftPurchaseObj.deliveryType">
+                                    <option *ngFor="let type of deliveryTypes" [value]="type">{{type}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-20 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Recipient Name</label>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left">
+                                <input (input)="clearErr()" type="text" [(ngModel)]="giftPurchaseObj.RecipientName">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-20 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Recipient Email</label>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left">
+                                <input (input)="clearErr()" type="text" [(ngModel)]="giftPurchaseObj.RecipientEmail">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-20 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Your FirstName</label>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left">
+                                <input (input)="clearErr()" type="text" [(ngModel)]="giftPurchaseObj.firstname">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-20 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Your LastName</label>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left">
+                                <input (input)="clearErr()" type="text" [(ngModel)]="giftPurchaseObj.lastname">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-20 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Your Email</label>
+                            </div>
+                            <div class="col-md-4 col-sm-8 text-left">
+                                <input (input)="clearErr()" type="text" [(ngModel)]="giftPurchaseObj.email" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-25 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Personal Message</label>
+                            </div>
+                            <div class="col-md-8 col-sm-8 text-left">
+                                <textarea (input)="clearErr()" [(ngModel)]="giftPurchaseObj.PersonalMessage"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="showPayment" class="col-md-12 appt-box-one mt-20">
+            <div class="mb-10 mt-10 text-uppercase">
+                <span class="pull-left" style="font-size: 20px;"> Process Payment</span>
+            </div>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="clear-fix">
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label></label>
+                            </div>
+                            <div class="col-md-8 col-sm-8 text-left">
+                                <p class="red">{{PckgError | translate}}</p>
+                                <p class="red">{{error | translate}}</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label style="font-size: 20px;">Billing Information:</label>
+                            </div>
+                            <div class="col-md-8 text-left">
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Cardholder Name</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <input type="text" [(ngModel)]="clientName">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Mailing Zip/Postal Code</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <input type="text" [(ngModel)]="MailingPostalCode" (keyup)="getLocation()">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Mailing Country</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <select [(ngModel)]="mailingCountry" class="select-bg" (change)="getCountry($event.target.value);">
+                                    <option value="">{{'CLIENTS.COUNTRY' | translate}}</option>
+                                    <option *ngFor="let mailingcountrieslist of mailingCountriesList; let i='index'" value="{{mailingcountrieslist.NAME}}" id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Mailing State/Province</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <select [(ngModel)]="mailingState" class="select-bg">
+                                    <option value="">{{'CLIENTS.STATES' | translate}}</option>
+                                    <option *ngFor="let stateslist of statesList; let i='index'" value="{{stateslist.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{stateslist.STATE}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Mailing City</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <input type="text" [(ngModel)]="mailingCity">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Mailing Street</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <input type="text" [(ngModel)]="mailingStreet">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label style="font-size: 20px;">Payment Information:</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Card Type</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <select [(ngModel)]="cardType" class="select-bg" (change)="changeCard($event.target.value);">
+                                    <option value="">--Select Card--</option>
+                                    <option *ngFor="let card of cardTypes; let i='index'" value="{{card.Id}}">{{card.Name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>Card Number</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <input type="text" [(ngModel)]="cardNumber">
+                                <span>**No Dashes or Spaces </span>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>CVV</label>
+                            </div>
+                            <div class="col-md-4 col-sm-4 text-left">
+                                <input type="text" [(ngModel)]="cvv">
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                            <div class="col-md-4 col-sm-4 text-right">
+                                <label>{{'CREATE_TOKEN.EXPIRES' | translate}}</label>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4">
+                                <select class="crt-tkn-select" class="select-bg" style="width:100%;" [(ngModel)]="expMonth" (click)="clearErr()">
+                                    <option *ngFor="let month of monthList; let i='index'" value="{{i+1}}">{{month}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-sm-4 ">
+                                <select class="crt-tkn-select" class="select-bg" style="width:100%;" [(ngModel)]="expYear" (click)="clearErr()">
+                                    <option *ngFor="let year of yearList" value="{{year}}">{{year}}</option>
+                                </select>
+                            </div>
+                            <!-- <div class="align-center">
+                                <p class="red">{{error | translate}}</p>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-xs-12 col-sm-12 col-md-12" style="text-align:center;">
+            <a *ngIf="!showPayment" class="btn btn-default mb-5" (click)="purchaseGift()" style="background-color:#35c31b;">
+                <i class="fa fa-check"></i>PurchaseNow</a>
+            &nbsp;
+            <a *ngIf="showPayment" class="btn btn-default mb-5" (click)="makePayment()" style="background-color:#35c31b;">
+                <i class="fa fa-check"></i>PurchaseNow</a>
+            &nbsp;
+            <ng-container *ngIf="!isTokenExsists">
+                <a [routerLink]="['/online/client/add/'+dbName]" class="btn btn-gradient-txt" type="button" style="margin-left: 30px;">
+                    <span>New to {{companyName}}?</span>
+                </a> &nbsp;
+            </ng-container>
+            <a class="btn btn-default mb-5" (click)="cancel()" style="background-color:red;">
+                <i class="fa fa-remove"></i> Cancel</a>
+
+        </div>
+    </div>
+</div>

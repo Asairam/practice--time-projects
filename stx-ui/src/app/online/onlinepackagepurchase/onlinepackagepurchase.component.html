@@ -1,0 +1,204 @@
+<div class="signup-maindiv">
+    <div class="signup-middle">
+        <img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
+        />
+    </div>
+    <div class="signup-caption">
+        Purchase Package
+    </div>
+    <div class="apont-head-large mb-10 mt-10 text-uppercase">
+        Welcome to {{companyName}}
+    </div>
+    <div class="col-md-12 appt-box-one mt-20" *ngIf='!mainDiv'>
+        <div class="mb-10 mt-10 col-md-12 ">
+            <span class="pull-left" style="font-size: 20px; color: white">Thank you! Your payment was successfully processed</span>
+        </div>
+        <div class="mb-10 mt-10 col-md-12 text-uppercase">
+            <a class="btn btn-default mb-5" [routerLink]="['/onlinebook/']" style="background-color:#35c31b;color: white">
+                <i class="fa fa-check"></i>OK</a>
+        </div>
+
+    </div>
+    <p id="countdown" style="float: right;font-size: 20px;color: white;"></p>
+    <div *ngIf='mainDiv'>
+        <div class="container form_cont gift-purchase">
+            <div class="col-md-12 appt-box-one mt-20">
+                <div class="mb-10 mt-10 text-uppercase">
+                    <span class="pull-left" style="font-size: 20px;">Select Package</span>
+                </div>
+                <div class="col-md-12 col-sm-12 mt-20">
+                    <div class="table-responsive">
+                        <table class="table table-bordered form_cont_one">
+                            <thead>
+                                <th class="thcss">Package</th>
+                                <th class="thcss">Amount</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width="50%">
+                                        <select class="select-bg" style="width:70%" (change)="onPackageChange($event.target.value)">
+                                            <option *ngFor="let packge of packagesList" value="{{packge.Id}}">{{packge.Name}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        {{amount}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 appt-box-one mt-20">
+                <div class="mb-10 mt-10 text-uppercase">
+                    <span class="pull-left" style="font-size: 20px;"> Process Payment</span>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="clear-fix">
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label></label>
+                                </div>
+                                <div class="col-md-8 col-sm-8 text-left">
+                                    <p class="red">{{PckgError | translate}}</p>
+                                    <p class="red">{{error | translate}}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label style="font-size: 20px;">Billing Information:</label>
+                                </div>
+                                <div class="col-md-8 text-left">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Cardholder Name</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <input type="text" [(ngModel)]="clientName" (click)="clear()" (keyup)="clear()">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Mailing Zip/Postal Code</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <input type="text" [(ngModel)]="MailingPostalCode" (keyup)="getLocation();clear();" (click)="clear()">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Mailing Country</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <select [(ngModel)]="mailingCountry" class="select-bg" (change)="getCountry($event.target.value);" (click)="clear()" (keyup)="clear()">
+                                        <option value="">{{'CLIENTS.COUNTRY' | translate}}</option>
+                                        <option *ngFor="let mailingcountrieslist of mailingCountriesList; let i='index'" value="{{mailingcountrieslist.NAME}}" id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Mailing State/Province</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <select [(ngModel)]="mailingState" class="select-bg" (click)="clear()" (keyup)="clear()">
+                                        <option value="">{{'CLIENTS.STATES' | translate}}</option>
+                                        <option *ngFor="let stateslist of statesList; let i='index'" value="{{stateslist.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{stateslist.STATE}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Mailing City</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <input type="text" [(ngModel)]="mailingCity" (click)="clear()" (keyup)="clear()">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Mailing Street</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <input type="text" [(ngModel)]="mailingStreet" (click)="clear()" (keyup)="clear()">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label style="font-size: 20px;">Payment Information:</label>
+                                </div>
+                                <div class="col-md-8 col-sm-8 text-left">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Card Type</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <select [(ngModel)]="cardType" class="select-bg" (change)="changeCard($event.target.value);" (click)="clear()" (keyup)="clear()">
+                                        <option value="">--Select Card--</option>
+                                        <option *ngFor="let paymentType of paymentsData; let i='index'" value="{{paymentType.Id}}">{{paymentType.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>Card Number</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <input type="text" [(ngModel)]="cardNumber"  (click)="clear()" (keyup)="clear()">
+                                    <span>**No Dashes or Spaces </span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>CVV</label>
+                                </div>
+                                <div class="col-md-4 col-sm-4 text-left">
+                                    <input type="text" [(ngModel)]="cvv" (click)="clear()" (keyup)="clear()">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 mt-15 clearfix">
+                                <div class="col-md-4 col-sm-4 text-right">
+                                    <label>{{'CREATE_TOKEN.EXPIRES' | translate}}</label>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4">
+                                    <select class="crt-tkn-select" class="select-bg" style="width:100%;" [(ngModel)]="expMonth" (click)="clear()" (keyup)="clear()">
+                                        <option *ngFor="let month of monthList; let i='index'" value="{{i+1}}">{{month}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-sm-4 ">
+                                    <select class="crt-tkn-select" class="select-bg" style="width:100%;" [(ngModel)]="expYear">
+                                        <option *ngFor="let year of yearList" value="{{year}}">{{year}}</option>
+                                    </select>
+                                </div>
+                                <!-- <div class="align-center">
+                                <p class="red">{{error | translate}}</p>
+                            </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 col-md-12" style="text-align:center;">
+                <a class="btn btn-default mb-5" (click)="purchaseProduct()" style="background-color:#35c31b;">
+                    <i class="fa fa-check"></i>PurchaseNow</a>
+                &nbsp;
+                <a class="btn btn-default mb-5" (click)="cancel()" style="background-color:red;">
+                    <i class="fa fa-remove"></i> {{'BUTTON.CANCEL' | translate}}</a>
+            </div>
+
+
+        </div>
+    </div>
+</div>

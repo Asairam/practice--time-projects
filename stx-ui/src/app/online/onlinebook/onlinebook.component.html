@@ -1,0 +1,378 @@
+<div class="signup-maindiv">
+	<div class="signup-middle">
+		<img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
+		/>
+	</div>
+	<div class="signup-caption">
+		Online Appointment Booking
+	</div>
+	<div class="apont-head-large mb-10 mt-10 text-uppercase">
+		Welcome to {{companyName}}
+	</div>
+	<div class="container form_cont" *ngIf="!paymentDetails">
+		<div class="col-sm-8">
+			<p class="red mb-0"> {{onlineBookingErr | translate }} </p>
+		</div>
+		<div class="col-md-12">
+			<div class="col-md-3">
+				<div class="col-md-4 text-right">
+					Client
+				</div>
+				<div class="col-md-8 text-left" *ngIf="clientsList.length > 1">
+					<select style="width:100%;" [(ngModel)]="clientId" (change)="changeClient($event.target.value)">
+						<option *ngFor="let client of clientsList" [value]="client.Id">{{client.FirstName+' '+client.LastName}}</option>
+					</select>
+				</div>
+				<div class="col-md-8 text-left text-uppercase" *ngIf="clientsList.length == 1">
+					<b>{{clientsList[0].FirstName+' '+clientsList[0].LastName}}</b>
+				</div>
+			</div>
+			<div class="col-md-2 text-center">
+				<a class="btn btn-gradient-txt" [routerLink]="['/online/client/appts']">
+					<span>My Appointments</span>
+				</a>
+			</div>
+			<div class="col-md-2 text-center" *ngIf="purchaseGiftButt">
+				<a class="btn btn-gradient-txt" [routerLink]="['/online/package/purchase']">
+					<span>Purchase Package</span>
+				</a>
+			</div>
+			<div class="col-md-2 text-center" *ngIf="purchaseGiftButt">
+				<a type="button" class="btn btn-gradient-txt" [routerLink]="['/onlinegift']">
+					<span>Purchase Gift</span>
+				</a>
+			</div>
+			<div class="col-md-1 text-center">
+				<button type="button" class="btn btn-gradient-txt" (click)='logout()'>
+					<span>Logout</span>
+				</button>
+			</div>
+		</div>
+		<div class=" col-md-12  appt-box-one mt-20">
+			<h2>Appointment Services </h2>
+			<div class="col-md-6 mt-20">
+				<div class="table-responsive">
+					<table class="table table-hover table-bordered form_cont_one">
+						<thead>
+							<tr>
+								<th class="thcss">Select Category</th>
+								<th class="thcss">Select Services</th>
+								<th style="width: 27%;" class="thcss">Select Provider</th>
+								<th class="thcss"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let row of rows; let i=index">
+								<td>
+									<select style="width:90%;" [(ngModel)]="row.serviceGroupName" (change)="categoryOfService($event.target.value, i)" (click)="clearErrorMsg()">
+										<!-- <option>{{serviceGroupName}}</option> -->
+										<option *ngFor="let groupData of serviceGroupList; let i='index'" value="{{groupData.serviceGroupName}}${{groupData.serviceGroupColor}}"
+										 id="groupData{{i}}">{{groupData.serviceGroupName1}}</option>
+										<!-- <option>--packages--</option>
+										  
+											  <option *ngFor="let packageName of packagesList; let i='index'" value="{{packagesList.Id}}" id="packagesList{{i}}">{{packageName.Name}}</option> -->
+										<option value="-" disabled="disabled">--- Packages ---</option>
+										<option *ngFor="let packageName of packageGroupList; let i='index'" value="scale:{{packageName.Id}}" id="packageName{{i}}">{{packageName.Name}}</option>
+									</select>
+								</td>
+								<td>
+									<select style="width:70%;" [(ngModel)]="row.Id" (change)="servicesListOnChange($event.target.value, i)" (click)="clearErrorMsg()">
+										<option value="">--select--</option>
+										<option *ngFor="let serviceData of serviceDetailsList[i]; let i='index'" [value]="serviceData.Id" id="serviceData{{i}}">{{serviceData.Name}}</option>
+
+									</select>
+								</td>
+								<td>
+									<select style="width:90%;" [(ngModel)]="row.workerName" *ngIf='workerList[i]?workerList[i].length>0:false' (change)="workerListOnChange($event.target.value,i)"
+									 (click)="clearErrorMsg()">
+										<option *ngFor="let workerData of workerList[i]; let i='index'" value="{{workerData.workername}}" id="serviceData{{i}}">{{workerData.name}}</option>
+										<!-- <option value="" >--select--</option> -->
+									</select>
+								</td>
+								<td>
+									<a (click)="addServices(index)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add">
+										<span class="add">
+											<i class="fa fa-plus" aria-hidden="true"></i>
+										</span>
+									</a>
+
+									<a *ngIf="rows.length>1" (click)="removeServices(i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+										<span class="del">
+											<i class="fa fa-minus" aria-hidden="true"></i>
+										</span>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+			<div class="col-md-12">
+				Estimated Duration:{{sumOfServiceDurations}} Minutes &nbsp;Estimated Price: {{totalServicePrice}}
+				<br>
+				<span class="red mt-10" *ngIf="depositAlert!=''">{{depositAlert}}</span>
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6" id="box-align">
+				<div class="col-md-12 appt-box-one">
+					<div class="clearfix"></div>
+					<div class="mt-20">
+						<div class="col-md-12 thcss">
+							<label>
+								<h2>Appointment Search Start Date</h2>
+							</label>
+						</div>
+						<div class="col-md-12">
+							<div class="col-md-3">
+							</div>
+							<div class="col-md-9">
+
+								<input type="text" (ngModelChange)="getWorkersFromDate()" [(ngModel)]="bsValue" bsDatepicker [(bsValue)]="bsValue" class="mb-25 datefield"
+								 [minDate]="minDate" [maxDate]="maxDate" [bsConfig]="datePickerConfig" />
+							</div>
+							<div class="col-md-12 mt-20 text-center">
+								<button type="button" class="save-btn" (click)="searchForAppointment()">Search For Appointment</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12 appt-box-one">
+					<div class="clearfix"></div>
+					<div class="mt-20">
+						<div class="col-md-12 thcss">
+							<label>
+								<h2>Appointment Notes</h2>
+							</label>
+						</div>
+						<div class="col-md-12">
+							<div class="col-md-3">
+								Notes
+							</div>
+							<div class="col-md-9">
+								<textarea class="w90" [(ngModel)]="apptNotes"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="appt-box-one col-md-12">
+					<h1 class="sub_titles">Appointment Search Results</h1>
+					<div class="col-md-12 mt-20 text-left" *ngIf="!apptId || isRebookAppt">
+						<button class="save-btn" (click)="bookAppointment('findappt')" *ngIf='showScheduleButton && apptSearchData.length!==0'>Schedule
+							Appointment</button>
+					</div>
+					<div class="col-md-12 mt-20 text-left" *ngIf="apptId && !isRebookAppt">
+						<button class="save-btn" (click)="bookAppointment('modify')" *ngIf='showScheduleButton && apptSearchData.length!==0'>Save
+							Appt Changes</button>
+					</div>
+					<div class="col-md-12 table-responsive">
+						<table class="table table-hover table-bordered form_cont_one">
+							<thead>
+								<tr>
+									<th class="thcss">Select Appointment Date / Time</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let searchData of apptSearchData; let i = 'index'" [ngClass]="{ 'row-selected': (selectedIndex === i) }">
+									<td (click)="scheduleButtonShow(apptSearchData[i].value, i)">{{searchData.value}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<p id="countdown" style="float: right;font-size: 20px;color: white;"></p>
+	<div *ngIf="paymentDetails" class="col-md-12 appt-box-one mt-20">
+		<div class="mb-10 mt-10 text-uppercase">
+			<span class="pull-left" style="font-size: 20px;"> Process Payment</span>
+		</div>
+		<div class="row">
+			<div class="col-md-10 text-center col-md-offset-1">
+				<div class="clear-fix">
+					<!-- <div class="col-md-12 col-sm-12 mt-15 clearfix">
+					<div class="col-md-4 col-sm-4 text-right">
+						<label>Amount</label>
+					</div>
+					<div class="col-md-8 col-sm-8 text-left">
+						<label>0.00</label>
+					</div>
+				</div> -->
+
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label style="font-size: 20px;">Billing Information:</label>
+						</div>
+						<div class="col-md-8 text-left">
+							&nbsp;
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Amount</label>
+						</div>
+						<div class="col-md-8 text-left">
+							<input type="text" [(ngModel)]="prepaidDepositAmount" [disabled]="true">
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Cardholder Name</label>
+						</div>
+						<div class="col-md-8 text-left">
+							<input type="text" [(ngModel)]="clientName">
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Mailing Zip/Postal Code</label>
+						</div>
+						<div class="col-md-4 col-sm-4 text-left">
+							<input type="text" [(ngModel)]="MailingPostalCode" (keyup)="getLocation()">
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Mailing Country</label>
+						</div>
+						<div class="col-md-8 text-left">
+							<select [(ngModel)]="mailingCountry" (change)="getCountry($event.target.value);">
+								<option value="">{{'CLIENTS.COUNTRY' | translate}}</option>
+								<option *ngFor="let mailingcountrieslist of mailingCountriesList; let i='index'" value="{{mailingcountrieslist.NAME}}" id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Mailing State/Province</label>
+						</div>
+						<div class="col-md-8 text-left">
+							<select [(ngModel)]="mailingState">
+								<option value="">{{'CLIENTS.STATES' | translate}}</option>
+								<option *ngFor="let stateslist of statesList; let i='index'" value="{{stateslist.STATE}}" id="profilePage_timezone_select_option_{{i}}">{{stateslist.STATE}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Mailing City</label>
+						</div>
+						<div class="col-md-8 text-left">
+							<input type="text" [(ngModel)]="mailingCity">
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Mailing Street</label>
+						</div>
+						<div class="col-md-8 text-left">
+							<input type="text" [(ngModel)]="mailingStreet">
+						</div>
+					</div>
+
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label style="font-size: 20px;">Payment Information:</label>
+						</div>
+						<div class="col-md-8 col-sm-8 text-left">
+							&nbsp;
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Card Type</label>
+						</div>
+						<div class="col-md-8 col-sm-8 text-left">
+							<select [(ngModel)]="cardType" (change)="changeCard($event.target.value);">
+								<option value="">--Select Card--</option>
+								<option *ngFor="let card of cardTypes; let i='index'" value="{{card.Id}}">{{card.Name}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>Card Number</label>
+						</div>
+						<div class="col-md-8 col-sm-8 text-left">
+							<input type="text" [(ngModel)]="cardNumber">
+							<span>**No Dashes or Spaces </span>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>CVV</label>
+						</div>
+						<div class="col-md-8 col-sm-8 text-left">
+							<input type="text" [(ngModel)]="cvv">
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 mt-15 clearfix">
+						<div class="col-md-4 col-sm-4 text-right">
+							<label>{{'CREATE_TOKEN.EXPIRES' | translate}}</label>
+						</div>
+
+						<div class="col-md-4 col-sm-4">
+							<select class="crt-tkn-select" style="width:100%;" [(ngModel)]="expMonth" (click)="clearErr()">
+								<option *ngFor="let month of monthList; let i='index'" value="{{i+1}}">{{month}}</option>
+							</select>
+						</div>
+						<div class="col-md-4 col-sm-4 ">
+							<select class="crt-tkn-select" style="width:100%;" [(ngModel)]="expYear" (click)="clearErr()">
+								<option *ngFor="let year of yearList" value="{{year}}">{{year}}</option>
+							</select>
+						</div>
+						<div class="align-center">
+							<p class="red">{{onlineBookingErr | translate}}</p>
+						</div>
+					</div>
+				</div>
+				<a *ngIf="paymentDetails" class="btn btn-default mb-5" (click)="makePayment()" style="background-color:#35c31b;">
+					<i class="fa fa-check"></i>PurchaseNow</a>
+				<a *ngIf="paymentDetails" class="btn btn-default mb-5" (click)="cancel()" style="background-color:red;">
+					<i class="fa fa-cancel"></i>Cancel</a>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+
+<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+ role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm" style="width: 590px;">
+		<div class="modal-content">
+			<table>
+				<tbody>
+					<tr>
+						<td style="padding: 10px;">
+							<img src="assets/images/declinedIcon.png">
+						</td>
+						<td>
+							{{serviceNotes}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="modal-footer">
+				<table>
+					<tbody>
+						<tr>
+
+							<td>
+								<button type="button" class="cancel-btn" (click)="popOk()">Ok</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+</div>

@@ -1,0 +1,88 @@
+<div class="signup-maindiv">
+  <div class="signup-middle">
+    <img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
+    />
+  </div>
+  <div class="signup-caption">
+    My Appointments
+  </div>
+  <div class="apont-head-large mb-10 mt-10 text-uppercase">
+    Welcome to {{companyName}}
+  </div>
+  <div class="col-md-6 client-name-head">
+    Client - {{clientName}}
+  </div>
+  <!-- <hr style="margin-top: 10px;"> -->
+  <div class="col-md-6" style="text-align: right;">
+    Appointments View
+    <select [(ngModel)]="apptType" class="signup-options" (change)="updateDisplayList()">
+      <option value="past">Past</option>
+      <option value="future">Future</option>
+    </select>
+  </div>
+  <div class="no-border mb-50 apptSer">
+    <table class="table table-new">
+      <thead>
+        <tr class="app12">
+          <th *ngIf="apptType === 'future'">Cancel Appt</th>
+          <th>{{'MODIFY_APPT.APPOINTMENT_DATE' | translate}}</th>
+          <th>Change Appointment</th>
+          <th>{{'MODIFY_APPT.APPOINTMENT_TIME' | translate}}</th>
+          <th>{{'COMMON.SERVICE' | translate}}</th>
+          <th>{{'COMMON.WORKER' | translate}}</th>
+          <th>{{'COMMON.DURATION' | translate}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of displayList;">
+          <td *ngIf="apptType === 'future' && allowCancelChange" style="text-align: center">
+            <input *ngIf="!(item.Booked_Online__c === 0) && item.Id && (item.Status__c !== 'Checked In')" type="checkbox" [(ngModel)]="item.checked">
+          </td>
+          <td *ngIf="apptType === 'future' && !allowCancelChange" style="text-align: center">
+            &nbsp;
+          </td>
+          <td>
+            <div *ngIf="item.Id">{{item.apptDt}}</div>
+          </td>
+          <td *ngIf="item.Booked_Online__c === 0">
+            <div *ngIf="item.Id">Please call to book again: {{companyPhone}}</div>
+          </td>
+          <!-- <td *ngIf="!(item.Booked_Online__c === 0) && apptType === 'past'">
+            <button *ngIf="item.Id" class="btn btn-gradient-txt" type="button" [routerLink]="['/onlinebook']">
+              <span style="font-size: 14px">
+                <i class="fa fa-hand-o-right" style="margin-right: 5px;"></i> Book Again</span>
+            </button>
+          </td> -->
+          <td *ngIf="!(item.Booked_Online__c === 0) && (item.rebookAllowed || apptType === 'past')">
+            <a *ngIf="item.Id" class="btn btn-gradient-txt" type="button" [routerLink]="['/onlinebook']" [queryParams]="{apptid:item.Id,rebook:1}">
+              <span style="font-size: 14px">
+                <i class="fa fa-hand-o-right" style="margin-right: 5px;"></i> Book Again</span>
+            </a>
+          </td>
+          <td *ngIf="!(item.Booked_Online__c === 0) && apptType === 'future' && !item.rebookAllowed && allowApptChange">
+            <a *ngIf="item.Id" class="btn btn-gradient-txt" type="button" [routerLink]="['/onlinebook']" [queryParams]="{apptid:item.Id}">
+              <span style="font-size: 14px">
+                <i class="fa fa-hand-o-right" style="margin-right: 5px;"></i> Change Appt</span>
+            </a>
+          </td>
+          <td *ngIf="!(item.Booked_Online__c === 0) && apptType === 'future' && !item.rebookAllowed && !allowApptChange">&nbsp;</td>
+          <td>{{item.apptTime}}</td>
+          <td>{{item.serviceName}}</td>
+          <td>{{item.workerName}}</td>
+          <td>{{item.Duration__c}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="text-align: center">
+      <button *ngIf="apptType === 'future'&& allowCancelChange" class="btn btn-gradient-txt" type="button" style="margin-left: 30px;" (click)="cancelAppts()">
+        <span style="font-size: 14px">
+          <i class="fa fa-check-square-o"></i> Cancel Appointment</span>
+      </button>
+      <button class="btn btn-gradient-txt" type="button" style="margin-left: 30px;" [routerLink]="['/onlinebook']">
+        <span style="font-size: 14px">
+          <i class="fa fa-close"></i> Close</span>
+      </button>
+    </div>
+  </div>
+</div>

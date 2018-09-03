@@ -1,0 +1,20 @@
+.maindiv-css {
+    width: 100%;
+    padding: 15px 110px 15px 25px;
+}
+
+.iframe-css {
+    width: 100%;
+    border: none;
+    height: 600px;
+}
+
+.iframe-border {
+    border: 0px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -o-border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}

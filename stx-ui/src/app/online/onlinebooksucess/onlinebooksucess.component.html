@@ -1,0 +1,35 @@
+<div class="signup-maindiv">
+  <div class="signup-middle">
+    <img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
+    />
+  </div>
+  <div class="signup-caption">
+    Online Appointment Booking
+  </div>
+  <div class="apont-head-large mb-10 mt-10 text-uppercase">
+    Welcome to {{companyName}}
+  </div>
+  <div class="container form_cont">
+    <div class="mt-20">
+      <div class="col-md-12 thcss">
+        <h1>{{clientBookingInfo[0]?.FirstName}} {{ clientBookingInfo[0]?.LastName}}</h1>
+        <h4>Online Appointment Booking - Success!</h4>
+      </div>
+      <div class="col-md-12 thcss mt-20">
+        <p> {{clientBookingInfo[0]?.Appt_Date_Time__c | date:'MM/dd/yyyy hh:mm a'}} -
+          <small>{{clientBookingInfo[0]?.srvcName}}</small>
+        </p>
+      </div>
+      <div class="col-md-12 text-center mt-20">
+        <div class="col-md-6 col-md-offset-3 text-center">
+          <a type="button" class="btn btn-gradient-txt" [routerLink]="['/onlinebook']">
+            <span>Book Another Appointment</span>
+          </a>
+          <button type="button" class="btn btn-gradient-txt" (click)="logout()">
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

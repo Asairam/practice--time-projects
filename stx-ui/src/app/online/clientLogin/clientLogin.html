@@ -1,0 +1,84 @@
+<div class="signup-maindiv" (keyup.enter)="getAuthorised()">
+	<div class="signup-middle">
+		<img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
+		/>
+	</div>
+	<div class="signup-caption">
+		Online Appointment Booking
+	</div>
+	<div class="apont-head-large mb-10 mt-10 text-uppercase">
+		Welcome to {{companyName}}
+	</div>
+	<span *ngIf="forgotpinTab === false">
+		<form autocomplete="off" class="staff-cont-rgt col-xs-12 col-sm-12 col-md-12 form-new">
+			<div class="col-xs-12 col-sm-12 col-md-12 signup-middle login-label">
+				LOGIN
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-6 form-group">
+				<div class="input-group form-input-group-list">
+					<span class="input-group-addon starImg">
+						<i class="fa fa-star" aria-hidden="true" style="color: red;"></i>
+					</span>
+					<input [(ngModel)]="userName" name="userName" class="form-control" type="text" autocomplete="nope" placeholder="Your Email"
+					 maxlength="60">
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-6 form-group">
+				<div class="input-group form-input-group-list">
+					<span class="input-group-addon starImg">
+						<i class="fa fa-star" aria-hidden="true" style="color: red;"></i>
+					</span>
+					<input [(ngModel)]="pin" name="pin" class="form-control" type="password" autocomplete="new-password" placeholder="PIN" maxlength="4">
+				</div>
+			</div>
+		</form>
+		<div class="col-xs-12 col-sm-12 col-md-12 signup-middle">
+			<button class="btn btn-gradient-txt" type="button" (click)="getAuthorised()" title="{{'LOGIN.LOGIN_LABEL_TITLE' | translate }}">
+				<span style="font-size: 17px"> {{'LOGIN.LOGIN_LABEL' | translate }}</span>
+			</button>
+			<a class="signup-a" (click)="forgotpinTab = true">Forgot PIN?</a>
+		</div>
+		<br>
+		<div class="signup-middle" style="margin-top: 140px">
+			<button [routerLink]="['/onlinegift/'+'any']" class="btn btn-gradient-txt" type="button" *ngIf="purchaseGiftButt">
+				<span style="font-size: 17px">Purchase Gift</span>
+			</button>
+			<button [routerLink]="['/online/client/add/'+dbName]" class="btn btn-gradient-txt" type="button" style="margin-left: 30px;">
+				<span style="font-size: 17px">New to {{companyName}}?</span>
+			</button>
+		</div>
+	</span>
+	<span *ngIf="forgotpinTab === true">
+		<form autocomplete="off" class="staff-cont-rgt col-xs-12 col-sm-12 col-md-12 form-new">
+			<div class="col-xs-12 col-sm-12 col-md-12 signup-middle login-label">
+				Forgot PIN?
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-6 form-group">
+				<div class="input-group form-input-group-list">
+					<span class="input-group-addon starImg">
+						<i class="fa fa-star" aria-hidden="true" style="color: red;"></i>
+					</span>
+					<input [(ngModel)]="userName" name="userName" class="form-control" type="text" autocomplete="nope" placeholder="Your Email"
+					 maxlength="60">
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-6 form-group form_cont" *ngIf="forgotpinEmails.length > 0">
+				<select [(ngModel)]="selectpinemail" class="form-control" [ngModelOptions]="{standalone: true}">
+					<option value="">-- Select --</option>
+					<option *ngFor="let item of forgotpinEmails" value="{{item.Id}}">{{item.fullName}}</option>
+				</select>
+			</div>
+		</form>
+		<div class="col-xs-12 col-sm-12 col-md-12 signup-middle">
+			<button class="btn btn-gradient-txt" type="button" (click)="sendPin()">
+				<span style="font-size: 17px">Send Pin</span>
+			</button>
+			<a class="signup-a" (click)="forgotpinTab = false;userName = '';forgotpinEmails = []">Cancel</a>
+		</div>
+	</span>
+	<hr>
+	<p style="color: white;font-size: 20px;">
+		{{loginMessage}}
+	</p>
+
+</div>

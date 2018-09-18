@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont" class="setsubcont">
         <div class="container">
             <div class="row">
@@ -19,7 +18,7 @@
                                     <td *ngIf='scalesdata.Active__c==0'>
                                         <input type="checkbox" disabled>
                                     </td>
-                                    <td class="tbl-txt" (click)="showData(scalesdata)">{{scalesdata.Name}}</td>
+                                    <td class="tbl-txt word-break" (click)="showData(scalesdata)">{{scalesdata.Name}}</td>
                                 </tr>
                                 <tr>
                                     <td align="center" colspan="2" (click)="createNewRecord()">
@@ -47,7 +46,7 @@
                                     <td *ngIf='scalesdata.Active__c==0'>
                                         <input type="checkbox" disabled>
                                     </td>
-                                    <td class="tbl-txt">
+                                    <td class="tbl-txt word-break">
                                         {{scalesdata.Name}}
                                     </td>
                                 </tr>
@@ -73,10 +72,6 @@
                         </div>
                         <div class="col-sm-7">
                             <input type="text" [(ngModel)]="name" (keypress)="clearErrMsg()">
-                        </div>
-                    </div>
-                    <div class="row mt-20 res-mt-15 text-center">
-                        <div class="col-sm-10">
                             <p class="red"> {{error | translate }} </p>
                         </div>
                     </div>
@@ -90,9 +85,8 @@
                     </div>
                     <div class="col-sm-8">
                         <p class="red"> {{error1 | translate }} </p>
-                    </div>
-                    <div class="col-sm-8">
                         <p class="red"> {{error2 | translate }} </p>
+                        <p class="red"> {{duplcateErr | translate }} </p>
                     </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-md-12 col-sm-12">
@@ -107,7 +101,7 @@
                                         </tr>
                                         <tr *ngFor="let scale of scales; let i='index'" id="scale{{i}}">
                                             <td>
-                                               {{scale.over}}
+                                                {{scale.over}}
                                             </td>
                                             <td>
                                                 <input type="text" [(ngModel)]="scale.upTo" (keypress)="clearErrMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
@@ -116,7 +110,7 @@
                                                 <input type="text" [(ngModel)]="scale.percent" (keypress)="clearErrMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
                                             </td>
                                             <td>
-                                                <a style="color: #000;" (click)="addNew()" *ngIf='showPlus == true'>
+                                                <a style="color: #000;" (click)="addNew(scale.upTo,i)" *ngIf='showPlus == true'>
                                                     <span class="add">
                                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                                     </span>
@@ -277,9 +271,8 @@
                     </div>
                     <div class="col-sm-8">
                         <p class="red"> {{error1 | translate }} </p>
-                    </div>
-                    <div class="col-sm-8">
                         <p class="red"> {{error2 | translate }} </p>
+                        <p class="red"> {{duplcateErr | translate }} </p>
                     </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-md-12 col-sm-12">
@@ -302,7 +295,7 @@
                                                 <input type="number" [(ngModel)]="scale.percent" (keypress)="clearErrMsg()" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
                                             </td>
                                             <td>
-                                                <a style="color: #000;" (click)="editAddNew()" *ngIf='showPlus == true'>
+                                                <a style="color: #000;" (click)="editAddNew(scale.upTo,i)" *ngIf='showPlus == true'>
                                                     <span class="add">
                                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                                     </span>
@@ -333,7 +326,9 @@
                         <div class="col-sm-3 text-right res-tleft">
                             <label>{{'SETUP_COMPENSATION_SCALES.PERIOD' | translate}}</label>
                         </div>
-                        <div class="col-sm-7"><b>Pay Period</b></div>
+                        <div class="col-sm-7">
+                            <b>Pay Period</b>
+                        </div>
                     </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-sm-3 text-right res-tleft">

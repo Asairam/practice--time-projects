@@ -14,6 +14,7 @@ import { AppointmentsService } from '../main/appointments.service';
 import { isNullOrUndefined } from 'util';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment/moment';
+import { JwtHelper } from 'angular2-jwt';
 @Component({
     selector: 'app-appointments-popup',
     templateUrl: './appointmentdetail.html',
@@ -21,6 +22,7 @@ import * as moment from 'moment/moment';
     providers: [ApptDetailService, CommonService, AppointmentsService]
 })
 export class ApptDetailComponent implements OnInit {
+    decodedToken: any;
     apptid: any;
     clientid: any;
     pkgbooking: any = false;
@@ -41,6 +43,7 @@ export class ApptDetailComponent implements OnInit {
     bookingDataList: any;
     statusColor = { 'background-color': '' };
     rows: any = [];
+    nonPckgSrvcs = [];
     ticketserviceId: any;
     serviceNotes: any = '';
     indexTemp: any = 0;
@@ -83,16 +86,24 @@ export class ApptDetailComponent implements OnInit {
         Rebooked__c: 0,
         CreatedBy: '',
         LastModifiedBy: '',
-        Current_Balance__c: ''
+        Current_Balance__c: '',
+        Booked_Online__c: 0
     };
+    displayAptdate = ['', ''];
+    createdDate = ['', ''];
+    lastModifyDate = ['', ''];
+    nextAppt = ['', ''];
     error = '';
     isModifyAllowed: boolean;
     isRebookAllowed: boolean;
     isRemainderEmailAllowed: boolean;
+    isRemainderTextAllowed: boolean;
     isSaveAllowed: boolean;
     isCheckedInAllowed: boolean;
     isBookApptAllowed: boolean;
     actionMethod: any;
+    decodeUserToken: any;
+    hideClientInfo: any;
     @ViewChild('serviceNotesModal') public serviceNotesModal: ModalDirective;
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -115,6 +126,21 @@ export class ApptDetailComponent implements OnInit {
         this.getApptServiceDetails(this.clientid, this.apptid);
         this.getpackagesListing();
         // this.setStatusList();
+        // ---Start of code for Permissions Implementation--- //
+        try {
+            this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+            this.decodeUserToken = new JwtHelper().decodeToken(localStorage.getItem('token'));
+        } catch (error) {
+            this.decodedToken = {};
+            this.decodeUserToken = {};
+        }
+        if (this.decodedToken.data && this.decodedToken.data.permissions) {
+            this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+        } else {
+            this.decodedToken = {};
+        }
+        this.getHideClientContactInfo();
+        // ---End of code for permissions Implementation--- //
     }
     setStatusList(apptStatus) {
         this.apptStatus = [];
@@ -166,7 +192,35 @@ export class ApptDetailComponent implements OnInit {
             this.statusColor = { 'background-color': this.bookingDataList.completeStatusColor };
         }
     }
-    sendReminder() {
+    sendReminderText() {
+        const dataObj = {
+            'mobileNum': this.apptData.mbphone,
+            'apptId': this.apptid};
+        this.apptDetailService.sendText(dataObj).subscribe(
+            data => {
+                const reminderTextStatus = data['result'];
+                this.toastr.success('Send Reminder Text: Sent', null, { timeOut: 1500 });
+
+            },
+            error => {
+                const status = JSON.parse(error['status']);
+                const statuscode = JSON.parse(error['_body']).status;
+                switch (status) {
+                    case 500:
+                        break;
+                    case 400:
+                        break;
+                }
+                if (statuscode === '2085' || statuscode === '2071') {
+                    if (this.router.url !== '/') {
+                        localStorage.setItem('page', this.router.url);
+                        this.router.navigate(['/']).then(() => { });
+                    }
+                }
+            }
+        );
+    }
+    sendReminderEmail() {
         let serviceNames = '';
         for (let i = 0; i < this.rows.length; i++) {
             serviceNames += this.rows[i].Name + ', ';
@@ -175,12 +229,14 @@ export class ApptDetailComponent implements OnInit {
             'clientFirstName': this.apptData.clientName.split(' ')[0],
             'clientLastName': this.apptData.clientName.split(' ')[1],
             'clientEmail': this.apptData.cltemail,
-            'clientPhone' : this.apptData.cltphone,
+            'clientPhone': this.apptData.cltphone,
             'aptDate': new DatePipe('en-Us').transform(this.apptData.Appt_Date_Time__c, 'MM/dd/yyyy hh:mm a'),
             'serviceNames': serviceNames.slice(0, -2),
             'status': 'Reminder Sent',
             'clientid': this.clientid,
-            'apptid': this.apptid
+            'apptid': this.apptid,
+            'Status_Date_Time_c': this.commonService.getDBDatTmStr(new Date()),
+            'Reminder_Type__c': 'Email'
         };
         this.apptDetailService.sendReminderToClient(dataObj, this.apptid).subscribe(
             data => {
@@ -248,13 +304,14 @@ export class ApptDetailComponent implements OnInit {
     //         });
     // }
     getApptServiceDetails(clientid, apptid) {
-
-        this.apptDetailService.getApptServices(clientid, apptid).subscribe(data => {
+        const reqDate = this.commonService.getDBDatStr(new Date());
+        this.apptDetailService.getApptServices(clientid, apptid, reqDate).subscribe(data => {
             const resData = data['result'];
             if (resData.nextapptresult.length > 0) {
                 if (resData && resData.nextapptresult && resData.nextapptresult[0].serviceName !== null) {
                     //  this.subSeaquentAppointmentDate = resData.nextapptresult[0].Appt_Date_Time__c + '-' + resData.nextapptresult[0].serviceName.replace(/,/g, ' / ');
                     this.subSeaquentAppointmentDate = resData.nextapptresult[0].Appt_Date_Time__c;
+                    this.nextAppt = this.commonService.getUsrDtStrFrmDBStr(resData.nextapptresult[0].Appt_Date_Time__c);
                     this.nextservicename = resData.nextapptresult[0].serviceName.replace(/,/g, ' / ');
                 } else {
                     this.subSeaquentAppointmentDate = '';
@@ -268,18 +325,36 @@ export class ApptDetailComponent implements OnInit {
                 //     displayName.innerHTML = 'Appointment Detail - ' + resData.apptrst[0].clientName;
                 // }
                 this.apptData = resData.apptrst[0];
+                this.displayAptdate = this.commonService.getUsrDtStrFrmDBStr(this.apptData.Appt_Date_Time__c);
+                if (this.apptData.clientName === null || this.apptData.clientName === 'null') {
+                    this.apptData.clientName = 'No Client';
+                }
                 if (this.apptData.notes === null || this.apptData.notes === 'null') {
                     this.apptData.notes = '';
+                }
+                if (this.apptData.cltemail === null || this.apptData.cltemail === 'null') {
+                    this.apptData.cltemail = '';
                 }
             }
 
             this.rows = resData.srvcresult;
+            for (let j = 0; j < this.rows.length; j++) {
+                this.rows[j]['Resources__c'] = this.rows[j]['Resources__c'] === 'null' || this.rows[j]['Resources__c'] === null ? '' : this.rows[j]['Resources__c'];
+                this.rows[j].servicedate = this.commonService.getUsrDtStrFrmDBStr(this.rows[j].Service_Date_Time__c);
+            }
+            this.nonPckgSrvcs = [];
+            const tempSer = this.rows.filter((obj) => !obj.Booked_Package__c || obj.Booked_Package__c === '' || obj.Booked_Package__c === null);
+            this.nonPckgSrvcs = tempSer.map((obj) => {
+                return { 'serId': obj.Id, 'ticketServiceId': obj.tsId, 'apptId': this.apptid, 'clientId': this.clientid, 'isclientPackage': 1 };
+            });
             // for ( let i = 0; i < this.rows.length; i++) {
             //     this.rows[i].Service_Date_Time__c = this.commonService.UTCStrToUsrTmzStr(this.rows[i].Service_Date_Time__c);
             // }
             // this.apptData.Appt_Date_Time__c = this.commonService.UTCStrToUsrTmzStr(this.apptData.Appt_Date_Time__c);
             this.apptData.creadate = this.commonService.UTCStrToUsrTmzStr(this.apptData.creadate);
+            this.createdDate = this.commonService.getUsrDtStrFrmDBStr(this.apptData.creadate);
             this.apptData.lastmofdate = this.commonService.UTCStrToUsrTmzStr(this.apptData.lastmofdate);
+            this.lastModifyDate = this.commonService.getUsrDtStrFrmDBStr(this.apptData.creadate);
             // if (this.clientPic !== '') {
             //     this.clientPic = this.apiEndPoint + '/' + this.apptData.clientpic;
             // } else {
@@ -316,11 +391,32 @@ export class ApptDetailComponent implements OnInit {
         };
         this.apptDetailService.saveAppointmentDetails(this.apptid, dataObj).subscribe(
             data => {
+                if (this.apptData.apstatus === 'Canceled') {
+                    this.apptDetailService.sendCancelReminder(this.apptid).subscribe(
+                        data1 => {
+                            const status = data1['result'];
+                        }, error1 => {
+                            const status = JSON.parse(error1['status']);
+                            const statuscode = JSON.parse(error1['_body']).status;
+                            switch (status) {
+                                case 500:
+                                    break;
+                                case 400:
+                                    break;
+                            }
+                            if (statuscode === '2085' || statuscode === '2071') {
+                                if (this.router.url !== '/') {
+                                    localStorage.setItem('page', this.router.url);
+                                    this.router.navigate(['/']).then(() => { });
+                                }
+                            }
+                        });
+                }
                 const saveAppointmentDetails = data['result'];
                 if (this.actionMethod === 'AppointmentDetail') {
                     this.router.navigate(['/client/edit/' + this.clientid]);
                 } else {
-                    this.router.navigate(['/appointments']);
+                    this.router.navigate(['/appointments'], { queryParams: { date: this.apptData.Appt_Date_Time__c.split(' ')[0] } });
                 }
             },
             error => {
@@ -368,6 +464,7 @@ export class ApptDetailComponent implements OnInit {
     }
     manageStatusButtons() {
         this.isRemainderEmailAllowed = false;
+        this.isRemainderTextAllowed = false;
         this.isRebookAllowed = false;
         this.isModifyAllowed = false;
         this.isCheckedInAllowed = false;
@@ -385,6 +482,7 @@ export class ApptDetailComponent implements OnInit {
         this.isOpenAppt = apptDate.getTime() >= todayDate.getTime() ? true : false;
         if (this.isOpenAppt && this.apptData.apstatus !== 'Complete') {
             this.isSaveAllowed = true;
+            this.isRemainderTextAllowed = true;
         }
         if (this.isOpenAppt && this.apptData.cltemail &&
             this.apptData.isTicket__c === 0 && this.apptData.No_Email__c !== 1 && this.apptData.apstatus !== 'Checked In' && this.apptData.apstatus !== 'Complete') {
@@ -432,73 +530,32 @@ export class ApptDetailComponent implements OnInit {
             });
     }
     validateCheckInData() {
-        let pckData = [];
-        const pckArray = [];
-        let sumOfDiscountedPrice = 0;
-        let discountedPackageTotal = 0;
-        let discountedPackage = 0;
-        let rows = [];
-        let pckgObj = {};
-        let pckId = '';
-        const ticketServiceData = [];
+        // let pckData = [];
+        // const pckArray = [];
+        // let sumOfDiscountedPrice = 0;
+        // let discountedPackageTotal = 0;
+        // let discountedPackage = 0;
+        // let rows = [];
+        const pckgObj = {};
+        // let pckId = '';
+        // const ticketServiceData = [];
         if (this.apptData.Booked_Package__c && this.apptData.Booked_Package__c !== '' && this.apptData.Booked_Package__c !== ',' &&
             this.apptData.Booked_Package__c !== 'undefined' && this.apptData.apstatus !== 'Checked In') {
-            this.apptDetailService.getApptServices(this.apptData.clientId, this.apptData.apptId).subscribe(data => {
-                const resData = data['result'];
-                rows = resData.srvcresult;
-                const bookedPckgVal = this.apptData.Booked_Package__c.split(',');
-                for (let i = 0; i < bookedPckgVal.length; i++) {
-                    pckData = pckData.concat(this.packagesList.filter((obj) => obj.Id === bookedPckgVal[i]));
-                    if (pckData && pckData[i] && pckData[i].Discounted_Package__c) {
-                        pckId = pckData[i].Id;
-                        discountedPackage += parseFloat(pckData[i].Discounted_Package__c);
-                        discountedPackageTotal += parseFloat(pckData[i].Discounted_Package__c);
-                        for (let j = 0; j < JSON.parse(pckData[i].JSON__c).length; j++) {
-                            sumOfDiscountedPrice += parseFloat(JSON.parse(pckData[i].JSON__c)[j].discountPriceEach);
-                            if ((rows[i].Id === JSON.parse(pckData[i].JSON__c)[j].serviceId) && (bookedPckgVal[i] === pckData[i].Id)) {
-                                ticketServiceData.push({
-                                    'pckId': pckId,
-                                    'serviceId': rows[i].Id,
-                                    'netPrice': JSON.parse(pckData[i].JSON__c)[j].discountPriceEach
-                                });
-                            }
-                        }
-
-                    }
-                    pckArray.push({
-                        'pckId': pckId,
-                        'sumOfDiscountedPrice': sumOfDiscountedPrice,
-                        'discountedPackage': discountedPackage,
-                        // 'discountPriceEach':
-                    });
-                    sumOfDiscountedPrice = 0;
-                    discountedPackage = 0;
-                }
-                pckgObj = {
-                    'pckArray': pckArray,
-                    'discountedPackageTotal': discountedPackageTotal,
-                    // 'discountedPackage': discountedPackage
-                    'ticketServiceData': ticketServiceData
-                };
-                this.apptData.apstatus = 'Checked In';
-                const apptDataObj = {
-                    'apstatus': 'Checked In',
-                    'clientCurBal': this.apptData.Current_Balance__c,
-                    'apptId': this.apptData.apptId,
-                    'netprice': this.apptData.netprice
-                };
-                const dataObj = {
-                    'apptDataObj': apptDataObj,
-                    'pckgObj': pckgObj
-                };
-                return dataObj;
-            },
-                error => {
-                    const errStatus = JSON.parse(error['_body'])['status'];
-                    if (errStatus === '2085' || errStatus === '2071') {
-                        this.router.navigate(['/']).then(() => { });
-                    }
-                });
+            //  this.apptDetailService.getApptServices(this.apptData.clientId, this.apptData.apptId).subscribe(data => {
+            // const resData = data['result'];
+            const result = this.commonService.getCheckInPrepaidPackage(this.packagesList, this.apptData, this.rows);
+            const dataObj = {
+                'apptDataObj': result.apptDataResult,
+                'pckgObj': result.packageResult
+            };
+            return dataObj;
+            // },
+            // error => {
+            //     const errStatus = JSON.parse(error['_body'])['status'];
+            //     if (errStatus === '2085' || errStatus === '2071') {
+            //         this.router.navigate(['/']).then(() => { });
+            //     }
+            // });
         } else if (this.apptData.apstatus !== 'Checked In') {
             const apptDataObj = {
                 'apstatus': 'Checked In',
@@ -516,11 +573,12 @@ export class ApptDetailComponent implements OnInit {
     }
     checkIn() {
         const dataObj = this.validateCheckInData();
+        dataObj.apptDataObj['Status_Date_Time_c'] = this.commonService.getDBDatTmStr(new Date());
         const dataObj1 = {
             'apptDataObj': dataObj.apptDataObj,
-            'pckgObj': this.commonService.removeDuplicates(dataObj.pckgObj, 'pckId'),
+            'pckgObj': dataObj.pckgObj,
         };
-        this.apptDetailService.changeApptStatus(dataObj1.apptDataObj, dataObj1.pckgObj)
+        this.apptDetailService.changeApptStatus(dataObj1.apptDataObj, dataObj1.pckgObj, this.nonPckgSrvcs)
             .subscribe(data => {
                 this.toastr.success('Appointment was successfullly checked in', null, { timeOut: 1500 });
                 this.getApptServiceDetails(this.clientid, this.apptid);
@@ -584,5 +642,18 @@ export class ApptDetailComponent implements OnInit {
         } else {
             this.router.navigate(['/client/edit/' + this.clientid]);
         }
+    }
+    getHideClientContactInfo() {
+        this.apptDetailService.getHideCliContactInfo(this.decodeUserToken.data.id).subscribe(data => {
+            this.hideClientInfo = data['result'][0].Hide_Client_Contact_Info__c;
+        }, error => {
+            const errStatus = JSON.parse(error['_body'])['status'];
+            if (errStatus === '2085' || errStatus === '2071') {
+                if (this.router.url !== '/') {
+                    localStorage.setItem('page', this.router.url);
+                    this.router.navigate(['/']).then(() => { });
+                }
+            }
+        });
     }
 }// main end

@@ -1,239 +1,223 @@
 <div id="wrapper_setup_new">
     <app-header [newMenu]="'noNav'"></app-header>
-    <section id="inner_cont">
-        <div class="container form_cont">
+    <section id="inner_cont" id="dvContents" style="color: white;" class="form_cont">
+        <div class="container">
             <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
-                    <label>{{'COMMON.BEGIN_DATE' | translate }} </label>
+                    <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
                 </div>
-                <div class="col-md-7 col-sm-8">
-                    <input class="datefield datefield" type="text" id="startId" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue"
-                        [bsConfig]="datePickerConfig">
+                <div class="col-md-4 col-sm-4">
+                    <input type="text" [(ngModel)]="startDate" (ngModelChange)="generateReport()" bsDatepicker [(bsValue)]="startDate" [maxDate]="minDate"
+                        [bsConfig]="datePickerConfig" class="datefield" [disabled]="datePicDis">
+                </div>
+                <div class="col-md-4 col-sm-4" *ngIf="arcButt">
+                    <button class="btn btn-gradient-txt" type="button" (click)="archiveButt();">
+                        <span style="font-size: 14px">
+                            <i class="fa fa-file-archive-o"></i> Archive</span>
+                    </button>
                 </div>
             </div>
             <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
-                    <label>{{'COMMON.END_DATE' | translate }} </label>
+                    <label>{{'COMMON.END_DATE' | translate }}</label>
                 </div>
-                <div class="col-md-7 col-sm-8">
-                    <input class="datefield datefield" type="text" id="endId" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1"
-                        [bsConfig]="datePickerConfig">
+                <div class="col-md-4 col-sm-4">
+                    <input type="text" [(ngModel)]="endDate" (ngModelChange)="generateReport()" bsDatepicker [(bsValue)]="endDate" [maxDate]="minDate"
+                        [bsConfig]="datePickerConfig" class="datefield" [disabled]="datePicDis">
+                </div>
+                <div class="col-md-4 col-sm-4" *ngIf="topBarButt">
+                    <button class="btn btn-gradient-txt" type="button" (click)="printDiv()">
+                        <span style="font-size: 14px">
+                            <i class="fa fa-print"></i> Print</span>
+                    </button>
                 </div>
             </div>
-            <div class="row mt-20 res-mt-15 ml-5" *ngIf="bsValue && bsValue1">
-                <div class="col-md-12" class="mt-top">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered form_cont_one">
-                            <thead>
-                                <tr>
-                                    <th class="thcss">{{'PROCESS_COMPENSATION.INCLUDE' | translate }}</th>
-                                    <th class="thcss">{{'COMMON.NAME' | translate }}</th>
-                                    <th class="thcss">{{'PROCESS_COMPENSATION.SETUP_COMPENSATION_METHODS' | translate }}</th>
-                                    <th class="thcss">{{'PROCESS_COMPENSATION.REGULAR_HOURS' | translate }}</th>
-                                    <th class="thcss">{{'PROCESS_COMPENSATION.OVERTIME_HOURS' | translate }}</th>
-                                    <th class="thcss">{{'PROCESS_COMPENSATION.EXTRA_PAY' | translate }}</th>
-                                    <th class="thcss">{{'PROCESS_COMPENSATION.DEDUCTION' | translate }}</th>
-                                    <th class="thcss">{{'COMMON.TOTAL' | translate }}</th>
-                                    <th class="thcss">{{'COMMON.TIPS' | translate }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td *ngIf='checkValue == false'>
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td *ngIf='checkValue == true'>
-                                        <input type="checkbox" checked />
-                                    </td>
-                                    <td>Brenda West</td>
-                                    <td>Hourly Plus Retail Commission </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" [ngModel]="reset" />
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td *ngIf='checkValue == false'>
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td *ngIf='checkValue == true'>
-                                        <input type="checkbox" checked />
-                                    </td>
-                                    <td>Diana 1 Welvaert</td>
-                                    <td>Hourly Plus Retail Commission</td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" [ngModel]="reset" />
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td *ngIf='checkValue == false'>
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td *ngIf='checkValue == true'>
-                                        <input type="checkbox" checked />
-                                    </td>
-                                    <td>Erica Keller</td>
-                                    <td>Hourly Plus Retail Commission</td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" [ngModel]="reset" />
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td *ngIf='checkValue == false'>
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td *ngIf='checkValue == true'>
-                                        <input type="checkbox" checked />
-                                    </td>
-                                    <td>Isabella Moran</td>
-                                    <td>Hourly Plus Retail Commission</td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" [ngModel]="reset" />
-                                    </td>
-                                    <td>10.00</td>
-                                </tr>
-                                <tr>
-                                    <td *ngIf='checkValue == false'>
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td *ngIf='checkValue == true'>
-                                        <input type="checkbox" checked />
-                                    </td>
-                                    <td>Tom Mapple</td>
-                                    <td>Hourly Plus Retail Commission</td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" [ngModel]="reset" />
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td *ngIf='checkValue == false'>
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td *ngIf='checkValue == true'>
-                                        <input type="checkbox" checked />
-                                    </td>
-                                    <td>Tracy Ross</td>
-                                    <td>Hourly Plus Retail Commission</td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" [ngModel]="reset" />
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td *ngIf='checkValue == false'>
-                                        <input type="checkbox" />
-                                    </td>
-                                    <td *ngIf='checkValue == true'>
-                                        <input type="checkbox" checked />
-                                    </td>
-                                    <td>Brenda West</td>
-                                    <td>Hourly Plus Retail Commission</td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" />
-                                    </td>
-                                    <td>
-                                        <input type="text" value="0.00" [ngModel]="reset" />
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="col-md-12">{{'PROCESS_COMPENSATION.TOTAL_PERIOD_COMPENSATION' | translate }} : $0.00</div>
-                    </div>
-                    <div class="row mt-20">
-                        <div class="col-md-7 col-sm-8 text-right res-tleft width-align">
-                            <button type="button" class="btn btn-primary" (click)="unSelectAll()">Un Select all workers</button>
-                            <button type="button" class="btn btn-primary" (click)="selectAll()">Select all workers</button>
-                            <button type="button" class="btn btn-primary" (click)="resetMethod()"> <i class="fa fa-cog" aria-hidden="true"></i> Generate</button>
+            <p class='red'>{{error | translate}}</p>
+            <span *ngIf="!fullviewSetup">
+                <div class="row mt-20 res-mt-15 ml-5" *ngIf="startDate && endDate && processCompObj.length > 0">
+                    <div class="col-md-12" class="mt-top">
+                        <div class="table-responsive" style="max-width: 85%">
+                            <table class="table table-hover table-bordered form_cont_one">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'PROCESS_COMPENSATION.INCLUDE' | translate }}</th>
+                                        <th class="thcss">{{'COMMON.NAME' | translate }}</th>
+                                        <th class="thcss">{{'PROCESS_COMPENSATION.SETUP_COMPENSATION_METHODS' | translate
+                                            }}
+                                        </th>
+                                        <th class="thcss">{{'PROCESS_COMPENSATION.REGULAR_HOURS' | translate }}</th>
+                                        <th class="thcss">{{'PROCESS_COMPENSATION.OVERTIME_HOURS' | translate }}</th>
+                                        <th class="thcss">{{'PROCESS_COMPENSATION.EXTRA_PAY' | translate }}</th>
+                                        <th class="thcss">{{'PROCESS_COMPENSATION.DEDUCTION' | translate }}</th>
+                                        <th class="thcss">{{'COMMON.TOTAL' | translate }}</th>
+                                        <th class="thcss">{{'COMMON.TIPS' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of processCompObj">
+                                        <td>
+                                            <input type="checkbox" [(ngModel)]="item.include" />
+                                        </td>
+                                        <td>{{item.workerName}}</td>
+                                        <td>{{item.compensationName}} </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="item.regularHours" />
+                                        </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="item.overtimeHours" />
+                                        </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="item.extraPay" />
+                                        </td>
+                                        <td>
+                                            <input type="text" [(ngModel)]="item.deduction" />
+                                        </td>
+                                        <td>
+                                            <span *ngIf="item.id !== ''">{{item.compensationAmount}}</span>
+                                        </td>
+                                        <td>
+                                            {{item.tipAmount}}
+                                        </td>
+                                        <td *ngIf="fullview && item.id !== ''">
+                                            <span class="add" style="line-height: 22px;cursor: pointer;" (click)="view(item)" title="view">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-md-12">{{'PROCESS_COMPENSATION.TOTAL_PERIOD_COMPENSATION' | translate }} : {{totalCount}}</div>
+                        </div>
+                        <div class="row mt-20">
+                            <div class="col-md-6 col-sm-8 res-tleft width-align">
+                                <button type="button" class="btn btn-gradient-txt" (click)="unSelectAll()">
+                                    <span style="font-size: 14px">Unselect All Workers</span>
+                                </button>
+                                <button type="button" class="btn btn-gradient-txt" (click)="selectAll()">
+                                    <span style="font-size: 14px">Select All Workers</span>
+                                </button>
+                            </div>
+                            <div class="col-md-6 col-sm-8 res-tleft width-align">
+                                <button type="button" class="btn btn-gradient-txt" *ngIf="resetButt" (click)="resetFun()">
+                                    <span style="font-size: 14px"> Reset </span>
+                                </button>
+                                <button type="button" class="btn btn-gradient-txt" (click)="generateButt()">
+                                    <span style="font-size: 14px">
+                                        <i class="fa fa-cog" aria-hidden="true"></i> Generate
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </span>
         </div>
+
+        <!-- Compensation Detail start-->
+        <span *ngIf="fullviewSetup">
+            <div class="col-md-12" class="mt-top">
+                <div class="table-responsive" style="max-width: 85%">
+                    <table class="table table-bordered form_cont_one">
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{'COMMON.NAME' | translate }}</th>
+                                <th class="thcss">Compensation</th>
+                                <th class="thcss">{{'PROCESS_COMPENSATION.REGULAR_HOURS' | translate }}</th>
+                                <th class="thcss">{{'PROCESS_COMPENSATION.OVERTIME_HOURS' | translate }}</th>
+                                <th class="thcss">{{'PROCESS_COMPENSATION.EXTRA_PAY' | translate }}</th>
+                                <th class="thcss">{{'PROCESS_COMPENSATION.DEDUCTION' | translate }}</th>
+                                <th class="thcss">{{'COMMON.TOTAL' | translate }}</th>
+                                <th class="thcss">{{'COMMON.TIPS' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{viewList.workerName}}</td>
+                                <td>{{viewList.compensationName}}</td>
+                                <td>{{viewList.regularHours}}</td>
+                                <td>{{viewList.overtimeHours}}</td>
+                                <td>${{viewList.extraPay | number: '1.2-4'}}</td>
+                                <td>${{viewList.deduction | number: '1.2-4'}}</td>
+                                <td>${{viewList.compensationAmount | number: '1.2-4'}}</td>
+                                <td>${{viewList.tipAmount | number: '1.2-4'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 1st table -->
+            <div class="col-md-12" class="mt-top">
+                <div class="table-responsive setsubcont" style="max-width: 85%">
+                    <hr>
+                    <h1>Compensation Detail</h1>
+                    <br>
+                    <table class="table table-hover table-bordered form_cont_one">
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{'SETUP_COMPANY_HOURSE.DATE' | translate }}</th>
+                                <th class="thcss">{{'SETUP_WORKERS_DETAILS.SERVICES' | translate }}</th>
+                                <th class="thcss">{{'CLIENTS.CLASSES' | translate }}</th>
+                                <th class="thcss">{{'CLIENTS.PRODUCTS' | translate }}</th>
+                                <th class="thcss">Hours Worked</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let items of finAry">
+                                <td>{{items.date | date : 'MM/dd/yyyy'}}</td>
+                                <td>${{items.services | number: '1.2-4'}}</td>
+                                <td>${{items.classes | number: '1.2-4'}}</td>
+                                <td>${{items.products | number: '1.2-4'}}</td>
+                                <td>{{items.hoursWorked}}</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <!-- 2nd table -->
+            <div class="col-md-12" class="mt-top">
+                <div class="table-responsive setsubcont" style="max-width: 85%;text-transform: capitalize;">
+                    <br>
+                    <table class="table table-hover table-bordered form_cont_one">
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{'SETUP_COMPENSATION_METHODS.STEP' | translate }}</th>
+                                <th class="thcss">{{'COMMON.ACTION' | translate }}</th>
+                                <th class="thcss">{{'SETUP_COMPENSATION_METHODS.VALUE' | translate }}</th>
+                                <th class="thcss">{{'COMMON.NUMBER' | translate }}</th>
+                                <th class="thcss">Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of viewResdata;let i = 'index'">
+                                <td>{{i + 1}}</td>
+                                <td>{{item.operator}}</td>
+                                <td>{{item.operand}}
+                                    <span *ngIf="(item.operand === 'Gross Service' && item.operandSubOption === 'All') || 
+                                    (item.operand === 'Gross Service' && item.operandSubOption === 'New Clients') || 
+                                    (item.operand === 'Gross Service' && item.operandSubOption === 'Booked Online') || 
+                                    (item.operand === 'Gross Service' && item.operandSubOption === 'Booked in-house') || 
+                                    (item.operand === 'Gross Service' && item.operandSubOption === 'Service Rebooked') || 
+                                    (item.operand === 'Gross Service' && item.operandSubOption === 'Standing Appointments') || 
+                                    (item.operand === 'Gross Service' && item.operandSubOption === 'Recurring Clients') ||
+                                    (item.operand === 'Services Performed' && item.operandSubOption === 'All') || 
+                                    (item.operand === 'Services Performed' && item.operandSubOption === 'New Clients') || 
+                                    (item.operand === 'Services Performed' && item.operandSubOption === 'Recurring Clients') || 
+                                    (item.operand === 'Services Performed' && item.operandSubOption === 'Booked in-house') || 
+                                    (item.operand === 'Services Performed' && item.operandSubOption === 'Booked Online') || 
+                                    (item.operand === 'Services Performed' && item.operandSubOption === 'Service Rebooked') ||
+                                    (item.operand === 'Services Performed' && item.operandSubOption === 'Standing Appointments') 
+                                    ">: {{item.operandSubOption}}
+                                    </span></td>
+                                <td>{{item.ticketNum}}</td>
+                                <td><span *ngIf="item.result">$</span>{{item.result | number: '1.2-4'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </span>
+        <!-- Compensation Detail end-->
     </section>
     <app-rightbar></app-rightbar>
 </div>

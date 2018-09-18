@@ -33,7 +33,7 @@ export class SetupMembershipsComponent implements OnInit {
     membershipsList: any;
     membershipsObj: any;
     Name: any;
-    active: any;
+    active: any = true;
     price: number;
     error: any;
     error1: any;
@@ -111,7 +111,7 @@ export class SetupMembershipsComponent implements OnInit {
         } else {
             if (this.active === true) {
                 this.active = this.defaultActive;
-            } else {
+            } else if (this.active === false || this.active === undefined) {
                 this.active = this.defaultInActive;
             }
             if (this.price === undefined) {

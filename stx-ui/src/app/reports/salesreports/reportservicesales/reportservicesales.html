@@ -7,8 +7,8 @@
                     <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="startDate" [maxDate]="minDate" [bsConfig]="datePickerConfig"
-                        class="datefield">
+                    <input type="text" [(ngModel)]='bsValue' (ngModelChange)='isGenerate = false' bsDatepicker [(bsValue)]="startDate" (click)="error = ''"
+                        [maxDate]="minDate" [bsConfig]="datePickerConfig" class="datefield">
                 </div>
             </div>
             <div class="row mt-20">
@@ -16,8 +16,8 @@
                     <label>{{'COMMON.END_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="endDate" [maxDate]="minDate" [bsConfig]="datePickerConfig"
-                        class="datefield">
+                    <input type="text" [(ngModel)]='bsValue1' (ngModelChange)='isGenerate = false' bsDatepicker [(bsValue)]="endDate" (click)="error = ''"
+                        [maxDate]="minDate" [bsConfig]="datePickerConfig" class="datefield">
                 </div>
             </div>
             <div class="row mt-20">
@@ -25,9 +25,8 @@
                     <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select (change)="reportTypeOnChange($event.target.value)">
+                    <select [(ngModel)]="type" (change)="reportTypeOnChange($event.target.value)">
                         <option *ngFor='let obj of reportTypes' value="{{obj}}">{{obj}}</option>
-                        <!-- <option>Worker</option> -->
                     </select>
                 </div>
             </div>
@@ -38,17 +37,18 @@
                 <div class="col-md-7 col-sm-8 disabled" *ngIf="showWorkers == true">
                     <select (change)="workerListOnChange($event.target.value)">
                         <option value="">{{'SERVICE_SALES_REPORT.SELECT_WORKER' | translate }}</option>
-                        <option *ngFor="let workerList of workerList; let i='index'" value="{{workerList.Id}}">{{workerList.FirstName+' '+workerList.LastName}}</option>
+                        <option *ngFor="let worker of workerList; let i='index'" value="{{worker.Id}}">{{worker.FullName}}</option>
                     </select>
                 </div>
                 <div class="col-md-7 col-sm-8" *ngIf="showWorkers == false">
                     <select (change)="workerListOnChange($event.target.value)">
                         <option value="">{{'SERVICE_SALES_REPORT.SELECT_WORKER' | translate }}</option>
-                        <option *ngFor="let workerList of workerList; let i='index'" value="{{workerList.Id}}">{{workerList.FirstName+' '+workerList.LastName}}</option>
+                        <option *ngFor="let worker of workerList; let i='index'" value="{{worker.Id+ '$' +worker.FullName}}">{{worker.FullName}}</option>
                     </select>
                 </div>
             </div>
             <p class='red'>{{error | translate}}</p>
+            <p class='red'>{{workererror | translate}}</p>
             <div class="row mt-20">
                 <div class="col-md-5 col-sm-4 text-right res-tleft">
                     &nbsp;
@@ -58,83 +58,85 @@
                         <i class="fa fa-cog" aria-hidden="true"></i>&nbsp;{{'BUTTON.GENERATE' | translate }}</button>
                 </div>
             </div>
+            <ng-container *ngIf="isGenerate">
+                <div class="row mt-20 res-mt-15 mr-10" *ngIf="itemsDisplay">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="thcss">{{companyName}}</th>
+                                    <th *ngIf="type == 'Company'" class="thcss">{{'COMMON.COMPANY_STATISTICS' | translate}}</th>
+                                    <th *ngIf="type == 'Worker'" class="thcss">Service Sales Report: Worker Statistics - {{workerName}}</th>
+                                    <th class="thcss"> {{startDate | date: 'MM/dd/yyyy'}} - {{endDate | date: 'MM/dd/yyyy'}}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row mt-20 res-mt-15">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="thcss">{{'COMMON.SERVICE_GROUP'| translate}}</th>
+                                            <th class="thcss">{{'SERVICE_SALES_REPORT.SETUP_SERVICE' | translate }}</th>
+                                            <th class="thcss">{{'SERVICE_SALES_REPORT.TOTAL_SALES' | translate }}</th>
+                                            <th class="thcss">{{'SERVICE_SALES_REPORT.SOLD' | translate }}</th>
+                                            <th class="thcss">{{'SERVICE_SALES_REPORT.AVERAGE_SALES' | translate }}</th>
+                                            <th class="thcss">{{'SERVICE_SALES_REPORT.PERCENTAGE_OF_SALES' | translate }}</th>
 
-            <div class="row mt-20 res-mt-15 mr-10" *ngIf="itemsDisplay">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate}}</th>
-                                <th class="thcss">{{'COMMON.COMPANY_STATISTICS' | translate}}</th>
-                                <th class="thcss"> {{startDate | date: 'MM/dd/yyyy'}} - {{endDate | date: 'MM/dd/yyyy'}}</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                <div class="row mt-20 res-mt-15">
-                    <div class="col-md-12 col-sm-12">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="thcss">{{'COMMON.SERVICE_GROUP'| translate}}</th>
-                                        <th class="thcss">{{'SERVICE_SALES_REPORT.SETUP_SERVICE' | translate }}</th>
-                                        <th class="thcss">{{'SERVICE_SALES_REPORT.TOTAL_SALES' | translate }}</th>
-                                        <th class="thcss">{{'SERVICE_SALES_REPORT.SOLD' | translate }}</th>
-                                        <th class="thcss">{{'SERVICE_SALES_REPORT.AVERAGE_SALES' | translate }}</th>
-                                        <th class="thcss">{{'SERVICE_SALES_REPORT.PERCENTAGE_OF_SALES' | translate }}</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <ng-container *ngFor="let servSalesArrayobj of servSalesArray; let i='index'">
-                                        <tr class="font-wght" *ngFor="let serviceSalesdata of servSalesArrayobj;">
-                                            <td>{{serviceSalesdata.serviceGroup}}</td>
-                                            <td>{{serviceSalesdata.serviceName}}</td>
-                                            <td>{{serviceSalesdata.totalSales | number: '1.2-4'}}</td>
-                                            <td>{{serviceSalesdata.serviceCount}}</td>
-                                            <td>{{serviceSalesdata.averageSales | number: '1.2-4'}}</td>
-                                            <td>{{serviceSalesdata.percntOfSales | number: '1.1-2'}}</td>
                                         </tr>
-                                        <tr class="font-weight">
-                                            <td>{{servSalesArrayobj[0].serviceGroup}} Total</td>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let servSalesArrayobj of servSalesArray; let i='index'">
+                                            <tr class="font-wght" *ngFor="let serviceSalesdata of servSalesArrayobj;">
+                                                <td>{{serviceSalesdata.serviceGroup}}</td>
+                                                <td>{{serviceSalesdata.serviceName}}</td>
+                                                <td>{{serviceSalesdata.totalSales | number: '1.2-4'}}</td>
+                                                <td>{{serviceSalesdata.serviceCount}}</td>
+                                                <td>{{serviceSalesdata.averageSales | number: '1.2-4'}}</td>
+                                                <td>{{serviceSalesdata.percntOfSales | number: '1.1-2'}}</td>
+                                            </tr>
+                                            <tr class="font-weight">
+                                                <td>{{servSalesArrayobj[0].serviceGroup}} Total</td>
+                                                <td></td>
+                                                <td>{{servSalesArray[i].totalSales | number: '1.2-4'}}</td>
+                                                <td>{{servSalesArray[i].soldVal}}</td>
+                                                <td>{{servSalesArray[i].avgSales | number: '1.2-4'}}</td>
+                                                <td>{{servSalesArray[i].percntOfSales | number: '1.1-2'}}</td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr class="font-weight" *ngIf="serviceSalesObj.length>0">
+                                            <td>{{'SERVICE_SALES_REPORT.SERVICE_SALES_TOTAL' | translate }}</td>
                                             <td></td>
-                                            <td>{{servSalesArray[i].totalSales | number: '1.2-4'}}</td>
-                                            <td>{{servSalesArray[i].soldVal}}</td>
-                                            <td>{{servSalesArray[i].avgSales | number: '1.2-4'}}</td>
-                                            <td>{{servSalesArray[i].percntOfSales | number: '1.1-2'}}</td>
+                                            <td>{{serviceSalesTotal | number: '1.2-4'}}</td>
+                                            <td>{{serviceSalesTotalSold}}</td>
+                                            <td>{{serviceSalesTotalAvg | number: '1.2-4'}}</td>
+                                            <td></td>
                                         </tr>
-                                    </ng-container>
-                                    <tr class="font-weight">
-                                        <td>{{'SERVICE_SALES_REPORT.SERVICE_SALES_TOTAL' | translate }}</td>
-                                        <td></td>
-                                        <td>{{serviceSalesTotal | number: '1.2-4'}}</td>
-                                        <td>{{serviceSalesTotalSold}}</td>
-                                        <td>{{serviceSalesTotalAvg | number: '1.2-4'}}</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="font-weight">
-                                        <td>Service Sales Less Refunds</td>
-                                        <td></td>
-                                        <td>{{lessRefundsTotal| number: '1.2-4'}}</td>
-                                        <td>-{{lessRefundsSold}}</td>
-                                        <td>{{lessRefundsAvg| number: '1.2-2'}}</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr class="font-weight">
-                                        <td>Service Net Sales Total</td>
-                                        <td></td>
-                                        <td>{{serviceNetSalesTotal| number: '1.2-4'}}</td>
-                                        <td>{{serviceNetSalesSold}}</td>
-                                        <td>{{serviceNetSalesAvg| number: '1.2-4'}}</td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <tr class="font-weight" *ngIf="serviceSalesRefundObj.length>0">
+                                            <td>Service Sales Less Refunds</td>
+                                            <td></td>
+                                            <td>{{lessRefundsTotal| number: '1.2-4'}}</td>
+                                            <td>-{{lessRefundsSold}}</td>
+                                            <td>{{lessRefundsAvg| number: '1.2-2'}}</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="font-weight" *ngIf="serviceSalesObj.length>0">
+                                            <td>Service Net Sales Total</td>
+                                            <td></td>
+                                            <td>{{serviceNetSalesTotal| number: '1.2-4'}}</td>
+                                            <td>{{serviceNetSalesSold}}</td>
+                                            <td>{{serviceNetSalesAvg| number: '1.2-4'}}</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </ng-container>
         </div>
     </section>
     <app-rightbar></app-rightbar>

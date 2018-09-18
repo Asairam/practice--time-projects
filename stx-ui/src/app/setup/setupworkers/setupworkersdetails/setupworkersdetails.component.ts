@@ -9,7 +9,8 @@ import { SetupWorkersDetailsService } from './setupworkersdetails.service';
 // import { environment } from '../../../environments/environment';
 import * as config from '../../../app.config';
 import { CommonService } from '../../../common/common.service';
-
+import { JwtHelper } from 'angular2-jwt';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-setupworkersdetails-popup',
   templateUrl: './setupworkersdetails.html',
@@ -17,6 +18,7 @@ import { CommonService } from '../../../common/common.service';
   styleUrls: ['./setupworkersdetails.css']
 })
 export class SetupWorkersDetailsComponent implements OnInit {
+  decodedToken: any;
   bsValue: any = new Date();
   inactive = false;
   // maxDate = new Date(2018, 9, 15);
@@ -141,6 +143,12 @@ export class SetupWorkersDetailsComponent implements OnInit {
   error9: any;
   error10: any;
   goalError: any;
+  pcodeErr: any;
+  mcodeErr: any;
+  primaryCountryCode = '';
+  mobileCountryCode = '';
+  emrgencyCountryCode2 = '';
+  emrgencyCountryCode1 = '';
   goalListError: any;
   workerServiceError: any;
   // goals
@@ -164,6 +172,8 @@ export class SetupWorkersDetailsComponent implements OnInit {
   deleteWorkerGoalId: any;
   // other
   otherError: any;
+  otherErr1: any;
+  otherErr2: any;
   calculationList: any;
   toastermessage: any;
   toasterAction = '';
@@ -174,13 +184,15 @@ export class SetupWorkersDetailsComponent implements OnInit {
   image: any = '';
   serviceIndex: any;
   serviceErrorName = '';
+  goallineerror = [];
+  hideClientContactInfo: any;
   // newClient = false;
   constructor(private toastr: ToastrService,
     private translateService: TranslateService,
     private setupWorkersDetailsService: SetupWorkersDetailsService,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private commonService: CommonService,
+    private commonService: CommonService, private http: HttpClient,
     @Inject('defaultActive') public defaultActive: string,
     @Inject('defaultInActive') public defaultInActive: string,
     @Inject('apiEndPoint') private apiEndPoint: string) {
@@ -206,6 +218,18 @@ export class SetupWorkersDetailsComponent implements OnInit {
     // this.mobileCarriersComponent.getMobileCarriersData();
     this.isClass = config.environment.booleanFalse;
     this.compensationMethodValue = '--None--';
+    // ---Start of code for Permissions Implementation--- //
+    try {
+      this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+    } catch (error) {
+      this.decodedToken = {};
+    }
+    if (this.decodedToken.data && this.decodedToken.data.permissions) {
+      this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+    } else {
+      this.decodedToken = {};
+    }
+    // ---End of code for permissions Implementation--- //
   }
   cancel() {
     this.disableDiv = true;
@@ -253,7 +277,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
     this.emergencySecondaryPhone = '';
     this.onlineBookingHoursValue = '';
     this.appointmentsValue = '';
-    this.serviceLevel = '';
+    this.serviceLevel = this.levelValues.length > 0 ? this.levelValues[0].level : undefined;
     this.usesTimeClockValue = '';
     this.retailOnlyValue = '';
     this.hourlyWageValue = '';
@@ -466,8 +490,14 @@ export class SetupWorkersDetailsComponent implements OnInit {
       this.zipCode = workerData.PostalCode;
       this.city = workerData.City;
       this.state = workerData.State;
-      this.primaryPhone = workerData.Phone;
-      this.mobilePhone = workerData.MobilePhone;
+      if (workerData.Phone) {
+        this.primaryCountryCode = workerData.Phone.split('-')[0];
+        this.primaryPhone = workerData.Phone.split('-')[1] + '-' + workerData.Phone.split('-')[2];
+      }
+      if (workerData.MobilePhone) {
+        this.mobileCountryCode = workerData.MobilePhone.split('-')[0];
+        this.mobilePhone = workerData.MobilePhone.split('-')[1] + '-' + workerData.MobilePhone.split('-')[2];
+      }
       this.mobileCarrier = workerData.Mobile_Carrier__c;
       this.isSendNotificationForBookAppointment = workerData.Send_Notification_for_Booked_Appointment__c;
       this.isSendNotificationForCancelAppointment = workerData.Send_Notification_for_Canceled_Appt__c;
@@ -475,8 +505,16 @@ export class SetupWorkersDetailsComponent implements OnInit {
       this.birthMonth = workerData.Birth_Month__c;
       this.workerNotes = workerData.Worker_Notes__c;
       this.emergencyName = workerData.Emergency_Name__c;
-      this.emergencyPrimaryPhone = workerData.Emergency_Primary_Phone__c;
-      this.emergencySecondaryPhone = workerData.Emergency_Secondary_Phone__c;
+      // this.emergencyPrimaryPhone = workerData.Emergency_Primary_Phone__c;
+      if (workerData.Emergency_Primary_Phone__c) {
+        this.emrgencyCountryCode1 = workerData.Emergency_Primary_Phone__c.split('-')[0];
+        this.emergencyPrimaryPhone = workerData.Emergency_Primary_Phone__c.split('-')[1] + '-' + workerData.Emergency_Primary_Phone__c.split('-')[2];
+      }
+      // this.emergencySecondaryPhone = workerData.Emergency_Secondary_Phone__c;
+      if (workerData.Emergency_Secondary_Phone__c) {
+        this.emrgencyCountryCode2 = workerData.Emergency_Secondary_Phone__c.split('-')[0];
+        this.emergencySecondaryPhone = workerData.Emergency_Secondary_Phone__c.split('-')[1] + '-' + workerData.Emergency_Secondary_Phone__c.split('-')[2];
+      }
       this.permissioneMethodValue = workerData.Permission_Set__c;
       /* prasent we r storing user type column in db not confirmed till now */
       if (workerData.UserType === '' || workerData.UserType === null || workerData.UserType === undefined) {
@@ -488,16 +526,17 @@ export class SetupWorkersDetailsComponent implements OnInit {
       this.hourlyWageValue = workerData.Hourly_Wage__c;
       this.merchantTerminalId = workerData.Merchant_Account_ID__c;
       this.merchantAccountKey = workerData.Merchant_Account_Key__c;
-      this.onlineBookingHoursValue = workerData.Online_Hours__c;
-      this.appointmentsValue = workerData.Appointment_Hours__c;
+      this.onlineBookingHoursValue = workerData.Online_Hours__c ? workerData.Online_Hours__c : '';
+      this.appointmentsValue = workerData.Appointment_Hours__c ? workerData.Appointment_Hours__c : '';
       this.salaryValue = workerData.Salary__c;
-      this.serviceLevel = workerData.Service_Level__c;
+      this.serviceLevel = workerData.Service_Level__c ? workerData.Service_Level__c : (this.levelValues.length > 0 ? this.levelValues[0].level : undefined);
       this.retailOnlyValue = workerData.Retail_Only__c;
       this.usesTimeClockValue = workerData.Uses_Time_Clock__c;
       this.viewOnlyMyApptsValues = workerData.View_Only_My_Appointments__c;
       this.canViewApptValues = workerData.Can_View_Appt_Values_Totals__c;
       this.workerPin = workerData.Worker_Pin__c;
       this.paymentGateWay = workerData.Payment_Gateway__c;
+      this.hideClientContactInfo = workerData.Hide_Client_Contact_Info__c;
       // this.getCountryStates();
       // this.getServiceGroupsList();
       // this.birthDateAndDays();
@@ -507,7 +546,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
       this.getGoals();
       this.addRows();
       this.previousGoals = false;
-      this.setupWorkersDetailsService.previousGoals(this.previousGoals, this.updateId)
+      this.setupWorkersDetailsService.previousGoals(this.previousGoals, this.updateId, this.commonService.getDBDatStr(new Date()))
         .subscribe(data1 => {
           this.goalList = data1['result'];
           this.goalList = this.updateDateFields(this.goalList);
@@ -526,10 +565,40 @@ export class SetupWorkersDetailsComponent implements OnInit {
       this.goalListRows = false;
     }
   }
+  checkServiceDurations(serviceData) {
+    const durationKeys = ['Duration_1__c', 'Duration_2__c', 'Duration_3__c', 'Buffer_After__c'];
+    const isDurationExsists = durationKeys.map((key) => serviceData[key] ? serviceData[key] : 0).findIndex((val) => (val !== 0 && val)) !== -1 ? true : false;
+    if (isDurationExsists) {
+      let totalDuration = 0;
+      totalDuration += serviceData['Duration_1__c'] ? +serviceData['Duration_1__c'] : 0;
+      totalDuration += serviceData['Duration_2__c'] ? +serviceData['Duration_2__c'] : 0;
+      totalDuration += serviceData['Duration_3__c'] ? +serviceData['Duration_3__c'] : 0;
+      totalDuration += serviceData['Buffer_After__c'] ? +serviceData['Buffer_After__c'] : 0;
+      return (totalDuration % this.bookingIntervalMinutesForDurations !== 0) ? true : false;
+    } else {
+      return false;
+    }
+  }
   commonSave() {
+    this.workerServiceError = '';
     /*services */
     // this.workerServiceData = this.workerServiceData.filter(function () { return true; });
     //  this.updateWorkerServiceValues();
+
+    // removed for calculations of service durations
+    // if (+workerData[i].Duration_1__c % this.appointmentsBookEveryValue !== 0) {
+    //   this.serviceErrorName = workerData[i]['Name'];
+    //   this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_MULTIPLE_OF_INTERVAL_MINUTES';
+    //   window.scrollTo(0, 0);
+    // } if (+workerData[i].Duration_2__c % this.appointmentsBookEveryValue !== 0) {
+    //   this.serviceErrorName = workerData[i]['Name'];
+    //   this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_MULTIPLE_OF_INTERVAL_MINUTES';
+    //   window.scrollTo(0, 0);
+    // } if (+workerData[i].Duration_3__c % this.appointmentsBookEveryValue !== 0) {
+    //   this.serviceErrorName = workerData[i]['Name'];
+    //   this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_MULTIPLE_OF_INTERVAL_MINUTES';
+    //   window.scrollTo(0, 0);
+    // }
     let workerData = [];
     workerData = this.workerServicesData.filter((data) => data['Removed'] === false && data['isTouched']);
     for (let i = 0; i < workerData.length; i++) {
@@ -538,32 +607,28 @@ export class SetupWorkersDetailsComponent implements OnInit {
           this.serviceErrorName = workerData[i]['Name'];
           this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_SERVICE_FEE_AMOUNT_NOT_GREATERTHAN_SERVICE_PRICE';
           window.scrollTo(0, 0);
+          break;
         }
       }
       if ((workerData[i].Service_Fee_Amount__c && workerData[i].Service_Fee_Percent__c)) {
         this.serviceErrorName = workerData[i]['Name'];
         this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_ALLOW_EITHER_SERVICE_FEE_AMOUNT_OR_SERVICE_FEE_PERCENTAGE';
         window.scrollTo(0, 0);
+        break;
       } if (+workerData[i].Service_Fee_Percent__c < 0 || +workerData[i].Service_Fee_Percent__c > 99) {
         this.serviceErrorName = workerData[i]['Name'];
         this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_SERVICE_FEE_PERCENTAGE_LIMIT';
         window.scrollTo(0, 0);
-      } if (+workerData[i].Duration_1__c % this.appointmentsBookEveryValue !== 0) {
+        break;
+      } if (this.checkServiceDurations(workerData[i])) {
         this.serviceErrorName = workerData[i]['Name'];
-        this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_MULTIPLE_OF_INTERVAL_MINUTES';
+        this.workerServiceError = `service total duration must be a multiple of the appointment booking ${this.bookingIntervalMinutesForDurations} minute interval`;
         window.scrollTo(0, 0);
-      } if (+workerData[i].Duration_2__c % this.appointmentsBookEveryValue !== 0) {
-        this.serviceErrorName = workerData[i]['Name'];
-        this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_MULTIPLE_OF_INTERVAL_MINUTES';
-        window.scrollTo(0, 0);
-      } if (+workerData[i].Duration_3__c % this.appointmentsBookEveryValue !== 0) {
-        this.serviceErrorName = workerData[i]['Name'];
-        this.workerServiceError = 'SETUP_WORKERS_DETAILS.VALID_MULTIPLE_OF_INTERVAL_MINUTES';
-        window.scrollTo(0, 0);
+        break;
       }
-    } /*services end here */
+    }
+    /*services end here */
     /*create goals() */
-
     if (this.goalList && this.goalList.length > 0) {
       for (let j = 0; j < this.goalList.length; j++) {
         if (this.goalList[j].goalsId !== '') {
@@ -576,10 +641,12 @@ export class SetupWorkersDetailsComponent implements OnInit {
               )) {
               this.goalError = 'SETUP_WORKERS_DETAILS.VALID_NO_BLANK_START_AND_END_DATE';
               window.scrollTo(0, 0);
+              break;
             } else if (this.goalList[j].startDate > this.goalList[j].endDate) {
               this.lineCount = j;
               this.goalListError = 'Line-' + this.lineCount + ': SETUP_WORKERS_DETAILS.VALID_STARTDATE_MUST_EARLIER_THAN_ENDDATE';
               window.scrollTo(0, 0);
+              break;
             }
           }
         } else {
@@ -598,9 +665,11 @@ export class SetupWorkersDetailsComponent implements OnInit {
               || this.goalsRows[i].endDate === 'Invalid Date')) {
             this.goalError = 'SETUP_WORKERS_DETAILS.VALID_NO_BLANK_START_AND_END_DATE';
             window.scrollTo(0, 0);
+            break;
           } else if (this.goalsRows[i].startDate > this.goalsRows[i].endDate) {
             this.goalError = 'SETUP_WORKERS_DETAILS.VALID_STARTDATE_MUST_EARLIER_THAN_ENDDATE';
             window.scrollTo(0, 0);
+            break;
           }
         } else {
           this.goalsRows = [];
@@ -610,6 +679,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
     // WorkerProfile  AND other tab validations
     // tslint:disable-next-line:max-line-length
     //   const NUM_REGEXP = /^^(0|[1-9][0-9]*)$/;
+    const NUM_REGEXP = /^[0-9]$/;
     const EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (this.firstName === '' || this.firstName === undefined) {
       this.error = 'SETUP_WORKERS_DETAILS.VALID_NOBLANK_FIRST_NAME_FIELD';
@@ -641,22 +711,36 @@ export class SetupWorkersDetailsComponent implements OnInit {
     } else if (this.bsValue === '' || this.bsValue === undefined || this.bsValue === null) {
       this.error6 = 'SETUP_WORKERS_DETAILS.VALID_NOBLANK_START_DATE_FIELD';
       window.scrollTo(0, 0);
+    } else if (this.primaryPhone !== '' && this.primaryPhone !== undefined && this.primaryCountryCode === '') {
+      this.pcodeErr = 'Country code is required for Primary phone';
+      window.scrollTo(0, 0);
+    } else if (this.mobilePhone !== '' && this.mobilePhone !== undefined && this.mobileCountryCode === '') {
+      this.mcodeErr = 'Country code is required for Mobile phone';
+      window.scrollTo(0, 0);
     } else if (this.birthMonth === '' && this.birthDay !== '') {
       this.error10 = 'SETUP_WORKERS_DETAILS.INVALID_BIRTH_MONTH';
       window.scrollTo(0, 0);
-    } else if (this.birthDay === '' && this.birthMonth !== '' ) {
+    } else if (this.birthDay === '' && this.birthMonth !== '') {
       this.error10 = 'SETUP_WORKERS_DETAILS.INVALID_BIRTH_DAY';
+      window.scrollTo(0, 0);
+    } else if (this.emergencyPrimaryPhone !== '' && this.emergencyPrimaryPhone !== undefined && this.emrgencyCountryCode1 === '') {
+      this.pcodeErr = 'Country code is required for  Emergency primary phone';
+      window.scrollTo(0, 0);
+    } else if (this.emergencySecondaryPhone !== '' && this.emergencySecondaryPhone !== undefined && this.emrgencyCountryCode2 === '') {
+      this.mcodeErr = 'Country code is required for  Emergency Secondary phone';
       window.scrollTo(0, 0);
       // } else if ((this.serviceLevel === '' || this.serviceLevel === '0' || this.serviceLevel === 0
       //   || this.serviceLevel === undefined || this.serviceLevel === 'None') && this.workerServiceData && this.workerServiceData.length > 0) {
-    } else if (this.serviceLevel === '' || this.serviceLevel === '0' || this.serviceLevel === 0
-      || this.serviceLevel === undefined || this.serviceLevel === 'None') {
-      this.error7 = 'SETUP_WORKERS_DETAILS.VALID_NOBLANK_SERVICE_LEVEL_FIELD';
-      window.scrollTo(0, 0);
     } else if (this.hourlyWageValue < 0 || this.salaryValue < 0) {
       this.otherError = 'SETUP_WORKERS_DETAILS.VALID_HOURLY_WAGE_AND_SALARY_FIELDS_ZERO_OR_POSITIVE';
     } else if (this.hourlyWageValue > 9999.999 || this.salaryValue > 9999999.999) {
       this.otherError = 'SETUP_WORKERS_DETAILS.VALID_HOURLY_WAGE_AND_SALARY_FIELDS_LIMIT';
+    } else if ((this.merchantTerminalId !== '' && this.merchantTerminalId !== null) && (this.merchantAccountKey === '' || this.merchantAccountKey === null)) {
+      this.otherErr1 = 'VALIDATION_MSG.INVALID_MERCHANT_KEY';
+      window.scrollTo(0, 0);
+    } else if (this.merchantAccountKey !== '' && (this.merchantTerminalId === '' || this.merchantTerminalId === null)) {
+      this.otherErr2 = 'VALIDATION_MSG.INVALID_MERCHANT_TERMINAL_ID';
+      window.scrollTo(0, 0);
     } else {
       if (this.activeStatus === undefined || this.activeStatus === false) {
         this.activeStatus = this.defaultInActive;
@@ -731,8 +815,8 @@ export class SetupWorkersDetailsComponent implements OnInit {
           'zipCode': this.zipCode,
           'city': this.city,
           'state': this.state,
-          'primaryPhone': this.primaryPhone,
-          'mobilePhone': this.mobilePhone,
+          'primaryPhone': this.primaryPhone !== '' && this.primaryPhone ? this.primaryCountryCode + '-' + this.primaryPhone : '',
+          'mobilePhone': this.mobilePhone !== '' && this.mobilePhone ? this.mobileCountryCode + '-' + this.mobilePhone : '',
           'mobileCarrier': this.mobileCarrier,
           'isSendNotificationForBookAppointment': this.isSendNotificationForBookAppointment,
           'isSendNotificationForCancelAppointment': this.isSendNotificationForCancelAppointment,
@@ -740,8 +824,8 @@ export class SetupWorkersDetailsComponent implements OnInit {
           'birthMonth': this.birthMonth,
           'workerNotes': this.workerNotes,
           'emergencyName': this.emergencyName,
-          'emergencyPrimaryPhone': this.emergencyPrimaryPhone,
-          'emergencySecondaryPhone': this.emergencySecondaryPhone,
+          'emergencyPrimaryPhone': this.emergencyPrimaryPhone !== '' && this.emergencyPrimaryPhone ? this.emrgencyCountryCode1 + '-' + this.emergencyPrimaryPhone : '',
+          'emergencySecondaryPhone': this.emergencySecondaryPhone !== '' && this.emergencySecondaryPhone ? this.emrgencyCountryCode2 + '-' + this.emergencySecondaryPhone : '',
           'onlineBookingHoursValue': this.onlineBookingHoursValue,
           'appointmentsValue': this.appointmentsValue,
           'serviceLevel': this.serviceLevel,
@@ -760,7 +844,8 @@ export class SetupWorkersDetailsComponent implements OnInit {
           'merchantAccountKey': this.merchantAccountKey,
           'appointmentsBookEveryValue': this.appointmentsBookEveryValue,
           'password': this.password1,
-          'image': this.image
+          'image': this.image,
+          'hideClientContactInfo': this.hideClientContactInfo === false || this.hideClientContactInfo === 0 ? 0 : 1
         };
 
         // goals starts here
@@ -773,46 +858,56 @@ export class SetupWorkersDetailsComponent implements OnInit {
           this.userData['namechanged'] = true;
           this.userData['prevUserName'] = this.prevUserName;
         }
-
-        const workerservices = this.workerServicesData.filter((data) => ((data['Edit'] === true) || (data['Edit'] === false && data['Removed'] === false)) && data['isTouched']);
+        const workerservices = this.workerServicesData.filter((data) => ((data['Edit'] === false && data['Removed'] === false && data['seleitem'] === 'performs')) ||
+          (data['Edit'] === true && data['isTouched']));
+        this.goals.forEach(element => {
+          element.startDBDate = this.commonService.getDBDatStr(element.startDate);
+          element.endDBDate = this.commonService.getDBDatStr(element.endDate);
+        });
         const dataObj = {
           'workerServiceData': workerservices,
           'workerData': this.userData,
           'goalsData': this.goals
         };
-        this.setupWorkersDetailsService.saveUser(this.updateId, dataObj, this.workerImage.file).subscribe(
-          data => {
-            this.profileData = data['result'];
-            this.disableDiv = true;
-            this.addDiv = false;
-            this.hideTable = true;
-            this.clear();
-            this.clearErrMsg();
-            this.inactive = false;
-            this.getUserList();
-            if (this.workerDataAdd === true) {
-              this.toasterAction = 'Created';
-            } else if (this.workerDataAdd === false) {
-              this.toasterAction = 'Edited';
-              localStorage.setItem('rights', data['result'].rights);
+        //  return;
+        if (this.goalTargetError()) {
+          this.setupWorkersDetailsService.saveUser(this.updateId, dataObj, this.workerImage.file).subscribe(
+            data => {
+              this.profileData = data['result'];
+              this.disableDiv = true;
+              this.addDiv = false;
+              this.hideTable = true;
+              this.clear();
+              this.clearErrMsg();
+              this.inactive = false;
+              this.getUserList();
+              if (this.workerDataAdd === true) {
+                this.toasterAction = 'Created';
+              } else if (this.workerDataAdd === false) {
+                this.toasterAction = 'Edited';
+                if (data['result'] && data['result'].rights.length > 0) {
+                  localStorage.setItem('rights', data['result'].rights);
+                }
+              }
+              this.password1 = '';
+              this.password2 = '';
+              this.toastermessage = this.translateService.get('Record   ' + this.toasterAction + '   Successfully');
+              this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
+            },
+            error => {
+              const status = JSON.parse(error['_body']).result;
+              const statuscode = JSON.parse(error['_body'])['status'];
+              if (status.workerDetailError && status.workerDetailError.sqlMessage.indexOf('USER_ACCOUNT') > -1) {
+                this.error = 'Username already exists';
+              } else if (status.workerDetailError && status.workerDetailError.errno === 1062) {
+                this.error = 'User PIN is already exists, Enter a different PIN';
+              }
+              if (statuscode === '2085' || statuscode === '2071') {
+                this.router.navigate(['/']).then(() => { });
+              }
             }
-            this.password1 = '';
-            this.password2 = '';
-            this.toastermessage = this.translateService.get('Record   ' + this.toasterAction + '   Successfully');
-            this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
-          },
-          error => {
-            const status = JSON.parse(error['_body']).result;
-            if (status.workerDetailError && status.workerDetailError.errno === 1062) {
-              this.error = status.workerDetailError.sqlMessage;
-            }
-            const statuscode = JSON.parse(error['_body'])['status'];
-            if (statuscode === '2085' || statuscode === '2071') {
-              this.router.navigate(['/']).then(() => { });
-            }
-          }
-        );
-
+          );
+        }
 
         // this.setupWorkersDetailsService.saveWorkerServices(this.workerServiceData).subscribe(
         //   data => {
@@ -893,7 +988,20 @@ export class SetupWorkersDetailsComponent implements OnInit {
       }/*2 else end here */
     } /*1 else  end here */
   }/*commonSave end here */
-
+  goalTargetError() {
+    let res = true;
+    this.goallineerror = [];
+    if (this.goals.length > 0) {
+      this.goals.forEach((element, index) => {
+        if (parseInt(element.target, 10) > 99999) {
+          this.changeTabs(undefined, 'goals', 'goalsnav');
+          this.goallineerror.push({ error: 'Goals Line ' + (index + 1) + ' must be less than 99,999.99' });
+          return res = false;
+        }
+      });
+    }
+    return res;
+  }
   /*Adding New Worker Method starts here */
   addNewWorker() {
     this.updateId = undefined;
@@ -902,6 +1010,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
     this.showData(workerData);
     this.addRows();
     this.workerServicesData = [];
+    this.activeStatus = true;
   }
   /*new Worker Method End */
   /*methods */
@@ -1014,7 +1123,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
     }
     if (tab === 'services') {
       this.getWorkerServices();
-      this.serviceGroupListOnChange('Skin');
+      this.serviceGroupListOnChange(this.addServiceGroupName);
     }
     document.getElementById(tab).style.display = 'block';
     document.getElementById(tabnav).classList.add('active');
@@ -1028,8 +1137,13 @@ export class SetupWorkersDetailsComponent implements OnInit {
     this.error3 = '';
     this.error4 = '';
     this.error5 = '';
+    this.pcodeErr = '';
+    this.mcodeErr = '';
     this.error6 = '';
     this.error7 = '';
+    this.error8 = '';
+    this.otherErr1 = '';
+    this.otherErr2 = '';
     this.error9 = '';
     this.error10 = '';
     this.workerServiceError = '';
@@ -1048,13 +1162,11 @@ export class SetupWorkersDetailsComponent implements OnInit {
   getAppointmentBookEveryOnChange(value) {
     this.appointmentsBookEveryValue = value;
   }
-  levelsOnChange(value) {
-    this.serviceLevel = value;
-  }
+
   hoursForOnlineData() {
     this.setupWorkersDetailsService.hoursForOnline().subscribe(
       data => {
-        this.onlineValues = data['result'];
+        this.onlineValues = data['result'] .filter(filterList => filterList.isActive__c === 1);
         this.onlineBookingHoursValue = this.onlineValues[0].Id;
         this.appointmentsValue = this.onlineValues[0].Id;
       },
@@ -1075,6 +1187,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
         this.workerServicesData = this.workerServicesData.map((workerservice) => {
           workerservice['Removed'] = false;
           workerservice['Edit'] = true;
+          workerservice['isTouched'] = false;
           return workerservice;
         });
         this.assaignWorkerServices();
@@ -1098,7 +1211,10 @@ export class SetupWorkersDetailsComponent implements OnInit {
           this.serviceDetailsList[i]['priceValue'] = this.workerServicesData[index]['Price__c'];
           if (this.workerServicesData[index]['Removed'] === false) {
             this.serviceDetailsList[i]['performs'] = true;
-            this.workerServicesData[index]['isTouched'] = false;
+            // this.workerServicesData[index]['isTouched'] = false;
+          }
+          if (this.workerServicesData[index]['Self_Book__c'] === 1) {
+            this.serviceDetailsList[i]['online'] = true;
           }
         }
       }
@@ -1111,27 +1227,29 @@ export class SetupWorkersDetailsComponent implements OnInit {
         const tempActive = config.environment.booleanTrue; // default Active records
         this.serviceGroupList = serviceGroupResult['result']
           .filter(filterList => filterList.active);
-        this.selectedServiceGroup = this.serviceGroupList[0].serviceGroupName;
-        this.addServiceGroupName = this.serviceGroupList[0].serviceGroupName;
-        this.setupWorkersDetailsService.showInactiveServiceListByGroupName(tempActive, this.selectedServiceGroup)
-          .subscribe(data => {
-            this.serviceDetailsList = data['result'];
-            this.serviceDetailsList = this.serviceDetailsList.map((service) => {
-              service['performs'] = false;
-              service['priceValue'] = null;
-              return service;
-            });
-            this.assaignWorkerServices();
-          },
-            error => {
-              const errStatus = JSON.parse(error['_body'])['status'];
-              if (errStatus === '2085' || errStatus === '2071') {
-                if (this.router.url !== '/') {
-                  localStorage.setItem('page', this.router.url);
-                  this.router.navigate(['/']).then(() => { });
+        if (this.serviceGroupList.length > 0) {
+          this.selectedServiceGroup = this.serviceGroupList[0].serviceGroupName;
+          this.addServiceGroupName = this.serviceGroupList[0].serviceGroupName;
+          this.setupWorkersDetailsService.showInactiveServiceListByGroupName(tempActive, this.selectedServiceGroup)
+            .subscribe(data => {
+              this.serviceDetailsList = data['result'];
+              this.serviceDetailsList = this.serviceDetailsList.map((service) => {
+                service['performs'] = false;
+                service['priceValue'] = null;
+                return service;
+              });
+              this.assaignWorkerServices();
+            },
+              error => {
+                const errStatus = JSON.parse(error['_body'])['status'];
+                if (errStatus === '2085' || errStatus === '2071') {
+                  if (this.router.url !== '/') {
+                    localStorage.setItem('page', this.router.url);
+                    this.router.navigate(['/']).then(() => { });
+                  }
                 }
-              }
-            });
+              });
+        }
       });
   }
   serviceGroupListOnChange(value) {
@@ -1211,12 +1329,12 @@ export class SetupWorkersDetailsComponent implements OnInit {
   }
   selectAll() {
     for (let i = 0; i < this.serviceDetailsList.length; i++) {
-      this.selectedValues(true, this.serviceDetailsList, i);
+      this.selectedValues(true, 'performs', this.serviceDetailsList, i);
     }
   }
   unSelectAll() {
     for (let i = 0; i < this.serviceDetailsList.length; i++) {
-      this.selectedValues(false, this.serviceDetailsList, i);
+      this.selectedValues(false, 'performs', this.serviceDetailsList, i);
       // this.workerServiceData[i]['Removed'] = true;
     }
     for (let i = 0; i < this.workerServiceData.length; i++) {
@@ -1237,7 +1355,9 @@ export class SetupWorkersDetailsComponent implements OnInit {
     this.setupWorkersDetailsService.getLevels().subscribe(
       data => {
         this.levelValues = data['serviceLevels'];
-        this.serviceLevel = this.levelValues[0].level;
+        if (this.levelValues.length > 0) {
+          this.serviceLevel = this.levelValues[0].level;
+        }
       },
       error => {
         const errStatus = JSON.parse(error['_body'])['status'];
@@ -1251,69 +1371,46 @@ export class SetupWorkersDetailsComponent implements OnInit {
   }
   applyPriceLevel() {
     let test = [];
-    for (let i = 0; i < this.serviceDetailsList.length; i++) {
-      if (this.selectedServiceGroup === 'Class') {
-        test.push({ 'price': JSON.parse(this.serviceDetailsList[i].Price_per_Attendee__c) });
-        this.priceValue = test[i];
-      } else {
-        test = JSON.parse(this.serviceDetailsList[i].Levels__c);
-        if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[0].level, 10)) {
-          this.priceValue = '';
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[1].level, 10)) {
-          this.priceValue = test[0];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[2].level, 10)) {
-          this.priceValue = test[1];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[3].level, 10)) {
-          this.priceValue = test[2];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[4].level, 10)) {
-          this.priceValue = test[3];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[5].level, 10)) {
-          this.priceValue = test[4];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[6].level, 10)) {
-          this.priceValue = test[5];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[7].level, 10)) {
-          this.priceValue = test[6];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[8].level, 10)) {
-          this.priceValue = test[7];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[9].level, 10)) {
-          this.priceValue = test[8];
-        } if (parseInt(this.serviceLevel, 10) === parseInt(this.levelValues[10].level, 10)) {
-          this.priceValue = test[9];
-        } if (this.priceValue === undefined || this.priceValue === 'undefined') {
-          this.priceValue = test[0];
-        } if (this.priceValue.price === '' || this.priceValue.price === undefined ||
-          this.priceValue.price === 'undefined') {
-          this.serviceDetailsList[i]['priceValue'] = '';
-        }
-      } if (this.serviceDetailsList[i].performs === true) {
-        this.serviceDetailsList[i]['priceValue'] = this.priceValue.price;
-        const index = this.workerServicesData.findIndex(workerservice => workerservice['Service__c'] === this.serviceDetailsList[i]['Id']);
-        if (index !== -1) {
-          if (this.workerServicesData[index]['Removed'] === false) {
-            this.workerServicesData[index]['isTouched'] = true;
-            this.workerServicesData[index]['Name'] = this.serviceDetailsList[i]['Name'];
-            this.workerServicesData[index]['Price__c'] = this.priceValue.price;
-            this.workerServicesData[index]['Duration_1_Available_for_Other_Work__c'] = this.serviceDetailsList[i]['Duration_1_Available_For_Other_Work__c'];
-            this.workerServicesData[index]['Duration_2_Available_for_Other_Work__c'] = this.serviceDetailsList[i]['Duration_2_Available_For_Other_Work__c'];
-            this.workerServicesData[index]['Duration_3_Available_for_Other_Work__c'] = this.serviceDetailsList[i]['Duration_3_Available_For_Other_Work__c'];
-            this.workerServicesData[index]['Duration_1__c'] = this.serviceDetailsList[i]['Duration_1__c'];
-            this.workerServicesData[index]['Duration_2__c'] = this.serviceDetailsList[i]['Duration_2__c'];
-            this.workerServicesData[index]['Duration_3__c'] = this.serviceDetailsList[i]['Duration_3__c'];
-            if (this.serviceId === this.serviceDetailsList[i]['Id']) {
-              this.assaignValuesForApplyServices(this.serviceDetailsList[i]['Id'], i);
+    if (this.serviceLevel !== this.levelValues[0].level) {
+      for (let i = 0; i < this.serviceDetailsList.length; i++) {
+        if (this.selectedServiceGroup === 'Class') {
+          test.push({ 'price': JSON.parse(this.serviceDetailsList[i].Price_per_Attendee__c) });
+          this.priceValue = test[i];
+        } else {
+          if (this.serviceDetailsList[i].performs === true) {
+            test = JSON.parse(this.serviceDetailsList[i].Levels__c);
+            const levelIndex = test.findIndex((level) => +level.levelNumber === +this.serviceLevel);
+            const serviceLevelValues = levelIndex !== -1 ? test[levelIndex] : test[0];
+            this.serviceDetailsList[i]['priceValue'] = serviceLevelValues.price;
+            const index = this.workerServicesData.findIndex(workerservice => workerservice['Service__c'] === this.serviceDetailsList[i]['Id']);
+            if (index !== -1) {
+              if (this.workerServicesData[index]['Removed'] === false) {
+                this.workerServicesData[index]['isTouched'] = true;
+                this.workerServicesData[index]['Name'] = this.serviceDetailsList[i]['Name'];
+                this.workerServicesData[index]['Price__c'] = serviceLevelValues.price;
+                this.workerServicesData[index]['Duration_1_Available_for_Other_Work__c'] = serviceLevelValues['duration1AvailableForOtherWork'] ? 1 : 0;
+                this.workerServicesData[index]['Duration_2_Available_for_Other_Work__c'] = serviceLevelValues['duration2AvailableForOtherWork'] ? 1 : 0;
+                this.workerServicesData[index]['Duration_3_Available_for_Other_Work__c'] = serviceLevelValues['duration3AvailableForOtherWork'] ? 1 : 0;
+                this.workerServicesData[index]['Duration_1__c'] = serviceLevelValues['duration1'] ? +serviceLevelValues['duration1'] : 0;
+                this.workerServicesData[index]['Duration_2__c'] = serviceLevelValues['duration2'] ? +serviceLevelValues['duration2'] : 0;
+                this.workerServicesData[index]['Duration_3__c'] = serviceLevelValues['duration3'] ? +serviceLevelValues['duration3'] : 0;
+                this.workerServicesData[index]['Buffer_After__c'] = serviceLevelValues['bufferAfter'] ? +serviceLevelValues['bufferAfter'] : 0;
+                if (this.serviceId === this.serviceDetailsList[i]['Id']) {
+                  this.assaignValuesForApplyServices(this.serviceDetailsList[i]['Id'], i);
+                }
+              }
             }
           }
         }
-
       }
     }
   }
 
-  selectedValues(value, serviceDetailsList, i) {
+  selectedValues(value, seleitem, serviceDetailsList, i) {
     const index = this.getServiceIndex(this.serviceDetailsList[i]['Id']);
     const name = this.serviceDetailsList[i]['Name'];
     if (value === true) {
-      this.serviceDetailsList[i]['performs'] = true;
+      // this.serviceDetailsList[i]['performs'] = true;
 
       if (index === -1) {
         const workerService = {
@@ -1331,19 +1428,28 @@ export class SetupWorkersDetailsComponent implements OnInit {
           'Worker__c': this.updateId,
           'Removed': false,
           'isTouched': true,
-          'Name': name
+          'Name': name,
+          'seleitem': seleitem
         };
         this.workerServicesData.push(workerService);
       } else {
         this.workerServicesData[index]['Removed'] = false;
         this.workerServicesData[index]['isTouched'] = true;
         this.workerServicesData[index]['Name'] = name;
+        this.workerServicesData[index]['online'] = value;
       }
     } else {
-      this.workerServicesData[index]['Removed'] = true;
-      this.serviceDetailsList[i]['performs'] = false;
-      this.workerServicesData[index]['isTouched'] = true;
-      this.workerServicesData[index]['Name'] = name;
+      if (seleitem === 'performs') {
+        this.workerServicesData[index]['Removed'] = true;
+        this.serviceDetailsList[i]['performs'] = false;
+        this.workerServicesData[index]['isTouched'] = true;
+        this.workerServicesData[index]['Name'] = name;
+      } else {
+        this.workerServicesData[index]['Removed'] = false;
+        this.workerServicesData[index]['isTouched'] = true;
+        this.workerServicesData[index]['Name'] = name;
+        this.workerServicesData[index]['online'] = value;
+      }
     }
   }
 
@@ -1383,7 +1489,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
         this.serviceDuration_1 = this.workerServicesData[k]['Duration_1__c'];
         this.serviceDuration_2 = this.workerServicesData[k]['Duration_2__c'];
         this.serviceDuration_3 = this.workerServicesData[k]['Duration_3__c'];
-        this.serviceBufferAfter = this.workerServicesData[k]['Buffer_after__c'];
+        this.serviceBufferAfter = this.workerServicesData[k]['Buffer_After__c'];
         this.serviceFeeAmount = this.workerServicesData[k]['Service_Fee_Amount__c'];
         this.serviceFeePercentage = this.workerServicesData[k]['Service_Fee_Percent__c'];
       }
@@ -1400,7 +1506,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
       this.workerServicesData[this.serviceIndex]['Duration_1__c'] = this.serviceDuration_1;
       this.workerServicesData[this.serviceIndex]['Duration_2__c'] = this.serviceDuration_2;
       this.workerServicesData[this.serviceIndex]['Duration_3__c'] = this.serviceDuration_3;
-      this.workerServicesData[this.serviceIndex]['Buffer_after__c'] = this.serviceBufferAfter;
+      this.workerServicesData[this.serviceIndex]['Buffer_After__c'] = this.serviceBufferAfter;
       this.workerServicesData[this.serviceIndex]['Service_Fee_Amount__c'] = this.serviceFeeAmount;
       this.workerServicesData[this.serviceIndex]['Service_Fee_Percent__c'] = this.serviceFeePercentage;
     }
@@ -1420,7 +1526,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
     this.addrows = true;
     this.goalsRows.push({
       goalsId: '', startDate: '', endDate: '',
-      goalTarget: '', Id: ''
+      target: '', Id: ''
     });
   }
   /*--- To delete row ---*/
@@ -1439,7 +1545,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
   getPreviousGoals(value) {
     if (value.target.checked === true) {
       this.previousGoals = value.target.checked;
-      this.setupWorkersDetailsService.previousGoals(this.previousGoals, this.updateId)
+      this.setupWorkersDetailsService.previousGoals(this.previousGoals, this.updateId, this.commonService.getDBDatStr(new Date()))
         .subscribe(data => {
           this.goalList = data['result'];
           this.goalList = this.updateDateFields(this.goalList);
@@ -1471,7 +1577,7 @@ export class SetupWorkersDetailsComponent implements OnInit {
           });
     } else if (value.target.checked === false) {
       this.previousGoals = value.target.checked;
-      this.setupWorkersDetailsService.previousGoals(this.previousGoals, this.updateId)
+      this.setupWorkersDetailsService.previousGoals(this.previousGoals, this.updateId, this.commonService.getDBDatStr(new Date()))
         .subscribe(data1 => {
           this.goalList = data1['result'];
           this.goalList = this.updateDateFields(this.goalList);
@@ -1499,13 +1605,15 @@ export class SetupWorkersDetailsComponent implements OnInit {
   updateDateFields(dataArray: any) {
     if (dataArray && dataArray.length > 0) {
       for (let i = 0; i < dataArray.length; i++) {
-        dataArray[i].startDate = new Date(dataArray[i].startDate);
-        dataArray[i].endDate = new Date(dataArray[i].endDate);
+        dataArray[i].startDate = this.commonService.getDateFrmDBDateStr(dataArray[i].startDate);
+        dataArray[i].endDate = this.commonService.getDateFrmDBDateStr(dataArray[i].endDate);
       }
     }
     return dataArray;
   }
   updatePercentageOfGoal(goallist, index) {
+    goallist.startDate2 = this.commonService.getDBDatStr(goallist.startDate);
+    goallist.endDate2 = this.commonService.getDBDatStr(goallist.endDate);
     this.setupWorkersDetailsService.updateGoal(goallist, this.updateId).subscribe(data => {
       this.calculationList = data['result'];
       this.calculatedGoal[index] = this.calculationList.calculatedGoal;
@@ -1609,5 +1717,69 @@ export class SetupWorkersDetailsComponent implements OnInit {
     this.serviceBufferAfter = '';
     this.serviceFeeAmount = '';
     this.serviceFeePercentage = '';
+  }
+
+  alphaOnly(e) {
+    const specialKeys = new Array();
+    specialKeys.push(8); // Backspace
+    specialKeys.push(9); // Tab
+    specialKeys.push(46); // Delete
+    specialKeys.push(36); // Home
+    specialKeys.push(35); // End
+    specialKeys.push(37); // Left
+    specialKeys.push(39); // Right
+    const keyCode = e.keyCode === 0 ? e.charCode : e.keyCode;
+    const ret = ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122) ||
+      (specialKeys.indexOf(e.keyCode) !== -1 && e.charCode !== e.keyCode));
+    return ret;
+  }
+  numberOnly(event: any) {
+    const pattern = /[0-9.]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
+   /* method to restrict specialcharecters  */
+   numOnly(event: any) {
+    const pattern = /[0-9a-zA_Z]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
+  getLocation() {
+    if (this.zipCode.length > 4) {
+      this.http.get('https://ziptasticapi.com/' + this.zipCode).subscribe(
+        result => {
+          if (result['error']) {
+            const toastermessage: any = this.translateService.get('SETUPCOMPANY.ZIP_CODE_NOT_FOUND');
+            this.toastr.error(toastermessage.value, null, { timeOut: 1500 });
+          } else {
+            if (result['country'] === 'US') {
+              this.country = 'United States';
+              config.states.forEach(state => {
+                if (state.abbrev === result['state']) {
+                  this.state = state.name;
+                }
+              });
+
+            }
+            const cityArray = result['city'].split(' ');
+            for (let i = 0; i < cityArray.length; i++) {
+              if (i === 0) {
+                this.city = cityArray[i].charAt(0).toUpperCase() + cityArray[i].slice(1).toLowerCase() + ' ';
+              } else {
+                this.city += cityArray[i].charAt(0).toUpperCase() + cityArray[i].slice(1).toLowerCase() + ' ';
+              }
+            }
+          }
+        },
+        error => {
+        }
+      );
+    }
   }
 }

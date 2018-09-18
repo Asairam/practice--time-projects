@@ -16,6 +16,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
+import { TranslateService } from 'ng2-translate';
 import { ToastrService } from 'ngx-toastr';
 import { SetupServiceResourceService } from './setupresources.service';
 @Component({
@@ -48,10 +49,12 @@ export class SetupResourcesComponent implements OnInit {
   error: any;
   showInactiveRecords: any;
   resoucesNumber: number[] = [];
+  toastermessage: any;
   // specialformat = /^[a-zA-Z0-9]*$/;
-  specialformat = /^([a-zA-Z0-9]+\s)*[a-zA-Z0-9]+$/ ;
+  specialformat = /^([a-zA-Z0-9]+\s)*[a-zA-Z0-9]+$/;
   constructor(
     private setupServiceResourceService: SetupServiceResourceService,
+    private translateService: TranslateService,
     private toastr: ToastrService,
     private router: Router) {
   }
@@ -70,7 +73,7 @@ export class SetupResourcesComponent implements OnInit {
       this.error = 'SETUP_RESOURCES.VALID_NOBLANK_RESOURCE_NAME';
     } else if (this.specialformat.test(this.resourceName) === false) {
       this.error = 'SETUP_RESOURCES.VALID_SPECIAL_CHAR';
-     } else {
+    } else {
       this.setupResourseDataObj = {
         setupResourcesObj: {
           'resourceActive': this.resourceActive,
@@ -82,7 +85,8 @@ export class SetupResourcesComponent implements OnInit {
         .subscribe(
           data => {
             this.setupresourceData = data['data'];
-            this.toastr.success('Resource details saved successfully', null, { timeOut: 1500 });
+            this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_RESOURCE_CREATE_SUCCESS');
+            this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
             this.enableDisable = true;
             this.disableEnable = false;
             this.getSetupResourceServiceData();
@@ -114,7 +118,7 @@ export class SetupResourcesComponent implements OnInit {
       .subscribe(resourceData => {
         this.resourceList = resourceData['result'];
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -122,7 +126,7 @@ export class SetupResourcesComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   /*--- This method is used to get inactive resources and active resources ---*/
   getInactiveResources(value) {
@@ -140,7 +144,7 @@ export class SetupResourcesComponent implements OnInit {
             filterList => filterList.Active__c === 1);
         }
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -148,7 +152,7 @@ export class SetupResourcesComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   showData(resourcelist) {
     this.enableDisable = false;
@@ -165,7 +169,7 @@ export class SetupResourcesComponent implements OnInit {
       this.error = 'SETUP_RESOURCES.VALID_NOBLANK_RESOURCE_NAME';
     } else if (this.specialformat.test(this.updateResourceName) === false) {
       this.error = 'SETUP_RESOURCES.VALID_SPECIAL_CHAR';
-     } else {
+    } else {
       if (this.updateResourceActive) {
         this.updateResourceActive = 1;
       } else {
@@ -181,7 +185,8 @@ export class SetupResourcesComponent implements OnInit {
       this.setupServiceResourceService.editSetupResourceData(this.editResourceServiceData, this.updateId).subscribe(
         data => {
           this.createResourceGroupsData = data['data'];
-          this.toastr.success('Resource details updated successfully', null, { timeOut: 1500 });
+          this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_RESOURCE_UPDATE_SUCCESS');
+          this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
           this.getSetupResourceServiceData();
           this.Editcancel();
         },
@@ -220,7 +225,7 @@ export class SetupResourcesComponent implements OnInit {
               this.resourceList = [];
               this.resourceList = resourceResult['result'];
             },
-            error1 => {
+              error1 => {
                 const errStatus = JSON.parse(error1['_body'])['status'];
                 if (errStatus === '2085' || errStatus === '2071') {
                   if (this.router.url !== '/') {
@@ -228,7 +233,7 @@ export class SetupResourcesComponent implements OnInit {
                     this.router.navigate(['/']).then(() => { });
                   }
                 }
-            });
+              });
         } else {
           this.setupServiceResourceService.getSetupResourceServiceData('')
             .subscribe(resourceResult => {
@@ -236,7 +241,7 @@ export class SetupResourcesComponent implements OnInit {
               this.resourceList = resourceResult['result'].filter(
                 filterList => filterList.active === true);
             },
-            error2 => {
+              error2 => {
                 const errStatus = JSON.parse(error2['_body'])['status'];
                 if (errStatus === '2085' || errStatus === '2071') {
                   if (this.router.url !== '/') {
@@ -244,10 +249,10 @@ export class SetupResourcesComponent implements OnInit {
                     this.router.navigate(['/']).then(() => { });
                   }
                 }
-            });
+              });
         }
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -255,7 +260,7 @@ export class SetupResourcesComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   autocase(text) {
     if (text) {

@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont" class="setsubcont">
         <div class="container">
             <div class="row">
@@ -18,14 +17,14 @@
                                     <td>{{'COMMON.ACTIVE' | translate }}</td>
                                     <td>{{ 'COMMON.NAME' | translate }}</td>
                                 </tr>
-                                <tr  class="white" *ngFor="let classes of getClassesList let i='index'" id="classes{{i}}">
+                                <tr class="white" *ngFor="let classes of getClassesList let i='index'" id="classes{{i}}">
                                     <td align="center" *ngIf='classes.Active__c == 1'>
                                         <input type="checkbox" checked disabled>
                                     </td>
                                     <td align="center" *ngIf='classes.Active__c == 0'>
                                         <input type="checkbox" disabled>
                                     </td>
-                                    <td class="tbl-txt" (click)="showData(classes)">{{classes.Name}}</td>
+                                    <td class="tbl-txt word-break" (click)="showData(classes)">{{classes.Name}}</td>
                                 </tr>
                                 <tr>
                                     <td align="center" colspan="2">
@@ -55,7 +54,7 @@
                                     <td align="center" *ngIf='classes.Active__c == 0'>
                                         <input type="checkbox" disabled>
                                     </td>
-                                    <td class="tbl-txt" (click)="showData(classes)">{{classes.Name}}</td>
+                                    <td class="tbl-txt word-break" (click)="showData(classes)">{{classes.Name}}</td>
                                 </tr>
                                 <tr>
                                     <td align="center" colspan="2">
@@ -146,10 +145,9 @@
                         </div>
                         <div class="col-sm-7">
                             <input type="text" [(ngModel)]="classesName" value="New Service" (click)="clearErrorMsg();">
+                            <P class="red">{{errorClass | translate}} {{errorNameExit | translate}}</P>
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorClass | translate}} </div>
-                    <div class="text-danger text-center">{{errorNameExit | translate}} </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{ 'COMMON.DURATION' | translate }}</label>
@@ -157,30 +155,29 @@
                         </div>
                         <div class="col-sm-7">
                             <input type="text" [(ngModel)]="classesDuration" (keypress)="clearErrorMsg1();" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key <= 46 || key > 57 ) return false; else return true;">
+                            <P class="red">{{errorMsgss | translate}} {{errorMsgss1 | translate}}</P>
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorMsgss | translate}} </div>
-                    <div class="text-danger text-center">{{errorMsgss1 | translate}} </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{ 'SETUP_CLASSES.MAX_ATTENDEES' | translate }}</label>
                         </div>
                         <div class="col-sm-7">
                             <input type="text" maxlength="3" (keypress)="clearMaxMsg();" [(ngModel)]="classesMaxattendence" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                            <P class="red">{{errorMaxAttendees | translate}}</P>
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorMaxAttendees | translate}} </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{ 'SETUP_CLASSES.PRICE_PER_ATTENDEE' | translate }}</label>
                         </div>
                         <div class="col-sm-7">
                             <input type="text" [(ngModel)]="classesPrice" maxlength="9" (keypress)="clearErrorMsg();keyPress($event)" />
+                            <p class="red">{{errorPricePerAttendees | translate}}</p>
                             <!-- onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; 
                             else if ( key < 46 || key > 57 ) return false; else return true;"> -->
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorPricePerAttendees | translate}} </div>
                     <!-- <div class="text-danger text-center">{{errorMsg | translate}} </div> -->
                     <div class="row mt-20 res-mt-15">
                         <div class="col-sm-3 text-right res-tleft white">
@@ -195,7 +192,9 @@
                     <!-- resource list start here  -->
                     <!-- Resources Used Start -->
                     <div class="row mt-20 res-mt-15" *ngIf='resAll == true'>
-                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="text-danger text-center">
+                            <P class="red">{{errorResource | translate}}</P>
+                        </div>
                         <div class="col-sm-3 text-right res-tleft">
                         </div>
                         <div class="col-sm-7">
@@ -209,7 +208,7 @@
                                 <tr class="white" *ngFor="let updateInput of inputs; let i='index'">
                                     <td>
                                         <select (change)="selectResource($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" class="mb-15"
-                                        style="width:fit-content;margin-right:5px;">
+                                            style="width:fit-content;margin-right:5px;">
                                             <option value="">--Select Resource--</option>
                                             <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}" [selected]="resdrop.Id==updateInput?.resourceName">{{resdrop.Name}}</option>
                                         </select>
@@ -234,7 +233,9 @@
                     </div>
                     <!--  edit Any -->
                     <div class="row mt-20 res-mt-15" *ngIf='resAny == true'>
-                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="text-danger text-center">
+                            <P class="red">{{errorResource | translate}}</P>
+                        </div>
                         <div class="col-sm-3 text-right res-tleft">
                         </div>
                         <div class="col-sm-7">
@@ -254,7 +255,7 @@
                                                         <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}">{{resdrop.Name}}</option>
                                                     </select> -->
                                         <select (change)="selectResource($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" class="mb-15 pull-left"
-                                        style="width:fit-content;">
+                                            style="width:fit-content;">
                                             <option value="">--Select Resource--</option>
                                             <option *ngFor='let resdrop of getResourcesDropdown' [selected]="resdrop.Id==updateInput?.resourceName" value="{{resdrop.Id}}">{{resdrop.Name}}</option>
                                         </select>
@@ -264,7 +265,7 @@
                                                         <option *ngFor='let pri of priority'>{{pri.NAME}}</option>
                                                     </select> -->
                                         <select (change)="selectPriority($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" class="mb-15 pull-left"
-                                        style="width:fit-content;margin-left:5px;margin-right:5px;">
+                                            style="width:fit-content;margin-left:5px;margin-right:5px;">
                                             <option value="">None</option>
                                             <option *ngFor='let pri of priority' value="{{pri.NAME}}" [selected]="pri.NAME==updateInput?.priority">{{pri.NAME}}</option>
                                         </select>
@@ -287,9 +288,11 @@
                             </table>
                         </div>
                     </div>
-                    <div class="text-danger"> {{duplicateError | translate }} </div>
+                    <div class="text-danger">
+                        <P class="red">{{duplicateError | translate }} {{error | translate}} </P>
+                    </div>
                     <!-- <div class="text-danger text-center">{{errorNameExit | translate}} </div> -->
-                    <div class="text-danger text-center">{{error | translate}} </div>
+
                     <!-- resource list end here -->
                     <div class="row mt-40 res-mt-15 text-center res-tleft ">
                         <div class="col-sm-10 ">
@@ -323,10 +326,11 @@
                         </div>
                         <div class="col-sm-7 ">
                             <input type="text" value="{{updateclasses}}" [(ngModel)]="updateclasses" (keypress)="clearErrorMsg();">
+                            <P class="red">
+                                {{errorClass | translate}} {{errorNameExit | translate}}
+                            </P>
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorClass | translate}} </div>
-                    <div class="text-danger text-center">{{errorNameExit | translate}} </div>
                     <div class="row mt-20 res-mt-15 ">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{ 'COMMON.DURATION' | translate }}</label>
@@ -335,28 +339,29 @@
                         <div class="col-sm-7 ">
                             <input type="text" (keypress)="clearErrorMsg1();" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key <= 46 || key > 57 ) return false; else return true;"
                                 value="{{updateduration}}" [(ngModel)]="updateduration ">
+                            <P class="red">
+                                {{errorMsgss | translate}} {{errorMsgss1 | translate}}
+                            </P>
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorMsgss | translate}} </div>
-                    <div class="text-danger text-center">{{errorMsgss1 | translate}} </div>
                     <div class="row mt-20 res-mt-15 ">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{ 'SETUP_CLASSES.MAX_ATTENDEES' | translate }}</label>
                         </div>
                         <div class="col-sm-7 ">
                             <input type="text" (keypress)="clearMaxMsg()" [(ngModel)]="updatemaxattendees" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                            <p class="red">{{errorMaxAttendees | translate}}</p>
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorMaxAttendees | translate}} </div>
                     <div class="row mt-20 res-mt-15 ">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{ 'SETUP_CLASSES.PRICE_PER_ATTENDEE' | translate }}</label>
                         </div>
                         <div class="col-sm-7 ">
                             <input type="text" (keypress)="clearMaxMsg();keyPress($event)" maxlength="9" [(ngModel)]="updateprice" />
+                            <p class="red">{{errorPricePerAttendees | translate}}</p>
                         </div>
                     </div>
-                    <div class="text-danger text-center">{{errorPricePerAttendees | translate}} </div>
                     <div class="row mt-20 res-mt-15 ">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{ 'SETUP_CLASSES.RESOURCES_USED' | translate }}</label>
@@ -369,7 +374,9 @@
                     </div>
                     <!-- edit All -->
                     <div class="row mt-20 res-mt-15" *ngIf='updateAll == true'>
-                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="text-danger text-center">
+                            <p class="red">{{errorResource | translate}}</p>
+                        </div>
                         <div class="col-sm-3 text-right res-tleft white">
                         </div>
                         <div class="col-sm-7">
@@ -397,7 +404,7 @@
                                 <tr *ngFor="let updateInput of updateInputs; let i=index">
                                     <td>
                                         <select class="mb-15" (change)="selectResourceForUpdate($event.target.value,i)" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false"
-                                        style="width:fit-content;margin-right:5px;">
+                                            style="width:fit-content;margin-right:5px;">
                                             <option value="">--Select Resource--</option>
                                             <option *ngFor='let resdrop of getResourcesDropdown' value="{{resdrop.Id}}" [selected]="resdrop.Id==updateInput?.resourceId">{{resdrop.Name}}</option>
                                         </select>
@@ -422,7 +429,9 @@
                     </div>
                     <!--  edit Any -->
                     <div class="row mt-20 res-mt-15" *ngIf='updateAny == true'>
-                        <div class="text-danger text-center">{{errorResource | translate}} </div>
+                        <div class="text-danger text-center">
+                            <p class="red">{{errorResource | translate}} </p>
+                        </div>
                         <div class="col-sm-3 text-right res-tleft ">
                         </div>
                         <div class="col-sm-7">
@@ -444,7 +453,8 @@
                                         </select>
                                     </td>
                                     <td class="select-priority">
-                                        <select class="mb-15 pull-left white" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" style="width:fit-content;margin-left:5px;margin-right:5px;" (change)="selectPriorityForList($event.target.value,i)">
+                                        <select class="mb-15 pull-left white" (focus)="dropdownCheck=true" (blur)="dropdownCheck=false" style="width:fit-content;margin-left:5px;margin-right:5px;"
+                                            (change)="selectPriorityForList($event.target.value,i)">
                                             <option value="">None </option>
                                             <option *ngFor='let pri of priority' [selected]="pri.NAME==getList?.Priority__c">{{pri.NAME}}</option>
                                         </select>
@@ -466,8 +476,8 @@
                                         </select>
                                     </td>
                                     <td class="select-priority">
-                                        <select class="mb-15 " style="width:fit-content;margin-left:5px;margin-right:5px;" (change)="selectPriorityForUpdate($event.target.value,i)" (focus)="dropdownCheck=true"
-                                            (blur)="dropdownCheck=false">
+                                        <select class="mb-15 " style="width:fit-content;margin-left:5px;margin-right:5px;" (change)="selectPriorityForUpdate($event.target.value,i)"
+                                            (focus)="dropdownCheck=true" (blur)="dropdownCheck=false">
                                             <option value="">None</option>
                                             <option *ngFor='let pri of priority' [selected]="pri.NAME==updateInput?.priority">{{pri.NAME}}</option>
                                         </select>
@@ -490,9 +500,11 @@
                             </table>
                         </div>
                     </div>
-                    <div class="text-danger"> {{duplicateError | translate }} </div>
-                    <div class="text-danger text-center">{{priorityError | translate}} </div>
-                    <div class="text-danger text-center">{{priorityResouceError | translate}} </div>
+                    <div class="text-danger">
+                        <p class="red">
+                            {{duplicateError | translate }} {{priorityError | translate}} {{priorityResouceError | translate}}
+                        </p>
+                    </div>
                     <div class="row mt-40 res-mt-15 text-center res-tleft ">
                         <div class="col-sm-10 ">
                             <button (click)="updateClassesDatas('edit');" class="save-btn" type="button" class="save-btn">{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;

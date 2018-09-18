@@ -28,12 +28,12 @@
 									<td align="center" *ngIf='promotionslist.Active__c == 0'>
 										<input type="checkbox" disabled>
 									</td>
-									<td class="tbl-txt" (click)="showData(promotionslist)">{{promotionslist.Name}}</td>
+									<td class="tbl-txt word-break" (click)="showData(promotionslist)">{{promotionslist.Name}}</td>
 									<td *ngIf="promotionslist.Discount_Percentage__c > 0 && promotionslist.Discount_Amount__c <= 0">{{promotionslist.Discount_Percentage__c}}%</td>
 									<td *ngIf="promotionslist.Discount_Amount__c > 0 && promotionslist.Discount_Percentage__c <= 0">${{promotionslist.Discount_Amount__c}}.00</td>
-									<td *ngIf="promotionslist.Discount_Percentage__c == 0 && promotionslist.Discount_Amount__c == 0"></td>
+									<td *ngIf="promotionslist.Discount_Percentage__c == 0 && promotionslist.Discount_Amount__c == 0">&nbsp;</td>
 									<td>
-										<input type="text" style="width:100%;" [(ngModel)]="promotionslist.Sort_Order__c" (keypress)="clear()"/>
+										<input type="text" style="width:100%;" [(ngModel)]="promotionslist.Sort_Order__c" (keypress)="clear();numbersOnly($event);" onpaste = "return false;"/>
 									</td>
 								</tr>
 								<tr>
@@ -143,6 +143,7 @@
 					<p class="red"> {{error | translate }} </p>
 					<p class="red">{{ promotionError2 | translate }}</p>
 					<p class="red">{{ promotionError3 | translate }}</p>
+					<p class="red"> {{ discountErr | translate}}</p>
 					<div class="row mt-20 res-mt-15">
 						<div class="col-sm-3 text-right res-tleft">
 							<label>{{'COMMON.ACTIVE' | translate}}</label>
@@ -159,7 +160,7 @@
 							</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]="promotionName" (keydown)='clear()'>
+							<input type="text" [(ngModel)]="promotionName" (keydown)='clear()' maxlength="80">
 							<div class="col-sm-12 red"> {{ promotionError | translate}}</div>
 						</div>
 					</div>
@@ -168,10 +169,10 @@
 							<label>{{'SETUP_PROMOTIONS.AVAILABLE_ON_TICKET' | translate}}</label>
 						</div>
 						<div class="col-sm-7">
-							<input id="t1" type="checkbox" [(ngModel)]="serviceDiscount">
+							<input id="t1" type="checkbox" [(ngModel)]="serviceDiscount" (click)='clear()'>
 							<label for="t1" class="mb-10">{{'SETUP_PROMOTIONS.SERVICE_DISCOUNT' | translate}}</label>
 							<br />
-							<input id="t2" type="checkbox" [(ngModel)]="productDiscount">
+							<input id="t2" type="checkbox" [(ngModel)]="productDiscount" (click)='clear()'>
 							<label for="t2">{{'SETUP_PROMOTIONS.PRODUCT_DISCOUNT' | translate}}</label>
 						</div>
 					</div>
@@ -189,7 +190,7 @@
 							<label>{{'SETUP_PROMOTIONS.DISCOUNT_PERCENTAGE' | translate}}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]="discountPercentage" (keydown)='clear()' />
+							<input type="text" [(ngModel)]="discountPercentage" (keydown)='clear()' (keypress)="numbersOnly($event);" />
 						</div>
 					</div>
 
@@ -223,6 +224,7 @@
 							<input type="text" [(ngModel)]="sort" (keydown)='clear()' />
 							<div class="col-sm-12 red"> {{ promotionError1 | translate}}</div>
 						</div>
+						
 					</div>
 
 					<div class="row mt-40 res-mt-15 text-center res-tleft">
@@ -239,6 +241,7 @@
 					<p class="red"> {{error | translate }} </p>
 					<p class="red">{{ promotionError2 | translate }}</p>
 					<p class="red">{{ promotionError3 | translate }}</p>
+					<p class="red"> {{ discountErr | translate}}</p>
 					<div class="row mt-20 res-mt-15">
 						<div class="col-sm-3 text-right res-tleft">
 							<label>{{'COMMON.ACTIVE' | translate}}</label>
@@ -253,7 +256,7 @@
 							<label>{{'SETUP_PROMOTIONS.PROMOTION_NAME' | translate}}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]="updatePromotionName">
+							<input type="text" [(ngModel)]="updatePromotionName" maxlength="80">
 						</div>
 					</div>
 					<div class="row mt-20 res-mt-15">
@@ -261,10 +264,10 @@
 							<label>{{'SETUP_PROMOTIONS.AVAILABLE_ON_TICKET' | translate}}</label>
 						</div>
 						<div class="col-sm-7">
-							<input id="t1" type="checkbox" [(ngModel)]="updateServiceDiscount">
+							<input id="t1" type="checkbox" [(ngModel)]="updateServiceDiscount" (click)='clear()'>
 							<label for="t1" class="mb-10">{{'SETUP_PROMOTIONS.SERVICE_DISCOUNT' | translate}}</label>
 							<br />
-							<input id="t2" type="checkbox" [(ngModel)]="updateProductDiscount">
+							<input id="t2" type="checkbox" [(ngModel)]="updateProductDiscount" (click)='clear()'>
 							<label for="t2">{{'SETUP_PROMOTIONS.PRODUCT_DISCOUNT' | translate}}</label>
 						</div>
 					</div>
@@ -273,7 +276,7 @@
 							<label>{{'SETUP_PROMOTIONS.DISCOUNT_AMOUNT' | translate}}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]="updateDiscountAmount" />
+							<input type="text" [(ngModel)]="updateDiscountAmount" (click)="clear()"/>
 						</div>
 					</div>
 
@@ -282,7 +285,7 @@
 							<label>{{'SETUP_PROMOTIONS.DISCOUNT_PERCENTAGE' | translate}}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]="updateDiscountPercentage" />
+							<input type="text" [(ngModel)]="updateDiscountPercentage" (keypress)="numbersOnly($event);"(click)="clear()" />
 						</div>
 					</div>
 
@@ -311,7 +314,8 @@
 							<label>{{'COMMON.SORT_ORDER' | translate}}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]="updateSortOrder" />
+							<input type="text" [(ngModel)]="updateSortOrder" (click)="clear()"/>
+							<div class="col-sm-12 red"> {{ promotionError1 | translate}}</div>
 						</div>
 					</div>
 

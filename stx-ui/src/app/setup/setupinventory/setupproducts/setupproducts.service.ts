@@ -41,7 +41,7 @@ export class SetupProductsService {
   }
   getProductlines(type) {
     if (type === undefined || type === true) {
-      type = 1;
+      type = 0;
     }
     return this.http.get(this.apiEndPoint + '/api/setupinventory/setupproductline/' + type)
       .map(this.extractData);

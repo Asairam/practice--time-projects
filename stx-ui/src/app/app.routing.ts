@@ -17,6 +17,14 @@ import { JwtHelper } from 'angular2-jwt';
       { path: 'reports', loadChildren: 'app/menu/menu.module#MenuModule' },
       // --- End of Menu URLs --- //
       { path: '', loadChildren: 'app/login/login.module#LoginModule' },
+      { path: 'clientlogin/:db', loadChildren: 'app/online/clientLogin/clientLogin.module#ClientLoginModule' },
+      { path: 'onlinebook', loadChildren: 'app/online/onlinebook/onlinebook.module#OnlineBookModule' },
+      { path: 'onlinebook/success', loadChildren: 'app/online/onlinebooksucess/onlinebooksucess.module#OnlineBookSucessModule' },
+      { path: 'online/client/appts', loadChildren: 'app/online/onlineclientappts/onlineclientappts.module#OnlineClientApptsModule' },
+      { path: 'online/client/add/:db', loadChildren: 'app/online/onlineclientadd/onlineclientadd.module#OnlineClientAddModule' },
+      { path: 'online/package/purchase', loadChildren: 'app/online/onlinepackagepurchase/onlinepackagepurchase.module#OnlinePackagePurchaseModule' },
+      { path: 'onlinegift/:param', loadChildren: 'app/online/onlinegift/onlinegift.module#OnlineGiftModule' },
+      { path: 'onlinegift', loadChildren: 'app/online/onlinegift/onlinegift.module#OnlineGiftModule' },
       { path: 'signup', loadChildren: 'app/signup/signup.module#SignupModule' },
       { path: 'resetpassword/:token', loadChildren: 'app/reset/reset.module#ResetModule' },
       // { path: 'clientssearch', loadChildren: 'app/clients/main/clients.module#ClientsModule' },
@@ -369,462 +377,469 @@ export class AppRoutingModule {
       .filter(event => event instanceof NavigationEnd)
       .subscribe((event: NavigationEnd) => {
         try {
-          this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
-          this.permissions = JSON.parse(this.decodedToken.data.permissions);
-          if (!this.permissions) {
-            this.permissions = {
-              'Home': [
-                {
-                  'pageName': 'GiftBalanceSearch',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MemberCheckIn',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'OwnerDashboard',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupList',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'TimeClock',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'WorkerDashboard',
-                  'allowAcces': false
-                }
-              ],
-              'Setup Company': [
-                {
-                  'pageName': 'CompanyHoursEdit',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'CompanyHoursList',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'CompanyInfo',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupCompany',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupPaymentTypes',
-                  'allowAcces': false
-                }
-              ],
-              'Setup Other': [
-                {
-                  'pageName': 'SetupAppointments',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupClients',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupMemberships',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupTickets',
-                  'allowAcces': false
-                }
-              ],
-              'Setup Service': [
-                {
-                  'pageName': 'SetupClasses',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupResources',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupService',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupServiceGroups',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupServicePackage',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupServices',
-                  'allowAcces': false
-                }
-              ],
-              'Setup Inventory': [
-                {
-                  'pageName': 'SetupInventory',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupInventoryGroups',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupProductLines',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupProducts',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupSuppliers',
-                  'allowAcces': false
-                }
-              ],
-              'Setup Workers': [
-                {
-                  'pageName': 'CreateWorker',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'Setup Permissions',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupCompensation',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupCompensationScales',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupGoal',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SetupWorker',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'Worker Details',
-                  'allowAcces': false
-                }
-              ],
-              'Clients': [
-                {
-                  'pageName': 'ClientEdit',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ClientQuickAdd',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ClientQuickEdit',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ClientSearch',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'CreateToken',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MergeClient',
-                  'allowAcces': false
-                }
-              ],
-              'Appointments': [
-                {
-                  'pageName': 'AppointmentDetail',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'AppointmentList',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'BookAppt',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'BookClass',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'BookOutAppointment',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'BookOutAppointmentDetail',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'BookStandingAppt',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ClassDetail',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ModifyAppt',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'WaitingList',
-                  'allowAcces': false
-                }
-              ],
-              'Inventory': [
-                {
-                  'pageName': 'InventoryAdjustmentReport',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'InventoryAdjustmentReportDelete',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'InventoryAdjustmentReportList',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'InventoryMenu',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'InventoryReports',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'InventoryUsage',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'InventoryUsageReport',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ManageInventory',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'PurchaseOrders',
-                  'allowAcces': false
-                }
-              ],
-              'Tickets': [
-                {
-                  'pageName': 'CashInOut',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'CheckOut',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'CompletedTicketDetailView',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'CompletedTicketDetailViewPDF',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MembershipEdit',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'RefundDetails',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportCashCounting',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'TicketEdit',
-                  'allowAcces': false
-                }
-              ],
-              'Reports': [
-                {
-                  'pageName': 'BaseDetailReport',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'BaseReport',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ClientRetention',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'GroupingReport',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'OnHandProductReport',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'PaymentDetails',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ProcessCompensation',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ProcessCompensationDetail',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ProductChart',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ProductSales',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ProductSalesByRank',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportABC',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportActivityComparison',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportDailyCashDrawer',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportDailyTotalSheet',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportGifts',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportMonthlyBusinessAnalysis',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'Reports',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportServiceSales',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportTBP',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportTicketAnalysis',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportVisitTypeOverview',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportWriterDelete',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportWriterEdit',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'ReportWriterList',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SalesChart',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'TicketList',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'TicketSales',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'WorkerGoals',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'WorkerTips',
-                  'allowAcces': false
-                }
-              ],
-              'Marketing': [
-                {
-                  'pageName': 'EmailActivity',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'Marketing',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MarketingEmail',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MarketingReport',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MarketingReportDelete',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MarketingReportList',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'MarketingSets',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'Promotions',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'Rewards',
-                  'allowAcces': false
-                },
-                {
-                  'pageName': 'SelectClientFilters',
-                  'allowAcces': false
-                }
-              ]
-            };
+          const rights = localStorage.getItem('rights');
+          if (rights) {
+            this.decodedToken = new JwtHelper().decodeToken(rights);
+            this.permissions = JSON.parse(this.decodedToken.data.permissions);
+          } else {
+            this.decodedToken = {};
+            this.permissions = false;
           }
         } catch (error) {
           this.decodedToken = {};
+          this.permissions = false;
+        }
+        if (!this.permissions) {
+          this.permissions = {
+            'Home': [
+              {
+                'pageName': 'GiftBalanceSearch',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MemberCheckIn',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'OwnerDashboard',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupList',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'TimeClock',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'WorkerDashboard',
+                'allowAcces': false
+              }
+            ],
+            'Setup Company': [
+              {
+                'pageName': 'CompanyHoursEdit',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'CompanyHoursList',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'CompanyInfo',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupCompany',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupPaymentTypes',
+                'allowAcces': false
+              }
+            ],
+            'Setup Other': [
+              {
+                'pageName': 'SetupAppointments',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupClients',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupMemberships',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupTickets',
+                'allowAcces': false
+              }
+            ],
+            'Setup Service': [
+              {
+                'pageName': 'SetupClasses',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupResources',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupService',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupServiceGroups',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupServicePackage',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupServices',
+                'allowAcces': false
+              }
+            ],
+            'Setup Inventory': [
+              {
+                'pageName': 'SetupInventory',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupInventoryGroups',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupProductLines',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupProducts',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupSuppliers',
+                'allowAcces': false
+              }
+            ],
+            'Setup Workers': [
+              {
+                'pageName': 'CreateWorker',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'Setup Permissions',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupCompensation',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupCompensationScales',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupGoal',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SetupWorker',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'Worker Details',
+                'allowAcces': false
+              }
+            ],
+            'Clients': [
+              {
+                'pageName': 'ClientEdit',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ClientQuickAdd',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ClientQuickEdit',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ClientSearch',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'CreateToken',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MergeClient',
+                'allowAcces': false
+              }
+            ],
+            'Appointments': [
+              {
+                'pageName': 'AppointmentDetail',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'AppointmentList',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'BookAppt',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'BookClass',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'BookOutAppointment',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'BookOutAppointmentDetail',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'BookStandingAppt',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ClassDetail',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ModifyAppt',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'WaitingList',
+                'allowAcces': false
+              }
+            ],
+            'Inventory': [
+              {
+                'pageName': 'InventoryAdjustmentReport',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'InventoryAdjustmentReportDelete',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'InventoryAdjustmentReportList',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'InventoryMenu',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'InventoryReports',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'InventoryUsage',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'InventoryUsageReport',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ManageInventory',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'PurchaseOrders',
+                'allowAcces': false
+              }
+            ],
+            'Tickets': [
+              {
+                'pageName': 'CashInOut',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'CheckOut',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'CompletedTicketDetailView',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'CompletedTicketDetailViewPDF',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MembershipEdit',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'RefundDetails',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportCashCounting',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'TicketEdit',
+                'allowAcces': false
+              }
+            ],
+            'Reports': [
+              {
+                'pageName': 'BaseDetailReport',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'BaseReport',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ClientRetention',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'GroupingReport',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'OnHandProductReport',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'PaymentDetails',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ProcessCompensation',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ProcessCompensationDetail',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ProductChart',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ProductSales',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ProductSalesByRank',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportABC',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportActivityComparison',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportDailyCashDrawer',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportDailyTotalSheet',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportGifts',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportMonthlyBusinessAnalysis',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'Reports',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportServiceSales',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportTBP',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportTicketAnalysis',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportVisitTypeOverview',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportWriterDelete',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportWriterEdit',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'ReportWriterList',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SalesChart',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'TicketList',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'TicketSales',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'WorkerGoals',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'WorkerTips',
+                'allowAcces': false
+              }
+            ],
+            'Marketing': [
+              {
+                'pageName': 'EmailActivity',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'Marketing',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MarketingEmail',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MarketingReport',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MarketingReportDelete',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MarketingReportList',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'MarketingSets',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'Promotions',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'Rewards',
+                'allowAcces': false
+              },
+              {
+                'pageName': 'SelectClientFilters',
+                'allowAcces': false
+              }
+            ]
+          };
         }
         if (!this.check(event.url)) {
           this.router.navigate(['/home']);
@@ -925,6 +940,10 @@ export class AppRoutingModule {
       return this.permissions['Inventory'][7]['allowAcces'];
     } else if (url === '/inventory/purchaseorders') {
       return this.permissions['Inventory'][8]['allowAcces'];
+    } else if (url === '/reports/inventorygift/adjustmentreportlist') {
+      return this.permissions['Inventory'][2]['allowAcces'];
+    } else if (url === '/reports/inventorygift/inventoryusagereport') {
+      return this.permissions['Inventory'][6]['allowAcces'];
     } else if (url === '/cashinout') {                          // Tickets start
       return this.permissions['Tickets'][0]['allowAcces'];
     } else if (url === '/checkout') {
@@ -962,7 +981,7 @@ export class AppRoutingModule {
     } else if (url === '/reports/businessanalysis/clientretention') {    // Reports start
       return this.permissions['Reports'][2]['allowAcces'];
     } else if (url === '/reports/sales/ticketsalesreport') {
-      return this.permissions['Reports'][3]['allowAcces'];
+      return this.permissions['Reports'][27]['allowAcces'];
     } else if (url === '/reports/inventorygift/onhandproduct') {
       return this.permissions['Reports'][4]['allowAcces'];
     } else if (url === '/reports/transaction/paymentdetails') {

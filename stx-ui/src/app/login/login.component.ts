@@ -67,19 +67,20 @@ export class LoginComponent implements OnInit {
             this.submitParam = true;
             const status = JSON.parse(error['status']);
             const statuscode = JSON.parse(error['_body']).status;
+            const toastermessage: any = this.translateService.get('LOGIN.USER_PASSWORD_INCORRECT');
             switch (status) {
               case 500:
+                this.error = 'LOGIN.USER_PASSWORD_INCORRECT';
+                this.toastr.error(toastermessage.value, null, { timeOut: 1500 });
                 break;
               case 400:
                 if (statuscode === '2001') {
                   this.error = 'LOGIN.USER_PASSWORD_INCORRECT';
-                  const toastermessage: any = this.translateService.get('LOGIN.USER_PASSWORD_INCORRECT');
                   this.toastr.error(toastermessage.value, null, { timeOut: 1500 });
                 } break;
               case 401:
                 if (statuscode === '2001') {
                   this.error = 'LOGIN.USER_PASSWORD_INCORRECT';
-                  const toastermessage: any = this.translateService.get('LOGIN.USER_PASSWORD_INCORRECT');
                   this.toastr.error(toastermessage.value, null, { timeOut: 1500 });
                 } break;
             }

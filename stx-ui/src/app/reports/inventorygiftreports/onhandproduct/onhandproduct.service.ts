@@ -19,7 +19,21 @@ export class OnHandProductService {
     if (res.headers && res.headers.get('token')) {
       localStorage.setItem('token', res.headers.get('token'));
     }
+
     const body = res.json();
     return body || {};
+  }
+  /*-- Method to get product lines(active or inactive) --*/
+  getProductLineDetails(inactive) {
+    return this.http.get(this.apiEndPoint + '/api/setupinventory/setupproductline/' + inactive)
+      .map(this.extractData);
+  }
+  getInventoryGroupData() {
+    return this.http.get(this.apiEndPoint + '/api/setupinventory/inventorygroups')
+      .map(this.extractData);
+  }
+  generateReport(productObj) {
+    return this.http.post(this.apiEndPoint + '/api/reports/onhandproductreport', productObj)
+      .map(this.extractData);
   }
 }

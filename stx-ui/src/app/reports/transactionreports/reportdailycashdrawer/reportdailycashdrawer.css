@@ -10,3 +10,11 @@
 .form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
 	color: black;
 }
+:host ::ng-deep .table .table {
+    background-color: none!important;
+}
+.bg-color{
+    background-color:#808080;
+    font-weight: bold;
+    padding: 5px 9px;
+}

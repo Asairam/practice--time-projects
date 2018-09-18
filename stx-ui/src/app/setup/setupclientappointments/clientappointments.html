@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+  <app-header [newMenu]="'nav'"></app-header>
   <section id="inner_cont">
     <div class="container form_cont">
       <ul class="nav nav-tabs">
@@ -57,70 +56,70 @@
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_BOOKED' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="bookedStatusColor" [(colorPicker)]="bookedStatusColor" [style.background]="bookedStatusColor"
+                    <input type="text" [(ngModel)]="bookedStatusColor" [(colorPicker)]="bookedStatusColor" [style.background]="bookedStatusColor"disabled
                       [value]="bookedStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_REMINDER_SENT' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="reminderSentStatusColor" [(colorPicker)]="reminderSentStatusColor" [style.background]="reminderSentStatusColor"
+                    <input type="text" [(ngModel)]="reminderSentStatusColor" [(colorPicker)]="reminderSentStatusColor" [style.background]="reminderSentStatusColor"disabled
                       [value]="reminderSentStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CALLED' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="calledStatusColor" [(colorPicker)]="calledStatusColor" [style.background]="calledStatusColor"
+                    <input type="text" [(ngModel)]="calledStatusColor" [(colorPicker)]="calledStatusColor" [style.background]="calledStatusColor"disabled
                       [value]="calledStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CONFIRMED' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="confirmedStatusColor" [(colorPicker)]="confirmedStatusColor" [style.background]="confirmedStatusColor"
+                    <input type="text" [(ngModel)]="confirmedStatusColor" [(colorPicker)]="confirmedStatusColor" [style.background]="confirmedStatusColor"disabled
                       [value]="confirmedStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CANCELED' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="canceledStatusColor" [(colorPicker)]="canceledStatusColor" [style.background]="canceledStatusColor"
+                    <input type="text" [(ngModel)]="canceledStatusColor" [(colorPicker)]="canceledStatusColor" [style.background]="canceledStatusColor"disabled
                       [value]="canceledStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CHECKED_IN' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="checkedInStatusColor" [(colorPicker)]="checkedInStatusColor" [style.background]="checkedInStatusColor"
+                    <input type="text" [(ngModel)]="checkedInStatusColor" [(colorPicker)]="checkedInStatusColor" [style.background]="checkedInStatusColor"disabled
                       [value]="checkedInStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_NO_SHOW' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="noShowStatusColor" [(colorPicker)]="noShowStatusColor" [style.background]="noShowStatusColor"
+                    <input type="text" [(ngModel)]="noShowStatusColor" [(colorPicker)]="noShowStatusColor" [style.background]="noShowStatusColor"disabled
                       [value]="noShowStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_COMPLETE' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="completeStatusColor" [(colorPicker)]="completeStatusColor" [style.background]="completeStatusColor"
+                    <input type="text" [(ngModel)]="completeStatusColor" [(colorPicker)]="completeStatusColor" [style.background]="completeStatusColor"disabled
                       [value]="completeStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_CONFLICTING' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="conflictingStatusColor" [(colorPicker)]="conflictingStatusColor" [style.background]="conflictingStatusColor"
+                    <input type="text" [(ngModel)]="conflictingStatusColor" [(colorPicker)]="conflictingStatusColor" [style.background]="conflictingStatusColor"disabled
                       [value]="conflictingStatusColor" maxlength="7" />
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_PENDING_DEPOSIT' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="pendingDepositStatusColor" [(colorPicker)]="pendingDepositStatusColor" [style.background]="pendingDepositStatusColor"
+                    <input type="text" [(ngModel)]="pendingDepositStatusColor" [(colorPicker)]="pendingDepositStatusColor" [style.background]="pendingDepositStatusColor"disabled
                       maxlength="7" />
                   </td>
                 </tr>
@@ -139,7 +138,7 @@
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_DISPLAY_AVAILABILITIES' | translate }}</td>
                   <td>
-                    <select id="" (change)="getDisplayAvailabilitiesData($event.target.value);" class="form-control input-sm duration-list" [(ngModel)] = "availabilityOrder">
+                    <select id="" (change)="getDisplayAvailabilitiesData($event.target.value);" class="form-control input-sm duration-list" [(ngModel)]="availabilityOrder">
                       <option *ngFor="let clang of DisplayAvailData; let i='index'" value="{{clang.booking}}" id="clang{{i}}">{{clang.booking}}</option>
                     </select>
                   </td>
@@ -169,25 +168,25 @@
                 <tr>
                   <td width="40%">{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_SEND_APPOINTMENT_NOTIFICATIONS' | translate }}</td>
                   <td>
-                    <input type="checkbox" checked (keypress)="clearErrMsg();" [(ngModel)]="sendNotification">
+                    <input type="checkbox" checked (keypress)="clearErrMsg();" (keyup)="clearErrMsg()" [(ngModel)]="sendNotification">
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_TEXT_TAG' | translate }}</td>
                   <td>
-                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="notificationTextTag">
+                    <input type="text" (keypress)="clearErrMsg();" (keyup)="clearErrMsg()" [(ngModel)]="notificationTextTag">
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_TEXT_MESSAGE' | translate }}</td>
                   <td>
-                    <textarea (keypress)="clearErrMsg();" [(ngModel)]="notificationTextMessage"> </textarea>
+                    <textarea (keypress)="clearErrMsg();" (keyup)="clearErrMsg()" [(ngModel)]="notificationTextMessage"> </textarea>
                   </td>
                 </tr>
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_EMAIL_ADDRESS' | translate }}</td>
                   <td>
-                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="notificationEmailAddress">
+                    <input type="text" (keypress)="clearErrMsg();" (keyup)="clearErrMsg()" [(ngModel)]="notificationEmailAddress">
                     <div class="red">
                       <p>{{notificationError2 | translate }}</p>
                     </div>
@@ -197,7 +196,7 @@
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_EMAIL_NAME' | translate }}</td>
                   <td>
-                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="notificationEmailName">
+                    <input type="text" (keypress)="clearErrMsg();" (keyup)="clearErrMsg()" [(ngModel)]="notificationEmailName">
                   </td>
                 </tr>
                 <tr>
@@ -205,7 +204,7 @@
                     <span class="text-danger">*</span>
                   </td>
                   <td>
-                    <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="subject">
+                    <input type="text" (keypress)="clearErrMsg();" (keyup)="clearErrMsg()" [(ngModel)]="subject">
                     <br>
                     <span class="text-center text-danger">
                       {{notificationError1 | translate }}</span>
@@ -296,10 +295,10 @@
                 </tr>
                 <tr *ngFor="let input of inputs; let i = index">
                   <td>
-                    <input type="text" [(ngModel)]="input.howMuch" (click)="clearErrMsg()">
+                    <input type="text" [(ngModel)]="input.howMuch" (click)="clearErrMsg()" (keyup)="clearErrMsg()">
                   </td>
                   <td>
-                    <select [(ngModel)]="input.timeUnit">
+                    <select [(ngModel)]="input.timeUnit" (keyup)="clearErrMsg()">
                       <option value="hours">Hours</option>
                       <option value="days">Days</option>
                     </select>
@@ -344,7 +343,7 @@
                 <tr>
                   <td>{{ 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_FROM_EMAIL_ADDRESS' | translate }}</td>
                   <td>
-                    <input type="text" [(ngModel)]="reminderEmailAddress" (keypress)="clearErrMsg()">
+                    <input type="text" [(ngModel)]="reminderEmailAddress" (keypress)="clearErrMsg()" (keyup)="clearErrMsg()" (keyup)="clearErrMsg()">
                     <div class="red">
                       <p>{{remainderError | translate }}</p>
                       <p>{{remainderError4 | translate }}</p>
@@ -408,7 +407,9 @@
                 <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_URL' | translate }}</label>
               </div>
               <div class="col-md-7 col-sm-8">
-                {{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_HTTP' | translate }}
+                {{url}}
+                <!-- {{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_HTTP' | translate }} -->
+
               </div>
             </div>
             <div class="row mt-20">
@@ -420,8 +421,8 @@
               </div>
               <div class="col-md-7 col-sm-8">
                 <input type="text" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;"
-                  maxlength="3" [(ngModel)]="windowStartTime" class="fl" (click)="clearErrMsg()">
-                <select (change)="formatData($event.target.value);" value="{{windowStarts}}" class="fl">
+                  maxlength="3" [(ngModel)]="windowStartTime" class="fl" (click)="clearErrMsg()" (keyup)="clearErrMsg()">
+                <select (change)="formatData($event.target.value);" value="{{windowStarts}}" class="fl" (click)="clearErrMsg()" (keyup)="clearErrMsg()">
                   <option *ngFor="let clang of timesData; let i='index'" value="{{clang.days}}" id="clang{{i}}">{{clang.days}}</option>
                 </select>
               </div>
@@ -432,13 +433,15 @@
               </div>
               <div class="col-md-7 col-sm-8">
                 <input type="text" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 48 || key > 57 ) return false; else return true;"
-                  maxlength="3" [(ngModel)]="windowEndTime" class="fl" (click)="clearErrMsg()">
-                <select (change)="formatDataForEnd($event.target.value);" value="{{windowEnds}}" class="fl">
+                  maxlength="3" [(ngModel)]="windowEndTime" class="fl" (click)="clearErrMsg()" (keyup)="clearErrMsg()">
+                <select (change)="formatDataForEnd($event.target.value);" value="{{windowEnds}}" class="fl" (click)="clearErrMsg()" (keyup)="clearErrMsg()">
                   <option *ngFor="let clang of timesData; let i='index'" value="{{clang.days}}" id="clang{{i}}">{{clang.days}}</option>
                 </select>
               </div>
             </div>
-            <div class="text-danger" style="text-align:center;"> {{onlineBookingError1 | translate }} </div>
+            <div class="text-danger" style="text-align:center;">
+              <p class="red">{{onlineBookingError1 | translate }}</p>
+            </div>
             <div class="row mt-20">
               <div class="col-md-5 col-sm-4 text-right res-tleft">
                 <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_HOURS_FOR_ONLINE_BOOKING' | translate }}</label>
@@ -489,7 +492,8 @@
                 <label>{{ 'SETUP_CLIENTOPPOINTMENTS.BOOKING_MAX_AVAILABILITIES' | translate }}</label>
               </div>
               <div class="col-md-7 col-sm-8">
-                <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="NumberofAvailabilities" maxlength="5" value="5" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
+                <input type="text" (keypress)="clearErrMsg();" (keyup)="clearErrMsg()" [(ngModel)]="NumberofAvailabilities" maxlength="5"
+                  value="5" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;">
               </div>
               <div class="text-danger" style="text-align:center;"> {{onlineBookingError | translate }} </div>
 
@@ -540,9 +544,10 @@
                 <label>{{ 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_SEND_NOTIFICATION_OF_FAILED' | translate }}</label>
               </div>
               <div class="col-md-7 col-sm-8">
-                <select [(ngModel)]="sendNotificationofFailed" class="fl" style="width:fit-content">
-                  <option *ngFor="let clang of dataByFields; let i='index'" value="{{clang.values}}">{{clang.values}}</option>
-                </select>
+                  <select [(ngModel)]="sendNotificationofFailed" class="fl" style="width:fit-content">
+                   <option value="">** None **</option>
+                   <option *ngFor='let clang of dataByFields' value='{{clang.Id}}'>{{clang.FirstName}} {{clang.LastName}}</option>
+                 </select>
               </div>
             </div>
           </div>

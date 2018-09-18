@@ -14,8 +14,12 @@ export class MergeClientService {
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
 
-  getClient(clientId) {
-    return this.http.get(this.apiEndPoint + '/api/client/' + clientId)
+  getClient(clientId1, clientId2) {
+    return this.http.get(this.apiEndPoint + '/api/clients/' + clientId1 + '/' + clientId2)
+      .map(this.extractData);
+  }
+  mergeClients(dataObj) {
+    return this.http.post(this.apiEndPoint + '/api/merge/clients/', dataObj)
       .map(this.extractData);
   }
   /*To extract json data*/

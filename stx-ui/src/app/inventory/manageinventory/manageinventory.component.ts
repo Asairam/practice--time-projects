@@ -38,9 +38,12 @@ export class ManageInventoryComponent implements OnInit {
     skuError: any;
     prodNameError: any;
     miniQty: any;
+    suplrQty: any;
     stndrdCostError: any;
     priceError: any;
     sizeError: any;
+    showButton: any = false;
+    list: any;
     constructor(private manageInventoryService: ManageInventoryService,
         private route: ActivatedRoute,
         private router: Router) {
@@ -51,12 +54,14 @@ export class ManageInventoryComponent implements OnInit {
         this.getProductLines();
         this.InventorySortOptions();
         this.getviewOption();
+        localStorage.removeItem('list');
     }
     /*Method used to get productline data */
     getProductLines() {
         this.manageInventoryService.getProductLinesData().subscribe(
             data => {
-                this.productLinesData = data['result'];
+                this.productLinesData = data['result'].filter(
+                    filterList => filterList.Active__c === 1);
             },
             error => {
                 const status = JSON.parse(error['status']);
@@ -98,12 +103,12 @@ export class ManageInventoryComponent implements OnInit {
                     case 500:
                         break;
                     case 400:
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
                         }
-                      }
                         break;
                 }
             }
@@ -121,12 +126,17 @@ export class ManageInventoryComponent implements OnInit {
         this.manageInventoryService.productsSearch(searchObj).subscribe(
             data => {
                 if (data.result.length === 0) {
-                    this.noResultMsg = '** No Results **';
+                    this.noResultMsg = '** No Products Found with this Criteria **';
                     this.noResult = true;
+                    this.showButton = false;
                 } else {
                     this.noResult = false;
+                    this.showButton = true;
                 }
                 this.productsList = data['result'];
+                localStorage.setItem('list', JSON.stringify(this.productsList));
+                this.list = this.productsList[0];
+
             },
             error => {
                 const status = JSON.parse(error['status']);
@@ -135,40 +145,63 @@ export class ManageInventoryComponent implements OnInit {
                     case 500:
                         break;
                     case 400:
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
                         }
-                      }
                         break;
                 }
             }
         );
     }/*Method to update product data */
+
+    qntyChangdValues() {
+        const lists = JSON.parse(localStorage.getItem('list'));
+        for (let j = 0; j < this.productsList.length; j++) {
+            for (let k = 0; k < lists.length; k++) {
+                if (this.productsList[j].Id === lists[k].Id) {
+                    this.productsList[j].ondiff = Number(this.productsList[j].Quantity_On_Hand__c) -  Number(lists[k].Quantity_On_Hand__c);
+                    this.productsList[j]['isChanged'] = this.productsList[j].ondiff !== 0;
+                }
+            }
+        }
+    }
     updateProducts() {
+        this.qntyChangdValues();
         for (let i = 0; i < this.productsList.length; i++) {
             if (this.productsList[i]['Product_Code__c'] === '') {
                 this.skuError = 'SKU# is Required';
+                window.scrollTo(0, 200);
             } else if (this.productsList[i]['Name'] === '') {
                 this.prodNameError = 'Product Name is Required';
+                window.scrollTo(0, 200);
             } else if (this.productsList[i]['Size__c'] === '' || this.productsList[i]['Size__c'] <= 0) {
                 this.sizeError = 'Size: Only a positive number can be allowed';
+                window.scrollTo(0, 200);
             } else if (this.productsList[i]['Minimum_Quantity__c'] < 0) {
                 this.miniQty = 'Minimum Quantity: Only zero or a positive number is allowed';
+                window.scrollTo(0, 200);
+            } else if (this.productsList[i]['Supplier_Minimum__c'] < 0) {
+                this.suplrQty = 'Supplier Minimum: Only zero or a positive number is allowed';
+                window.scrollTo(0, 200);
             } else if (this.productsList[i]['Standard_Cost__c'] < 0) {
                 this.stndrdCostError = 'Standard Cost: Only zero or a positive number is allowed';
+                window.scrollTo(0, 200);
             } else if (this.productsList[i]['Price__c'] < 0) {
                 this.priceError = 'Price: Only zero or a positive number is allowed';
+                window.scrollTo(0, 200);
             }
         }
         if ((this.skuError === '' || this.skuError === undefined) && (this.prodNameError === '' || this.prodNameError === undefined)
-            && (this.sizeError === '' || this.sizeError === undefined) && (this.miniQty === '' || this.miniQty === undefined)
+            && (this.sizeError === '' || this.sizeError === undefined) && (this.miniQty === '' || this.miniQty === undefined) && (this.suplrQty === '' || this.suplrQty === undefined)
             && (this.stndrdCostError === '' || this.stndrdCostError === undefined) && (this.priceError === '' || this.priceError === undefined)) {
             const updateProducts = this.productsList;
             this.manageInventoryService.saveProductData(updateProducts).subscribe(
                 data => {
                     const saveproducts = data['result'];
+                    localStorage.removeItem('list');
                     this.router.navigate(['/inventory']);
                 },
                 error => {
@@ -178,14 +211,15 @@ export class ManageInventoryComponent implements OnInit {
                         case 500:
                             break;
                         case 400:
-                        if (statuscode === '2085' || statuscode === '2071') {
-                            if (this.router.url !== '/') {
-                                localStorage.setItem('page', this.router.url);
-                                this.router.navigate(['/']).then(() => { });
+                            if (statuscode === '2085' || statuscode === '2071') {
+                                if (this.router.url !== '/') {
+                                    localStorage.setItem('page', this.router.url);
+                                    this.router.navigate(['/']).then(() => { });
+                                }
                             }
-                          }
-                        /* Case:400 error is for checking sku */
+                            /* Case:400 error is for checking sku */
                             this.error = 'MANAGE_INVENTORY.ERROR';
+                            window.scrollTo(0, 200);
                             break;
                     }
                 }
@@ -205,12 +239,12 @@ export class ManageInventoryComponent implements OnInit {
                     case 500:
                         break;
                     case 400:
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
                         }
-                      }
                         this.error = 'COMMON_STATUS_CODES.' + JSON.parse(error['_body']).status;
                         break;
                 }
@@ -257,6 +291,7 @@ export class ManageInventoryComponent implements OnInit {
         this.prodNameError = '';
         this.sizeError = '';
         this.miniQty = '';
+        this.suplrQty = '';
         this.stndrdCostError = '';
         this.priceError = '';
     }

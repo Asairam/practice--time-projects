@@ -18,7 +18,7 @@
     .form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont select {
         width: 70%;
     } 
-    :host ::ng-deep .fl[_ngcontent-c0] {
+    :host ::ng-deep .fl {
         float: left;
         width: 45% !important;
         margin-right: 7px;

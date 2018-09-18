@@ -269,53 +269,115 @@ export class CheckOutMembershipsComponent implements OnInit {
     }
     // this.tokenbody =  this.commonService.updateToken(clientData1);
     const url = config.ANYWHERECOMMERCE_PAYMENT_API;
-    this.http.post(url, this.tokenbody, {
-      headers: new HttpHeaders()
-        .set('Content-Type', 'text/xml')
-        .append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS')
-        .append('Access-Control-Allow-Origin', '*')
-        .append('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Request-Method')
-      , responseType: 'text'
-    }).subscribe(data => {
-      let cardTokenId: any = '';
-      const parseString = require('xml2js').parseString;
-      parseString(data, function (err, result) {
-        cardTokenId = result;
-      });
-      if (cardTokenId.ERROR && cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID MERCHANTREF') {
-        this.errorMsgAry[0] = 'INVALID MERCHANTREF';
-      } else if ((cardTokenId.ERROR) && (!cardTokenId.SECURECARDUPDATERESPONSE || !cardTokenId.SECURECARDREGISTRATIONRESPONSE)) {
-        if ((cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] === cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] || this.cardNum.toString() === '0')
-          && (cardTokenId.ERROR.ERRORSTRING[0] !== 'INVALID CARDEXPIRY') &&
-          (cardTokenId.ERROR.ERRORSTRING[0] !== 'java.lang.StringIndexOutOfBoundsException: String index out of range: 12')) {
-          this.errorMsgAry[1] = 'Credit Card Processing Error: INVALID CARDNUMBER field';
-          window.scrollTo(0, 0);
-          this.paymentName = '';
-          this.processPaymentModal.hide();
-        } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID CARDEXPIRY') {
-          this.errorMsgAry[2] = 'Invalid card expiry';
-          window.scrollTo(0, 0);
-          this.paymentName = '';
-          this.processPaymentModal.hide();
-        } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'java.lang.StringIndexOutOfBoundsException: String index out of range: 12') {
-          this.errorMsgAry[3] = 'Card number must be 12 digits';
-          window.scrollTo(0, 0);
-          this.paymentName = '';
-          this.processPaymentModal.hide();
+
+    const reqObj = {
+      'url': url,
+      'xml': this.tokenbody
+    };
+    this.checkoutMembershipsService.xmlPayment(reqObj).subscribe(
+      data => {
+        let cardTokenId: any = '';
+        const parseString = require('xml2js').parseString;
+        parseString(data['result'], function (err, result) {
+          cardTokenId = result;
+        });
+        if (cardTokenId.ERROR && cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID MERCHANTREF') {
+          this.errorMsgAry[0] = 'INVALID MERCHANTREF';
+        } else if ((cardTokenId.ERROR) && (!cardTokenId.SECURECARDUPDATERESPONSE || !cardTokenId.SECURECARDREGISTRATIONRESPONSE)) {
+          if ((cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] === cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] || this.cardNum.toString() === '0')
+            && (cardTokenId.ERROR.ERRORSTRING[0] !== 'INVALID CARDEXPIRY') &&
+            (cardTokenId.ERROR.ERRORSTRING[0] !== 'java.lang.StringIndexOutOfBoundsException: String index out of range: 12')) {
+            this.errorMsgAry[1] = 'Credit Card Processing Error: INVALID CARDNUMBER field';
+            window.scrollTo(0, 0);
+            this.paymentName = '';
+            this.processPaymentModal.hide();
+          } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID CARDEXPIRY') {
+            this.errorMsgAry[2] = 'Invalid card expiry';
+            window.scrollTo(0, 0);
+            this.paymentName = '';
+            this.processPaymentModal.hide();
+          } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'java.lang.StringIndexOutOfBoundsException: String index out of range: 12') {
+            this.errorMsgAry[3] = 'Card number must be 12 digits';
+            window.scrollTo(0, 0);
+            this.paymentName = '';
+            this.processPaymentModal.hide();
+          }
         }
-      }
-      if (this.newclient === true) {
-        this.cardTokenId1 = cardTokenId.SECURECARDREGISTRATIONRESPONSE.CARDREFERENCE[0];
-      } else {
-        this.cardTokenId1 = cardTokenId.SECURECARDUPDATERESPONSE.CARDREFERENCE[0];
-      }
-      this.showOk = true;
-      this.showSave = false;
-      this.cardNum = '';
-      this.cardCVV = '';
-      this.processPaymentModal.hide();
-    }, (err: HttpErrorResponse) => {
-    });
+        if (this.newclient === true) {
+          this.cardTokenId1 = cardTokenId.SECURECARDREGISTRATIONRESPONSE.CARDREFERENCE[0];
+        } else {
+          this.cardTokenId1 = cardTokenId.SECURECARDUPDATERESPONSE.CARDREFERENCE[0];
+        }
+        this.showOk = true;
+        this.showSave = false;
+        this.cardNum = '';
+        this.cardCVV = '';
+        this.processPaymentModal.hide();
+      },
+      error => {
+        const status = JSON.parse(error['status']);
+        const statuscode = JSON.parse(error['_body']).status;
+        switch (status) {
+          case 500:
+            break;
+          case 400:
+            if (statuscode === '2085' || statuscode === '2071') {
+              if (this.router.url !== '/') {
+                localStorage.setItem('page', this.router.url);
+                this.router.navigate(['/']).then(() => { });
+              }
+            } break;
+        }
+      });
+
+
+    // this.http.post(url, this.tokenbody, {
+    //   headers: new HttpHeaders()
+    //     .set('Content-Type', 'text/xml')
+    //     .append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS')
+    //     .append('Access-Control-Allow-Origin', '*')
+    //     .append('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Request-Method')
+    //   , responseType: 'text'
+    // }).subscribe(data => {
+    //   let cardTokenId: any = '';
+    //   const parseString = require('xml2js').parseString;
+    //   parseString(data, function (err, result) {
+    //     cardTokenId = result;
+    //   });
+    //   if (cardTokenId.ERROR && cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID MERCHANTREF') {
+    //     this.errorMsgAry[0] = 'INVALID MERCHANTREF';
+    //   } else if ((cardTokenId.ERROR) && (!cardTokenId.SECURECARDUPDATERESPONSE || !cardTokenId.SECURECARDREGISTRATIONRESPONSE)) {
+    //     if ((cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] === cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] || this.cardNum.toString() === '0')
+    //       && (cardTokenId.ERROR.ERRORSTRING[0] !== 'INVALID CARDEXPIRY') &&
+    //       (cardTokenId.ERROR.ERRORSTRING[0] !== 'java.lang.StringIndexOutOfBoundsException: String index out of range: 12')) {
+    //       this.errorMsgAry[1] = 'Credit Card Processing Error: INVALID CARDNUMBER field';
+    //       window.scrollTo(0, 0);
+    //       this.paymentName = '';
+    //       this.processPaymentModal.hide();
+    //     } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID CARDEXPIRY') {
+    //       this.errorMsgAry[2] = 'Invalid card expiry';
+    //       window.scrollTo(0, 0);
+    //       this.paymentName = '';
+    //       this.processPaymentModal.hide();
+    //     } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'java.lang.StringIndexOutOfBoundsException: String index out of range: 12') {
+    //       this.errorMsgAry[3] = 'Card number must be 12 digits';
+    //       window.scrollTo(0, 0);
+    //       this.paymentName = '';
+    //       this.processPaymentModal.hide();
+    //     }
+    //   }
+    //   if (this.newclient === true) {
+    //     this.cardTokenId1 = cardTokenId.SECURECARDREGISTRATIONRESPONSE.CARDREFERENCE[0];
+    //   } else {
+    //     this.cardTokenId1 = cardTokenId.SECURECARDUPDATERESPONSE.CARDREFERENCE[0];
+    //   }
+    //   this.showOk = true;
+    //   this.showSave = false;
+    //   this.cardNum = '';
+    //   this.cardCVV = '';
+    //   this.processPaymentModal.hide();
+    // }, (err: HttpErrorResponse) => {
+    // });
   }
   saveCheckoutMemberships() {
     if (this.clientMembershipId === undefined || this.clientMembershipId === 'undefined' || this.clientMembershipId === ''

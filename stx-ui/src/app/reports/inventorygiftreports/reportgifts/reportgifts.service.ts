@@ -22,4 +22,8 @@ export class ReportGiftsService {
     const body = res.json();
     return body || {};
   }
+  generateReport(servieObj) {
+    return this.http.post(this.apiEndPoint + '/api/reports/giftlistreport', servieObj)
+      .map(this.extractData);
+  }
 }

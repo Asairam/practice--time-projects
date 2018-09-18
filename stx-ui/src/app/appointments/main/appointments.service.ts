@@ -17,10 +17,10 @@ export class AppointmentsService {
 
 
   /*  for user list eg first,last names  */
-  getApptUserList() {
-    return this.http.get(this.apiEndPoint + '/api/appointments/users')
-      .map(this.extractData);
-  }
+  // getApptUserList() {
+  //   return this.http.get(this.apiEndPoint + '/api/appointments/users')
+  //     .map(this.extractData);
+  // }
 
   /*  for get appt list  */
   getAppointments(chooseDate, workerId, viewBy) {
@@ -35,8 +35,8 @@ export class AppointmentsService {
       .map(this.extractData);
   }
 
-  postWorkerName(name, day, date) {
-    return this.http.get(this.apiEndPoint + '/api/appointments/personCalendar/' + name + '/' + day + '/' + date)
+  postWorkerName(name, date) {
+    return this.http.get(this.apiEndPoint + '/api/appointments/personCalendar/' + name + '/' + date)
       .map(this.extractData);
   }
 
@@ -65,10 +65,10 @@ export class AppointmentsService {
       .map(this.extractData);
   }
   /* mobile carrier */
-  mobileCarriers() {
-    return this.http.get(this.apiEndPoint + '/api/setup/clientpreferences/mobilecarriers')
-      .map(this.extractData);
-  }
+  // mobileCarriers() {
+  //   return this.http.get(this.apiEndPoint + '/api/setup/clientpreferences/mobilecarriers')
+  //     .map(this.extractData);
+  // }
   /* express booking services */
   expressBookingServices(data) {
     return this.http.get(this.apiEndPoint + '/api/appointments/expressbookingservices/' + data)
@@ -122,8 +122,16 @@ export class AppointmentsService {
   }
   getClientFields() {
     return this.http.get(this.apiEndPoint + '/api/setup/clientpreferences/clientfields')
-        .map(this.extractData);
-}
+      .map(this.extractData);
+  }
+  getHideCliContactInfo(id) {
+    return this.http.get(this.apiEndPoint + '/api/client/getHideClientContactInfo/' + id)
+      .map(this.extractData);
+  }
+  sendApptNotifs(apptsAry) {
+    return this.http.post(this.apiEndPoint + '/api/notification/email', { 'apptIds': apptsAry })
+      .map(this.extractData);
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

@@ -8,7 +8,7 @@
                     <label>{{'SETUP_TICKET_PREFERENCES.TYPE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select [(ngModel)]="cashType" (change)="clearMsg()">
+                    <select [(ngModel)]="cashType" (change)="clearMsg();clear();">
                         <option value="Cash Paid In">Cash Paid In</option>
                         <option value="Cash Paid Out">Cash Paid Out</option>
                     </select>
@@ -29,7 +29,7 @@
                     </label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" maxlength="40" [(ngModel)]="transactionName" (keypress)="clearMsg()"/>
+                    <input type="text" maxlength="40" [(ngModel)]="transactionName" (click)="clearMsg()"/>
                     <p class="red">{{ cashError1 | translate }}</p>
                 </div>
                 <div>
@@ -53,18 +53,18 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <input type="text" *ngIf="cashType=='Cash Paid In'" [(ngModel)]="cashAmount" (keypress)="IsAlphaNumeric($event)"/>
-                                    <input type="text" *ngIf="cashType=='Cash Paid Out'" [(ngModel)]="cashAmount" (keypress)="IsAlphaNumericNeg($event)"/>
+                                    <input type="text" *ngIf="cashType=='Cash Paid In'" [(ngModel)]="cashAmount" (keypress)="numOnly($event)" (click)="clearMsg()"/>
+                                    <input type="text" *ngIf="cashType=='Cash Paid Out'" [(ngModel)]="cashAmount" (keypress)="numOnly($event)"(click)="clearMsg()"/>
                                     <p class="red">{{ cashError2 | translate }}</p>
                                 </td>
                                 <td>
-                                    <input type="text"maxlength="40" *ngIf="cashType=='Cash Paid In'" [(ngModel)]="cashFrom" (keypress)="clearMsg()"/>
-                                    <input type="text"maxlength="40" *ngIf="cashType=='Cash Paid Out'" [(ngModel)]="cashTo" (keypress)="clearMsg()"/>
+                                    <input type="text"maxlength="40" *ngIf="cashType=='Cash Paid In'" [(ngModel)]="cashFrom" (click)="clearMsg()"/>
+                                    <input type="text"maxlength="40" *ngIf="cashType=='Cash Paid Out'" [(ngModel)]="cashTo" (click)="clearMsg()"/>
                                     <p class="red">{{ cashError3 | translate }}</p>
                                     <p class="red">{{ cashError4 | translate }}</p>
                                 </td>
                                 <td>
-                                    <input type="text" maxlength="140" [(ngModel)]="cashReason" (keypress)="clearMsg()"/>
+                                    <input type="text" maxlength="140" [(ngModel)]="cashReason" (click)="clearMsg()"/>
                                     <p class="red">{{ cashError5 | translate }}</p>
                                 </td>
                             </tr>

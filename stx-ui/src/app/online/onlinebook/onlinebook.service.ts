@@ -32,6 +32,7 @@ export class OnlineBookService {
   }
   getServiceGroups(type, reqDate) {
     const headers = new Headers();
+    headers.append('onlinebooking', 'true');
     headers.append('bookingdate', reqDate);
     headers.append('token', localStorage.getItem('clienttoken'));
     return this.http.getHeader(this.apiEndPoint + '/api/setupservices/servicegroups/active/forappts', headers)
@@ -95,8 +96,19 @@ export class OnlineBookService {
     return this.http.postHeader(this.apiEndPoint + '/api/clientSearch/appointmentbooking', apptdata, headers)
       .map(this.extractData);
   }
+  sendEmailToOwner(apptId) {
+    const headers = new Headers();
+    const dataObj = {
+      apptId: apptId
+    };
+    headers.append('token', localStorage.getItem('clienttoken'));
+    return this.http.postHeader(this.apiEndPoint + '/api/notification/email/owner', dataObj, headers)
+      .map(this.extractData);
+
+  }
   getUsers(bookingdata: any) {
     const headers = new Headers();
+    headers.append('onlinebooking', 'true');
     headers.append('bookinginfo', JSON.stringify(bookingdata));
     headers.append('token', localStorage.getItem('clienttoken'));
     return this.http.getHeader(this.apiEndPoint + '/api/bookingdata/bookappt', headers)
@@ -152,12 +164,12 @@ export class OnlineBookService {
     return this.http.getHeader(this.apiEndPoint + '/api/checkout/ticketpayments/worker/merchant', headers)
       .map(this.extractData);
   }
-  addDepositToOthers(dataObj){
+  addDepositToOthers(dataObj) {
     const headers = new Headers();
     headers.append('token', localStorage.getItem('clienttoken'));
     return this.http.postHeader(this.apiEndPoint + '/api/checkout/ticketother/' + 'New', dataObj, headers)
       .map(this.extractData);
-  
+
   }
   xmlPayment(reqObj) {
     const headers = new Headers();

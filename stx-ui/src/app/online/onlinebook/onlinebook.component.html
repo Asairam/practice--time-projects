@@ -1,7 +1,6 @@
 <div class="signup-maindiv">
 	<div class="signup-middle">
-		<img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo"
-		/>
+		<img src="{{ apiEndPoints +'/'+ companyLogo}}" onerror="this.onerror=null;this.src='assets/images/logo.png';" class="signup-logo" />
 	</div>
 	<div class="signup-caption">
 		Online Appointment Booking
@@ -59,12 +58,14 @@
 								<th class="thcss">Select Services</th>
 								<th style="width: 27%;" class="thcss">Select Provider</th>
 								<th class="thcss"></th>
+								<th class="thcss"></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr *ngFor="let row of rows; let i=index">
 								<td>
-									<select style="width:90%;" [(ngModel)]="row.serviceGroupName" (change)="categoryOfService($event.target.value, i)" (click)="clearErrorMsg()">
+									<select style="width:90%;" [(ngModel)]="row.serviceGroupName" (change)="categoryOfService($event.target.value, i)"
+									 (click)="clearErrorMsg()">
 										<!-- <option>{{serviceGroupName}}</option> -->
 										<option *ngFor="let groupData of serviceGroupList; let i='index'" value="{{groupData.serviceGroupName}}${{groupData.serviceGroupColor}}"
 										 id="groupData{{i}}">{{groupData.serviceGroupName1}}</option>
@@ -76,15 +77,16 @@
 									</select>
 								</td>
 								<td>
-									<select style="width:70%;" [(ngModel)]="row.Id" (change)="servicesListOnChange($event.target.value, i)" (click)="clearErrorMsg()">
+									<select style="width:70%;" [(ngModel)]="row.Id" (change)="servicesListOnChange($event.target.value, i)"
+									 (click)="clearErrorMsg()">
 										<option value="">--select--</option>
 										<option *ngFor="let serviceData of serviceDetailsList[i]; let i='index'" [value]="serviceData.Id" id="serviceData{{i}}">{{serviceData.Name}}</option>
 
 									</select>
 								</td>
 								<td>
-									<select style="width:90%;" [(ngModel)]="row.workerName" *ngIf='workerList[i]?workerList[i].length>0:false' (change)="workerListOnChange($event.target.value,i)"
-									 (click)="clearErrorMsg()">
+									<select style="width:90%;" [(ngModel)]="row.workerName" *ngIf='workerList[i]?workerList[i].length>0:false'
+									 (change)="workerListOnChange($event.target.value,i)" (click)="clearErrorMsg()">
 										<option *ngFor="let workerData of workerList[i]; let i='index'" value="{{workerData.workername}}" id="serviceData{{i}}">{{workerData.name}}</option>
 										<!-- <option value="" >--select--</option> -->
 									</select>
@@ -96,11 +98,18 @@
 										</span>
 									</a>
 
-									<a *ngIf="rows.length>1" (click)="removeServices(i)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove">
+									<a *ngIf="rows.length>1" (click)="removeServices(i)" data-toggle="tooltip" data-placement="top" title=""
+									 data-original-title="Remove">
 										<span class="del">
 											<i class="fa fa-minus" aria-hidden="true"></i>
 										</span>
 									</a>
+								</td>
+								<td>
+									<span title="{{row.desc}}" *ngIf="row.desc">
+										<i class="fa fa-info-circle" aria-hidden="true"></i>
+									</span>
+
 								</td>
 							</tr>
 						</tbody>
@@ -108,8 +117,13 @@
 				</div>
 
 			</div>
-			<div class="col-md-12">
-				Estimated Duration:{{sumOfServiceDurations}} Minutes &nbsp;Estimated Price: {{totalServicePrice}}
+			<div class="col-md-12" >
+				<span *ngIf="showTotalDuration">
+					Estimated Duration:{{sumOfServiceDurations}} Minutes
+				</span>
+				<span *ngIf="showTotalPrice">
+					Estimated Price: {{totalServicePrice}}
+				</span>
 				<br>
 				<span class="red mt-10" *ngIf="depositAlert!=''">{{depositAlert}}</span>
 
@@ -131,8 +145,8 @@
 							</div>
 							<div class="col-md-9">
 
-								<input type="text" (ngModelChange)="getWorkersFromDate()" [(ngModel)]="bsValue" bsDatepicker [(bsValue)]="bsValue" class="mb-25 datefield"
-								 [minDate]="minDate" [maxDate]="maxDate" [bsConfig]="datePickerConfig" />
+								<input type="text" (ngModelChange)="getWorkersFromDate()" [(ngModel)]="bsValue" bsDatepicker [(bsValue)]="bsValue"
+								 class="mb-25 datefield" [minDate]="minDate" [maxDate]="maxDate" [bsConfig]="datePickerConfig" />
 							</div>
 							<div class="col-md-12 mt-20 text-center">
 								<button type="button" class="save-btn" (click)="searchForAppointment()">Search For Appointment</button>
@@ -164,7 +178,8 @@
 					<h1 class="sub_titles">Appointment Search Results</h1>
 					<div class="col-md-12 mt-20 text-left" *ngIf="!apptId || isRebookAppt">
 						<button class="save-btn" (click)="bookAppointment('findappt')" *ngIf='showScheduleButton && apptSearchData.length!==0'>Schedule
-							Appointment</button>
+							Appointment
+						</button>
 					</div>
 					<div class="col-md-12 mt-20 text-left" *ngIf="apptId && !isRebookAppt">
 						<button class="save-btn" (click)="bookAppointment('modify')" *ngIf='showScheduleButton && apptSearchData.length!==0'>Save
@@ -244,7 +259,8 @@
 						<div class="col-md-8 text-left">
 							<select [(ngModel)]="mailingCountry" (change)="getCountry($event.target.value);">
 								<option value="">{{'CLIENTS.COUNTRY' | translate}}</option>
-								<option *ngFor="let mailingcountrieslist of mailingCountriesList; let i='index'" value="{{mailingcountrieslist.NAME}}" id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
+								<option *ngFor="let mailingcountrieslist of mailingCountriesList; let i='index'" value="{{mailingcountrieslist.NAME}}"
+								 id="profilePage_timezone_select_option_{{i}}">{{mailingcountrieslist.NAME}}</option>
 							</select>
 						</div>
 					</div>
@@ -344,8 +360,8 @@
 
 
 
-<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
- role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}"
+ tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-sm" style="width: 590px;">
 		<div class="modal-content">
 			<table>

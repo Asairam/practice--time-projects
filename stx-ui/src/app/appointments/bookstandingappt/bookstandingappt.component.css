@@ -113,4 +113,26 @@
     .align1-select {
         width: 50%;  
     }
+    .select-align {
+        width:100%;
+    }
+    .form_cont input[type=text] {
+        width:100%;
+    }
+}
+@media screen and (max-width: 1222px) and (orientation: landscape) {
+    .col-md-8 {
+        width: 66.66666667%!important;
+    }
+    .form_cont h1 {
+        font-family: 'AvenirLTStdRoman';
+        font-size: 15px;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+    .col-md-10 {
+        width: 150%;
+    }
 }

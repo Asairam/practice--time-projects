@@ -155,6 +155,7 @@ export class SetupServicePackagesComponent implements OnInit {
   deleteFieldValue(index) {
     this.inputs.splice(index, 1);
     this.discountedPackageCaluculation();
+    this.error = '';
   }
   savePackages() {
     this.checkIfServiceExists(this.inputs);
@@ -257,6 +258,7 @@ export class SetupServicePackagesComponent implements OnInit {
     });
     if (isDuplicate === true) {
       this.error = 'SETUP_PACKAGES.DUBLICATE_SERVICE';
+      window.scrollTo(0, 0);
     }
   }
   getInactiveRecords(value) {
@@ -375,9 +377,12 @@ export class SetupServicePackagesComponent implements OnInit {
     this.taxPercent = serviceslist.Tax_Percent__c;
     this.serviceTaxValue = serviceslist.Tax__c;
     // this.getServicePackages(JSON.parse(this.value1, i));
-    this.discountedPackageCaluculation();
+    if (!Number.isInteger(serviceslist.Tax_Percent__c)) {
+      this.discountedPackageCaluculation();
+    }
   }
   editData() {
+    this.discountedPackageCaluculation();
     this.editDiv = true;
     this.checkIfServiceExists(this.inputs);
     for (let i = 0; i < this.inputs.length; i++) {
@@ -434,7 +439,6 @@ export class SetupServicePackagesComponent implements OnInit {
         this.editpackageData.taxPercent = this.taxPercent;
       this.editpackageData.JSON__c = this.inputs;
       this.editpackageData.serviceTaxValue = this.serviceTaxValue;
-
       this.setupServicePackagesService.updatepackageData(this.editpackageData, this.updateId)
         .subscribe(
           data => {

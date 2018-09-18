@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-	<!-- <app-header></app-header> -->
-	<app-header [newMenu]="'noNav'"></app-header>
+	<app-header [newMenu]="'nav'"></app-header>
 	<section id="inner_cont" class="setsubcont">
 		<div class="container">
 			<div class="row">
@@ -19,7 +18,7 @@
 									<td *ngIf='methods.Active__c==0'>
 										<input type="checkbox" disabled>
 									</td>
-									<td class="tbl-txt" (click)="showData(methods);">{{methods.Name}}</td>
+									<td class="tbl-txt word-break" (click)="showData(methods);">{{methods.Name}}</td>
 								</tr>
 								<tr>
 									<td align="center" colspan="2" (click)="addNewRecord()">
@@ -47,7 +46,7 @@
 									<td *ngIf='methods.Active__c==0'>
 										<input type="checkbox" disabled>
 									</td>
-									<td>{{methods.Name}}</td>
+									<td class="tbl-txt word-break">{{methods.Name}}</td>
 								</tr>
 								<tr>
 									<td align="center" colspan="2">

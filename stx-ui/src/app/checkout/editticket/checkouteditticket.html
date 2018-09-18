@@ -1,7 +1,7 @@
 <div id="wrapper_setup_new">
 	<app-header [newMenu]="'noNav'"></app-header>
 	<div class="form_cont12" *ngIf="ticketNumber">
-		<h1 class="ml-40"> ticket# {{ticketNumber}} </h1>
+		<h1> ticket# {{ticketNumber}} </h1>
 	</div>
 	<section id="inner_cont">
 		<!-- <div>
@@ -36,27 +36,27 @@
 				<div id="vtab1" class="vertical_tabs" style="display:block;">
 					<ul class="nav nav-tabs">
 						<li class="tablinks {{activeTabClass[0]}}" id="favoritesnav" (click)="updateTabs(0)">
-							<a data-toggle="tab" style="padding: 6px 10px;">
+							<a data-toggle="tab" class="pd-lr">
 								<span>{{ 'HEADER.FAVORITES' | translate }}</span>
 							</a>
 						</li>
 						<li class="tablinks {{activeTabClass[1]}}" id="servicesnav" (click)="updateTabs(1)">
-							<a data-toggle="tab" style="padding: 6px 10px;">
+							<a data-toggle="tab" class="pd-lr">
 								<span>{{ 'HEADER.SERVICES' | translate }}</span>
 							</a>
 						</li>
 						<li class="tablinks {{activeTabClass[2]}}" id="productsnav" (click)="updateTabs(2)">
-							<a data-toggle="tab" style="padding: 6px 10px;">
+							<a data-toggle="tab" class="pd-lr">
 								<span>{{ 'CHECK_OUTS.PRODUCTS.PRODUCT' | translate }}</span>
 							</a>
 						</li>
 						<li class="tablinks {{activeTabClass[3]}}" id="othernav" (click)="updateTabs(3)">
-							<a data-toggle="tab" style="padding: 6px 10px;">
+							<a data-toggle="tab" class="pd-lr">
 								<span>{{ 'SETUP_WORKERS_DETAILS.OTHER' | translate }}</span>
 							</a>
 						</li>
 						<li class="tablinks {{activeTabClass[4]}}" id="viewbylevelnav" (click)="updateTabs(4)">
-							<a data-toggle="tab" style="padding: 6px 10px;">
+							<a data-toggle="tab" class="pd-lr">
 								<span>
 									MISC
 									<!-- <i class="fa fa-calculator"></i> -->
@@ -64,7 +64,7 @@
 							</a>
 						</li>
 						<li *ngIf='apptId' class="tablinks {{activeTabClass[5]}}" id="viewbyservicegroupnav" (click)="updateTabs(5)">
-							<a data-toggle="tab" [routerLink]="['/checkout/list/' + apptId]">
+							<a data-toggle="tab" class="pd-lr" [routerLink]="['/checkout/list/' + apptId]">
 								<span>
 									Include Ticket
 									<!-- <i class="fa fa-th" aria-hidden="true"></i> -->
@@ -72,7 +72,7 @@
 							</a>
 						</li>
 						<li class="tablinks {{activeTabClass[6]}}" id="paymentsnav" (click)="updateTabs(6)">
-							<a data-toggle="tab" style="padding: 6px 10px;">
+							<a data-toggle="tab" class="pd-lr">
 								<span>{{ 'CHECK_OUTS.PAYMENTS.PAYMENTS' | translate }}</span>
 							</a>
 						</li>
@@ -82,8 +82,8 @@
 						<div class="" *ngIf="activeTab[0]">
 							<div class="clearfix">
 								<div class="row mt-10 row-10">
-									<div class="col-md-2 mt-10 fav_box_main " *ngFor="let favoriteslist of favouritesData; let i='index'">
-										<a (click)="showFavoriteModal(favoriteslist,i)">
+									<div class="col-md-2 mt-10 fav_box_main word-break" *ngFor="let favoriteslist of favouritesData; let i='index'">
+										<a (click)="showFavoriteModal(favoriteslist,i, favoriteslist.type)">
 											<div class="fav_box_img" *ngIf="favoriteslist.pic">
 												<img *ngIf="favoriteslist.pic" class="fav_box_img-view" (error)="imageErrorHandler(favoriteslist.name, i);" [src]="favoriteslist.pic"
 												 alt="product image">
@@ -93,7 +93,7 @@
 												</span>
 											</div>
 											<div *ngIf="!favoriteslist.pic" [style.borderColor]="favoriteslist.color" [ngClass]="{'noplusbg': favoriteslist.id === ''}"
-											 class="fav_box fav_box-arrow">
+											 class="fav_box fav_box-arrow" style="display: table-cell;overflow:hidden">
 												<h4>{{favoriteslist.name}}</h4>
 											</div>
 										</a>
@@ -107,16 +107,17 @@
 							<div class="clearfix">
 								<div class="row mt-10 row-10">
 									<perfect-scrollbar style=" height: 650px;">
-										<div class="col-md-2 mt-10 fav_box_main" *ngFor='let serviceData of servicesData'>
+										<div class="col-md-2 mt-10 fav_box_main word-break" *ngFor='let serviceData of servicesData'>
 											<a (click)="addValues(serviceData)">
-												<div [style.borderColor]="serviceData.Service_Group_Color__c" (click)="showFavoriteModal(serviceData,i)" class="fav_box fav_box-arrow ">
+												<div [style.borderColor]="serviceData.Service_Group_Color__c" (click)="showFavoriteModal(serviceData,i, serviceData.type)"
+												 class="fav_box fav_box-arrow " style="display: table-cell;overflow:hidden">
 													<h4>{{serviceData.name}}</h4>
 												</div>
 											</a>
 										</div>
 									</perfect-scrollbar>
 								</div>
-								<div class="col-xs-12" style="color: white; margin-top: -90px;">{{ 'COMMON.SERVICE_GROUP' | translate }}:
+								<div class="col-xs-12 mt-tp">{{ 'COMMON.SERVICE_GROUP' | translate }}:
 									<select (change)="serviceGroupOnChange($event.target.value)" style="width : 30%;color: white;">
 										<option *ngFor='let list of serviceGroupList' value="{{list.serviceGroupName}}">{{list.serviceGroupName}}</option>
 									</select>
@@ -128,33 +129,33 @@
 						<div class="tabcontent" *ngIf="activeTab[2]">
 							<div class="clearfix">
 								<div class="row mt-10 row-10">
-									<div class="">
-										<perfect-scrollbar style=" height: 555px;">
-											<div class="col-md-2 mt-10 fav_box_main" *ngFor="let productslist of productsList; let i='index'">
-												<!-- <a>
+									<!-- <div class=""> -->
+									<perfect-scrollbar style=" height: 555px;">
+										<div class="col-md-2 mt-10 fav_box_main word-break" *ngFor="let productslist of productsList; let i='index'">
+											<!-- <a>
 												<div [style.borderColor]="productslist.Color__c" (click)="showProductModal(productslist,i)" class="fav_box ">
 													<h4>{{productslist.Name}}-{{productslist.Size__c}} {{productslist.Unit_of_Measure__c}}</h4>
 												</div>
 											</a> -->
-												<a (click)="showProductModal(productslist,i)">
-													<div class="fav_box_img" *ngIf="productslist.pic">
-														<img *ngIf="productslist.pic" class="fav_box_img-view" (error)="imageErrorHandler(productslist.name, i);" [src]="productslist.pic"
-														 alt="product image">
-														<span>
-															<em>{{productslist.Name}}</em>
-															<small [style.backgroundColor]="productslist.Color__c"></small>
-														</span>
-													</div>
-													<div *ngIf="!productslist.pic" [style.borderColor]="productslist.Color__c" [ngClass]="{'noplusbg': productslist.id === ''}"
-													 class="fav_box fav_box-arrow">
-														<h4>{{productslist.Name}}</h4>
-													</div>
-												</a>
-											</div>
-										</perfect-scrollbar>
-									</div>
+											<a (click)="showFavoriteModal(productslist,i, 'Product')">
+												<div class="fav_box_img" *ngIf="productslist.pic">
+													<img *ngIf="productslist.pic" class="fav_box_img-view" (error)="imageErrorHandler(productslist.name, i);" [src]="productslist.pic"
+													 alt="product image">
+													<span>
+														<em>{{productslist.Name}}</em>
+														<small [style.backgroundColor]="productslist.Color__c"></small>
+													</span>
+												</div>
+												<div *ngIf="!productslist.pic" [style.borderColor]="productslist.Color__c" [ngClass]="{'noplusbg': productslist.id === ''}"
+												 class="fav_box fav_box-arrow" style="display: table-cell;overflow:hidden">
+													<h4>{{productslist.Name}}</h4>
+												</div>
+											</a>
+										</div>
+									</perfect-scrollbar>
+									<!-- </div> -->
 
-									<div class="clearfix">
+									<div class="clearfix" style="margin-top: 5px;">
 										<div class="col-md-12 form-inline">
 											<div class="form-group">
 												<label for="" style="color: white;margin-left: -9px;">{{ 'SETUP_INVENTORY_PRODUCTS.SKU#' | translate }}:</label>
@@ -166,9 +167,11 @@
 
 										</div>
 										<div class="col-md-6 form-inline" *ngIf='productsData && productsData.length > 0' style="margin-top: -33px;margin-left: 290px;">
-											<div class="form-group">
-												<select style="width:74%;background-color: #1F3D8B;color: white;" class="form-control" (change)="productsDataOnChage($event.target.value)">
-													<option style="color: white" *ngFor='let plist of productsData' value="{{plist.Id}}${{plist.Name}}${{plist.Size__c}}${{plist.Unit_of_Measure__c}}${{plist.price}}${{plist.Taxable__c}}">{{plist.Name}}</option>
+											<div class="form-group width-align">
+												<select class="form-control style-class" (change)="productsDataOnChage($event.target.value)">
+													<option style="color: white" *ngFor='let plist of productsData' value="{{plist.Id}}${{plist.Name}}${{plist.Size__c}}${{plist.Unit_of_Measure__c}}${{plist.price}}${{plist.Taxable__c}}">
+														{{plist.Name | slice:0:25}}{{plist.Name.length > 25 ? '...' : ''}}
+													</option>
 												</select>
 											</div>
 											<div class="">
@@ -200,7 +203,7 @@
 
 										<div class="col-md-3 mt-10">
 											<!-- <input  value="" > -->
-											<button style="display:block;width: 100%;" class="btn btn-gradient-txt" type="button" (click)="addToTicketInOthers('deposit')">
+											<button style="display:block;width: 100%;font-size: 11px;" class="btn btn-gradient-txt" type="button" (click)="addToTicketInOthers('deposit')">
 												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
 											</button>
 										</div>
@@ -218,7 +221,7 @@
 
 										<div class="col-md-3 mt-10">
 											<!-- <input type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}" > -->
-											<button class="btn btn-gradient-txt" style="display:block;width: 100%;" type="button" (click)="addToTicketInOthers('prepayment')">
+											<button class="btn btn-gradient-txt" style="display:block;width: 100%;font-size: 11px;" type="button" (click)="addToTicketInOthers('prepayment')">
 												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
 											</button>
 										</div>
@@ -237,7 +240,7 @@
 
 										<div class="col-md-3 mt-10">
 											<!-- <input type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}" > -->
-											<button class="btn btn-gradient-txt" type="button" style="display:block;width: 100%;" (click)="addToTicketInOthers('receivedOnAccount')">
+											<button class="btn btn-gradient-txt" type="button" style="display:block;width: 100%;font-size: 11px;" (click)="addToTicketInOthers('receivedOnAccount')">
 												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
 											</button>
 										</div>
@@ -258,7 +261,7 @@
 
 										<div class="col-md-3 mt-10">
 											<!-- <input type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}"> -->
-											<button class="btn btn-gradient-txt" type="button" style="display:block;width: 100%;" (click)="addToTicketInOthers('package')">
+											<button class="btn btn-gradient-txt" type="button" style="display:block;width: 100%;font-size: 11px;" (click)="addToTicketInOthers('package')">
 												<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
 											</button>
 										</div>
@@ -284,23 +287,30 @@
 								<div class="row mt-10">
 									<div class="col-md-9 mt-10">
 										<input type="text" [placeholder]="" (click)="clearOtherError()" [(ngModel)]="giftNumber" style="width:100%;">
-										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.GIFT_NUMBER' | translate}}</label>
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">
+											{{'CHECK_OUTS.OTHERS.GIFT_NUMBER' | translate}}
+										</label>
 									</div>
 									<div class="col-md-3 mt-10">
 										<input type="text" [placeholder]=" " (click)="clearOtherError()" (keypress)="IsAlphaNumeric($event)" [(ngModel)]="giftAmount"
 										 style="width:100%;">
-										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.GIFT_AMOUNT' | translate}}</label>
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">
+											{{'CHECK_OUTS.OTHERS.GIFT_AMOUNT' | translate}}
+										</label>
 									</div>
 								</div>
 								<div class="row mt-10">
 									<div class="col-md-9 mt-10">
 										<input type="text" [placeholder]=" " (click)="clearOtherError()" [(ngModel)]="recepient" style="width:100%;">
-										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.RECIPIENT' | translate}}</label>
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">
+											{{'CHECK_OUTS.OTHERS.RECIPIENT' | translate}}</label>
 									</div>
 									<div class="col-md-3 mt-10">
 										<input type="text" style="width:100%;" [placeholder]=" " (click)="clearOtherError()" [(bsValue)]="expireDate" bsDatepicker
 										 [minDate]="minDate" class="datefield" [bsConfig]="datePickerConfig" />
-										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">{{'CHECK_OUTS.OTHERS.EXPIRES' | translate}}</label>
+										<label class="text-uppercase text-center" style="width: 100%;font-size: 14px;">
+											{{'CHECK_OUTS.OTHERS.EXPIRES' | translate}}
+										</label>
 									</div>
 								</div>
 								<div class="row mt-10">
@@ -315,7 +325,8 @@
 									</div>
 									<div class="col-md-3 mt-10">
 										<!-- <input class="pull-right"   type="button" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}" (click)="addToTicketInOthers('gift')"> -->
-										<button style="display: block; width: 100%;" class="btn btn-gradient-txt" type="button" (click)="clearOtherError()" (click)="addToTicketInOthers('gift')">
+										<button style="display: block; width: 100%;font-size: 11px;" class="btn btn-gradient-txt" type="button" (click)="clearOtherError()"
+										 (click)="addToTicketInOthers('gift')">
 											<span>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</span>
 										</button>
 									</div>
@@ -328,7 +339,7 @@
 							<p class="red">{{miscError | translate }}</p>
 							<div class="clearfix ">
 								<form>
-									<div class="col-md-6 calculater">
+									<div class="col-md-6 ml-wd calculater">
 										<div class="row-mt-20" style="width:100%;margin-bottom:5px;">
 											<input type="button" value=" 1 " (click)="updateMisc('1')" />
 											<input type="button" value=" 2 " (click)="updateMisc('2')" />
@@ -354,11 +365,11 @@
 									</div>
 									<div *ngIf="misc.length > 0">
 										<div class="col-md-3">
-											<div class="row-mt-10" style="margin-top: 150px;color: white;font-size: 30px;">{{misc}}</div>
+											<div class="row-mt-10 value-align">{{misc}}</div>
 										</div>
 										<div class="col-md-3" style="width:12%">
 											<div class="row-mt-10" style="margin-top: 150px;">
-												<input class="pull-left" type="button" (click)="saveMisc()" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}">
+												<input class="pull-left pd-align size-align" type="button" (click)="saveMisc()" value="{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}">
 											</div>
 										</div>
 									</div>
@@ -370,7 +381,7 @@
 						<div class="tabcontent" *ngIf="activeTab[6]">
 							<div class="clearfix">
 								<div class="row mt-10 row-10">
-									<div class="col-md-2 mt-10 fav_box_main" *ngFor="let paymentType of paymentsData; let i='index'">
+									<div class="col-md-2 mt-10 fav_box_main word-break" *ngFor="let paymentType of paymentsData; let i='index'">
 										<a>
 											<div (click)="showPaymentsModal(paymentType,i)" class="fav_box ">
 												<div class="text-center">
@@ -424,12 +435,12 @@
 							<!-- <select style="width:100%; border-color: #000 !important; " (change)="merchantOnChange($event.target.value)" class="form-control input-sm select"> -->
 							<select class="appointment-select-width select-bg text-uppercase merchantDropDown select" style=" padding-right: 35px;" (change)="merchantOnChange($event.target.value)">
 								<!-- <option value="">** None **</option> -->
-								<option *ngFor='let list of merchantWorkerList' value='{{list.FirstName}}${{list.LastName}}${{list.Payment_Gateway_Name__c}}'>{{list.FirstName}} {{list.LastName}}</option>
+								<option *ngFor='let list of merchantWorkerList' value='{{list.Id}}'>{{list.FirstName}} {{list.LastName}}</option>
 							</select>
 						</div>
 					</div>
-					<div class=" checkoutlist text-right  pull-right mt-top">
-						<a style="font-size: 13px; line-height: 16px; color:white; font-weight: 500;" [routerLink]="['/checkout']">Go to CheckOut List</a>
+					<div class=" checkoutlist text-right  pull-right mt-top" *ngIf="decodedToken['Tickets'] && decodedToken['Tickets'][1]['allowAcces']">
+						<a class="list-style" [routerLink]="['/checkout']">Go to CheckOut List</a>
 					</div>
 					<div *ngIf="searchData">
 						<table class="table table-hover table-bordered">
@@ -437,7 +448,7 @@
 								<tr>
 									<th>{{ 'COMMON.ACTIVE' | translate }}</th>
 									<th>{{ 'CLIENTS.FULL_NAME' | translate }}</th>
-									<th>{{ 'COMMON.EMAIL' | translate }}</th>
+									<th *ngIf="hideClientInfo === 0">{{ 'COMMON.EMAIL' | translate }}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -451,7 +462,7 @@
 										</span>
 									</td>
 									<td style="text-decoration: underline;cursor: pointer;" (click)="addClientToAppt(item)">{{item.FullName}}</td>
-									<td>{{item.Email}}</td>
+									<td *ngIf="hideClientInfo === 0">{{item.Email}}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -471,8 +482,12 @@
 							<div class="font-400 appnt-pro-image" *ngIf="clientImgPath == ''">
 
 								<div class="appnt-pro-letter">
-									<strong *ngIf="(apptData && apptData.clientName !== '' && apptData.clientName !== null)"> {{ apptData.clientName[0].toUpperCase() }} </strong>
-									<strong *ngIf="!(apptData && apptData.clientName !== '' && apptData.clientName !== null)"> {{ 'N'.toUpperCase() }} </strong>
+									<strong *ngIf="(apptData && apptData.clientName !== '' && apptData.clientName !== null)">
+										{{ apptData.clientName[0].toUpperCase() }}
+									</strong>
+									<strong *ngIf="!(apptData && apptData.clientName !== '' && apptData.clientName !== null)">
+										{{ 'N'.toUpperCase() }}
+									</strong>
 								</div>
 							</div>
 
@@ -482,7 +497,7 @@
 									<img [src]="webcamImage.imageAsDataUrl"/>
 								  </div> -->
 							<div *ngIf="(apptData && apptData.clientName && apptData.clientName !== '')" class="check-profile-list-name text-uppercase tbl-txt"
-							 [routerLink]="['/client/edit/'+ clientId]">{{apptData.clientName}}</div>
+							 [routerLink]="['/client/edit/'+ clientId]" [queryParams]="{ actionMethod: 'checkout','apptId': apptId }">{{apptData.clientName}}</div>
 							<div *ngIf="(!(apptData && apptData.clientName))" style="margin-left: 10px" class="check-profile-list-name text-uppercase">{{noclientLabel}}</div>
 						</div>
 						<div class="check-profile-details">
@@ -507,7 +522,9 @@
 										</div>
 										<div class="sub-item-sub">
 											<div class="sub-item-service" *ngFor='let listData of TicketServiceData'>
-												<div class="sub-item1 tbl-txt" (click)="showServiceListModal(listData)">{{listData.ServiceName}}</div>
+												<div class="sub-item1 tbl-txt" (click)="showServiceListModal(listData)">
+													{{listData.ServiceName | slice:0:25}}{{listData.ServiceName.length > 25 ? '...' : ''}}
+												</div>
 												<div class="sub-item2"></div>
 												<div class="sub-item3">{{listData.netPrice | number: '1.2-4'}}</div>
 											</div>
@@ -523,7 +540,9 @@
 										</div>
 										<div class="sub-item-sub">
 											<div class="sub-item-service" *ngFor='let ticketproductlist of ticketProductsList'>
-												<div class="sub-item1 tbl-txt" (click)="showListModal(ticketproductlist)">{{ticketproductlist.Name}}</div>
+												<div class="sub-item1 tbl-txt" (click)="showListModal(ticketproductlist)">
+													{{ticketproductlist.Name | slice:0:25}}{{ticketproductlist.Name.length > 25 ? '...' : ''}}
+												</div>
 												<div class="sub-item2"></div>
 												<div class="sub-item3">{{(ticketproductlist.Net_Price__c * ticketproductlist.quantity) | number: '1.2-4'}}</div>
 											</div>
@@ -574,26 +593,7 @@
 										</div>
 									</div>
 									<!-- ----------------tips List-- End----------------- -->
-									<!-- ----------------ticketPaymentList-- Start----------------- -->
-									<div class="sub-item-main" *ngIf='ticketPaymentList && ticketPaymentList.length > 0'>
-										<div class="sub-item-service">
-											<div class="sub-item1 text-uppercase">Payments</div>
-											<div class="sub-item2"></div>
-											<div class="sub-item3">{{paymentCharge | number: '1.2-4'}}</div>
-										</div>
 
-										<div class="sub-item-sub">
-											<div class="sub-item-service" *ngFor="let list of ticketPaymentList ">
-												<div class="sub-item1 tbl-txt" *ngIf="list.paymentTypeName=='Gift Redemption'" (click)="showListPayModal(list)">{{list.paymentTypeName}} {{list.Gift_Number__c}}</div>
-												<div class="sub-item1 tbl-txt" *ngIf="list.paymentTypeName=='Cash' || list.paymentTypeName=='Card' || list.paymentTypeName=='Prepaid Package' || list.paymentTypeName=='Account Charge'"
-												 (click)="showListPayModal(list)">{{list.paymentTypeName}}</div>
-												<div class="sub-item2"></div>
-												<div class="sub-item2"></div>
-												<div class="sub-item3">-{{list.Amount_Paid__c | number: '1.2-4'}}</div>
-											</div>
-										</div>
-									</div>
-									<!-- ----------------ticketPaymentList-- End----------------- -->
 									<div class="sub-item-main">
 										<div class="sub-item-service">
 											<div class="sub-item1 text-uppercase">Subtotal</div>
@@ -615,7 +615,29 @@
 											<div class="sub-item3">{{apptData.Included_Ticket_Amount__c | number: '1.2-4'}}</div>
 										</div>
 									</div>
+									<!-- ----------------ticketPaymentList-- Start----------------- -->
+									<div class="sub-item-main" *ngIf='ticketPaymentList && ticketPaymentList.length > 0'>
+										<div class="sub-item-service">
+											<div class="sub-item1 text-uppercase">Payments</div>
+											<div class="sub-item2"></div>
+											<div class="sub-item3">{{paymentCharge | number: '1.2-4'}}</div>
+										</div>
 
+										<div class="sub-item-sub">
+											<div class="sub-item-service" *ngFor="let list of ticketPaymentList ">
+												<div class="sub-item1 tbl-txt" *ngIf="list.paymentTypeName=='Gift Redeem'" (click)="showListPayModal(list)">
+													{{list.paymentTypeName}} {{list.Gift_Number__c}}
+												</div>
+												<!-- <div class="sub-item1 tbl-txt" *ngIf="list.paymentTypeName=='Cash' || list.paymentTypeName=='Card' || list.paymentTypeName=='Prepaid Package' || list.paymentTypeName=='Account Charge'"
+												 (click)="showListPayModal(list)">{{list.paymentTypeName}}</div> -->
+												<div class="sub-item1 tbl-txt" *ngIf="list.paymentTypeName !=='Gift Redeem'" (click)="showListPayModal(list)">{{list.paymentTypeName}}</div>
+												<div class="sub-item2"></div>
+												<div class="sub-item2"></div>
+												<div class="sub-item3">-{{list.Amount_Paid__c | number: '1.2-4'}}</div>
+											</div>
+										</div>
+									</div>
+									<!-- ----------------ticketPaymentList-- End----------------- -->
 								</perfect-scrollbar>
 							</div>
 
@@ -626,7 +648,7 @@
 								<b>TOTAL:</b>
 							</div>
 							<div class="col-md-4 listcharge">
-								<h2 class="price-total mb-20">{{listCharge | number: '1.2-4'}}</h2>
+								<h2 class="price-total mb-20" id="totalAmountId">{{listCharge | number: '1.2-4'}}</h2>
 							</div>
 							<div class="col-md-4">
 								<button (click)="showPaymentModalByCharge();" type="button" class="btn btn-gradient btn-lg text-uppercase font-600 charge-btn">Charge</button>
@@ -636,11 +658,11 @@
 					</div>
 					<div class="row clearfix mt-10">
 						<div class="col-md-6 text-center desk-lft mb-10">
-							<button type="button" class="btn btn-gradient-txt" (click)="showPromotionsModal()">
-								<span style="font-size: 18px">+ Promo</span>
+							<button type="button" class="btn btn-gradient-txt btn-align" (click)="showPromotionsModal()">
+								<span style="font-size: 17px">+ Promo</span>
 							</button>
-							<button type="button" class="btn btn-gradient-txt" (click)="openTipsModal()">
-								<span style="font-size: 18px">+ {{ 'COMMON.TIPS' | translate }}</span>
+							<button type="button" class="btn btn-gradient-txt btn-align" (click)="openTipsModal()">
+								<span style="font-size: 17px">+ {{ 'COMMON.TIPS' | translate }}</span>
 							</button>
 						</div>
 						<div class=" col-md-6 emotion-icons text-center desk-rgt">
@@ -679,7 +701,7 @@
 
 										</div>
 										<div class="col-md-4 text-right">
-											<input type="number" [(ngModel)]="calAmount" style="width:100%; border-color: #000 !important;" />
+											<input type="number" step="0.01" min="0" [(ngModel)]="calAmount" style="width:100%; border-color: #000 !important;" />
 										</div>
 
 									</div>
@@ -773,45 +795,47 @@
 										<div class="col-md-4">
 											<label>Worker</label>
 											<select [(ngModel)]="productWorkerId" style="width:100%; border-color: #000 !important; " class="form-control input-sm select"
-											 (change)="productWorkerOnChange($event.target.value);clearErrorMsg();">
+											 (change)="workerOnChange($event.target.value,'product');clearErrorMsg();">
 												<option value="">** None **</option>
-												<option *ngFor='let productWorkersList of productWorkersList' value='{{productWorkersList.Id}}'>{{productWorkersList.FirstName}} {{productWorkersList.LastName}}</option>
+												<option *ngFor='let productWorkersList of productWorkersList' value='{{productWorkersList.Id}}'>
+													{{productWorkersList.FirstName}} {{productWorkersList.LastName}}
+												</option>
 											</select>
 										</div>
 										<div class="col-md-4">
 											<label>Price</label>
 											<div>
-												<input type="number" *ngIf="showPrice==true" (blur)="prodPriceOnClick();" style="width: 100%; border-color: #000 !important;"
-												 [(ngModel)]="productProRePrice">
-												<input type="number" *ngIf="showPrice==false" disabled (blur)="prodPriceOnClick();" style="width: 100%; background-color:gainsboro; border-color: #000 !important;"
-												 [(ngModel)]="productProRePrice">
+												<input type="number" (input)="clearErrorMsg();" step="0.01" [min]="0" [disabled]="(!(promotionId === 'None' || promotionId === '') || !(rewardId === 'None' || rewardId === ''))"
+												 (blur)="prodPriceOnClick();" style="width: 100%; border-color: #000 !important;" [(ngModel)]="productProRePrice">
 											</div>
 										</div>
 										<div class="col-md-4">
 											<label>Quantity</label>
 											<div>
-												<input type="number" style="width: 100%; border-color: #000 !important;" [(ngModel)]="productQuantity">
+												<input type="number" step="1" (input)="clearErrorMsg();" [min]="1" style="width: 100%; border-color: #000 !important;" [(ngModel)]="productQuantity">
 											</div>
 										</div>
-										<div class="col-md-4" *ngIf="promotionsProdData.length > 0 || productRewards.length > 0">
+										<div class="col-md-4" *ngIf="productPromotionsList.length > 0 || productRewards.length > 0">
 											<label>Promotion / Reward</label>
-											<select *ngIf="promotionsProdData && promotionsProdData.length>0" [(ngModel)]="promotionId" [disabled]="!showSelectPromotion"
-											 style="width: 100%; border-color: #000 !important;" class="form-control input-sm select" (change)="productPromotionOnChange($event.target.value, 'promotion');">
+											<select *ngIf="productPromotionsList && productPromotionsList.length>0" [(ngModel)]="promotionId" [disabled]="!(rewardId === 'None' || rewardId === '')"
+											 style="width: 100%; border-color: #000 !important;" class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'promotion','product');">
 												<option value="None">-- Select promotion --</option>
-												<option *ngFor='let promotion of promotionsProdData' value='{{promotion.Discount_Percentage__c}}${{promotion.Discount_Amount__c}}${{promotion.Id}}'>{{promotion.Name}}</option>
+												<option *ngFor='let promotion of productPromotionsList' value='{{promotion.Discount_Percentage__c}}${{promotion.Discount_Amount__c}}${{promotion.Id}}'>{{promotion.Name}}</option>
 											</select>
-											<select *ngIf="productRewards.length>0" [(ngModel)]="rewardId" [disabled]="!showSelectReward" style="width: 100%; border-color: #000 !important;"
-											 class="form-control input-sm select" (change)="productPromotionOnChange($event.target.value, 'reward');">
+											<select *ngIf="productRewards.length>0" [(ngModel)]="rewardName" [disabled]="!(promotionId === 'None' || promotionId === '')"
+											 style="width: 100%; border-color: #000 !important;" class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'reward','product');">
 												<option value="None">-- Select reward --</option>
-												<option *ngFor='let reward of productRewards' value='{{reward.Id}}'>{{reward.Name}}</option>
+												<option *ngFor='let reward of productRewards' value='{{reward.Name}}'>{{reward.Name}}</option>
 											</select>
 										</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="text-center mt-40">
-										<button class="save-btn" type="button" *ngIf="productAction=='Add'" (click)='productAddToTicket()'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
-										<button class="save-btn" type="button" *ngIf="productAction=='Update'" (click)='productAddToTicket()'>Update Ticket</button>
+										<button class="save-btn" type="button" *ngIf="productAction=='Add'" (click)='addToTicketProduct()'>
+											{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}
+										</button>
+										<button class="save-btn" type="button" *ngIf="productAction=='Update'" (click)='addToTicketProduct()'>Update Ticket</button>
 										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
 										<button class="cancel-btn" type="button" *ngIf="productAction=='Update'" (click)="removeTicketProduct()">Remove</button>
 
@@ -884,7 +908,7 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<!-- <h4>{{add}}</h4> -->
-								<h4>{{serviceAction}} Service - {{popUpServiceName}}</h4>
+								<h4>{{serviceAction}} Service - {{popUpServiceName}} {{isBookedPackage ? '(Prepaid Package)': ''}}</h4>
 								<p class="red">{{serviceError | translate }}</p>
 								<button type="button" class="close" aria-label="Close" (click)="commonCancelModal()">
 									<span aria-hidden="true">&times;</span>
@@ -895,7 +919,7 @@
 									<div class="clearfix">
 										<div class="col-md-4">
 											<label>Worker</label>
-											<select [(ngModel)]='workerId' style="width:100%; border-color: #000 !important;" class="form-control input-sm select" (change)="workerOnChange($event.target.value);clearErrorMsg();">
+											<select [(ngModel)]='workerId' style="width:100%; border-color: #000 !important;" class="form-control input-sm select" (change)="workerOnChange($event.target.value,'service');clearErrorMsg();">
 												<option value="">** None **</option>
 												<option *ngFor='let worker of workerList' value='{{worker.Price}}${{worker.Id}}'>{{worker.FullName}}</option>
 											</select>
@@ -903,23 +927,21 @@
 										<div class="col-md-4">
 											<label>Price</label>
 											<div>
-												<input type="number" *ngIf="showPrice == true" (blur)="servicePriceOnClick();" style="width: 100%; border-color: #000 !important;"
-												 [(ngModel)]="price">
-												<input type="number" *ngIf="showPrice == false" disabled (blur)="servicePriceOnClick();" style="width: 100%; background-color: gainsboro; border-color: #000 !important;"
-												 [(ngModel)]="price">
+												<input type="number" step="0.01" min="0" [disabled]="(!(promotionId === 'None' || promotionId === '') || !(rewardId === 'None' || rewardId === '') || !(isBookedPackage === false))"
+												 (blur)="servicePriceOnClick();" style="width: 100%; border-color: #000 !important;" [(ngModel)]="price">
 											</div>
 										</div>
-										<div class="col-md-4" *ngIf="promotionsData.length>0 || serviceRewards.length>0">
+										<div class="col-md-4" *ngIf="(servicePromotionsList.length>0 || serviceRewards.length>0) && (isBookedPackage === false)">
 											<label>Promotion / Reward</label>
-											<select *ngIf="promotionsData.length>0" [(ngModel)]="promotionId" [disabled]="!showSelectPromotion" style="width: 100%; border-color: #000 !important;"
-											 class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'promotion');">
+											<select *ngIf="servicePromotionsList.length>0" [(ngModel)]="promotionId" [disabled]="!(rewardId === 'None' || rewardId === '')"
+											 style="width: 100%; border-color: #000 !important;" class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'promotion','service');">
 												<option value="None">-- Select promotion --</option>
-												<option *ngFor='let promotion of promotionsData' value='{{promotion.Discount_Percentage__c}}${{promotion.Discount_Amount__c}}${{promotion.Id}}'>{{promotion.Name}}</option>
+												<option *ngFor='let promotion of servicePromotionsList' value='{{promotion.Discount_Percentage__c}}${{promotion.Discount_Amount__c}}${{promotion.Id}}'>{{promotion.Name}}</option>
 											</select>
-											<select *ngIf="serviceRewards.length>0" [(ngModel)]="rewardId" [disabled]="!showSelectReward" style="width: 100%; border-color: #000 !important;"
-											 class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'reward');">
+											<select *ngIf="serviceRewards.length>0" [(ngModel)]="rewardId" [disabled]="!(promotionId === 'None' || promotionId === '')"
+											 style="width: 100%; border-color: #000 !important;" class="form-control input-sm select" (change)="promotionOnChange($event.target.value, 'reward','service');">
 												<option value="None">-- Select reward --</option>
-												<option *ngFor='let reward of serviceRewards' value='{{reward.Id}}'>{{reward.Name}}</option>
+												<option *ngFor='let reward of serviceRewards' value='{{reward.Id}}${{reward.Name}}'>{{reward.Name}}</option>
 											</select>
 										</div>
 
@@ -935,8 +957,10 @@
 								</div>
 								<div class="row">
 									<div class="text-center mt-40">
-										<button class="save-btn" type="button" *ngIf="serviceAction=='Add'" (click)='addToTicket()'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
-										<button class="save-btn" type="button" *ngIf="serviceAction=='Update'" (click)='addToTicket()'>Update Ticket</button>
+										<button class="save-btn" type="button" *ngIf="serviceAction=='Add'" (click)='addToTicketService()'>
+											{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}
+										</button>
+										<button class="save-btn" type="button" *ngIf="serviceAction=='Update'" (click)='addToTicketService()'>Update Ticket</button>
 										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
 										<button *ngIf="serviceAction == 'Update'" class="cancel-btn" type="button" (click)='removeTicketSerices()'>Remove</button>
 									</div>
@@ -966,19 +990,20 @@
 										</div>
 										<div class="col-md-4" *ngIf="showRedAmount==false">
 											<label>Amount Paid</label>
-											<input type="number" id="chargeVal" [(ngModel)]="charge" (keyup)="calculateChangeback()" style="width:100%; border-color: #000 !important; "
-											 class="form-control input-sm select">
+											<input type="number" step="0.01" min="0" id="chargeVal" [(ngModel)]="charge" (keyup)="calculateChangeback();clearOtherError()"
+											 style="width:100%; border-color: #000 !important; " class="form-control input-sm select">
 										</div>
 										<div class="col-md-4" *ngIf="showRedAmount==true">
 											<label>Amount Paid</label>
-											<input type="number" [(ngModel)]="amountPaid" (keyup)="calculateChangeback()" style="width:100%; border-color: #000 !important; "
+											<input type="number" step="0.01" min="0" [(ngModel)]="amountPaid" (keyup)="calculateChangeback();clearOtherError()" style="width:100%; border-color: #000 !important; "
 											 class="form-control input-sm select">
 
 										</div>
-										<div class="col-md-4" *ngIf="enterManually == false && enterManuallyButton == true && popUpPaymentName!='Gift Redemption' && addCreditCardDevice !== 'MagTek'">
+										<div class="col-md-4" *ngIf="enterManually == false && enterManuallyButton == true && popUpPaymentName!='Gift Redeem' && addCreditCardDevice !== 'MagTek'">
 											<label>&nbsp;</label>
 											<div>
-												<input type="text" style="width:30%; border-color: #000 !important; " *ngIf='enterManuallyButton == true'>
+												<input [(ngModel)]="swipePwd" type="password" style="width:30%; border-color: #000 !important; " *ngIf='enterManuallyButton == true'
+												 autofocus id="swipeId">
 											</div>
 										</div>
 										<div class="col-md-4" *ngIf="addCreditCardDevice== 'MagTek'">
@@ -987,7 +1012,7 @@
 												<input type="text" disabled style="width:30%; border-color: #000 !important; " *ngIf='enterManuallyButton == true'>
 											</div>
 										</div>
-										<div *ngIf="popUpPaymentName=='Gift Redemption'" class="col-md-4">
+										<div *ngIf="popUpPaymentName=='Gift Redeem'" class="col-md-4">
 											<label>Gift Number</label>
 											<div>
 												<input type="text" style="width: 100%; border-color: #000 !important;" [(ngModel)]="giftNumber">
@@ -999,23 +1024,29 @@
 												<input type="text" style="width: 100%; border-color: #000 !important;" [(ngModel)]="paymentNotes">
 											</div>
 										</div>
+										<div class="row" *ngIf="swipePwd">
+											<div class="text-center mt-80">
+												<button class="save-btn" type="button" (click)="getCardDetails()">Submit</button>
+												<button class="cancel-btn" type="button" (click)="clearSwipe()">Clear</button>
+											</div>
+										</div>
 										<div class="col-md-8" style="margin-top: 30px">
 											<div>
 												<label>Balance Due</label>
-												{{balanceDuePopUp | number: '1.2-4'}}
+												{{balanceDuePopUp | number: '1.2-2'}}
 											</div>
 											<div>
 												<label>Change Back</label>
-												<div style="display: inline">{{changeBack}}---</div>
+												<div style="display: inline">{{changeBack | number: '1.2-2'}}---</div>
 											</div>
 										</div>
-										<div class="pull-center col-md-5 col-sm-5" *ngIf="enterManuallyButton == true && popUpPaymentName!='Gift Redemption'">
+										<div class="pull-center col-md-5 col-sm-5" *ngIf="enterManuallyButton == true && popUpPaymentName!='Gift Redeem'">
 											<button style="margin-left: 200px" (click)="showManualOptions()">Enter Manually</button>
 										</div>
 
 									</div>
 								</div>
-								<div class="row" *ngIf="enterManually == true && popUpPaymentName!='Gift Redemption'">
+								<div class="row" *ngIf="enterManually == true && popUpPaymentName!='Gift Redeem'">
 									<div class="col-md-10 col-md-offset-1 enter-manually">
 										<div class="clear-fix">
 											<div class="col-md-12 mt-15">
@@ -1056,12 +1087,12 @@
 												</div>
 
 												<div class="col-md-4">
-													<select class="crt-tkn-select" style="width:100%; border-color: #000 !important;" [(ngModel)]="expMonth">
+													<select class="crt-tkn-select" style="width:100%; border-color: #000 !important;" [(ngModel)]="expMonth" (click)="error=''">
 														<option *ngFor="let month of monthList; let i='index'" value="{{i+1}}">{{month}}</option>
 													</select>
 												</div>
 												<div class="col-md-2">
-													<select class="crt-tkn-select" style="width:100%; border-color: #000 !important;" [(ngModel)]="expYear">
+													<select class="crt-tkn-select" style="width:100%; border-color: #000 !important;" [(ngModel)]="expYear" (click)="error=''">
 														<option *ngFor="let year of yearList" value="{{year}}">{{year}}</option>
 													</select>
 												</div>
@@ -1071,9 +1102,11 @@
 								</div>
 								<div class="row">
 									<div class="text-center mt-40">
-										<button class="save-btn" type="button" *ngIf="enterManually == false && paymentAction == 'Add'" (click)='proceedToPayment()'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
-										<button class="save-btn" type="button" *ngIf="enterManually == false && paymentAction == 'Update'" (click)='proceedToPayment()'>Update Ticket</button>
-										<button class="save-btn" type="button" *ngIf="enterManually == true" (click)='proceedToPayment()'>Authorize</button>
+										<button class="save-btn" type="button" *ngIf="enterManually == false && paymentAction == 'Add' && enterManuallyButton !== true"
+										 (click)='proceedToPayment(false)'>{{'CHECK_OUTS.OTHERS.ADD_TO_TICKET' | translate}}</button>
+										<button class="save-btn" type="button" *ngIf="enterManually == false && paymentAction == 'Update'&& enterManuallyButton !== true"
+										 (click)='proceedToPayment(false)'>Update Ticket</button>
+										<button class="save-btn" type="button" *ngIf="enterManually == true" (click)='proceedToPayment(true)'>Authorize</button>
 										<button class="cancel-btn" type="button" (click)="commonCancelModal()">{{'BUTTON.CANCEL' | translate}}</button>
 										<button class="cancel-btn" *ngIf="enterManuallyButton == false && paymentAction == 'Update'" type="button" (click)='deleteTicketPayment()'>Remove</button>
 									</div>
@@ -1147,7 +1180,7 @@
 										</div>
 										<div class="col-md-4 text-left">
 											<label>{{'COMMON.AMOUNT'|translate}}</label>
-											<input type="number" (click)="clearTipsError()" [(ngModel)]="workerTips.Tip_Amount__c" style="width:100%;border-color:#000 !important;"
+											<input type="number" step="0.01" min="0" (click)="clearTipsError()" [(ngModel)]="workerTips.Tip_Amount__c" style="width:100%;border-color:#000 !important;"
 											/>
 
 										</div>
@@ -1190,6 +1223,47 @@
 					</div>
 				</div>
 				<!-- -------------Tips modal ends------- -->
+				<!-- Start of code for Clover -->
+				<div bsModal #cloverModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+				 (keyup.esc)="commonCancelModal()">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4>Clover</h4>
+								<button type="button" class="close" (click)="commonCancelModal()" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<!-- <canvas ref="canvas" width="300" height="175" id="verify-signature-canvas"></canvas> -->
+							</div>
+							<div class="modal-body" style="background-color:#FFFFFF ">
+								<div id="cloverPopupId">
+									<div class="row">
+										<div class="clearfix">
+											<div class="col-md-4" class="margin-css">
+												<label>Select Device</label>
+												<!-- <select id="select--clover-device-serials"></select> -->
+												<select [(ngModel)]="cloverDevice" style="border-color: #000 !important;">
+													<option *ngFor='let list of cloverDeviceList' value="{{list.id}}">{{list.name}}</option>
+												</select>
+												<div id="status-message"></div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="text-center mt-40">
+											<button class="save-btn" type="button" (click)='connectCloverDevice()' id="contDevId">Connect</button>
+											<button class="cancel-btn" type="button" (click)="commonCancelModal()" id="cancelTransId">{{'BUTTON.CANCEL' | translate}}</button>
+										</div>
+									</div>
+									<button (click)="completeClover()" id="completeTrsId" style="display:none"></button>
+									<input (click)="insertPayment()" id="insPayId" type="text" style="display:none">
+									<input (click)="displayToast()" id="toastMsgId" type="text" style="display:none">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- End of code for Clover -->
 			</div>
 		</div>
 	</section>

@@ -1,5 +1,5 @@
 <div id="wrapper_setup_new">
-    <app-header></app-header>
+    <app-header [newMenu]="'noNav'"></app-header>
     <section id="inner_cont">
         <div class="container form_cont">
             <div class="row mt-20">
@@ -48,7 +48,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let data of apptcashinoutData">
-                                        <td>{{data.CreatedDate | date: 'M/dd/yy'}}</td>
+                                        <td>{{data.disaplayDate[0]}}</td>
                                         <td>{{data.Drawer_Number__c}}</td>
                                         <td>{{data.Type__c}}</td>
                                         <td>{{data.Amount__c}}</td>
@@ -83,7 +83,8 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor = 'let data of apptTicketData'>
-                                        <td> {{data.Appt_Date_Time__c | date: 'M/dd/yy'}}</td>
+                                        <td> {{data.apptTime[0]}}</td>
+                                        <!-- <td> {{data.Appt_Date_Time__c | date: 'M/dd/yy'}}</td> -->
                                         <td [routerLink]="['/checkout/' + data.Id]" style="text-decoration: underline;cursor:pointer;">{{data.Name}}</td>
                                         <td [routerLink]="['/client/edit/' + data.Client__c]" style="text-decoration: underline;cursor:pointer;" *ngIf ="data.FullName !== '' || data.FullName !== null || data.FullName !== undefined">{{data.FullName}}</td>
                                         <td *ngIf ="data.FullName === '' || data.FullName === null || data.FullName === undefined">NO CLIENT</td>

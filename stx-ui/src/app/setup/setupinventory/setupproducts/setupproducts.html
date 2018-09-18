@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new" style="color: white;">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont" class="setsubcont">
         <div class="container">
             <div class="row">
@@ -10,7 +9,7 @@
                             <tbody>
                                 <tr class="white">
                                     <td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
-                                        <input id="c1" type="checkbox" class="pull-left" (click)="getInactiveRecords($event);" ([ngModel])="inActive"> &nbsp;&nbsp;
+                                        <input id="c1" type="checkbox" class="pull-left" (click)="getInactiveRecords($event);" ([ngModel])="inActive" [checked]="inActive === 0"> &nbsp;&nbsp;
                                         <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
                                     </td>
                                 </tr>
@@ -22,7 +21,7 @@
                                     </td>
                                     <td>
                                         <select [(ngModel)] = "inventoryGroupName" (change)="getGroupNameForListing($event.target.value);" style="width: 100%">
-                                            <option *ngFor="let groupname of groupName; let i='index'" value="{{groupname.inventoryGroups}}" id="groupname{{i}}">{{groupname.inventoryGroups}}</option>
+                                            <option *ngFor="let groupname of groupName; let i='index'" value="{{groupname.inventoryGroups}}" id="groupname{{i}}">{{groupname.inventoryGroups | slice:0:20}}{{groupname.inventoryGroups.length > 20 ? '...' : ''}}</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -37,7 +36,7 @@
                                     <td align="center" *ngIf="productListvalues.Active__c==1">
                                         <input type="checkbox" checked disabled/>
                                     </td>
-                                    <td class="tbl-txt" (click)="showData(productListvalues)">
+                                    <td class="tbl-txt word-break" (click)="showData(productListvalues)">
                                         {{productListvalues.Name}}
                                     </td>
                                 </tr>
@@ -58,7 +57,7 @@
                             <tbody>
                                 <tr class="white">
                                     <td colspan="2" valign="middle" height="60" style="padding-left: 10px;">
-                                        <input id="c1" type="checkbox" class="pull-left"> &nbsp;&nbsp;
+                                        <input id="c1" type="checkbox" class="pull-left" [checked]="inActive === 0"> &nbsp;&nbsp;
                                         <label for="c1" class="c1">{{ 'COMMON.SHOW_INACTIVE' | translate }}</label>
                                     </td>
                                 </tr>
@@ -85,7 +84,7 @@
                                     <td align="center" *ngIf="productListvalues.Active__c==1">
                                         <input type="checkbox" checked disabled/>
                                     </td>
-                                    <td>
+                                    <td class="tbl-txt word-break">
                                         {{productListvalues.Name}}
                                     </td>
                                 </tr>
@@ -243,13 +242,13 @@
                     </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-sm-3 text-right res-tleft white">
-                            <label>Product Image</label>
+                            <label>{{ 'SETUP_INVENTORY_PRODUCTS.PRODUCT_IMAGE' | translate }} </label>
                         </div>
                         <div class="col-sm-7">
                                 <input style="display: none" id="fileUpload" type="file" (change)="selectFile($event)">
                             <!-- <input type="file" [(ngModel)]="productPic"> -->
                             <div class="chooseFileName">
-                                    <label class="uploadButton" for="fileUpload" style="margin-top: 10px;">Choose File</label>{{fileName}}
+                                    <label class="uploadButton" for="fileUpload" style="margin-top: 10px;">{{ 'COMMON.CHOOSE_FILE' | translate }}</label>{{fileName}}
                                     <!-- <img [src]="clientPictureFileView" width="50" (error)="imageErrorHandler($event);" height="50" style="margin-bottom: 6px; margin-left: 10px;"> -->
                                 </div>
                         </div>
@@ -267,7 +266,7 @@
                             <td style="padding: 0 0 5px 0;">
                                 <select id="" style="margin: 0px 0 0 0; width:100%"class="form-control input-sm" (click)="clearErrMsg();" (change)="onChangeSuppliers($event.target.value, i)">
                                     <option value=''>{{'COMMON.SELECT' | translate }}</option>
-                                    <option *ngFor="let supplierdata of supplierData; let i='index'" value="{{supplierdata.Id}}" id="supplierdata{{i}}">{{supplierdata.Name}}</option>
+                                    <option *ngFor="let supplierdata of supplierData; let i='index'" value="{{supplierdata.Id}}" id="supplierdata{{i}}">{{supplierdata.Name | slice:0:25}}{{supplierdata.Name.length > 25 ? '...' : ''}}</option>
                                 </select>
                             </td>
                             <td style="padding: 0 0 5px 0;" >
@@ -366,7 +365,8 @@
                         </div>
                         <div class="col-sm-7">
                             <select [(ngModel)] = "inventoryGroupName" (change)="getLineFieldsForListing($event.target.value);">
-                                <option *ngFor="let groupname of groupName; let i='index'" value="{{groupname.inventoryGroups}}" id="groupname{{i}}">{{updatedInventoryGroup}}</option>
+                                <option *ngFor="let groupname of groupName; let i='index'" value="{{groupname.inventoryGroups}}" id="groupname{{i}}">{{groupname.inventoryGroups}}</option>
+                                <!-- {{updatedInventoryGroup}} -->
                             </select>
                         </div>
                     </div>
@@ -440,13 +440,13 @@
                     </div>
                     <div class="row mt-20 res-mt-15">
                             <div class="col-sm-3 text-right res-tleft white">
-                                <label>Product Image</label>
+                                <label>{{ 'SETUP_INVENTORY_PRODUCTS.PRODUCT_IMAGE' | translate }}</label>
                             </div>
                             <div class="col-sm-7">
                                     <input style="display: none" id="fileUpload" type="file" (change)="selectFile($event)">
                                 <!-- <input type="file" [(ngModel)]="productPic"> -->
                                 <div class="chooseFileName">
-                                        <label class="uploadButton" for="fileUpload" style="margin-top: 10px;">Choose File</label>{{fileName}}
+                                        <label class="uploadButton" for="fileUpload" style="margin-top: 10px;">{{ 'COMMON.CHOOSE_FILE' | translate }}</label>{{fileName}}
                                         <img [src]="productPicToShow" width="50" height="50" style="margin-bottom: 6px; margin-left: 10px;">
                                     </div>
                             </div>
@@ -474,7 +474,7 @@
                                     <tr class="" *ngFor="let supplier of suppliers; let i = 'index'">
                                         <td style="padding: 0 0 5px 0;">
                                             <select id="" [(ngModel)] = "supplier.supId" (change) = "onChangeSuppliers($event.target.value, i)" style="margin: 0px 0 0 0; width:100%" (click)="clearErrMsg();">
-                                              <option *ngFor="let productSupplierdata of supplierData; let i='index'" value="{{productSupplierdata.Id}}" id="productSupplierdata{{i}}">{{productSupplierdata.Name}}</option>
+                                              <option *ngFor="let productSupplierdata of supplierData; let i='index'" value="{{productSupplierdata.Id}}" id="productSupplierdata{{i}}">{{productSupplierdata.Name | slice:0:25}}{{productSupplierdata.Name.length > 25 ? '...' : ''}}</option>
                                             </select>
                                         </td>
                                         <td style="padding: 0 0 5px 0;">

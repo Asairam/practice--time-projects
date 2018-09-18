@@ -2,20 +2,27 @@
     <app-header [newMenu]="'noNav'"></app-header>
     <section id="inner_cont">
         <div class="container form_cont">
+
             <div class="row mt-20">
+                <div class="col-md-12">
+                    <p class="red mb-0"> {{error}} </p>
+                </div>
                 <div class="col-md-4 col-sm-4 text-right res-tleft mt-top">
                     <label>{{'COMMON.BEGIN_DATE' | translate}}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input class="datefield" type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig">
+                    <input class="datefield" type="text" [maxDate]="reportAnalysis.endDate" [(ngModel)]="reportAnalysis.startDate" bsDatepicker
+                        (ngModelChange)="clear()" [(bsValue)]="reportAnalysis.startDate" [bsConfig]="datePickerConfig">
                 </div>
             </div>
             <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft mt-top">
                     <label>{{'COMMON.END_DATE' | translate}}</label>
                 </div>
-                <div class="col-md-7 col-sm-8">
-                    <input class="datefield" type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig">
+                <div class="col-md-7 col-sm-8" [ngClass]="{'disabled':!reportAnalysis.startDate}">
+                    <input class="datefield" type="text" [minDate]="reportAnalysis.startDate" [disabled]="!reportAnalysis.startDate"
+                        (ngModelChange)="clear()" [(ngModel)]="reportAnalysis.endDate" bsDatepicker [(bsValue)]="reportAnalysis.endDate"
+                        [bsConfig]="datePickerConfig">
                 </div>
             </div>
             <div class="row mt-20">
@@ -23,20 +30,20 @@
                     <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }} </label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option selected>Comapny Analysis</option>
-                        <option>Worker Analysis</option>
+                    <select [(ngModel)]="reportAnalysis.type" (change)="selectReportsType($event.target.value);clear()">
+                        <option [value]="'Comapny Analysis'">Comapny Analysis</option>
+                        <option [value]="'Worker Analysis'">Worker Analysis</option>
                     </select>
                 </div>
             </div>
-            <div class="row mt-20" data-ng-disabled="true">
+            <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft mt-top">
                     <label>{{'COMMON.WORKER' | translate }} </label>
                 </div>
-                <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option selected>Comapny Analysis</option>
-                        <option>Worker Analysis</option>
+                <div class="col-md-7 col-sm-8" [ngClass]="{'disabled':reportAnalysis.type === 'Comapny Analysis'}">
+                    <select [disabled]="reportAnalysis.type === 'Comapny Analysis'" (change)="clear();selectWorker();" [(ngModel)]="reportAnalysis.worker">
+                        <option [value]="''">--Select Worker--</option>
+                        <option *ngFor="let worker of workerList" [value]='worker.Id'>{{worker.FirstName+' '+ worker.LastName}}</option>
                     </select>
                 </div>
             </div>
@@ -52,13 +59,15 @@
             </div>
             <div class="row mt-20" *ngIf="itemsDisplay">
                 <div class="col-md-12">
-                    <div class="table-responsive" >
-                        <table class="table table-hover table-bordered form_cont_one" >
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered form_cont_one">
                             <thead>
                                 <tr>
                                     <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018'| translate }}</th>
-                                    <th class="thcss">{{'COMMON.COMPANY_STATISTICS'| translate }}</th>
-                                    <th class="thcss">02/01/2018 - 03/01/2018</th>
+                                    <th class="thcss">{{reportAnalysis.type === 'Comapny Analysis' ? ('COMMON.COMPANY_STATISTICS'| translate ):
+                                        'Worker Statistics - '+workerName }}
+                                    </th>
+                                    <th class="thcss">{{reportAnalysis.startDate|date:'MM/dd/yyyy'}} - {{reportAnalysis.endDate|date:'MM/dd/yyyy'}}</th>
                                 </tr>
                             </thead>
                         </table>
@@ -70,24 +79,45 @@
 
                             <tr>
                                 <td>Tickets with Services and No Products</td>
-                                <td>0</td>
+                                <td>{{reportDetails?.serviceOnlyCount}}</td>
                             </tr>
                             <tr>
                                 <td>Tickets with Products and No Services</td>
-                                <td>0</td>
+                                <td>{{reportDetails?.productOnlyCount}}</td>
                             </tr>
                             <tr>
                                 <td>Tickets with Both Services and Products</td>
-                                <td>0</td>
+                                <td>{{reportDetails?.bothCount}}</td>
                             </tr>
                             <tr>
                                 <td>Tickets with Ticket Value
                                     <=0 .00</td>
-                                        <td>0</td>
+                                        <td>{{reportDetails?.zeroOrRefundCount}}</td>
                             </tr>
                             <tr>
                                 <th>Total Number of Tickets</th>
-                                <th>0</th>
+                                <th>{{reportDetails?.serviceOnlyCount + reportDetails?.productOnlyCount + reportDetails?.bothCount
+                                    + reportDetails?.zeroOrRefundCount}}</th>
+                            </tr>
+                            <tr>
+                                <td> </td>
+                                <td> </td>
+                            </tr>
+                            <tr>
+                                <td>Tickets with at least one Service</td>
+                                <td>{{reportDetails?.serviceOnlyCount + reportDetails?.bothCount}}</td>
+                            </tr>
+                            <tr>
+                                <td>Tickets with at least one Product </td>
+                                <td>{{reportDetails?.productOnlyCount + reportDetails?.bothCount }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tickets with Multiple Products</td>
+                                <td>{{reportDetails?.multipleProductCount}}</td>
+                            </tr>
+                            <tr>
+                                <td>Tickets with Multiple Services and Multiple Products</td>
+                                <td>{{reportDetails?.multipleBothCount}}</td>
                             </tr>
                         </table>
                         <table class="table-style">
@@ -97,23 +127,23 @@
                             </tr>
                             <tr>
                                 <td>% of Product Revenue compared to Service Revenue</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.Percent_Product_Revenue_to_Service_Revenue}}%</td>
                             </tr>
                             <tr>
                                 <td>% of Tickets with Product</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.Percent_Tickets_with_Product}}%</td>
                             </tr>
                             <tr>
                                 <td>% of Tickets with Service</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.Percent_Tickets_with_Service}}%</td>
                             </tr>
                             <tr>
                                 <td>% of Service Tickets with Product</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.Percent_Service_Tickets_with_Product}}%</td>
                             </tr>
                             <tr>
-                                <th>% of Tickets with Multiple Products</th>
-                                <th>0%</th>
+                                <td>% of Tickets with Multiple Products</td>
+                                <td>{{reportDetails.Percent_Tickets_with_Multiple_Products}}%</td>
                             </tr>
                         </table>
                         <table class="table-style">
@@ -123,20 +153,33 @@
                             </tr>
                             <tr>
                                 <td>Average Revenue per Ticket</td>
-                                <td>0.00</td>
+                                <td>{{reportDetails.Avg_Revenue_per_Ticket}}</td>
                             </tr>
                             <tr>
                                 <td>Average Service Revenue per Ticket</td>
-                                <td>0.00</td>
+                                <td>{{reportDetails.Avg_Service_Revenue_per_Ticket}}</td>
                             </tr>
                             <tr>
                                 <td>Average Service Revenue per Service Only Ticket</td>
-                                <td>0.00</td>
+                                <td>{{reportDetails.Service_Revenue_per_Service_Only_Ticket}}</td>
                             </tr>
                             <tr>
-                                <th>Average Product Revenue per Ticket</th>
-                                <th>0.00</th>
+                                <td>Average Product Revenue per Ticket</td>
+                                <td>{{reportDetails.Avg_Product_Revenue_per_Ticket}}</td>
                             </tr>
+                            <tr>
+                                <td>Average Product Revenue per Product Only Ticket</td>
+                                <td>{{reportDetails.Avg_Product_Revenue_per_Product_Only_Ticket}}</td>
+                            </tr>
+                            <tr>
+                                <td>Average Product Revenue per All Service Tickets</td>
+                                <td>{{reportDetails.Avg_Product_Revenue_per_All_Service}}</td>
+                            </tr>
+                            <tr>
+                                <td>Average Product Revenue per Service Tickets with Products</td>
+                                <td>{{reportDetails.Avg_Product_Revenue_per_Service_Tx_Products}}</td>
+                            </tr>
+
                         </table>
                         <table class="table-style">
                             <tr>
@@ -144,25 +187,54 @@
                                 <th>{{'TICKET_ANALYSIS_REPORT.QUANTITY'| translate }}</th>
                                 <th>{{'SETUP_COMPENSATION_SCALES.PERCENT'| translate }}</th>
                             </tr>
+
                             <tr>
                                 <td>Recurring Visit</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.recurringVisitCount}}</td>
+                                <td>{{reportDetails.Recurring_Visit}}%</td>
                             </tr>
                             <tr>
                                 <td>New Visit</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.newVisitCount}}</td>
+                                <td>{{reportDetails.New_Visit}}%</td>
                             </tr>
                             <tr>
                                 <td>Booked Online</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.bookedOnlineCount}}</td>
+                                <td>{{reportDetails.Booked_Online}}%</td>
                             </tr>
                             <tr>
                                 <td>Non Service</td>
-                                <td>0</td>
-                                <td>0%</td>
+                                <td>{{reportDetails.nonServiceCount}}</td>
+                                <td>{{reportDetails.Non_Service}}%</td>
+                            </tr>
+                        </table>
+                        <table class="table-style">
+                            <tr>
+                                <th>Ticket Revenue by Client Type</th>
+                                <th>Amount</th>
+                                <th>percent</th>
+                            </tr>
+
+                            <tr>
+                                <td>Recurring Visit</td>
+                                <td>{{reportDetails.recurringVisitRevenue}}</td>
+                                <td>{{reportDetails.Recurring_Visit_Revenue}}%</td>
+                            </tr>
+                            <tr>
+                                <td>New Visit</td>
+                                <td>{{reportDetails.newVisitRevenue}}</td>
+                                <td>{{reportDetails.New_Visit_Revenue}}%</td>
+                            </tr>
+                            <tr>
+                                <td>Booked Online</td>
+                                <td>{{reportDetails.bookedOnlineRevenue}}</td>
+                                <td>{{reportDetails.Booked_Online_Revenue}}%</td>
+                            </tr>
+                            <tr>
+                                <td>Non Service</td>
+                                <td>{{reportDetails.nonServiceRevenue}}</td>
+                                <td>{{reportDetails.Non_Service_Revenue}}%</td>
                             </tr>
                         </table>
                     </div>

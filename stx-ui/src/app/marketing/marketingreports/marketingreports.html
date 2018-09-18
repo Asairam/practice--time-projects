@@ -17,12 +17,12 @@
 						<td>08/04/2017</td>
 						<td>263</td>
 						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
+							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View" *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][3]['allowAcces']">
 								<span class="add">
 									<i class="fa fa-eye" aria-hidden="true"></i>
 								</span>
 							</a>
-							<a  [routerLink]="['/marketing/reportdelete']"data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+							<a  [routerLink]="['/marketing/reportdelete']"data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete" *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][4]['allowAcces']">
 								<span class="del">
 									<i class="fa fa-trash-o" aria-hidden="true"></i>
 								</span>
@@ -34,12 +34,12 @@
 						<td>10/26/2017</td>
 						<td>41</td>
 						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
+							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View" *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][3]['allowAcces']">
 								<span class="add">
 									<i class="fa fa-eye" aria-hidden="true"></i>
 								</span>
 							</a>
-							<a  [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+							<a  [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"	*ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][4]['allowAcces']">
 								<span class="del">
 									<i class="fa fa-trash-o" aria-hidden="true"></i>
 								</span>
@@ -51,12 +51,12 @@
 						<td>10/25/2017</td>
 						<td>41</td>
 						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
+							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View" *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][3]['allowAcces']">
 								<span class="add">
 									<i class="fa fa-eye" aria-hidden="true"></i>
 								</span>
 							</a>
-							<a  [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+							<a  [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"	*ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][4]['allowAcces']">
 								<span class="del">
 									<i class="fa fa-trash-o" aria-hidden="true"></i>
 								</span>
@@ -68,12 +68,12 @@
 						<td>10/24/2017</td>
 						<td>43</td>
 						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
+							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View" *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][3]['allowAcces']">
 								<span class="add">
 									<i class="fa fa-eye" aria-hidden="true"></i>
 								</span>
 							</a>
-							<a  [routerLink]="['/marketing/reportdelete']"data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+							<a  [routerLink]="['/marketing/reportdelete']"data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"*ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][4]['allowAcces']">
 								<span class="del">
 									<i class="fa fa-trash-o" aria-hidden="true"></i>
 								</span>
@@ -85,29 +85,12 @@
 						<td>10/23/2017</td>
 						<td>43</td>
 						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
+							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View" *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][3]['allowAcces']">
 								<span class="add">
 									<i class="fa fa-eye" aria-hidden="true"></i>
 								</span>
 							</a>
-							<a [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
-								<span class="del">
-									<i class="fa fa-trash-o" aria-hidden="true"></i>
-								</span>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="40%">API Upgrade</td>
-						<td>10/22/2017</td>
-						<td>43</td>
-						<td>
-							<a [routerLink]="['/marketing/reportedit']"  data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
-								<span class="add">
-									<i class="fa fa-eye" aria-hidden="true"></i>
-								</span>
-							</a>
-							<a [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+							<a [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"*ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][4]['allowAcces']">
 								<span class="del">
 									<i class="fa fa-trash-o" aria-hidden="true"></i>
 								</span>
@@ -119,80 +102,12 @@
 						<td>10/21/2017</td>
 						<td>43</td>
 						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
+							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View" *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][3]['allowAcces']">
 								<span class="add">
 									<i class="fa fa-eye" aria-hidden="true"></i>
 								</span>
 							</a>
-							<a [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
-								<span class="del">
-									<i class="fa fa-trash-o" aria-hidden="true"></i>
-								</span>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="40%">API Upgrade</td>
-						<td>10/20/2017</td>
-						<td>43</td>
-						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
-								<span class="add">
-									<i class="fa fa-eye" aria-hidden="true"></i>
-								</span>
-							</a>
-							<a  [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
-								<span class="del">
-									<i class="fa fa-trash-o" aria-hidden="true"></i>
-								</span>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="40%">API Upgrade</td>
-						<td>10/19/2017</td>
-						<td>43</td>
-						<td>
-							<a  [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
-								<span class="add">
-									<i class="fa fa-eye" aria-hidden="true"></i>
-								</span>
-							</a>
-							<a [routerLink]="['/marketing/reportdelete']"data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
-								<span class="del">
-									<i class="fa fa-trash-o" aria-hidden="true"></i>
-								</span>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="40%">API Upgrade</td>
-						<td>10/18/2017</td>
-						<td>43</td>
-						<td>
-							<a [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
-								<span class="add">
-									<i class="fa fa-eye" aria-hidden="true"></i>
-								</span>
-							</a>
-							<a [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
-								<span class="del">
-									<i class="fa fa-trash-o" aria-hidden="true"></i>
-								</span>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td width="40%">API Upgrade</td>
-						<td>10/17/2017</td>
-						<td>43</td>
-						<td>
-							<a [routerLink]="['/marketing/reportedit']" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
-								<span class="add">
-									<i class="fa fa-eye" aria-hidden="true"></i>
-								</span>
-							</a>
-							<a [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+							<a [routerLink]="['/marketing/reportdelete']" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"*ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][4]['allowAcces']">
 								<span class="del">
 									<i class="fa fa-trash-o" aria-hidden="true"></i>
 								</span>

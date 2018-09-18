@@ -452,7 +452,7 @@ export class SetupPaymentTypesComponent implements OnInit {
     this.activeStatus = true;
   }
   showData(paymentData) {
-    if (paymentData.Name === 'Account Charge' || paymentData.Name === 'Cash' || paymentData.Name === 'Gift Redemption' || paymentData.Name === 'Card on File' ||
+    if (paymentData.Name === 'Account Charge' || paymentData.Name === 'Cash' || paymentData.Name === 'Gift Redeem' || paymentData.Name.toLowerCase() === 'card on file' ||
       paymentData.Name === 'Prepaid Package') {
       this.isEditable = true;
     } else {

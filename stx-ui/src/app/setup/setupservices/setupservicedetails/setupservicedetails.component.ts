@@ -88,7 +88,6 @@ export class SetupServiceDetailsComponent implements OnInit {
   toastermessage: any;
   DECIMAL_SEPARATOR: any = '.';
   isAmountFormatValid: any;
-
   constructor(private setupServiceDetailsService: SetupServiceDetailsService,
     private toastr: ToastrService,
     private translateService: TranslateService,
@@ -108,7 +107,7 @@ export class SetupServiceDetailsComponent implements OnInit {
         this.aptBookingData = data['result'];
         this.bookingIntervalMinutes = this.aptBookingData.bookingIntervalMinutes;
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -116,7 +115,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
     this.isClass = config.environment.booleanFalse;
   }
   /**
@@ -133,6 +132,7 @@ export class SetupServiceDetailsComponent implements OnInit {
     this.addEnableDisable = false;
     this.populateMultiplePriceLevels();
     this.hideUseMultiplePriceLevels = false;
+    this.active = true;
   }
   /**
    * This function is to setup a service record
@@ -182,7 +182,7 @@ export class SetupServiceDetailsComponent implements OnInit {
     // }
     for (let j = 0; j < resourcesLength; j++) {
       if (this.resourcesUsedRows[j].name === '') {
-         resourceRequired = true;
+        resourceRequired = true;
       }
       if (Number((this.resourcesUsedRows[j].name).split('~')[1]) === 0) {
         resourceRequired = true;
@@ -265,6 +265,9 @@ export class SetupServiceDetailsComponent implements OnInit {
       this.priorityDuplicateErrMsg = 'VALIDATION_MSG.PRIORITY_DUPLICATE';
     } else if (this.guestChargeAmount !== '' && (this.guestChargeAmount.split('.')[0].length > 10 && this.guestChargeAmount.length > 10)) {
       this.guestAmountlength = 'VALIDATION_MSG.NUMBER_IS_TO_LARGE';
+    } else if (this.guestChargeAmount !== undefined && this.guestChargeAmount !== '' &&
+      this.guestChargeAmount !== 'undefined' && parseFloat(this.guestChargeAmount) > parseFloat(this.multiplePriceLevelRows[0].price)) {
+      this.guestAmountlength = 'VALIDATION_MSG.INVALID_GUEST_CHARGE_AMOUNT';
     } else {
       this.setupServicesObj = {
         'active': this.active ? config.environment.booleanTrue : config.environment.booleanFalse,
@@ -292,7 +295,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               .subscribe(data1 => {
                 this.serviceDetailsList = data1['result'];
               },
-              error1 => {
+                error1 => {
                   const errStatus = JSON.parse(error1['_body'])['status'];
                   if (errStatus === '2085' || errStatus === '2071') {
                     if (this.router.url !== '/') {
@@ -300,7 +303,7 @@ export class SetupServiceDetailsComponent implements OnInit {
                       this.router.navigate(['/']).then(() => { });
                     }
                   }
-              });
+                });
             this.selectedServiceGroup = this.addServiceGroupName;
             this.clear(value);
             this.clearErrorMsg();
@@ -347,8 +350,11 @@ export class SetupServiceDetailsComponent implements OnInit {
         this.editServiceResourcesList = data1['result'][1];
         if (data1['result'][2] && data1['result'][2].length > 0) {
           this.isInActiveService = false;
+        } else {
+          this.isInActiveService = true;
         }
-        if ((data1['result'][2] && data1['result'][2].length > 0) || (data1['result'][3] && data1['result'][3].length > 0)) {
+        if ((data1['result'][2] && data1['result'][2].length > 0) || (data1['result'][3] && data1['result'][3].length > 0)
+          || (data1['result'][4] && data1['result'][4].length > 0)) {
           this.isToDelete = true;
         }
         this.active = this.editServiceDetailsList[0].Active__c;
@@ -391,7 +397,7 @@ export class SetupServiceDetailsComponent implements OnInit {
           this.resourceUsedShowHide = false;
         }
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -399,7 +405,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   /**
    * This function is to update setup services data
@@ -449,7 +455,7 @@ export class SetupServiceDetailsComponent implements OnInit {
     for (let j = 0; j < resourcesLength; j++) {
       if (this.resourcesUsedRows[j].name === '') {
         resourceRequired = true;
-     }
+      }
       if (Number((this.resourcesUsedRows[j].name).split('~')[1]) === 0) {
         resourceRequired = true;
         break;
@@ -535,6 +541,9 @@ export class SetupServiceDetailsComponent implements OnInit {
       this.priorityDuplicateErrMsg = 'VALIDATION_MSG.PRIORITY_DUPLICATE';
     } else if ((this.guestChargeAmount !== '' && this.guestChargeAmount !== undefined) && (this.guestChargeAmount.split('.')[0].length > 10 && this.guestChargeAmount.length > 10)) {
       this.guestAmountlength = 'VALIDATION_MSG.NUMBER_IS_TO_LARGE';
+    } else if (this.guestChargeAmount !== undefined && this.guestChargeAmount !== '' &&
+      this.guestChargeAmount !== 'undefined' && parseFloat(this.guestChargeAmount) > parseFloat(this.multiplePriceLevelRows[0].price)) {
+      this.guestAmountlength = 'VALIDATION_MSG.INVALID_GUEST_CHARGE_AMOUNT';
     } else {
       this.servicesUpdateObj = {
         'active': this.active ? config.environment.booleanTrue : config.environment.booleanFalse,
@@ -565,7 +574,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               .subscribe(data1 => {
                 this.serviceDetailsList = data1['result'];
               },
-              error1 => {
+                error1 => {
                   const errStatus = JSON.parse(error1['_body'])['status'];
                   if (errStatus === '2085' || errStatus === '2071') {
                     if (this.router.url !== '/') {
@@ -573,7 +582,7 @@ export class SetupServiceDetailsComponent implements OnInit {
                       this.router.navigate(['/']).then(() => { });
                     }
                   }
-              });
+                });
             this.selectedServiceGroup = this.addServiceGroupName;
             this.clear(value);
             this.clearErrorMsg();
@@ -620,7 +629,7 @@ export class SetupServiceDetailsComponent implements OnInit {
           .subscribe(data1 => {
             this.serviceDetailsList = data1['result'];
           },
-          error => {
+            error => {
               const errStatus = JSON.parse(error['_body'])['status'];
               if (errStatus === '2085' || errStatus === '2071') {
                 if (this.router.url !== '/') {
@@ -628,7 +637,7 @@ export class SetupServiceDetailsComponent implements OnInit {
                   this.router.navigate(['/']).then(() => { });
                 }
               }
-          });
+            });
         this.selectedServiceGroup = this.addServiceGroupName;
         this.clear(value);
         this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_DELETE_SUCCESS');
@@ -658,13 +667,14 @@ export class SetupServiceDetailsComponent implements OnInit {
    */
   showInactiveList(value) {
     this.showInactive = value;
+    this.getServiceGroupsList();
     this.setupServiceDetailsService
       .showInactiveServiceListByGroupName(this.showInactive ?
         config.environment.booleanFalse : config.environment.booleanTrue, this.selectedServiceGroup)
       .subscribe(data => {
         this.serviceDetailsList = data['result'];
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -672,7 +682,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   /**
    * Method to get services list on changing group serviceName
@@ -684,7 +694,7 @@ export class SetupServiceDetailsComponent implements OnInit {
       .showInactiveServiceListByGroupName(this.showInactive ?
         config.environment.booleanFalse : config.environment.booleanTrue, this.selectedServiceGroup)
       .subscribe(data => { this.serviceDetailsList = data['result']; },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -692,7 +702,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
     this.addServiceGroupName = value.split(': ')[1];
   }
   serviceGroupName(value) {
@@ -706,15 +716,20 @@ export class SetupServiceDetailsComponent implements OnInit {
       .subscribe(serviceGroupResult => {
         this.serviceGroupsList = [];
         const tempActive = config.environment.booleanTrue; // default Active records
-        this.serviceGroupsList = serviceGroupResult['result']
-          .filter(filterList => filterList.active && !filterList.isSystem);
+        if (this.showInactive) {
+          this.serviceGroupsList = serviceGroupResult['result']
+            .filter(filterList => !filterList.isSystem);
+        } else {
+          this.serviceGroupsList = serviceGroupResult['result']
+            .filter(filterList => filterList.active && !filterList.isSystem);
+        }
         this.selectedServiceGroup = this.serviceGroupsList[0].serviceGroupName;
         this.addServiceGroupName = this.serviceGroupsList[0].serviceGroupName;
         this.setupServiceDetailsService.showInactiveServiceListByGroupName(tempActive, this.selectedServiceGroup)
           .subscribe(data => {
             this.serviceDetailsList = data['result'];
           },
-          error1 => {
+            error1 => {
               const errStatus = JSON.parse(error1['_body'])['status'];
               if (errStatus === '2085' || errStatus === '2071') {
                 if (this.router.url !== '/') {
@@ -722,9 +737,9 @@ export class SetupServiceDetailsComponent implements OnInit {
                   this.router.navigate(['/']).then(() => { });
                 }
               }
-          });
+            });
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -732,7 +747,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   /**
    * This function is to add multiple price level table rows
@@ -807,13 +822,13 @@ export class SetupServiceDetailsComponent implements OnInit {
         }
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   /**
@@ -828,7 +843,7 @@ export class SetupServiceDetailsComponent implements OnInit {
           this.resourceList[i] = data['result'][i].Name + '~' + data['result'][i].Id;
         }
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -836,7 +851,7 @@ export class SetupServiceDetailsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   /**
    * This function is to add multiple resources usedrows
@@ -975,9 +990,10 @@ export class SetupServiceDetailsComponent implements OnInit {
   getResouDropdown() {
     this.setupServiceDetailsService.getResourceDropdown('RESOURCE_USE')
       .subscribe(data => {
+        data['result'] = data['result'].filter(filterList => filterList.Active__c === 1);
         this.getResourcesDropdown = data['result'];
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -985,6 +1001,6 @@ export class SetupServiceDetailsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
 }

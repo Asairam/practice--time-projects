@@ -7,14 +7,14 @@
     width:50%;
     float: left;
 }
-.form_cont[_ngcontent-c0] select[_ngcontent-c0] {
+.form_cont select {
     font-weight: 700;
     color: white !important;
     width: 50%;
 }
 
 .mobile-table td, .mobile-table th {
-	padding: 8px !important;
+	padding: 15px !important;
 }
 .mobile-table {
 	width: 100%;
@@ -37,7 +37,7 @@ and (device-width : 768px) {
         margin-left: 4px;
         width: 87%;
    }
-   .form_cont[_ngcontent-c0] select[_ngcontent-c0] {
+   .form_cont select {
     font-weight: 700;
     color: white !important;
     width: 70%;
@@ -137,7 +137,10 @@ and (device-width : 1024px) {
 		}
 	
 	/* iPads (portrait and landscape) ----------- */
-	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-		 
+	@media screen and (max-width: 1222px) and (orientation: landscape) {
+		.form_cont table {
+			font-size: 12px !important;
+			letter-spacing: 1px;
+		}
 	}
 	

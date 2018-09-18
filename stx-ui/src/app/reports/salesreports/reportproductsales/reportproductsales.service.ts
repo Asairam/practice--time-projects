@@ -22,4 +22,17 @@ export class ReportProductSalesService {
     const body = res.json();
     return body || {};
   }
+  getWorkerList() {
+    return this.http.get(this.apiEndPoint + '/api/setupworkers/setupworkerdetail')
+      .map(this.extractData);
+  }
+  generateReport(productObj) {
+    return this.http.post(this.apiEndPoint + '/api/reports/productslaes', productObj)
+      .map(this.extractData);
+  }
+  /*-- Method to get product lines(active or inactive) --*/
+  getProductLineDetails(inactive) {
+    return this.http.get(this.apiEndPoint + '/api/setupinventory/setupproductline/' + inactive)
+      .map(this.extractData);
+  }
 }

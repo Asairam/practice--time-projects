@@ -473,6 +473,9 @@ footer {
 /***check****/
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    :host ::ng-deep .fc-view-container{
+        margin-top: 25px!important;
+    }
     .appointment-week-table>tr>td {
         text-align: center
     }

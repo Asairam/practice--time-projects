@@ -131,12 +131,10 @@ export class SetupClassesComponent implements OnInit {
       } if (this.classesMaxattendence < 0 || this.classesMaxattendence > 100) {
         this.errorMaxAttendees = 'SETUP_CLASSES.VALID_NOBLANK_MAX_Attendees_BLANK';
       } if ((this.classesPrice !== '' && !this.classesPrice.match(/^[\d]{1,5}(\.[\d]{1,3})?$/))) {
-        this.errorPricePerAttendees = 'Price per Attendee must be a valid decimal number, between zero and 99,999.999 inclusive';
+        this.errorPricePerAttendees = 'SETUP_CLASSES.NO_VALID_PRICE_PER_ATTENDEE';
       } if (this.classesPrice < 0) {
-        this.errorPricePerAttendees = 'Number should be a valid positive Decimal number';
+        this.errorPricePerAttendees = 'SETUP_CLASSES.INVALID_PRICE_PER_ATTENDEE';
       }
-      // } else if (!(/^[\d]{1,5}(\.[\d]{1,3})?$/).test(this.classesPrice.toString())) {
-      //   this.errorPricePerAttendees = 'Price per Attendee must be a valid decimal number, between zero and 99,999.999 inclusive';
     } else if (remainderNearest !== 0) {
       this.errorMsgss1 = 'The class duration must be a multiple of the appointment booking ' + this.bookingIntervalMinutes + ' minute interval';
       window.scrollTo(0, 0);
@@ -169,7 +167,8 @@ export class SetupClassesComponent implements OnInit {
       this.setupClassesService.saveClassesData(dataObject)
         .subscribe(
           data => {
-            this.toastr.success('Setup Classes Created Successfully', null, { timeOut: 1500 });
+            this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_CREATE_CLASS_SUCCESS');
+            this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
             this.clearmessage();
             this.getClassesDatas();
             if (param === 'create') {
@@ -350,11 +349,9 @@ export class SetupClassesComponent implements OnInit {
       } if (this.updatemaxattendees < 0 || this.updatemaxattendees > 100) {
         this.errorMaxAttendees = 'SETUP_CLASSES.VALID_NOBLANK_MAX_Attendees_BLANK';
       } if ((this.updateprice !== '' && !this.updateprice.match(/^[\d]{1,5}(\.[\d]{1,3})?$/))) {
-        this.errorPricePerAttendees = 'Price per Attendee must be a valid decimal number, between zero and 99,999.999 inclusive';
+        this.errorPricePerAttendees = 'SETUP_CLASSES.NO_VALID_PRICE_PER_ATTENDEE';
       } if (this.updateprice < 0) {
-        this.errorPricePerAttendees = 'Negative Price per Attendee Not Allowed';
-        // } if (!(/^[\d]{1,5}(\.[\d]{1,3})?$/).test(this.updateprice.toString())) {
-        //   this.errorPricePerAttendees = 'Price per Attendee must be a valid decimal number, between zero and 99,999.999 inclusive';
+        this.errorPricePerAttendees = 'SETUP_CLASSES.INVALID_PRICE_PER_ATTENDEE';
       }
     } else if (remainderNearest !== 0) {
       this.errorMsgss1 = 'The class duration must be a multiple of the appointment booking ' + this.bookingIntervalMinutes + ' minute interval';
@@ -389,7 +386,8 @@ export class SetupClassesComponent implements OnInit {
       this.setupClassesService.editClassesDatas(this.dataObject, this.classesId)
         .subscribe(
           data => {
-            this.toastr.success('Classes updated Successfully', null, { timeOut: 1500 });
+            this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_UPDATE_CLASS_SUCCESS');
+            this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
             this.clearmessage();
             this.getClassesDatas();
             if (param === 'edit') {
@@ -403,10 +401,6 @@ export class SetupClassesComponent implements OnInit {
               this.editDiv = false;
               this.addDiv = true;
             }
-            //   this.setupClassesService.getClassesData()
-            //     .subscribe(data1 => {
-            //       this.getClassesList = data1['result'];
-            //     });
           },
           error => {
             const status = JSON.parse(error['status']);
@@ -460,7 +454,6 @@ export class SetupClassesComponent implements OnInit {
     this.updateClassesDatas('editandnew');
   }
   clearmessage() {
-    // this.classesActive = '';
     this.classesName = '';
     this.classesDuration = '';
     this.classesMaxattendence = '';
@@ -588,6 +581,7 @@ export class SetupClassesComponent implements OnInit {
   getResouDropdown() {
     this.setupClassesService.getResourceDropdown('RESOURCE_USE')
       .subscribe(data => {
+        data['result'] = data['result'].filter(filterList => filterList.Active__c === 1);
         this.getResourcesDropdown = data['result'];
       },
       error => {
@@ -603,6 +597,7 @@ export class SetupClassesComponent implements OnInit {
   addNew() {
     this.inputs = [];
     this.addInput();
+
     this.classesResources = this.resourceList.filter((obj) => obj['NAME'].toLowerCase() === 'none')[0]['NAME'];
     this.addDiv = true;
     this.disableDiv = false;
@@ -702,9 +697,6 @@ export class SetupClassesComponent implements OnInit {
       event.preventDefault();
     }
   }
-  refresh() {
-    window.location.reload();
-  }
   selectResource(value, index) {
     if (this.classesResources.toLowerCase() !== 'none') {
       this.inputs[index]['resourceName'] = value;
@@ -744,9 +736,9 @@ export class SetupClassesComponent implements OnInit {
     let i = 1;
     /* index +date  was used to  generate unique number
      the values null will replaced with unique numbers  */
-    const valueArr = values.map((item) => item[key] ? item[key] : new Date().getTime() + i++);
-    const isDuplicate = valueArr.some(function (item, idx) {
-      return valueArr.indexOf(item) !== idx;
+    const valueArr = values.map((item) => item[key] ? item[key].toString() : (new Date().getTime() + i++).toString());
+    const isDuplicate = valueArr.some(function (items, idx) {
+      return valueArr.indexOf(items.toString()) !== idx;
     });
     return isDuplicate;
   }

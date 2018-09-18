@@ -3,13 +3,14 @@ import { OnlineBookService } from '../onlinebook/onlinebook.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateService } from 'ng2-translate';
 import { ToastrService } from 'ngx-toastr';
+import { CommonService } from '../../common/common.service';
 import * as config from '../../app.config';
 
 @Component({
   selector: 'app-onlinebooksucess',
   templateUrl: './onlinebooksucess.component.html',
   styleUrls: ['./onlinebooksucess.component.css'],
-  providers: [OnlineBookService]
+  providers: [OnlineBookService, CommonService]
 })
 export class OnlineBookSucessComponent implements OnInit {
   apptId: any;
@@ -20,6 +21,7 @@ export class OnlineBookSucessComponent implements OnInit {
   constructor(private onlineBookService: OnlineBookService,
     private router: Router,
     private toastr: ToastrService,
+    private commonService: CommonService,
     private translateService: TranslateService,
     private route: ActivatedRoute) {
     if (localStorage.getItem('clienttoken')) {
@@ -43,6 +45,7 @@ export class OnlineBookSucessComponent implements OnInit {
       data => {
         this.clientBookingInfo = data['result'];
         for (let i = 0; i < this.clientBookingInfo.length; i++) {
+          this.clientBookingInfo[i].apptTime = this.commonService.getUsrDtStrFrmDBStr(this.clientBookingInfo[i].Appt_Date_Time__c);
           this.clientBookingInfo[i]['srvcName'] =  (this.clientBookingInfo[i]['Client_Facing_Name__c'] &&
           this.clientBookingInfo[i]['Client_Facing_Name__c'] !== 'null') ?
           this.clientBookingInfo[i]['Client_Facing_Name__c'] :  this.clientBookingInfo[i]['srvcName'];

@@ -43,6 +43,9 @@
 	background: url('/assets/images/add.png') no-repeat center #d9d4ff !important;
 	border: 2px solid #fff !important;
 }
+.word-break {
+    word-break: break-word!important;
+}
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
     .fav_box h4 {
         font-size: 10px;

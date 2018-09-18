@@ -37,7 +37,8 @@
 									<tbody>
 										<tr>
 											<td>
-												<input type="password" [ngClass]="{'disabled':workerData}" (blur)="getWorkerByPin()" placeholder="****" [(ngModel)]="workerPin">
+												<input type="password" (keyup.enter)="getWorkerByPin()" placeholder="****" [(ngModel)]="workerPin" [ngStyle]="{'display':hideField}">
+												<span  *ngIf="hideField === 'none'">****</span>
 												<button *ngIf='showButton == true' (click)="checkAction(buttonVale)">{{buttonVale}}</button>
 											</td>
 											<td>&nbsp;{{workerData?.userName}}</td>

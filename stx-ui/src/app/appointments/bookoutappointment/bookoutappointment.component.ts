@@ -12,7 +12,6 @@ import { TranslateService } from 'ng2-translate';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { BookOutApptService } from './bookoutappointment.service';
 import { ToastrService } from 'ngx-toastr';
-import { duration } from 'moment';
 import { CommonService } from '../../common/common.service';
 import { isNullOrUndefined } from 'util';
 @Component({

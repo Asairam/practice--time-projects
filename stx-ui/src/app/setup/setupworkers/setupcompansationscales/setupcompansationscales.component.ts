@@ -54,13 +54,13 @@ export class SetupcompansationscalesComponent implements OnInit {
     updateScales = [];
     updateBasis: any;
     scalesUpdateObj: any = {};
-    staticOverValue: any;
     showPlus = true;
     hidePlus: any;
     uptoValidation: any;
     lineNumber: any;
     percentValidation: any;
     toastermessage: any;
+    duplcateErr: any;
     constructor(private toastr: ToastrService,
         private setupcompansationscalesService: SetupcompansationscalesService,
         private router: Router,
@@ -110,6 +110,16 @@ export class SetupcompansationscalesComponent implements OnInit {
         this.basisValue = value;
     }
     saveCompansationScales() {
+        for (let i = 0; i < this.scales.length; i++) {
+            if (this.scales.length > i + 1) {
+                if (this.scales[i].upTo !== '') {
+                    this.scales[i + 1].over = parseInt(this.scales[i].upTo, 10);
+                } else {
+                    this.scales[i + 1].over = 0;
+                }
+            }
+        }
+        // this.checkIfDuplicateScaleExists(this.scales);
         if (this.name === '' || this.name === undefined || this.name === 'undefined') {
             this.error = 'VALIDATION_MSG.NAME_REQUIRED';
         }
@@ -131,7 +141,7 @@ export class SetupcompansationscalesComponent implements OnInit {
                 }
             }
         }
-        if (this.error1 === '' && this.error2 === '' && this.error === '') {
+        if (this.error1 === '' && this.error2 === '' && this.error === '' && this.duplcateErr === '') {
             if (this.active === undefined || this.active === false) {
                 this.active = 0;
             } else if (this.active === true) {
@@ -194,8 +204,18 @@ export class SetupcompansationscalesComponent implements OnInit {
         }
     }
     editCompansationScales() {
+        for (let i = 0; i < this.updateScales.length; i++) {
+            if (this.updateScales.length > i + 1) {
+                if (this.updateScales[i].upTo !== '') {
+                    this.updateScales[i + 1].over = parseInt(this.updateScales[i].upTo, 10);
+                } else {
+                    this.updateScales[i + 1].over = 0;
+                }
+            }
+        }
         this.error1 = '';
         this.error2 = '';
+        // this.checkIfDuplcateUpdateScaleExists(this.updateScales);
         if (this.updateName === '' || this.updateName === undefined || this.updateName === 'undefined') {
             this.error = 'VALIDATION_MSG.NAME_REQUIRED';
         } else {
@@ -217,7 +237,7 @@ export class SetupcompansationscalesComponent implements OnInit {
                     }
                 }
             }
-            if (this.error1 === '' && this.error2 === '') {
+            if (this.error1 === '' && this.error2 === '' && this.duplcateErr === '') {
                 if (this.updateActive === undefined || this.updateActive === false) {
                     this.updateActive = 0;
                 } else if (this.updateActive === true) {
@@ -272,9 +292,20 @@ export class SetupcompansationscalesComponent implements OnInit {
         if (this.hidePlus === 1) {
             this.hideDelete = false;
         }
+        this.duplcateErr = '';
     }
-    addNew() {
-        this.scales.push({ 'over': 0, 'upTo': '', 'percent': '' });
+    addNew(upto, ind) {
+        if (this.scales[ind].upTo !== '') {
+            this.scales = this.scales.slice(0, ind + 1).concat({ 'over': upto, 'upTo': '', 'percent': '' }).concat(this.scales.slice(ind + 1));
+        } else {
+            this.scales = this.scales.slice(0, ind + 1).concat({ 'over': 0, 'upTo': '', 'percent': '' }).concat(this.scales.slice(ind + 1));
+        }
+        if (this.scales[ind].upTo === '') {
+            this.scales[ind]['upTo'] = 0;
+        }
+        if (this.scales[ind].percent === '') {
+            this.scales[ind]['percent'] = 0;
+        }
         this.hidePlus = this.scales.length;
         if (this.hidePlus === 20) {
             this.showPlus = false;
@@ -282,18 +313,8 @@ export class SetupcompansationscalesComponent implements OnInit {
         if (this.hidePlus > 1) {
             this.hideDelete = true;
         }
-        for (let i = 0; i < this.scales.length; i++) {
-            if (this.scales.length > i + 1) {
-                if (this.scales[i].upTo !== '') {
-                    this.scales[i + 1].over = this.scales[i].upTo;
-                } else {
-                    this.scales[i + 1].over = 0;
-                }
-            }
-        }
     }
-    editAddNew() {
-        this.updateScales.push({});
+    editAddNew(upto, ind) {
         const test = this.updateScales;
         this.hidePlus = this.updateScales.length;
         if (this.hidePlus === 20) {
@@ -302,10 +323,26 @@ export class SetupcompansationscalesComponent implements OnInit {
         if (this.hidePlus > 1) {
             this.hideDelete = true;
         }
-        for (let i = 0; i < this.updateScales.length; i++) {
-            this.staticOverValue = test[i].upTo;
-            this.updateScales[i + 1].over = this.updateScales[i].upTo;
+        if (this.updateScales[ind].upTo !== '') {
+            this.updateScales = this.updateScales.slice(0, ind + 1).concat({ 'over': upto, 'upTo': '', 'percent': '' }).concat(this.updateScales.slice(ind + 1));
+        } else {
+            this.updateScales = this.updateScales.slice(0, ind + 1).concat({ 'over': 0, 'upTo': '', 'percent': '' }).concat(this.updateScales.slice(ind + 1));
         }
+        if (this.updateScales[ind].upTo === '') {
+            this.updateScales[ind]['upTo'] = 0;
+        }
+        if (this.updateScales[ind].percent === '') {
+            this.updateScales[ind]['percent'] = 0;
+        }
+        // for (let i = 0; i < this.updateScales.length; i++) {
+        //     if (this.updateScales.length > i + 1) {
+        //         if (this.updateScales[i].upTo !== '') {
+        //             this.updateScales[i + 1].over = parseInt(this.updateScales[i].upTo, 10);
+        //         } else {
+        //             this.updateScales[i + 1].over = 0;
+        //         }
+        //     }
+        // }
     }
     editDeleteFieldValue(scales, index) {
         this.updateScales.splice(index, 1);
@@ -316,6 +353,7 @@ export class SetupcompansationscalesComponent implements OnInit {
         if (this.hidePlus === 1) {
             this.hideDelete = false;
         }
+        this.duplcateErr = '';
     }
     createNewRecord() {
         this.scales = [];
@@ -333,6 +371,7 @@ export class SetupcompansationscalesComponent implements OnInit {
         this.disableDiv = true;
         this.error = '';
         this.scales = [];
+        this.duplcateErr = '';
         this.clear();
     }
     clear() {
@@ -345,12 +384,14 @@ export class SetupcompansationscalesComponent implements OnInit {
         this.basisValue = '',
             this.over = '';
         this.error = '';
+        this.duplcateErr = '';
 
     }
     clearErrMsg() {
         this.error = '';
         this.error1 = '';
         this.error2 = '';
+        this.duplcateErr = '';
         this.uptoValidation = '';
     }
     clearErrMsg1() {

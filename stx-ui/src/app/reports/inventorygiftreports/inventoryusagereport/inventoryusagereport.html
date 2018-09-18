@@ -2,12 +2,21 @@
     <app-header [newMenu]="'noNav'"></app-header>
     <section id="inner_cont">
         <div class="container form_cont">
+                <div class="row mt-20">
+                        <div class="col-md-4 col-sm-4 text-right res-tleft">
+                            <label></label>
+                        </div>
+                        <div class="col-md-7 col-sm-8">
+                                <p class="red">{{inventryErr | translate}}</p>
+                        </div>
+                    </div>
             <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
                     <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue"[bsConfig]="datePickerConfig" class="datefield">
+                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
+                        class="datefield" (click)="clearErr()" (keyup)="clearErr()">
                 </div>
             </div>
             <div class="row mt-20">
@@ -15,7 +24,8 @@
                     <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1"[bsConfig]="datePickerConfig" class="datefield">
+                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
+                        class="datefield" (click)="clearErr()" (keyup)="clearErr()"  [maxDate]="maxDate">
                 </div>
             </div>
             <div class="row mt-20">
@@ -44,6 +54,26 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <ng-container *ngFor="let list1 of usageList; let i='index'">
+                                    <tr *ngFor='let list of list1'>
+                                        <td>{{list.Name}}</td>
+                                        <td>{{list.costEach| number:'2.2-2'}}</td>
+                                        <td>{{list.Qty_c}}</td>
+                                        <td>{{list.totalCost | number:'2.2-2'}}</td>
+                                        <td>{{list.Used_By_c}}</td>
+                                        <td>{{list.workerName}}</td>
+                                    </tr>
+                                    <tr class="background-color">
+                                        <th>**{{list1.date}}</th>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                        <th>{{list1.total | number:'2.2-2'}}</th>
+                                        <th>&nbsp;</th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                            <!-- <tbody>
                                 <tr>
                                     <td>Daily Shampoo</td>
                                     <td>$8.00</td>
@@ -68,7 +98,7 @@
                                     <td></td>
                                     <td></td>
                                 </tr>
-                            </tbody>
+                            </tbody> -->
                         </table>
                     </div>
                 </div>

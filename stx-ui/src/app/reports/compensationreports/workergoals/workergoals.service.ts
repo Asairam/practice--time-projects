@@ -14,21 +14,21 @@ export class WorkerGoalService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
-  getEveryTypes() {
-    return this.http.get(this.staticJsonFilesEndPoint + 'common.json')
-    .map(this.extractData);
-  }
   getYearsType() {
     return this.http.get(this.staticJsonFilesEndPoint + 'common.json')
-    .map(this.extractData);
+      .map(this.extractData);
   }
   getMonthsTypes() {
     return this.http.get(this.staticJsonFilesEndPoint + 'common.json')
-    .map(this.extractData);
+      .map(this.extractData);
   }
   getGoalsTypes() {
-    return this.http.get(this.staticJsonFilesEndPoint + 'common.json')
-    .map(this.extractData);
+    return this.http.get(this.apiEndPoint + '/api/setupworkers/setupgoals')
+      .map(this.extractData);
+  }
+  generateReportSer(senddata) {
+    return this.http.post(this.apiEndPoint + '/api/reports/workergoalsreport', senddata)
+      .map(this.extractData);
   }
 
   /*To extract json data*/

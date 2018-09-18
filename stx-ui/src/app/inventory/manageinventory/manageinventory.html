@@ -1,5 +1,4 @@
 <div id="wrapper_setup_new">
-	<!-- <app-header></app-header> -->
 	<app-header [newMenu]="'noNav'"></app-header>
 	<section id="inner_cont">
 		<div class="container form_cont">
@@ -10,7 +9,7 @@
 				</div>
 				<div class="col-md-7 col-sm-8">
 					<select (change)="onProductLineChange($event.target.value)">
-						<option value="-">{{'SETUP_COMPENSATION_METHODS.ALL' | translate }}</option>
+						<option value="All">{{'SETUP_COMPENSATION_METHODS.ALL' | translate }}</option>
 						<option *ngFor="let proLineData of productLinesData; let i = 'index'" id="proLineData{{i}}" value='{{proLineData.Id}}'>{{proLineData.Name}}</option>
 					</select>
 				</div>
@@ -22,7 +21,7 @@
 				</div>
 				<div class="col-md-7 col-sm-8">
 					<select [(ngModel)]="viewOption">
-						<option value='all'>{{'SETUP_COMPENSATION_METHODS.ALL' | translate }}</option>
+						<option value='All'>{{'SETUP_COMPENSATION_METHODS.ALL' | translate }}</option>
 						<option *ngFor='let viewOption of viewOptionData'>{{ viewOption.value }}</option>
 					</select>
 				</div>
@@ -34,7 +33,7 @@
 				</div>
 				<div class="col-md-7 col-sm-8">
 					<select (change)="onServiceGroupChange($event.target.value)">
-						<option value="-">{{'SETUP_COMPENSATION_METHODS.ALL' | translate }}</option>
+						<option value="All">{{'SETUP_COMPENSATION_METHODS.ALL' | translate }}</option>
 						<option *ngFor="let groupData of inventoryGroupsData; let i = 'index'" id="groupData{{i}}" value='{{groupData.inventoryGroupName}}'>{{groupData.inventoryGroupName}}</option>
 					</select>
 				</div>
@@ -85,6 +84,9 @@
 				{{miniQty | translate }}
 			</div>
 			<div class="red">
+				{{suplrQty | translate }}
+			</div>
+			<div class="red">
 				{{stndrdCostError | translate }}
 			</div>
 			<div class="red">
@@ -110,43 +112,42 @@
 							<tbody>
 								<tr *ngFor="let productData of productsList; let i = 'index'">
 									<td>
-										<input type="text" (keypress)="clearErrorMsgs();keyPress($event)" [(ngModel)]="productData.Product_Code__c" maxlength="13"
+										<input type="text" (keypress)="clearErrorMsgs();keyPress($event)" [(ngModel)]="productData.Product_Code__c" maxlength="13" (keyup)="clearErrorMsgs()"
 										/>
 									</td>
 									<td>
 										<input type="text" [(ngModel)]="productData.Name" maxlength="80" (click)="clearErrorMsgs()" />
 									</td>
 									<td>
-										<input type="text" (keypress)="clearErrorMsgs();keyPress1($event)" [(ngModel)]="productData.Size__c" style="width:108% !important;"
-										/>
+										<input type="text" (keypress)="clearErrorMsgs();keyPress1($event)" [(ngModel)]="productData.Size__c" style="width:108% !important;"(keyup)="clearErrorMsgs()"/>
 										<input type="text" style="width:108% !important;" [(ngModel)]="productData.Unit_of_Measure__c" />
 									</td>
 									<td>
-										<input type="text" [(ngModel)]="productData.Quantity_On_Hand__c" (keypress)="keyPress1($event)" />
+										<input type="text" [(ngModel)]="productData.Quantity_On_Hand__c"  (keypress)="keyPress1($event)" />
 									</td>
 									<td>
-										<input type="text" [(ngModel)]="productData.Minimum_Quantity__c" (keypress)="clearErrorMsgs();keyPress1($event)" />
+										<input type="text" [(ngModel)]="productData.Minimum_Quantity__c" (keypress)="clearErrorMsgs();keyPress1($event)" (keyup)="clearErrorMsgs()" />
 									</td>
 									<td>
-										<input type="text" [(ngModel)]="productData.Supplier_Minimum__c" (keypress)="keyPress1($event)" />
+										<input type="text" [(ngModel)]="productData.Supplier_Minimum__c" (keypress)="clearErrorMsgs();keyPress1($event)" (keyup)="clearErrorMsgs()"/>
 									</td>
 									<td>
-										<input type="text" [(ngModel)]="productData.Standard_Cost__c" (keypress)="clearErrorMsgs();keyPress1($event)" />
+										<input type="text" [(ngModel)]="productData.Standard_Cost__c" (keypress)="clearErrorMsgs();keyPress1($event)" (keyup)="clearErrorMsgs()"/>
 									</td>
 									<td>
-										<input type="text" [(ngModel)]="productData.Price__c" (keypress)="clearErrorMsgs();keyPress1($event)" />
+										<input type="number" step="0.01" min="0" [(ngModel)]="productData.Price__c" (keypress)="clearErrorMsgs();keyPress1($event)" (keyup)="clearErrorMsgs()"/>
 									</td>
-									<td *ngIf='productData.plActive == 1'>
+									<td *ngIf='productData.Active__c == 1'>
 										<input type="checkbox" checked disabled />
 									</td>
 
-									<td *ngIf='productData.plActive == 0'>
+									<td *ngIf='productData.Active__c == 0'>
 										<input type="checkbox" disabled/>
 									</td>
 								</tr>
 							</tbody>
 						</table>
-						<div *ngIf="noResult">{{noResultMsg}}</div>
+						<div *ngIf="noResult" class="red">{{noResultMsg}}</div>
 					</div>
 				</div>
 			</div>
@@ -155,7 +156,7 @@
 					&nbsp;
 				</div>
 				<div class="col-md-7 col-sm-8">
-					<button type="button" class="save-btn" (click)="updateProducts()">{{'BUTTON.SAVE' | translate }}</button>
+					<button type="button" class="save-btn" (click)="updateProducts()" *ngIf = "showButton == true">{{'BUTTON.SAVE' | translate }}</button>
 					<button type="button" class="cancel-btn" [routerLink]="['/inventory']" (click)="cancel()">{{'BUTTON.CANCEL' | translate }}</button>
 				</div>
 			</div>

@@ -1,5 +1,5 @@
 <div id="wrapper_setup_new">
-	<app-header></app-header>
+	<app-header [newMenu]="'noNav'"></app-header>
 	<section id="inner_cont">
 		<div class="container form_cont">
 			<div class="row mt-20">
@@ -10,7 +10,8 @@
 					<label>Appointment Date/Time</label>
 				</div>
 				<div class="col-md-7 col-sm-8">
-						{{appointmentDate | date: 'MM/dd/yyyy h:mm a'}}
+						{{appointmentDate[0]}}{{appointmentDate[1]}}
+						<!-- {{appointmentDate | date: 'MM/dd/yyyy h:mm a'}} -->
 				</div>
 			</div>
 			<div class="row mt-20">
@@ -59,7 +60,8 @@
 				</div>
 				<div class="col-md-7 col-sm-8">
 					<select [(ngModel)]="workerName" (click)="clearErrorMsg()" (change)="workerListOnChange($event.target.value)">
-						<option *ngFor="let workerList of workerList; let i='index'" value = "{{workerList.Id}}" [selected]="workerList.FullName == workerId">{{workerList.FullName}}</option>
+						<option *ngFor="let workerList of workerList; let i='index'" value = "{{workerList.Id}}">{{workerList.FullName}}</option>
+						<!-- [selected]="workerList.FullName == workerId" -->
 					</select>
 				</div>
 			</div>
@@ -102,7 +104,7 @@
 					<label>Created Date</label>
 				</div>
 				<div class="col-md-7 col-sm-8">
-					{{ createdDate | date: 'MM/dd/yyyy h:mm a'}}
+					{{ createdDate[0]}} {{ createdDate[1]}}
 				</div>
 			</div>
 			<div class="row mt-20">
@@ -110,7 +112,7 @@
 					<label>Last Modified Date</label>
 				</div>
 				<div class="col-md-7 col-sm-8">
-					{{  modifiedDate | date: 'MM/dd/yyyy h:mm a'}}
+					{{  modifiedDate[0]}}{{  modifiedDate[1]}}
 				</div>
 			</div>
 			<div class="row mt-20">
@@ -140,4 +142,5 @@
 			</div>
 		</div>
 	</section>
+	<app-rightbar></app-rightbar>
 </div>

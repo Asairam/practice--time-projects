@@ -1,4 +1,5 @@
-export const API_END_POINT = 'http://34.238.108.233:3010';
+export const API_END_POINT = 'https://stx.yoursalonapp.com:3000';
+export const BASE_URL = 'https://stx.yoursalonapp.com';
 export const STATIC_JSONFILES_END_POINT = '/assets/staticjsonfiles/';
 export const DEFAULT_COUNTRY = 'United States';
 export const DEFAULT_COLOR = '#ffffff';
@@ -10,6 +11,13 @@ export const ANYWHERECOMMERCE_DEVELOPER_TEST_MERCHANT_ID = '3099001';
 export const ANYWHERECOMMERCE_DEVELOPER_TEST_MERCHANT_KEY = 'Secret2Pass';
 export const ANYWHERECOMMERCE_PAYMENT_TYPE_GATEWAY = 'AnywhereCommerce';
 export const ANYWHERECOMMERCE_PAYMENT_API = 'https://testpayments.anywherecommerce.com/merchant/xmlpayment';
+export const SALONCLOUDS_PLUS = 'https://saloncloudsplus.com/newhomepage/newLoginPage';
+export const cloverCfg = {
+  'server': 'https://sandbox.dev.clover.com',
+  'remoteAppId': 'RQ7A22WN7WKBE.D0RYP5MRFRTX6',
+  'merchantId': '3N5RW8CHDS471',
+  'accessToken': 'c57ea5a1-c1ca-7014-70bc-cf45acca5c6f'
+};
 export const environment = {
   production: false,
   booleanTrue: 1,

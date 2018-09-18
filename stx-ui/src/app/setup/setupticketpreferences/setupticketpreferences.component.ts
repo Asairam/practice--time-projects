@@ -103,7 +103,7 @@ export class SetupTicketPreferencesComponent implements OnInit {
     favortiesData: any;
     order: any;
     favoritesObj: any;
-    favoriteId: any;
+    favoriteId = '';
     add: any;
     skuString: any;
     sku: any;
@@ -124,7 +124,12 @@ export class SetupTicketPreferencesComponent implements OnInit {
     typeValue: any;
     colorValue: any;
     selectedProductColor: any;
+    addToButton: any = false;
     activeTab2 = [false, false, false];
+    ticketPreTypes: any;
+    ticketPreCate = '';
+    ticketPreProCate = '';
+    ticketPrePromotionCate = '';
     activeTabClass = ['active', '', ''];
     @ViewChild('favoriteModal') public favoriteModal: ModalDirective;
     @ViewChild('staticTabs') staticTabs: TabsetComponent;
@@ -375,6 +380,7 @@ export class SetupTicketPreferencesComponent implements OnInit {
         });
         if (isDuplicate === true) {
             this.error5 = 'POS_DEVICES.VALID_NO_DUPLICATE_DRAWER_FIELD';
+            this.updateTabs(1);
         }
     }
     /*---
@@ -384,11 +390,28 @@ export class SetupTicketPreferencesComponent implements OnInit {
       Favorites related methods starts
     ---*/
     showFavoriteModal(favoriteslist) {
+        this.ticketPreCate = '';
+        this.ticketPrePromotionCate = '';
+        this.ticketPreProCate = '';
         this.favoriteModal.show();
+        this.ticketPreTypes = favoriteslist.type;
+        this.types(this.ticketPreTypes);
+        if (favoriteslist.type === 'Service') {
+            this.ticketPreCate = favoriteslist.category + '$' + favoriteslist.color;
+            this.categoryOfService(this.ticketPreCate);
+        } else if (favoriteslist.type === 'Product') {
+            this.ticketPreProCate = favoriteslist.category + '$' + favoriteslist.color;
+            this.categoryOfProduct(this.ticketPreProCate);
+        } else {
+            this.ticketPrePromotionCate = favoriteslist.id;
+            this.categoryOfPromotion(this.ticketPrePromotionCate);
+        }
         if (favoriteslist.name === '') {
             this.add = 'Add';
+            this.addToButton = true;
         } else {
             this.add = 'Update-' + favoriteslist.name;
+            this.addToButton = false;
         }
         this.order = favoriteslist.order;
         this.setupTicketPreferencesService.ticketPreferencesTypes().subscribe(data => {
@@ -415,6 +438,7 @@ export class SetupTicketPreferencesComponent implements OnInit {
         this.search = '';
         this.default = true;
         this.promotionColor = '#ffffff';
+        this.favoriteId = favoriteslist.id;
     }
     getFavouritesData() {
         this.setupTicketPreferencesService.getFavourites()
@@ -441,7 +465,8 @@ export class SetupTicketPreferencesComponent implements OnInit {
         switch (value) {
             case 'Service':
                 this.setupTicketPreferencesService.getServiceGroups('Service').subscribe(data => {
-                    this.serviceGroupsList = data['result'];
+                    this.serviceGroupsList = data['result']
+                        .filter(filterList => filterList.active && !filterList.isSystem);
                     this.type = 'Service';
                     this.default = false;
                 },
@@ -510,7 +535,7 @@ export class SetupTicketPreferencesComponent implements OnInit {
         this.serviceGroupColor = this.serviceName[1];
         this.setupTicketPreferencesService.getServices(this.serviceGroupName).subscribe(data => {
             this.serviceList = data['result'];
-            this.favoriteId = this.serviceList[0].Id;
+            // this.favoriteId = this.serviceList[0].Id;
             this.type = 'Service';
             this.default = false;
         },
@@ -758,31 +783,46 @@ export class SetupTicketPreferencesComponent implements OnInit {
             }
             if (this.rows[i].drawerNumber === undefined || this.rows[i].drawerNumber === '') {
                 this.error5 = 'POS_DEVICES.VALID_NOBLANK_DRAWER_FIELD';
+                this.updateTabs(1);
             } if (this.rows[i].drawerNumber < 0 || this.rows[i].drawerNumber > 99) {
                 this.error5 = 'POS_DEVICES.VALID_DRAWER_LIMIT';
+                this.updateTabs(1);
             } if (this.rows[i].drawerName === undefined || this.rows[i].drawerName === '') {
                 this.error6 = 'POS_DEVICES.VALID_NOBLANK_DRAWER_NAME';
+                this.updateTabs(1);
             }
         }
         if (this.addServiceTax < 0 || this.addServiceTax > 99) {
             this.error = 'POS.DECIMAL_LIMIT';
+            this.updateTabs(0);
         } else if (this.addRetailTax < 0 || this.addRetailTax > 99) {
             this.error1 = 'POS.DECIMAL_LIMIT';
-        } else if (this.addStoreTerminalID === undefined || this.addStoreTerminalID === '') {
-            this.error2 = 'POS.VALID_NOBLANK_STORE_TERMINAL_ID';
+            this.updateTabs(0);
+            // } else if (this.addStoreTerminalID === undefined || this.addStoreTerminalID === '') {
+            //     this.error2 = 'POS.VALID_NOBLANK_STORE_TERMINAL_ID';
+            //     this.updateTabs(0);
             // } else if (this.addStoreTerminalID !== '' && !ALPHA_REGEXP.test(this.addStoreTerminalID)) {
             //     this.error2 = 'POS.VALID_STORE_TERMINAL_ID_NOT_VALID';
-        } else if (this.addStoreTerminalID.length < 7 || this.addStoreTerminalID.length > 8) {
+        } else if (this.addPaymentType === 'AnywhereCommerce' && this.addStoreTerminalID === '') {
+            this.error2 = 'POS.VALID_NOBLANK_STORE_TERMINAL_ID';
+            this.updateTabs(0);
+        } else if (this.addStoreTerminalID !== '' && this.addStoreTerminalID.length < 7 || this.addStoreTerminalID.length > 8) {
             this.error2 = 'POS.VALID_STORAGE_TERMINAL_ID_LIMIT';
-        } else if (this.addStoreTerminalID !== '' && (this.addPaymentType === '' || this.addPaymentType === undefined ||
-            this.addPaymentType === '---None---')) {
+            this.updateTabs(0);
+        } else if (this.addPaymentType === '---None---' && (this.addStoreTerminalID !== '' || this.addOnlineTerminalID !== '')) {
             this.error2 = 'POS.REQUIRED_PAYMENT_GATEWAY_POPULATEDBY_TERMINALID';
-        } else if (this.addOnlineTerminalID === undefined || this.addOnlineTerminalID === '') {
-            this.error3 = 'POS.VALID_NOBLANK_ONLINE_TERMINAL_ID';
+            this.updateTabs(0);
+            // } else if (this.addOnlineTerminalID !== '' && (this.addPaymentType === '' || this.addPaymentType === undefined ||
+            //     this.addPaymentType === '---None---')) {
+            //     this.error3 = 'Payment Gateway is required if the Terminal ID is populated';
+            // } else if (this.addOnlineTerminalID === undefined || this.addOnlineTerminalID === '') {
+            //     this.error3 = 'POS.VALID_NOBLANK_ONLINE_TERMINAL_ID';
+            //     this.updateTabs(0);
             // } else if (this.addOnlineTerminalID !== '' && !ALPHA_REGEXP.test(this.addOnlineTerminalID)) {
             //     this.error3 = 'POS.VALID_ONLINE_TERMINAL_ID_NOT_VALID';
-        } else if (this.addOnlineTerminalID.length < 7 || this.addOnlineTerminalID.length > 8) {
+        } else if (this.addOnlineTerminalID !== '' && this.addOnlineTerminalID.length < 7 || this.addOnlineTerminalID.length > 8) {
             this.error3 = 'POS.VALID_ONLINE_TERMINAL_ID_LIMIT';
+            this.updateTabs(0);
 
             // } else if (this.addOnlineTerminalID !== '' && (this.addPaymentType === '' || this.addPaymentType === undefined ||
             // this.addPaymentType === '---None---'  )) {

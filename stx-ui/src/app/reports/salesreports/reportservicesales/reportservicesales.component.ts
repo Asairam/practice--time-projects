@@ -6,6 +6,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { ReportServiceSalesService } from './reportservicesales.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from 'ng2-translate';
+import { JwtHelper } from 'angular2-jwt';
 @Component({
   selector: 'app-reports-app',
   templateUrl: './reportservicesales.html',
@@ -22,8 +23,11 @@ export class ReportServiceSalesComponent implements OnInit {
   startDate = new Date();
   endDate = new Date();
   error: any;
+  workererror: any;
   type: any;
   worker: any;
+  workerName: any;
+  isGenerate = false;
   workerList = [];
   reportTypes = ['Company', 'Worker'];
   showWorkers = true;
@@ -40,6 +44,8 @@ export class ReportServiceSalesComponent implements OnInit {
   serviceNetSalesTotal = 0;
   serviceNetSalesSold = 0;
   serviceNetSalesAvg = 0;
+  decodedToken: any;
+  companyName: any;
   constructor(private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
@@ -52,21 +58,33 @@ export class ReportServiceSalesComponent implements OnInit {
       });
   }
   ngOnInit() {
+    try {
+      this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('token'));
+      this.companyName = this.decodedToken.data.cname;
+    } catch (error) {
+      this.decodedToken = {};
+    }
     this.getWorkerList();
+    this.type = this.reportTypes[0];
   }
   // generateReport() {
   //   this.itemsDisplay = true;
   // }
   reportTypeOnChange(value) {
+    this.isGenerate = false;
     this.type = value;
     if (value === 'Worker') {
       this.showWorkers = false;
     } else {
       this.showWorkers = true;
+      this.worker = '';
     }
   }
   workerListOnChange(value) {
-    this.worker = value;
+    this.isGenerate = false;
+    this.worker = value.split('$')[0];
+    this.workerName = value.split('$')[1];
+    this.workererror = '';
   }
   getWorkerList() {
     this.reportServiceSalesService.getWorkerList().subscribe(data => {
@@ -89,10 +107,17 @@ export class ReportServiceSalesComponent implements OnInit {
         }
       });
   }
-
   generateReport() {
-    if (this.startDate > this.endDate) {
+    this.serviceSalesObj = [];
+    this.serviceSalesRefundObj = [];
+    const startTime = ('00' + (this.startDate.getMonth() + 1)).slice(-2) + '-' + ('00' + this.startDate.getDate()).slice(-2) + '-' +
+      (this.startDate.getFullYear() + '');
+      const endTime = ('00' + (this.endDate.getMonth() + 1)).slice(-2) + '-' + ('00' + this.endDate.getDate()).slice(-2) + '-' +
+      (this.endDate.getFullYear() + '');
+    if (startTime > endTime) {
       this.error = 'TOTAL_SHEETS.BEGIN_DATE_SHOULD_BE_AFTER_END_DATE';
+    } else if (this.type === 'Worker' && !this.worker) {
+      this.workererror = 'Worker is Required';
     } else {
       const stDate = this.startDate.getFullYear() + '-' + (this.startDate.getMonth() + 1) + '-' + this.startDate.getDate();
       const edDate = this.endDate.getFullYear() + '-' + (this.endDate.getMonth() + 1) + '-' + this.endDate.getDate();
@@ -103,6 +128,7 @@ export class ReportServiceSalesComponent implements OnInit {
         'worker': this.worker
       };
       this.reportServiceSalesService.generateReport(servieObj).subscribe(data => {
+        this.isGenerate = true;
         const temp = [];
         this.serviceSalesObj = data['result']['serviceSalesObj'];
         this.serviceSalesRefundObj = data['result']['serviceSalesRefundObj'];
@@ -136,9 +162,16 @@ export class ReportServiceSalesComponent implements OnInit {
         for (let i = 0; i < result.length; i++) {
           temp[i] = this.serviceSalesObj.filter(filterList => filterList.serviceGroup === result[i]);
           for (let j = 0; j < temp[i].length; j++) {
+            if (this.type === 'Worker') {
+            temp[i][j]['totalSales'] = parseFloat(temp[i][j]['workerPrice']);
             totalSalesVal += parseFloat(temp[i][j]['totalSales']);
             soldVal += parseFloat(temp[i][j]['serviceCount']);
             avgSales += parseFloat(temp[i][j]['averageSales']);
+            } else {
+              totalSalesVal += parseFloat(temp[i][j]['totalSales']);
+              soldVal += parseFloat(temp[i][j]['serviceCount']);
+              avgSales += parseFloat(temp[i][j]['averageSales']);
+            }
             temp[i]['totalSales'] = totalSalesVal;
             temp[i]['soldVal'] = soldVal;
             temp[i]['avgSales'] = totalSalesVal / soldVal;
@@ -168,11 +201,11 @@ export class ReportServiceSalesComponent implements OnInit {
             this.servSalesArray[i][j]['percntOfSales'] = this.servSalesArray[i][j]['totalSales'] / this.serviceSalesTotal * 100;
           }
         }
-        if (this.serviceSalesObj.length > 0 || this.serviceSalesRefundObj.length > 0) {
-          this.itemsDisplay = true;
-        } else {
-          this.itemsDisplay = false;
-        }
+        // if (this.serviceSalesObj.length > 0 || this.serviceSalesRefundObj.length > 0) {
+        this.itemsDisplay = true;
+        // } else {
+        //   this.itemsDisplay = false;
+        // }
       },
         error => {
           this.itemsDisplay = false;

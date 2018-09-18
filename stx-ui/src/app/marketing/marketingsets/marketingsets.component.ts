@@ -9,6 +9,7 @@ import { TranslateService } from 'ng2-translate';
 import { CommonService } from '../../common/common.service';
 import { isNullOrUndefined } from 'util';
 import { DatePipe } from '@angular/common';
+import { JwtHelper } from 'angular2-jwt';
 @Component({
   selector: 'app-setuprewards-app',
   templateUrl: './marketingsets.html',
@@ -21,7 +22,7 @@ export class MarketingSetsComponent implements OnInit {
   hideTable = true;
   disableDiv = true;
   marketingUserList: any;
-  showInactiveData: any;
+  showInactiveData: any = false;
   activeStatus: any = false;
   merketingSetName: any;
   marketingFrequency: any;
@@ -53,6 +54,7 @@ export class MarketingSetsComponent implements OnInit {
   updateMarketingTimes: any;
   marketingSetId: any = '';
   minDate = new Date();
+  decodedToken: any;
   constructor(private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
@@ -67,6 +69,18 @@ export class MarketingSetsComponent implements OnInit {
 
   }
   ngOnInit() {
+    // ---Start of code for Permissions Implementation--- //
+    try {
+      this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+  } catch (error) {
+      this.decodedToken = {};
+  }
+  if (this.decodedToken.data && this.decodedToken.data.permissions) {
+      this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+  } else {
+      this.decodedToken = {};
+  }
+  // ---End of code for permissions Implementation--- //
     this.getMarketingUserList();
     this.getFreaquency();
     this.getOutput();
@@ -80,7 +94,7 @@ export class MarketingSetsComponent implements OnInit {
       .subscribe(data => {
         this.marketingUserList = data['result'];
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -88,7 +102,7 @@ export class MarketingSetsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   getFreaquency() {
     this.setsService.getFreaquencyTypes().subscribe(
@@ -97,13 +111,13 @@ export class MarketingSetsComponent implements OnInit {
         const type = this.frequencyData[0].type;
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   getOutput() {
@@ -113,13 +127,13 @@ export class MarketingSetsComponent implements OnInit {
         const type = this.outputData[0].type;
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   getMarketingEmail() {
@@ -129,13 +143,13 @@ export class MarketingSetsComponent implements OnInit {
         const name = this.emailData[0].name;
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
 
@@ -197,13 +211,13 @@ export class MarketingSetsComponent implements OnInit {
         const value = this.TimeData[0].value;
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   /*Method used to get inactive clients data */
@@ -232,6 +246,12 @@ export class MarketingSetsComponent implements OnInit {
   }
   // validations
   marketingSetsData() {
+    if (this.marketingEmail.External_Email_Name__c === 'undefined') {
+      this.marketingEmail.External_Email_Name__c = '';
+    }
+    if (this.marketingEmail.External_Email_ID__c === 'undefined') {
+      this.marketingEmail.External_Email_ID__c = '';
+    }
     if (this.merketingSetName === '' || this.merketingSetName === undefined) {
       this.marketingError = 'MARKETING_SETS.NO_BLANK_MARKETING_SET_NAME';
     } else if (this.marketingFrequency === '' || this.marketingFrequency === undefined || this.marketingFrequency === '--None--') {
@@ -370,6 +390,7 @@ export class MarketingSetsComponent implements OnInit {
     this.marketingFrequency = marketingSetData.Frequency__c;
     this.marketingGenereteEvery = marketingSetData.Generate_Every__c;
     this.outputMarketing = marketingSetData.Output__c;
+    this.resEmail = this.outputMarketing === 'Email' ? true : false;
     this.marketingEmail.External_Email_Name__c = marketingSetData.External_Email_Name__c;
     this.marketingEmail.External_Email_ID__c = marketingSetData.External_Email_ID__c;
     if (!isNullOrUndefined(marketingSetData.Next_Generation__c) && marketingSetData.Next_Generation__c !== '') {
@@ -402,12 +423,12 @@ export class MarketingSetsComponent implements OnInit {
           case 500:
             break;
           case 400:
-          if (statuscode === '2085' || statuscode === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
+            if (statuscode === '2085' || statuscode === '2071') {
+              if (this.router.url !== '/') {
+                localStorage.setItem('page', this.router.url);
+                this.router.navigate(['/']).then(() => { });
+              }
             }
-          }
             break;
         }
       });
@@ -427,6 +448,7 @@ export class MarketingSetsComponent implements OnInit {
     this.nextGenerationEvery = null;
     this.marketingTimes = '';
     this.marketingSetId = '';
+    this.clearErrorMsg();
 
   }
   cancel() {
@@ -440,6 +462,15 @@ export class MarketingSetsComponent implements OnInit {
   goToSelectFilters() {
     this.router.navigate(['/marketing/client/filters/' + this.marketingSetId]);
   }
+  /* method to restrict specialcharecters  */
+ numOnly(event: any) {
+  const pattern = /[0-9]/;
+  const inputChar = String.fromCharCode(event.charCode);
+  if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+  }
+}
 
 
 } // main

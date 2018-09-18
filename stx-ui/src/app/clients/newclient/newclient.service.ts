@@ -36,8 +36,17 @@ export class NewClientService {
         return this.http.get(this.apiEndPoint + '/api/client/productlog/' + clientId)
             .map(this.extractData);
     }
+    // sendOtp(phoneNumber) {
+    //     return this.http.post(this.apiEndPoint + '/api/client/send/otp/', phoneNumber)
+    //         .map(this.extractData);
+
+    // }
     getClient(clientId) {
         return this.http.get(this.apiEndPoint + '/api/client/' + clientId)
+            .map(this.extractData);
+    }
+    deleteClient(clientId, name) {
+        return this.http.delete(this.apiEndPoint + '/api/deleteClient/' + clientId + '/' + name)
             .map(this.extractData);
     }
     getClientRewardsData(clientId) {
@@ -54,6 +63,10 @@ export class NewClientService {
     }
     getClientAccountsData(clientId) {
         return this.http.get(this.apiEndPoint + '/api/client/accounts/' + clientId)
+            .map(this.extractData);
+    }
+    checkAvaAppt(clientId) {
+        return this.http.get(this.apiEndPoint + '/api/client/checkAppt/' + clientId)
             .map(this.extractData);
     }
     uploadPic(clientId, clientPictureFile: File, filePath, status) {
@@ -98,6 +111,10 @@ export class NewClientService {
         return this.http.put(this.apiEndPoint + '/api/client/' + clientId, formData)
             .map(this.extractData);
     }
+    updatetokenClient(clientId, clientObj) {
+        return this.http.put(this.apiEndPoint + '/api/client/tokenUpdate/' + clientId, clientObj)
+            .map(this.extractData);
+    }
     saveNotes(id, updateNotes) {
         const notes = {
             'notes': updateNotes
@@ -116,6 +133,14 @@ export class NewClientService {
     }
     getClientAutoSearch(searchKey) {
         return this.http.get(this.apiEndPoint + '/api/clientsearch/' + searchKey)
+            .map(this.extractData);
+    }
+    getClientLastVistService(id, date) {
+        return this.http.get(this.apiEndPoint + '/api/clientlastvist/' + id + '/' + date)
+            .map(this.extractData);
+    }
+    getHideCliContactInfo(id) {
+        return this.http.get(this.apiEndPoint + '/api/client/getHideClientContactInfo/' + id)
             .map(this.extractData);
     }
     /*To extract json data*/

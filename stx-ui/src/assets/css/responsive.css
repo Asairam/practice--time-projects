@@ -2,7 +2,7 @@
 
 @media screen and (max-width:1360px) {
 	.set_box {
-		width: 90%;
+		width: 100%;
 	}
 	.set_box li.last {
 		margin-left: 430px;

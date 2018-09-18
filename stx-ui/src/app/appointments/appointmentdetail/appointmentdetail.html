@@ -10,7 +10,6 @@
 	}
 </style>
 <div id="wrapper_setup_new">
-	<!-- <app-header></app-header> -->
 	<app-header [newMenu]="'noNav'"></app-header>
 	<section id="inner_cont">
 		<div class="container form_cont" style="color:white;">
@@ -19,7 +18,8 @@
 					<label>Appointment Date / Time</label>
 				</div>
 				<div class="col-md-7 col-sm-8 boldClass">
-					{{apptData.Appt_Date_Time__c | date: 'M/dd/yyyy h:mm a'}}
+					<!-- {{apptData.Appt_Date_Time__c | date: 'MM/dd/yyyy h:mm a'}} -->
+					{{displayAptdate[0]}} {{displayAptdate[1]}}
 				</div>
 			</div>
 			<div class="row mt-20">
@@ -27,38 +27,43 @@
 					<label>Client</label>
 				</div>
 				<!-- <td class="tbl-txt boldClass" style="cursor:pointer" width="15%" [routerLink]="['/client/edit/'+ clientid]"> &nbsp;&nbsp;{{apptData?.clientName?apptData?.clientName:'No Client'}}</td> -->
-				<div *ngIf="apptData.clientName && apptData.clientName !== ''" style="cursor:pointer" class="col-md-7 col-sm-8 boldClass"
-				 [routerLink]="['/client/edit/'+ clientid]">
+				<div *ngIf="apptData.clientName && apptData.clientName !== '' && apptData.clientName !== 'No Client'" style="cursor:pointer"
+				 class="col-md-7 col-sm-8 boldClass" [routerLink]="['/client/edit/'+ clientid]" [queryParams]="{ actionMethod: 'appointmentdetail','apptId': apptid }">
 					{{apptData.clientName}}
 				</div>
 				<div *ngIf="!(apptData.clientName && apptData.clientName !== '')" class="col-md-7 col-sm-8 boldClass">
-					No Client
+					{{apptData.clientName}}
+				</div>
+				<div *ngIf="apptData.clientName === 'No Client'" class="col-md-7 col-sm-8 boldClass">
+					{{apptData.clientName}}
 				</div>
 			</div>
-			<div class="row mt-20">
-				<div class="col-md-5 col-sm-4 text-right res-tleft">
-					<label>Mobile Phone</label>
+			<span *ngIf="hideClientInfo === 0">
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Mobile Phone</label>
+					</div>
+					<div class="col-md-7 col-sm-8 boldClass">
+						{{apptData.mbphone}}
+					</div>
 				</div>
-				<div class="col-md-7 col-sm-8 boldClass">
-					{{apptData.mbphone}}
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Primary Email</label>
+					</div>
+					<div class="col-md-7 col-sm-8 boldClass">
+						{{apptData.cltemail}}
+					</div>
 				</div>
-			</div>
-			<div class="row mt-20">
-				<div class="col-md-5 col-sm-4 text-right res-tleft">
-					<label>Primary Email</label>
+				<div class="row mt-20">
+					<div class="col-md-5 col-sm-4 text-right res-tleft">
+						<label>Primary Phone</label>
+					</div>
+					<div class="col-md-7 col-sm-8 boldClass">
+						{{apptData.cltphone}}
+					</div>
 				</div>
-				<div class="col-md-7 col-sm-8 boldClass">
-					{{apptData.cltemail}}
-				</div>
-			</div>
-			<div class="row mt-20">
-				<div class="col-md-5 col-sm-4 text-right res-tleft">
-					<label>Primary Phone</label>
-				</div>
-				<div class="col-md-7 col-sm-8 boldClass">
-					{{apptData.cltphone}}
-				</div>
-			</div>
+			</span>
 			<div class="row mt-20">
 				<div class="col-md-5 col-sm-4 text-right res-tleft">
 					<label>Package Booking</label>
@@ -153,10 +158,13 @@
 			</div>
 			<div class="row mt-20">
 				<div class="col-md-5 col-sm-4 text-right res-tleft">
-					<label>Booked Appointment</label>
+					<label>Booked Online</label>
 				</div>
-				<div class="col-md-7 col-sm-8">
-					<input type="checkbox" disabled/>
+				<div class="col-md-7 col-sm-8" *ngIf="apptData.Booked_Online__c === 1">
+					<input type="checkbox" [(ngModel)]="apptData.Booked_Online__c" checked disabled/>
+				</div>
+				<div class="col-md-7 col-sm-8" *ngIf="apptData.Booked_Online__c === 0">
+					<input type="checkbox" [(ngModel)]="apptData.Booked_Online__c" disabled/>
 				</div>
 
 			</div>
@@ -201,7 +209,8 @@
 							</thead>
 							<tbody>
 								<tr *ngFor="let row of rows; let i = 'index'">
-									<td>{{row.Service_Date_Time__c| date: 'MM/dd/yyyy h:mm a'}}&nbsp;</td>
+									<!-- <td>{{row.Service_Date_Time__c| date: 'MM/dd/yyyy h:mm a'}}&nbsp;</td> -->
+									<td>{{row.servicedate[0]}} {{row.servicedate[1]}}&nbsp;</td>
 									<td>{{row.Name}}&nbsp;</td>
 									<td>{{row.packageName}}&nbsp;</td>
 									<td>{{row.Net_Price__c}}&nbsp;</td>
@@ -238,8 +247,8 @@
 					<label>Created Date</label>
 				</div>
 				<div class="col-md-7 col-sm-8">
-					{{apptData.creadate | date: 'MM/dd/yyyy h:mm a'}} - {{apptData.CreatedBy}}
-					<!-- 11/30/2017 11:02 AM - Tonya Moran -->
+					<!-- {{apptData.creadate | date: 'MM/dd/yyyy h:mm a'}} - {{apptData.CreatedBy}} -->
+					{{createdDate[0]}} {{createdDate[1]}} - {{apptData.CreatedBy}}
 				</div>
 			</div>
 			<div class="row mt-20">
@@ -247,8 +256,8 @@
 					<label>Last Modified Date</label>
 				</div>
 				<div class="col-md-7 col-sm-8">
-					{{apptData.lastmofdate | date: 'MM/dd/yyyy h:mm a'}} - {{apptData.LastModifiedBy}}
-					<!-- 12/1/2017 11:27 AM - Tonya Moran -->
+					<!-- {{apptData.lastmofdate | date: 'MM/dd/yyyy h:mm a'}} - {{apptData.LastModifiedBy}} -->
+					{{lastModifyDate[0]}} {{lastModifyDate[1]}} - {{apptData.LastModifiedBy}}
 				</div>
 			</div>
 			<div class="row mt-20">
@@ -256,7 +265,8 @@
 					<label>Subsequent Appointment:</label>
 				</div>
 				<div class="col-md-7 col-sm-8" *ngIf="subSeaquentAppointmentDate">
-					{{subSeaquentAppointmentDate | date: 'MM/dd/yyyy h:mm a'}} - {{nextservicename}} {{subSeaquentAppointment}}
+					<!-- {{subSeaquentAppointmentDate | date: 'MM/dd/yyyy h:mm a'}} - {{nextservicename}} {{subSeaquentAppointment}} -->
+					{{nextAppt[0]}} {{nextAppt[1]}} - {{nextservicename}} {{subSeaquentAppointment}}
 				</div>
 				<div class="col-md-7 col-sm-8" *ngIf="!subSeaquentAppointmentDate">
 					None
@@ -267,10 +277,11 @@
 					&nbsp;
 				</div>
 				<div class="col-md-7 col-sm-8">
-					<button type="button" class="save-btn" (click)="saveAppointmentDetails()" [routerLink]="['/appointments']" [queryParams]="{date:apptData.Appt_Date_Time__c | date: 'yyyy-MM-dd'}"
+					<button type="button" class="save-btn" (click)="saveAppointmentDetails()" 
 					 *ngIf="isSaveAllowed">Save</button>
-					<button type="button" class="cancel-btn" (click)="cancelAppointmentDetails()" >Cancel</button>
-					<button type="button" class="save-btn" (click)="sendReminder()" *ngIf="isRemainderEmailAllowed">Send Reminder Email</button>
+					<button type="button" class="cancel-btn" (click)="cancelAppointmentDetails()">Cancel</button>
+					<button type="button" class="save-btn" (click)="sendReminderEmail()" *ngIf="isRemainderEmailAllowed">Send Reminder Email</button>
+					<button type="button" class="save-btn" (click)="sendReminderText()" *ngIf="isRemainderTextAllowed && apptData.clientName !== 'No Client'">Send Reminder Text</button>
 					<button type="button" class="save-btn" [routerLink]="['/checkout/'+apptData.apptId]" *ngIf="apptData.isTicket__c && apptData.apstatus === 'Checked In'">Ticket Details</button>
 					<button type="button" class="save-btn" *ngIf="isCheckedInAllowed" (click)="checkIn()">Check In</button>
 				</div>
@@ -283,13 +294,17 @@
 					<!-- <button *ngIf="remEmailButtonValue !=''" type="button" class="btn btn-default mb-5">{{remEmailButtonValue}}</button> -->
 					<!-- <button *ngIf="remTextButtonValue !=''" type="button" class="btn btn-default mb-5">{{remTextButtonValue}}</button> -->
 					<!-- <button *ngIf = "modifyButtonValue != ''" type="button" class="btn btn-default mb-5">{{modifyButtonValue}}</button> -->
-					<button *ngIf="isModifyAllowed" type="button" class="btn btn-default mb-5" [routerLink]="['/appointment/modifyappt/'+ clientid + '/' + apptid]">
-						<i class="fa fa-calendar"></i> Modify</button>
+					<span *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][8]['allowAcces']">
+						<button *ngIf="isModifyAllowed" type="button" class="btn btn-default mb-5" [routerLink]="['/appointment/modifyappt/'+ clientid + '/' + apptid]">
+							<i class="fa fa-calendar"></i> Modify</button>
+					</span>
 					<a *ngIf="isRebookAllowed" [routerLink]="['/appointment/book/' + clientid + '/' + apptid]" [queryParams]="{bookingType:'rebook'}"
 					 class="btn btn-default mb-5">
 						<i class="fa fa-calendar"></i> Rebook</a>
-					<button *ngIf="isBookApptAllowed" type="button" class="btn btn-default mb-5" [routerLink]="['/appointment/book/'+ clientid]">
-						<i class="fa fa-calendar"></i> Book Appt</button>
+					<span *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][2]['allowAcces']">
+						<button *ngIf="isBookApptAllowed" type="button" class="btn btn-default mb-5" [routerLink]="['/appointment/book/'+ clientid]">
+							<i class="fa fa-calendar"></i> Book Appt</button>
+					</span>
 				</div>
 			</div>
 		</div>

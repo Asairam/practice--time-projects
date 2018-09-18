@@ -196,7 +196,9 @@ export class SetupPermissionsComponent implements OnInit {
             };
             this.setupPermissionsService.editPermissionsData(this.updateId, this.dataObj)
                 .subscribe(data => {
+                    if (data['result'] && data['result'].length > 0) {
                     localStorage.setItem('rights', data['result']);
+                    }
                     this.permissionsData = data['result'];
                     this.getPermissions();
                     this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_EDIT_SUCCESS');

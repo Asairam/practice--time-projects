@@ -7,13 +7,8 @@
                     <label>{{'MONTHLY_BUSINESS_ANALYSIS.SELECT_YEAR' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option selected>2018</option>
-                        <option>2017</option>
-                        <option>2016</option>
-                        <option>2015</option>
-                        <option>2014</option>
-                        <option>2013</option>
+                    <select [(ngModel)]="reportAnalysis.year">
+                        <option *ngFor="let year of years" [value]="year">{{year}}</option>
                     </select>
                 </div>
             </div>
@@ -22,19 +17,8 @@
                     <label>{{'MONTHLY_BUSINESS_ANALYSIS.SELECT_MONTH' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option>January</option>
-                        <option>February</option>
-                        <option>March</option>
-                        <option selected>April</option>
-                        <option>May</option>
-                        <option>June</option>
-                        <option>July</option>
-                        <option>Augest</option>
-                        <option>September</option>
-                        <option>October</option>
-                        <option>November</option>
-                        <option>December</option>
+                    <select [(ngModel)]="reportAnalysis.month">
+                        <option *ngFor="let month of months" [value]='month.Id'>{{month.name}}</option>
                     </select>
                 </div>
             </div>
@@ -43,9 +27,9 @@
                     <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option selected>Company Name</option>
-                        <option>Worker Name</option>
+                    <select [(ngModel)]="reportAnalysis.type" (change)="selectReportsType($event.target.value);clear()">
+                        <option [value]="'Comapny Analysis'">Comapny Analysis</option>
+                        <option [value]="'Worker Analysis'">Worker Analysis</option>
                     </select>
                 </div>
             </div>
@@ -53,9 +37,10 @@
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
                     <label>{{'COMMON.WORKER' | translate }}</label>
                 </div>
-                <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option disabled>Select worker</option>
+                <div class="col-md-7 col-sm-8" [ngClass]="{'disabled':reportAnalysis.type === 'Comapny Analysis'}">
+                    <select [disabled]="reportAnalysis.type === 'Comapny Analysis'" (change)="clear();" [(ngModel)]="reportAnalysis.worker">
+                        <option [value]="''">--Select Worker--</option>
+                        <option *ngFor="let worker of workerList" [value]='worker.Id'>{{worker.FirstName+' '+ worker.LastName}}</option>
                     </select>
                 </div>
             </div>
@@ -64,12 +49,8 @@
                     <label>{{'MONTHLY_BUSINESS_ANALYSIS.SELECT_SERVICE_GROUP' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option selected>Nails</option>
-                        <option>skin</option>
-                        <option>Body</option>
-                        <option>Pure</option>
-                        <option>Hair</option>
+                    <select [(ngModel)]="reportAnalysis.serviceGroup">
+                        <option *ngFor="let servcieGroup of serviceGroupList" [value]="servcieGroup.serviceGroupName">{{servcieGroup.serviceGroupName}}</option>
                     </select>
                 </div>
             </div>
@@ -78,9 +59,8 @@
                     <label>{{'SETUP_INVENTORY_PRODUCTS.PRODUCT_LINE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option selected>American Crew</option>
-                        <option>Bio Elements</option>
+                    <select [(ngModel)]="reportAnalysis.pdLine">
+                        <option *ngFor="let productLine of productLinesList" [value]="productLine.Id">{{productLine.Name}}</option>
                     </select>
                 </div>
             </div>
@@ -100,7 +80,6 @@
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
-
                                     <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate }}</th>
                                     <th class="thcss">{{'REPORTS.MONTHLY_BUSINESS_ANALYSIS' | translate }} : Company</th>
                                     <th class="thcss">{{'SETUP_COMPENSATION_SCALES.PERIOD' | translate }}: April 2018</th>

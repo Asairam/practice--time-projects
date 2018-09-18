@@ -14,6 +14,11 @@ export class PaymentDetailsService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+  getPaymentReport(dataObj) {
+    //  alert(workerId);
+    return this.http.post(this.apiEndPoint + '/api/reports/electronicpaymentsreport', dataObj)
+      .map(this.extractData);
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

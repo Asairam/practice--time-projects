@@ -13,6 +13,9 @@
 	
 	color: #000 !important;
 }
+.word-break {
+    word-break: break-all!important;
+  }
 @media(min-device-width: 768px) {
     .table-bordered-light {
         border: solid 1px #ccc;

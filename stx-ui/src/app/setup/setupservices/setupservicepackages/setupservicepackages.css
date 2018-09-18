@@ -8,6 +8,9 @@
      
      color: #000 !important;
  }
+ .word-break {
+    word-break: break-all!important;
+  }
 @media (min-width: 992px){
     .width-align-d{
         width: 100%;

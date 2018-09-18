@@ -28,6 +28,7 @@ export class OnlineClientAddComponent implements OnInit {
     cmpName: ''
   };
   isClientSaved = false;
+  isApprovelSent = false;
   clientErr = '';
   constructor(
     private toastr: ToastrService,
@@ -74,10 +75,15 @@ export class OnlineClientAddComponent implements OnInit {
       this.clientInfo['email_c'] = localStorage.getItem('compEmail__c');
       this.onlineClientAddService.saveClientProfile(this.clientInfo).subscribe(
         data => {
-          this.isClientSaved = true;
+          if (data['result'] === 'Approvel Sent') {
+            this.isApprovelSent = true;
+          } else {
+            this.isClientSaved = true;
+          }
         },
         error => {
-          this.toastr.error('Invalid URL', null, { timeOut: 3000 });
+          this.clientErr = 'CLIENTS.DUPLICATE_CLIENT';
+          // this.toastr.error('CLIENTS.DUPLICATE_CLIENT', null, { timeOut: 3000 });
         }
       );
     }

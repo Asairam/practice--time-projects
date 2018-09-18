@@ -107,9 +107,9 @@
                                             <img [src]="paymentIcon" width="50" height="50">
                                             <label>{{ "CHECK_OUT_LIST.CLIENT_MEMBERSHIPS.READY_TO_SWIPE" | translate }}</label>
                                             <input type="text" />
-                                            <button type="button" (click)="showPaymentModal()">{{ "CHECK_OUT_LIST.CLIENT_MEMBERSHIPS.MANUAL_ENTRY" | translate }}</button>
+                                            <button type="button" class="btn btn-primary" (click)="showPaymentModal()">{{ "CHECK_OUT_LIST.CLIENT_MEMBERSHIPS.MANUAL_ENTRY" | translate }}</button>
                                         </span>
-                                        <span *ngIf="paymentName=='Gift Redemption'">
+                                        <span *ngIf="paymentName=='Gift Redeem'">
                                             <img [src]="paymentIcon" width="50" height="50">
                                             <input type="text" />
                                         </span>
@@ -117,7 +117,7 @@
                                             <img [src]="paymentIcon" width="50" height="50">
                                             <label>{{ "CHECK_OUT_LIST.CLIENT_MEMBERSHIPS.READY_TO_SWIPE" | translate }}</label>
                                             <input type="text" />
-                                            <button type="button" (click)="showPaymentModal()">{{ "CHECK_OUT_LIST.CLIENT_MEMBERSHIPS.MANUAL_ENTRY" | translate }}</button>
+                                            <button type="button" class="btn btn-primary" (click)="showPaymentModal()">{{ "CHECK_OUT_LIST.CLIENT_MEMBERSHIPS.MANUAL_ENTRY" | translate }}</button>
                                         </span>
                                     </span>
                                     <span *ngIf="showOk==true">
@@ -172,7 +172,7 @@
             <div bsModal #processPaymentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
+                    <div class="modal-content" style="color: black;">
                         <div class="modal-header">
                             <h4>{{ 'CREATE_TOKEN.PROCESS_PAYMENT' | translate }}</h4>
                             <button type="button" (click)="cancelPayModal()" class="close" aria-label="Close">

@@ -50,7 +50,10 @@
                                         <td>{{cashInOutObj.CreatedDate | date: 'M/dd/yyyy '}}</td>
                                         <td>{{cashInOutObj.Drawer_Name__c}} {{cashInOutObj.Drawer_Number__c}}</td>
                                         <td>{{cashInOutObj.Type__c}}</td>
-                                        <td align="right">{{cashInOutObj.Amount__c | number: '1.2-4'}}</td>
+                                        <td align="right">
+                                           <span *ngIf="cashInOutObj.Type__c === 'Cash Paid In'"> {{cashInOutObj.Amount__c | number: '1.2-4'}}</span>
+                                           <span *ngIf="cashInOutObj.Type__c === 'Cash Paid Out'">-{{cashInOutObj.Amount__c | number: '1.2-4'}}</span>
+                                        </td>
                                         <td>{{cashInOutObj.Transaction_By__c}}</td>
                                         <td *ngIf="cashInOutObj.From__c">{{cashInOutObj.From__c}}</td>
                                         <td *ngIf="cashInOutObj.To__c">{{cashInOutObj.To__c}}</td>
@@ -81,8 +84,9 @@
                                     </tr>
                                     <ng-container *ngIf="apptData.length > 0">
                                         <tr *ngFor='let data of apptData'>
-                                            <td> {{data.Appt_Date_Time__c | date: 'M/dd/yyyy '}}</td>
+                                            <td> {{data.disaplayDate[0]}}</td>
                                             <td class="tbl-txt" style="text-decoration: underline;" [routerLink]="['/checkout/'+ data.appId]" *ngIf="data.Status__c == 'Checked In'">{{data.Name}}</td>
+                                            <td class="tbl-txt" style="text-decoration: underline;" [routerLink]="['/checkout/'+ data.appId]" *ngIf="data.Status__c == 'Pending Deposit'">{{data.Name}}</td>
                                             <td class="tbl-txt" style="text-decoration: underline;" [routerLink]="['/completedticketdetailsview/'+ data.appId]" *ngIf="data.Status__c == 'Complete'">{{data.Name}}</td>
                                             <td [routerLink]="['/client/edit/' + data.Client__c]" style="text-decoration: underline;cursor:pointer;" *ngIf="data.FullName !== null">{{data.FullName}}</td>
                                             <td *ngIf="data.FullName === null" >NO CLIENT</td>

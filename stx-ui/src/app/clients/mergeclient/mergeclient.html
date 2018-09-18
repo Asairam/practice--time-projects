@@ -1,7 +1,8 @@
 <div id="wrapper_setup_new">
-    <app-header></app-header>
-        <section id="inner_cont">
-            <div class="container form_cont">
+    <app-header [newMenu]="'noNav'"></app-header>
+    <section id="inner_cont" style="color: white">
+        <form #f="ngForm" (ngSubmit)="merge()">
+            <div class="container form_cont" style="width: 87%;">
 
                 <div class="row mt-20">
                     <div class="col-md-12 text-center">
@@ -12,181 +13,323 @@
                 <div class="row mt-20">
                     <div class="col-md-12">
                         <div class="table-responsive text-center">
+
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                         <th class="thcss text-center">Field</th>
-                                        <th class="thcss text-center">Current (Barbara Morgan)</th>
-                                        <th class="thcss text-center">Merging (Jane Smith)</th>
+                                        <th class="thcss text-center">Current ( {{clientData1?.FirstName}} {{clientData1?.LastName}} )</th>
+                                        <th class="thcss text-center">Merging ( {{clientData2?.FirstName}} {{clientData2?.LastName}} )</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr *ngIf="clientData1?.FirstName !== clientData2?.FirstName">
                                         <td>First Name</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio" checked>{{firstName}}</label>
+                                                <input type="radio" [(ngModel)]="mergeClient.FirstName" name="FirstName" [value]="clientData1?.FirstName">{{clientData1?.FirstName}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{firstName1}}</label>
+                                                <input type="radio" [(ngModel)]="mergeClient.FirstName" name="FirstName" [value]="clientData2?.FirstName">{{clientData2?.FirstName}}</label>
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    <tr *ngIf="clientData1?.LastName !== clientData2?.LastName">
                                         <td>Last Name</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio" checked>{{lastName}}</label>
+                                                <input [(ngModel)]="mergeClient.LastName" type="radio" name="LastName" [value]="clientData1?.LastName">{{clientData1?.LastName}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{lastName1}}</label>
+                                                <input type="radio" [(ngModel)]="mergeClient.LastName" name="LastName" [value]="clientData2?.LastName">{{clientData2?.LastName}}</label>
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    <tr *ngIf="clientData1?.Phone !== clientData2?.Phone">
                                         <td>Primary Phone</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{primaryPhone}}</label>
+                                                <input type="radio" [(ngModel)]="mergeClient.Phone" name="Phone" [value]="clientData1?.Phone">{{clientData1?.Phone}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{primaryPhone1}}</label>
+                                                <input type="radio" [(ngModel)]="mergeClient.Phone" name="Phone" [value]="clientData2?.Phone">{{clientData2?.Phone}}</label>
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    <tr *ngIf="clientData1?.MobilePhone !== clientData2?.MobilePhone">
                                         <td>Mobile Phone</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{mobilePhone}}</label>
+                                                <input [(ngModel)]="mergeClient.MobilePhone" type="radio" name="MobilePhone" [value]="clientData1?.MobilePhone">{{clientData1?.MobilePhone}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{mobilePhone1}}</label>
+                                                <input [(ngModel)]="mergeClient.MobilePhone" type="radio" name="MobilePhone" [value]="clientData2?.MobilePhone">{{clientData2?.MobilePhone}}</label>
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    <tr *ngIf="clientData1?.Email !== clientData2?.Email">
                                         <td>Primary Email</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{primaryEmail}}</label>
+                                                <input [(ngModel)]="mergeClient.Email" type="radio" [value]="clientData1?.Email" name="Email">{{clientData1?.Email}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{primaryEmail1}}</label>
+                                                <input [(ngModel)]="mergeClient.Email" type="radio" name="Email" [value]="clientData2?.Email">{{clientData2?.Email}}</label>
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    <tr *ngIf="clientData1?.Secondary_Email__c !== clientData2?.Secondary_Email__c">
                                         <td>Secondary Email</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{secondaryEmail}}</label>
+                                                <input [(ngModel)]="mergeClient.Secondary_Email__c" type="radio" name="Secondary_Email__c" [value]="clientData1?.Secondary_Email__c">{{clientData1?.Secondary_Email__c}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{secondaryEmail1}}</label>
+                                                <input [(ngModel)]="mergeClient.Secondary_Email__c" type="radio" name="Secondary_Email__c" [value]="clientData2?.Secondary_Email__c">{{clientData2?.Secondary_Email__c}}</label>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Emergency_Name__c !== clientData2?.Emergency_Name__c">
+                                        <td>Emergency Name</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Emergency_Name__c" type="radio" [value]="clientData1?.Emergency_Name__c" name="Emergency_Name__c">{{clientData1?.Emergency_Name__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Emergency_Name__c" type="radio" [value]="clientData2?.Emergency_Name__c" name="Emergency_Name__c">{{clientData2?.Emergency_Name__c}}</label>
                                         </td>
                                     </tr>
 
-                                    <tr>
+                                    <tr *ngIf="clientData1?.Emergency_Primary_Phone__c !== clientData2?.Emergency_Primary_Phone__c">
+                                        <td>Emergency Primary Phone</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Emergency_Primary_Phone__c" type="radio" [value]="clientData1?.Emergency_Primary_Phone__c"
+                                                    name="Emergency_Primary_Phone__c" [value]="clientData1?.Emergency_Primary_Phone__c">{{clientData1?.Emergency_Primary_Phone__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Emergency_Primary_Phone__c" type="radio" [value]="clientData2?.Emergency_Primary_Phone__c"
+                                                    name="Emergency_Primary_Phone__c" [value]="clientData2?.Emergency_Primary_Phone__c">{{clientData2?.Emergency_Primary_Phone__c}}</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="clientData1?.Emergency_Secondary_Phone__c !== clientData2?.Emergency_Secondary_Phone__c">
+                                        <td>Emergency Secondary Phone</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Emergency_Secondary_Phone__c" type="radio" [value]="clientData1?.Emergency_Secondary_Phone__c"
+                                                    name="Emergency_Secondary_Phone__c">{{clientData1?.Emergency_Secondary_Phone__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Emergency_Secondary_Phone__c" type="radio" [value]="clientData2?.Emergency_Secondary_Phone__c"
+                                                    name="Emergency_Secondary_Phone__c">{{clientData2?.Emergency_Secondary_Phone__c}}</label>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Gender__c !== clientData2?.Gender__c">
+                                        <td>Gender</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Gender__c" type="radio" name="Gender__c" [value]="clientData1?.Gender__c">{{clientData1?.Gender__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Gender__c" type="radio" name="Gender__c" [value]="clientData2?.Gender__c">{{clientData2?.Gender__c}}</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="clientData1?.Title !== clientData2?.Title">
+                                        <td>Title</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Title" type="radio" [value]="clientData1?.Title" name="Title">{{clientData1?.Title}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Title" type="radio" [value]="clientData2?.Title" name="Title">{{clientData2?.Title}}</label>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Membership_ID__c !== clientData2?.Membership_ID__c">
+                                        <td>Membership Id</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Membership_ID__c" type="radio" [value]="clientData1?.Membership_ID__c" name="Membership_ID__c">{{clientData1?.Membership_ID__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Membership_ID__c" type="radio" [value]="clientData2?.Membership_ID__c" name="Title">{{clientData2?.Membership_ID__c}}</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="clientData1?.Marketing_Opt_Out__c !== clientData2?.Marketing_Opt_Out__c">
+                                        <td>Marketing Out Put</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Opt_Out__c" type="radio" [value]="clientData1?.Marketing_Opt_Out__c" name="Marketing_Opt_Out__c">{{clientData1?.Notification_Opt_Out__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Opt_Out__c" type="radio" [value]="clientData2?.Marketing_Opt_Out__c" name="Marketing_Opt_Out__c">{{clientData2?.Notification_Opt_Out__c}}</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="clientData1?.Marketing_Primary_Email__c !== clientData2?.Marketing_Primary_Email__c">
+                                        <td>Marketing Primary Email</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Primary_Email__c" type="radio" [value]="clientData1?.Marketing_Primary_Email__c"
+                                                    name="Marketing_Primary_Email__c" [value]="clientData1?.Marketing_Primary_Email__c">{{clientData1?.Notification_Primary_Email__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Primary_Email__c" type="radio" name="Marketing_Primary_Email__c" [value]="clientData2?.Marketing_Primary_Email__c">{{clientData2?.Notification_Primary_Email__c}}</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="clientData1?.Marketing_Mobile_Phone__c !== clientData2?.Marketing_Mobile_Phone__c">
+                                        <td>Marketing Mobile Phone</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Mobile_Phone__c" type="radio" [value]="clientData1?.Marketing_Mobile_Phone__c"
+                                                    name="Marketing_Mobile_Phone__c">{{clientData1?.Marketing_Mobile_Phone__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Mobile_Phone__c" type="radio" [value]="clientData2?.Marketing_Mobile_Phone__c"
+                                                    name="Marketing_Mobile_Phone__c">{{clientData2?.Marketing_Mobile_Phone__c}}</label>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Marketing_Secondary_Email__c !== clientData2?.Marketing_Secondary_Email__c">
+                                        <td>Marketing Secondary Email</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Secondary_Email__c" type="radio" [value]="clientData1?.Marketing_Secondary_Email__c"
+                                                    name="Marketing_Secondary_Email__c">{{clientData1?.Marketing_Secondary_Email__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Marketing_Secondary_Email__c" type="radio" [value]="clientData2?.Marketing_Secondary_Email__c"
+                                                    name="Marketing_Secondary_Email__c">{{clientData2?.Marketing_Secondary_Email__c}}</label>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Notification_Opt_Out__c !== clientData2?.Notification_Opt_Out__c">
+                                        <td>Notofication Out Put</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Notification_Opt_Out__c" type="radio" [value]="clientData1?.Notification_Opt_Out__c" name="Notification_Opt_Out__c">{{clientData1?.Notification_Opt_Out__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Notification_Opt_Out__c" type="radio" [value]="clientData2?.Notification_Opt_Out__c" name="Notification_Opt_Out__c">{{clientData2?.Notification_Opt_Out__c}}</label>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="clientData1?.Notification_Primary_Email__c !== clientData2?.Notification_Primary_Email__c">
                                         <td>Notification Primary Email</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{notificationPrimaryEmail}}</label>
+                                                <input [(ngModel)]="mergeClient.Notification_Primary_Email__c" type="radio" name="Notification_Primary_Email__c" [value]="clientData1?.Notification_Primary_Email__c">{{clientData1?.Notification_Primary_Email__c}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{notificationPrimaryEmail1}}</label>
+                                                <input [(ngModel)]="mergeClient.Notification_Primary_Email__c" type="radio" name="Notification_Primary_Email__c" [value]="clientData2?.Notification_Primary_Email__c">{{clientData2?.Notification_Primary_Email__c}}</label>
                                         </td>
                                     </tr>
 
-                                    <!-- <tr>
+                                    <tr *ngIf="clientData1?.Notification_Mobile_Phone__c !== clientData2?.Notification_Mobile_Phone__c">
                                         <td>Notofication Mobile Phone</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">True</label>
+                                                <input [(ngModel)]="mergeClient.Notification_Mobile_Phone__c" type="radio" [value]="clientData1?.Notification_Mobile_Phone__c"
+                                                    name="Notification_Mobile_Phone__c">{{clientData1?.Notification_Mobile_Phone__c}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">False</label>
+                                                <input [(ngModel)]="mergeClient.Notification_Mobile_Phone__c" type="radio" [value]="clientData2?.Notification_Mobile_Phone__c"
+                                                    name="Notification_Mobile_Phone__c">{{clientData2?.Notification_Mobile_Phone__c}}</label>
                                         </td>
-                                    </tr> -->
-
-                                    <!-- <tr>
-                                        <td>Notofication Primary Email</td>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Notification_Secondary_Email__c !== clientData2?.Notification_Secondary_Email__c">
+                                        <td>Notofication Secondary Email</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">True</label>
+                                                <input [(ngModel)]="mergeClient.Notification_Secondary_Email__c" type="radio" [value]="clientData1?.Notification_Secondary_Email__c"
+                                                    name="Notification_Secondary_Email__c">{{clientData1?.Notification_Secondary_Email__c}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">False</label>
+                                                <input [(ngModel)]="mergeClient.Notification_Secondary_Email__c" type="radio" [value]="clientData2?.Notification_Secondary_Email__c"
+                                                    name="Notification_Secondary_Email__c">{{clientData2?.Notification_Secondary_Email__c}}</label>
                                         </td>
-                                    </tr> -->
-
-                                    <tr>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Reminder_Opt_Out__c !== clientData2?.Reminder_Opt_Out__c">
+                                        <td>Reminder Out Put</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Reminder_Opt_Out__c" type="radio" [value]="clientData1?.Reminder_Opt_Out__c" name="Reminder_Opt_Out__c">{{clientData1?.Reminder_Opt_Out__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Reminder_Opt_Out__c" type="radio" [value]="clientData2?.Reminder_Opt_Out__c" name="Reminder_Opt_Out__c">{{clientData2?.Reminder_Opt_Out__c}}</label>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="clientData1?.Reminder_Primary_Email__c !== clientData2?.Reminder_Primary_Email__c">
                                         <td>Reminder Primary Email</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{remainderPrimaryEmail}}</label>
+                                                <input [(ngModel)]="mergeClient.Reminder_Primary_Email__c" type="radio" [value]="clientData1?.Reminder_Primary_Email__c"
+                                                    name="rpemail">{{clientData1?.Reminder_Primary_Email__c}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">{{remainderPrimaryEmail1}}</label>
+                                                <input [(ngModel)]="mergeClient.Reminder_Primary_Email__c" type="radio" [value]="clientData2?.Reminder_Primary_Email__c"
+                                                    name="rpemail">{{clientData2?.Reminder_Primary_Email__c}}</label>
                                         </td>
                                     </tr>
-                                    <tr>
-                                            <td>Reminder Secondary Email</td>
-                                            <td>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="optradio">{{remainderSecondaryEmail}}</label>
-                                            </td>
-                                            <td>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="optradio">{{remainderSecondaryEmail1}}</label>
-                                            </td>
-                                        </tr>
+                                    <tr *ngIf="clientData1?.Reminder_Secondary_Email__c !== clientData2?.Reminder_Secondary_Email__c">
+                                        <td>Reminder Secondary Email</td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Reminder_Secondary_Email__c" type="radio" [value]="clientData1?.Reminder_Secondary_Email__c"
+                                                    name="Reminder_Secondary_Email__c">{{clientData1?.Reminder_Secondary_Email__c}}</label>
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline">
+                                                <input [(ngModel)]="mergeClient.Reminder_Secondary_Email__c" type="radio" [value]="clientData2?.Reminder_Secondary_Email__c"
+                                                    name="Reminder_Secondary_Email__c">{{clientData2?.Reminder_Secondary_Email__c}}</label>
+                                        </td>
+                                    </tr>
 
-                                    <!-- <tr>
+                                    <tr *ngIf="clientData1?.Reminder_Mobile_Phone__c !== clientData2?.Reminder_Mobile_Phone__c">
                                         <td>Reminder Mobile Phone</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">True</label>
+                                                <input [(ngModel)]="mergeClient.Reminder_Mobile_Phone__c" type="radio" [value]="clientData1?.Reminder_Mobile_Phone__c" name="Reminder_Mobile_Phone__c">{{clientData1?.Reminder_Mobile_Phone__c}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">False</label>
+                                                <input [(ngModel)]="mergeClient.Reminder_Mobile_Phone__c" type="radio" [value]="clientData2?.Reminder_Mobile_Phone__c" name="Reminder_Mobile_Phone__c">{{clientData2?.Reminder_Mobile_Phone__c}}</label>
                                         </td>
                                     </tr>
 
-                                    <tr>
-                                        <td>Mobile Carrier</td>
+                                    <tr *ngIf="clientData1?.Pin__c !== clientData2?.Pin__c">
+                                        <td>Pin</td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">AT&T </label>
+                                                <input [(ngModel)]="mergeClient.Pin__c" type="radio" [value]="clientData1?.Pin__c" name="Pin__c">{{clientData1?.Pin__c}}</label>
                                         </td>
                                         <td>
                                             <label class="radio-inline">
-                                                <input type="radio" name="optradio">&nbsp;</label>
+                                                <input [(ngModel)]="mergeClient.Pin__c" type="radio" [value]="clientData2?.Pin__c" name="Pin__c">{{clientData2?.Pin__c}}</label>
                                         </td>
                                     </tr>
-
-                                    <tr>
-                                        <td>Birth Date</td>
-                                        <td>
-                                            <label class="radio-inline">
-                                                <input type="radio" name="optradio">1/5/0</label>
-                                        </td>
-                                        <td>
-                                            <label class="radio-inline">
-                                                <input type="radio" name="optradio">DD/MM/YY</label>
-                                        </td>
-                                    </tr> -->
 
                                 </tbody>
                             </table>
@@ -201,12 +344,13 @@
                 </div>
                 <div class="row mt-40">
                     <div class=" col-md-12 text-center">
-                        <a [routerLink]="['/client/edit']" class="btn btn-default mb-5">
-                            <i class="fa fa-exchange"></i> Merge</a>
-                        <button type="button" class="cancel-btn" [routerLink]="['/client/edit']">Cancel</button>
+                        <button class="btn btn-default mb-5">
+                            <i class="fa fa-exchange"></i> Merge</button>
+                        <button type="button" class="cancel-btn" [routerLink]="['/client/edit/' + clientId1]">Cancel</button>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-   
+        </form>
+    </section>
+    <app-rightbar></app-rightbar>
+</div>

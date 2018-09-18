@@ -13,7 +13,7 @@
         Profile Center
     </div>
     <br>
-    <ng-container *ngIf="!isClientSaved">
+    <ng-container *ngIf="!isClientSaved && !isApprovelSent">
         <div class="apont-head-large mb-10 mt-10 text-uppercase">
             My Personal Information
         </div>
@@ -112,6 +112,22 @@
             <div class="col-md-6 col-md-offset-3 text-center">
                 <button type="button" class="btn btn-gradient-txt" (click)="login()">
                     <span>Login</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container form_cont" *ngIf="isApprovelSent">
+        <div class="col-md-12 thcss mt-20">
+            <p>
+                Thank you!
+                <br> Your profile and preferences have been successfully saved.
+                <br> A 4-digit PIN will be emailed to you once your registration has been approved. Use your email address and the PIN to login for online appointment booking.
+            </p>
+        </div>
+        <div class="col-md-12 text-center mt-20">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                <button type="button" class="btn btn-gradient-txt" (click)="login()">
+                    <span>Go to Login</span>
                 </button>
             </div>
         </div>

@@ -10,7 +10,9 @@ import { TranslateService } from 'ng2-translate';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule, FormGroup, FormControl } from '@angular/forms';
 import { CheckOutEditTicketService } from '../../checkout/editticket/checkouteditticket.service';
-
+import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { JwtHelper } from 'angular2-jwt';
 @Component({
   selector: 'app-newclient',
   templateUrl: './newclient.component.html',
@@ -22,6 +24,9 @@ export class NewClientComponent implements OnInit {
   @ViewChild('notesAppModal') appointmentNotesModal: ModalDirective;
   @ViewChild('fileInput') myInputVariable: ElementRef;
   @ViewChild('lookupModal') lookupModal: ModalDirective;
+  @ViewChild('verifyNumberPopup') public verifyNumberPopup: ModalDirective;
+  @ViewChild('myPin') myPin: ElementRef;
+  decodedToken: any;
   activeClass: any;
   activeClass1: any;
   marketingActiveClass: any;
@@ -29,8 +34,7 @@ export class NewClientComponent implements OnInit {
   activeTabClass = ['', 'active', '', '', '', '', '', ''];
   restrictions = [{ 'name': 'none', 'value': 'None', 'active': 'active' },
   { 'name': 'alert only', 'value': 'Alert Only', 'active': '' },
-  { 'name': 'do not book', 'value': 'Do Not Book', 'active': '' },
-  { 'name': 'no online booking', 'value': 'no online booking', 'active': '' }];
+  { 'name': 'do not book', 'value': 'Do Not Book', 'active': '' }];
   config: any;
   getallclient: any = [];
   error: any;
@@ -53,12 +57,14 @@ export class NewClientComponent implements OnInit {
   newclientPictureFileView: SafeUrl = '';
   clientClassList: any = [];
   clientProductList: any = [];
+  // senOtpStatus: any = false;
   clientReferedDataList: any = [];
   clientRewardData: any = [];
   allRwrdsData: any;
   filteredRwds: any;
   clientRewardData1: any = [];
   Reward__c: any;
+  refRwds: any;
   clientMemberShipsData: any = [];
   clientPackagesData: any = [];
   ClientServiceData: any = [];
@@ -79,6 +85,9 @@ export class NewClientComponent implements OnInit {
   proTotalPrice: any;
   classLogLength: any;
   mobileCarriersList: any;
+  mobileCountryCode = '';
+  primaryCountryCode = '';
+  rewardCalErrorMsg = [];
   public searchField = new FormControl();
   public searchLookupField = new FormControl();
   clienProfile = { 'fName': '', 'lName': '', 'id': '', 'FullName': '', 'email': '', 'phone': '', 'name': '', 'pic': '', 'note': '', 'client_since': '', 'index': '' };
@@ -91,7 +100,7 @@ export class NewClientComponent implements OnInit {
     'apptNotes': '',
     'pin': '',
     'standingAppt': '',
-    'hasStandingAppt': '',
+    // 'hasStandingAppt': '',
     'Other': ''
   };
   resultAppointments = [];
@@ -99,7 +108,7 @@ export class NewClientComponent implements OnInit {
   clientServicesData = [];
   loadmore = 10;
   hideLoadMoreButt = false;
-  hasStandingAppt: any = false;
+  // hasStandingAppt: any = false;
   AddNewClient = false;
   NewClient: any = {
     'firstname': '',
@@ -114,7 +123,7 @@ export class NewClientComponent implements OnInit {
   getnextAppt: any;
   errorMessage: any;
   statesList: any;
-  ClientProError: any = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+  ClientProError: any = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
   datePickerConfig: any;
   CommonSaveBut = false;
   serviceId: any;
@@ -155,7 +164,7 @@ export class NewClientComponent implements OnInit {
   clientCardPrimaryEmail: any;
   clientCardSecondaryEmail: any;
   clientCardGender: any;
-  StartingBalanceDisable: any;
+  StartingBalanceDisable = false;
   genderSeleUnselFemale: boolean;
   genderSeleUnselMale: boolean;
   actionmethod: any;
@@ -163,11 +172,19 @@ export class NewClientComponent implements OnInit {
   promotionName: any;
   searchLookupKeyValue: any;
   filterlookupClient = [];
+  actionApptId: any;
+  AvailableAppt = [];
+  PreviousServiceNote = '';
+  lastVisit: any;
+  ApptExpires: any;
+  decodeUserToken: any;
+  hideClientInfo: any;
+  noResult: any;
   mailingCountriesList = [{ 'NAME': 'Canada' }, { 'NAME': 'United States' }];
   constructor(private activatedRoute: ActivatedRoute,
     private newClientService: NewClientService,
-    private sanitizer: DomSanitizer, private commonservice: CommonService,
-    private checkOutEditTicketService: CheckOutEditTicketService,
+    private sanitizer: DomSanitizer, private commonservice: CommonService, private http: HttpClient,
+    private checkOutEditTicketService: CheckOutEditTicketService, private location: Location,
     private toastr: ToastrService, private translateService: TranslateService, private router: Router,
     @Inject('apiEndPoint') private apiEndPoint: string) {
     this.datePickerConfig = Object.assign({},
@@ -178,10 +195,26 @@ export class NewClientComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(params => {
       this.paramsId = activatedRoute.snapshot.params['Id'];
       this.actionmethod = params.actionMethod;
+      this.actionApptId = params.apptId;
     });
   }
 
   ngOnInit() {
+    // ---Start of code for Permissions Implementation--- //
+    try {
+      this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+      this.decodeUserToken = new JwtHelper().decodeToken(localStorage.getItem('token'));
+    } catch (error) {
+      this.decodedToken = {};
+      this.decodeUserToken = {};
+    }
+    if (this.decodedToken.data && this.decodedToken.data.permissions) {
+      this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+    } else {
+      this.decodedToken = {};
+    }
+    // ---End of code for permissions Implementation--- //
+
     this.search();
     this.lookupSearch();
     this.getRewards();
@@ -204,6 +237,7 @@ export class NewClientComponent implements OnInit {
     this.getClientFlags();
     this.getOccupation();
     this.clientCardFeilds();
+    this.getHideClientContactInfo();
     if (this.router.url === '/client/quick/add') {
       this.AddNewClient = true;
       this.searchKeyValue = '';
@@ -211,20 +245,7 @@ export class NewClientComponent implements OnInit {
       this.goToFullClientCard();
       this.searchKeyValue = undefined;
     } else if (this.router.url.match(/client\/edit/g)) {
-      this.newClientService.getClient(this.paramsId).subscribe(data => {
-        const clientData = data['result']['results'][0];
-        this.getClientProfile(clientData, null);
-        this.searchKeyValue = undefined;
-      },
-        error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
-          }
-        });
+      this.CliData(this.paramsId);
     } else if (this.router.url === '/client/quick/add?actionMethod=findAppt' || this.router.url === '/client/quick/add?actionMethod=bookStanding' ||
       this.router.url === '/client/quick/add?actionMethod=checkout') {
       // this.searchKeyValue = '';
@@ -240,11 +261,69 @@ export class NewClientComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true
     };
+    this.getCountry('United States');
+  }
+
+  CliData(id) {
+    this.newClientService.getClient(id).subscribe(data => {
+      const clientData = data['result']['results'][0];
+      this.getClientProfile(clientData, null);
+      this.searchKeyValue = undefined;
+    },
+      error => {
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
+          }
+        }
+      });
   }
   getRewards() {
     this.checkOutEditTicketService.getRewardsData().subscribe(
       data => {
         this.allRwrdsData = data['result'];
+        const tempRwdData = data['result'].filter((obj) => obj.Active__c === 1);
+        let clientRwrdsData = [];
+        if (tempRwdData && tempRwdData.length > 0) {
+          for (let i = 0; i < tempRwdData.length; i++) {
+            const temp = JSON.parse(tempRwdData[i].Award_Rules__c);
+            let points = 0;
+            for (let j = 0; j < temp.length; j++) {
+              if (temp[j]['forEvery'] === 'Referred Client') {
+                points = 0;
+                points += temp[j]['awardPoints'];
+                clientRwrdsData.push({
+                  Reward__c: tempRwdData[i].Id,
+                  rwdName: tempRwdData[i].Name,
+                  adjustPoints: points,
+                  item: temp[j].item,
+                  stDate: temp[j].startDate,
+                  endDate: temp[j].endDate,
+                  forEvery: temp[j].forEvery,
+                });
+              }
+            }
+          }
+        }
+        clientRwrdsData = this.commonservice.getFilterRwdsByAwardRules(clientRwrdsData, null);
+        if (clientRwrdsData && clientRwrdsData.length > 0) {
+          const dataFilter = [];
+          for (let i = 0; i < clientRwrdsData.length; i++) {
+            if (i === 0) {
+              dataFilter.push(clientRwrdsData[i]);
+            } else {
+              const index = dataFilter.findIndex((data1) => data1.rwdId === clientRwrdsData[i]['rwdId']);
+              if (index !== -1) {
+                dataFilter[index]['points'] = +dataFilter[index]['points'] + clientRwrdsData[i]['points'];
+              } else {
+                dataFilter.push(clientRwrdsData[i]);
+              }
+            }
+          }
+          this.refRwds = dataFilter;
+        }
       },
       error => {
         const status = JSON.parse(error['status']);
@@ -270,6 +349,15 @@ export class NewClientComponent implements OnInit {
       ).subscribe(
         data => {
           this.filterClient = data['result'];
+          if (this.searchKeyValue) {
+            if (this.searchKeyValue.length !== 0 && this.filterClient.length === 0) {
+              this.noResult = 'No Results';
+            } else {
+              this.noResult = '';
+            }
+          } else {
+            this.filterClient = [];
+          }
         },
         error => {
           const status = JSON.parse(error['status']);
@@ -294,7 +382,32 @@ export class NewClientComponent implements OnInit {
       .switchMap(term => this.newClientService.getClientAutoSearch(term)
       ).subscribe(
         data => {
-          this.filterlookupClient = data['result'];
+          if (this.lookUpType === 'responsible-party') {
+            this.filterlookupClient = data['result'].filter(
+              filterList => filterList.Id !== this.clientEditObj.Id);
+          } else {
+
+            if (this.clientReferedDataList.length > 0) {
+              this.filterlookupClient = data['result'];
+              for (let t = 0; t < this.clientReferedDataList.length; t++) {
+                this.filterlookupClient = this.filterlookupClient.filter(
+                  filterList => filterList.Id !== this.clientEditObj.Id && filterList.Id !== this.clientReferedDataList[t].id);
+              }
+            } else {
+              this.filterlookupClient = data['result'].filter(
+                filterList => filterList.Id !== this.clientEditObj.Id);
+            }
+
+          }
+          if (this.searchLookupKeyValue) {
+            if (this.searchLookupKeyValue.length !== 0 && this.filterlookupClient.length === 0) {
+              this.noResult = 'No Results';
+            } else {
+              this.noResult = '';
+            }
+          } else {
+            this.filterlookupClient = [];
+          }
         },
         error => {
           const status = JSON.parse(error['status']);
@@ -350,7 +463,7 @@ export class NewClientComponent implements OnInit {
       MailingStreet: '',
       MailingCity: '',
       MailingState: '',
-      MailingCountry: '',
+      MailingCountry: 'United States',
       Pin__c: '',
       Email: '',
       MobilePhone: '',
@@ -373,11 +486,11 @@ export class NewClientComponent implements OnInit {
       Marketing_Opt_Out__c: '',
       Notification_Mobile_Phone__c: '',
       Notification_Opt_Out__c: '',
-      Notification_Primary_Email__c: '',
+      Notification_Primary_Email__c: 1,
       Reminder_Mobile_Phone__c: '',
       Reminder_Opt_Out__c: '',
-      Reminder_Primary_Email__c: '',
-      Active_Rewards__c: '',
+      Reminder_Primary_Email__c: 1,
+      Active_Rewards__c: '1',
       Membership_ID__c: '',
       Starting_Balance__c: '',
       Payment_Type_Token__c: '',
@@ -398,16 +511,17 @@ export class NewClientComponent implements OnInit {
       ResponsibleClientPic: '',
       Notification_Secondary_Email__c: '',
       Reminder_Secondary_Email__c: '',
-      Mobile_Carrier__c: '',
+      // Mobile_Carrier__c: '',
       Booking_Restriction_Note__c: '',
       Notes__c: '',
       Booking_Frequency__c: '',
-      Allow_Online_Booking__c: '',
+      Allow_Online_Booking__c: 1,
       Referred_By__c: '',
       selectedFlags: [],
       Client_Pic__c: '',
       Id: '',
-      CreatedDate: ''
+      CreatedDate: '',
+      Current_Balance__c: ''
     };
   }
   getClientData(clientId) {
@@ -416,6 +530,7 @@ export class NewClientComponent implements OnInit {
         this.isEdit = true;
         this.clientReferedDataList = [];
         let referalNames: any = [];
+        let referalId: any = [];
         let referalClientPics: any = [];
         let referalClientDates: any = [];
         const clientData = data['result']['results'][0];
@@ -423,6 +538,10 @@ export class NewClientComponent implements OnInit {
           switch (Dkey) {
             case 'refName': {
               referalNames = this.assaignReferalValues(clientData, Dkey);
+            }
+              break;
+            case 'refId': {
+              referalId = this.assaignReferalValues(clientData, Dkey);
             }
               break;
             case 'refClientPics': {
@@ -453,10 +572,10 @@ export class NewClientComponent implements OnInit {
           });
         });
         if (referalNames.length !== 0) {
-
           referalNames.forEach((name, i) => {
             const referalData: any = {};
             referalData['name'] = referalNames[i];
+            referalData['id'] = referalId[i];
             referalData['clientImage'] = referalClientPics[i];
             referalData['referedDate'] = referalClientDates[i];
             this.clientReferedDataList.push(referalData);
@@ -466,6 +585,14 @@ export class NewClientComponent implements OnInit {
         this.clientEditObj.Birthdate = new Date(this.clientEditObj.Birthdate).toString() === 'Invalid Date' ? '' : this.clientEditObj.Birthdate;
         // flag
         this.selectedFlagItems = [];
+        if (this.clientEditObj.MobilePhone) {
+          this.mobileCountryCode = this.clientEditObj.MobilePhone.split('-')[0];
+          this.clientEditObj.MobilePhone = this.clientEditObj.MobilePhone.split('-')[1] + '-' + this.clientEditObj.MobilePhone.split('-')[2];
+        }
+        if (this.clientEditObj.Phone) {
+          this.primaryCountryCode = this.clientEditObj.Phone.split('-')[0];
+          this.clientEditObj.Phone = this.clientEditObj.Phone.split('-')[1] + '-' + this.clientEditObj.Phone.split('-')[2];
+        }
         this.clientEditObj.selectedFlags.filter((obj) => {
           this.clientFlags.filter((obj1) => {
             if (obj === obj1.item_text) {
@@ -514,7 +641,7 @@ export class NewClientComponent implements OnInit {
     this.newClientService.getOccupations().subscribe(
       data => {
         this.occupationData = data['result'].filter(
-          filterList => filterList.active === true);
+          filterList => filterList.active === true || filterList.active === 'true');
       },
       error => {
         const errStatus = JSON.parse(error['_body'])['status'];
@@ -540,11 +667,17 @@ export class NewClientComponent implements OnInit {
     this.newClientService.getServiceLog(clientId).subscribe(
       data => {
         this.clientServicesList = data['result'];
+        for (let i = 0; i < this.clientServicesList.length; i++) {
+          this.clientServicesList[i].servdate = this.commonservice.getUsrDtStrFrmDBStr(this.clientServicesList[i].Service_Date_Time__c);
+        }
         this.serviceLogLength = this.clientServicesList.length;
         this.serviceTotal = 0;
         this.clientServicesList.forEach(element => {
           if (element.Net_Price__c === '' || element.Net_Price__c === null || element.Net_Price__c === undefined) {
             element.Net_Price__c = 0;
+          }
+          if (element.Booked_Package__c !== null && element.Booked_Package__c !== '') {
+            element.promotion = 'Prepaid Package';
           }
           this.serviceTotal += element.Net_Price__c;
         });
@@ -656,21 +789,46 @@ export class NewClientComponent implements OnInit {
       }
     );
   }
-
+  // sendOtp(number) {
+  //   this.senOtpStatus = false;
+  //   const phone = { 'phone': number, 'action': 'sendOtp' };
+  //   this.newClientService.sendOtp(phone).subscribe(
+  //     data => {
+  //       if (data['result']) {
+  //         this.senOtpStatus = true;
+  //       }
+  //     }, error => { });
+  // }
+  // verifyOtp(otp) {
+  //   const phone = { 'phone': this.clientEditObj.Phone, 'token': otp, 'action': 'verify' };
+  //   this.newClientService.sendOtp(phone).subscribe(
+  //     data => {
+  //       this.senOtpStatus = data['result'];
+  //       this.verifyNumberPopup.hide();
+  //     }, error => {
+  //       this.error = JSON.parse(error._body)['result'];
+  //     });
+  // }
   getProductLog(clientId: string) {
     this.newClientService.getProductLog(clientId).subscribe(
       data => {
         this.clientProductList = data['result'];
+        for (let i = 0; i < this.clientProductList.length; i++) {
+          this.clientProductList[i].displaydate = this.commonservice.getUsrDtStrFrmDBStr(this.clientProductList[i].Appt_Date_Time__c);
+        }
         this.totalQtySold = 0;
         this.proTotalPrice = 0;
         this.clientProductList.forEach(element => {
+          if (element.Qty_Sold__c || element.Net_Price__c) {
+            element.totalNetPrice = element.Net_Price__c * element.Qty_Sold__c;
+          }
           if (element.Qty_Sold__c !== '' || element.Qty_Sold__c !== null || element.Qty_Sold__c !== undefined) {
             this.totalQtySold += element.Qty_Sold__c;
           }
-          if (element.Price__c === '' || element.Price__c === null || element.Price__c === undefined) {
-            element.Price__c = 0;
-          }
-          this.proTotalPrice += element.Price__c;
+          // if (element.Price__c === '' || element.Price__c === null || element.Price__c === undefined) {
+          //   element.Price__c = 0;
+          // }
+          this.proTotalPrice += element.totalNetPrice;
         });
       },
       error => {
@@ -688,6 +846,26 @@ export class NewClientComponent implements OnInit {
     this.newClientService.getClientAccountsData(clientId).subscribe(
       data => {
         this.clientAccountsData = data['result'];
+        for (let i = 0; i < this.clientAccountsData.length; i++){
+          this.clientAccountsData[i].disaplayDate = this.commonservice.getUsrDtStrFrmDBStr(this.clientAccountsData[i].dateTime);
+        }
+        // let resConcat = resArr[1].concat(resArr[0]);
+        // resConcat = this.sortDatesDesc(resConcat, 'dateTime');
+        // this.clientAccountsData = [];
+        // const curBalArr = [];
+        // for (let i = resConcat.length; i--;) {
+        //   curBalArr.push(resConcat[i]);
+        // }
+        // for (let c = 0; c < curBalArr.length; c++) {
+        //   if (c === 0) {
+        //     curBalArr[c].currBal = curBalArr[c].Amount_Paid__c + this.clientEditObj.Starting_Balance__c;
+        //   } else {
+        //     curBalArr[c].currBal = curBalArr[c]['Amount_Paid__c'] + curBalArr[c - 1]['currBal'];
+        //   }
+        // }
+        // for (let j = curBalArr.length; j--;) {
+        //   this.clientAccountsData.push(curBalArr[j]);
+        // }
       },
       error => {
         const errStatus = JSON.parse(error['_body'])['status'];
@@ -730,28 +908,44 @@ export class NewClientComponent implements OnInit {
     );
   }
   getClientPackages(clientId) {
+    this.totalUnUsedValue = 0;
     this.newClientService.getClientPackagesData(clientId).subscribe(
       data => {
         const cpData = data['result'];
+        let cpdata2 = [];
+        this.clientPackagesData = [];
         if (data['result'] !== '') {
-          this.clientPackagesData = cpData.ClientPackageData;
+          cpdata2 = cpData.ClientPackageData;
           this.ClientServiceData = cpData.ServiceData;
-          if (this.clientPackagesData) {
-            for (let j = 0; j < this.clientPackagesData.length; j++) {
-              const packageDetails = JSON.parse(this.clientPackagesData[j].Package_Details__c);
-              for (let k = 0; k < this.ClientServiceData.length; k++) {
-                if (packageDetails.serviceId === this.ClientServiceData[k].Id) {
-                  this.clientPackagesData[j]['serviceName'] = this.ClientServiceData[k]['ServiceName'];
-                  this.clientPackagesData[j]['serviceId'] = this.ClientServiceData[k]['Id'];
+          if (cpdata2) {
+            for (let j = 0; j < cpdata2.length; j++) {
+              for (let i = 0; i < JSON.parse(cpdata2[j]['Package_Details__c']).length; i++) {
+                const unused1: any = JSON.parse(cpdata2[j]['Package_Details__c'])[i].reps - JSON.parse(cpdata2[j]['Package_Details__c'])[i].used;
+                // const unusedVal = unused1 + ' of ' + (JSON.parse(cpdata2[j]['Package_Details__c'])[i].reps + JSON.parse(cpdata2[j]['Package_Details__c'])[i].used);
+                this.clientPackagesData.push({
+                  Name: cpdata2[j]['Name'],
+                  // serviceName: this.ClientServiceData[i]['ServiceName'],
+                  serviceId: JSON.parse(cpdata2[j]['Package_Details__c'])[i]['serviceId'],
+                  reps: JSON.parse(cpdata2[j]['Package_Details__c'])[i].reps,
+                  used: JSON.parse(cpdata2[j]['Package_Details__c'])[i].used,
+                  Ticket__c: cpdata2[j].Ticket__c,
+                  TicketName: cpdata2[j].TicketName,
+                  CreatedDate: cpdata2[j].CreatedDate,
+                  unusedValue: parseInt(unused1, 10) * parseInt(JSON.parse(cpdata2[j]['Package_Details__c'])[i]['discountPriceEach'], 10)
+                });
+              }
+            }
+            for (let i = 0; i < this.ClientServiceData.length; i++) {
+              for (let j = 0; j < this.clientPackagesData.length; j++) {
+                this.clientPackagesData[j].createDate = this.commonservice.getUsrDtStrFrmDBStr(this.clientPackagesData[j].CreatedDate);
+                if (this.clientPackagesData[j]['serviceId'] === this.ClientServiceData[i]['Id']) {
+                  this.clientPackagesData[j]['serviceName'] = this.ClientServiceData[i]['ServiceName'];
+                  // this.clientPackagesData[i]['serviceId'] = this.ClientServiceData[i]['serviceId'];
                 }
               }
-              const unused1: any = packageDetails.reps - packageDetails.used;
-              const unused = unused1 + ' of ' + packageDetails.reps;
-              this.clientPackagesData[j]['unused'] = unused;
-              this.clientPackagesData[j]['unusedValue'] = parseInt(unused1, 10) * parseInt(packageDetails['discountPriceEach'], 10);
-              this.totalUnUsedValue += this.clientPackagesData[j]['unusedValue'];
             }
           }
+          this.clientPackagesData.map((obj) => { this.totalUnUsedValue += obj['unusedValue']; });
         }
       },
       error => {
@@ -785,6 +979,24 @@ export class NewClientComponent implements OnInit {
     //  this.clearmessage();
     return ret;
   }
+  /* method to restrict specialcharecters  */
+  numOnly(event: any) {
+    const pattern = /[0-9]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
+  /* method to restrict specialcharecters  */
+  numOnly1(event: any) {
+    const pattern = /[0-9-]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
 
   admMenuShow() {
     this.activeClass = !this.activeClass;
@@ -813,6 +1025,29 @@ export class NewClientComponent implements OnInit {
     this.notesTestareaNote = note.Notes__c;
     // this.indexTemp = index;
     this.serviceNotesModal.show();
+
+    // start Previous Service Note
+    const sameSer = [];
+    this.clientServicesList.forEach(element => {
+      if (element.serviceName === note.serviceName) {
+        sameSer.push(element);
+      }
+    });
+    for (let i = 0; i < sameSer.length; i++) {
+      if (note.id === sameSer[i].id) {
+        for (let j = 1; j < sameSer.length; j++) {
+          if ((i + j) < sameSer.length) {
+            if (sameSer[i + j].Notes__c) {
+              return this.PreviousServiceNote = sameSer[i + j].Notes__c;
+            }
+          }
+        }
+      }
+    }
+    // end Previous Service Note
+  }
+  CopyPreviousNote() {
+    this.notesTestareaNote = this.PreviousServiceNote + ' ' + this.notesTestareaNote;
   }
   showNotesModalApp() {
     this.appointmentNotesModal.show();
@@ -822,6 +1057,7 @@ export class NewClientComponent implements OnInit {
   }
   closeServiceNotesModal() {
     this.serviceNotesModal.hide();
+    this.PreviousServiceNote = '';
   }
   getAllClients() {
     this.newClientService.getClientData()
@@ -852,10 +1088,11 @@ export class NewClientComponent implements OnInit {
 
   searchclient(searchKey) {
     this.clear();
-    if (this.searchKeyValue === '') {
+    if (this.searchKeyValue === '' && !this.router.url.match(/client\/edit/g)) {
       this.filterClient = [];
       this.leftProfile = false;
       this.isEdit = false;
+      this.noResult = '';
       this.clienProfile = { 'fName': '', 'lName': '', 'id': '', 'FullName': '', 'email': '', 'phone': '', 'name': '', 'pic': '', 'note': '', 'client_since': '', 'index': '' };
     } else {
       this.isEdit = false;
@@ -928,6 +1165,7 @@ export class NewClientComponent implements OnInit {
   }
 
   getClientProfile(pro, i) {
+    this.location.replaceState('/client/edit/' + pro.Id);
     this.isEdit = false;
     this.clear();
     if (pro.Client_Pic__c === null || pro.Client_Pic__c === undefined || pro.Client_Pic__c === '') {
@@ -963,12 +1201,12 @@ export class NewClientComponent implements OnInit {
       'Other': pro.BR_Reason_Other__c,
       'apptNotes': pro.BR_Reason_Other_Note__c,
       'pin': pro.Pin__c,
-      'standingAppt': '',
-      'hasStandingAppt': pro.Has_Standing_Appts__c
+      'standingAppt': ''
+      // 'hasStandingAppt': pro.Has_Standing_Appts__c
     };
     this.other = this.AppointmentsTab.Other;
     this.pin = this.AppointmentsTab.pin;
-    this.hasStandingAppt = this.AppointmentsTab.hasStandingAppt;
+    // this.hasStandingAppt = this.AppointmentsTab.hasStandingAppt;
     this.noEmailAppt = this.AppointmentsTab.noEmailAppt;
     this.accoutChargeBalance = this.AppointmentsTab.accoutChargeBalance;
     this.depositRequired = this.AppointmentsTab.depositRequired;
@@ -989,8 +1227,57 @@ export class NewClientComponent implements OnInit {
     this.getClientAccounts(this.clienProfile.id);
     this.getClientFlags();
     this.getOccupation();
+    this.checkAvailableApptClient(this.clienProfile.id);
+    this.getClientLastVist(this.clienProfile.id);
+    this.getHideClientContactInfo();
     this.CommonSaveBut = true;
     window.scrollTo(0, 0);
+  }
+  getClientLastVist(id) {
+    this.newClientService.getClientLastVistService(id, this.commonservice.getDBDatTmStr(new Date)).subscribe(data => {
+      this.lastVisit = data['result'][0][0];
+      this.ApptExpires = data['result'][1][0];
+      if (this.lastVisit) {
+        this.lastVisit = new Date(this.lastVisit['lastVisitDate']);
+      }
+      if (this.ApptExpires) {
+        this.ApptExpires = new Date(this.ApptExpires['expire_date']);
+      }
+    }, error => {
+      const errStatus = JSON.parse(error['_body'])['status'];
+      if (errStatus === '2085' || errStatus === '2071') {
+        if (this.router.url !== '/') {
+          localStorage.setItem('page', this.router.url);
+          this.router.navigate(['/']).then(() => { });
+        }
+      }
+    });
+  }
+  getHideClientContactInfo() {
+    this.newClientService.getHideCliContactInfo(this.decodeUserToken.data.id).subscribe(data => {
+      this.hideClientInfo = data['result'][0].Hide_Client_Contact_Info__c;
+    }, error => {
+      const errStatus = JSON.parse(error['_body'])['status'];
+      if (errStatus === '2085' || errStatus === '2071') {
+        if (this.router.url !== '/') {
+          localStorage.setItem('page', this.router.url);
+          this.router.navigate(['/']).then(() => { });
+        }
+      }
+    });
+  }
+  checkAvailableApptClient(id) {
+    this.newClientService.checkAvaAppt(id).subscribe(data => {
+      this.AvailableAppt = data['result'];
+    }, error => {
+      const errStatus = JSON.parse(error['_body'])['status'];
+      if (errStatus === '2085' || errStatus === '2071') {
+        if (this.router.url !== '/') {
+          localStorage.setItem('page', this.router.url);
+          this.router.navigate(['/']).then(() => { });
+        }
+      }
+    });
   }
   uploadProfilePic(fileEvent) {
     this.clientPictureFile = fileEvent.target.files[0];
@@ -1074,6 +1361,9 @@ export class NewClientComponent implements OnInit {
         const apptData = data['result'];
         this.clientappoinmentData = apptData.Appointments;
         this.clientServicesData = apptData.AppointmenServices;
+        for (let i = 0; i < this.clientServicesData.length; i++) {
+          this.clientServicesData[i].displayAptdate = this.commonservice.getUsrDtStrFrmDBStr(this.clientServicesData[i].Service_Date_Time__c);
+        }
         for (let i = 0; i < this.clientappoinmentData.length; i++) {
           this.clientappoinmentData[i].Time = '';
           // this.clientappoinmentData[i].PrefDur = false;
@@ -1085,11 +1375,11 @@ export class NewClientComponent implements OnInit {
               this.clientServicesData[j].Time = this.clientappoinmentData[i].Appt_Date_Time__c;
               // this.clientServicesData[j].PrefDur = true;
               this.resultAppointments.push(this.clientServicesData[j]);
-              if (this.clientServicesData[j].Duration__c < 60) {
-                this.clientServicesData[j].Duration__c = this.clientServicesData[j].Duration__c + ' min';
-              } else {
-                this.clientServicesData[j].Duration__c = '1 hr';
-              }
+              // if (this.clientServicesData[j].Duration__c < 60) {
+              //   this.clientServicesData[j].Duration__c = this.clientServicesData[j].Duration__c + ' min';
+              // } else {
+              //   this.clientServicesData[j].Duration__c = '1 hr';
+              // }
             }
           }
         }
@@ -1115,6 +1405,7 @@ export class NewClientComponent implements OnInit {
   }
 
   addNewClient() {
+    this.location.replaceState('/client');
     this.listClientFields();
     // this.AddNewClient = true;
     this.filterClient = [];
@@ -1125,37 +1416,88 @@ export class NewClientComponent implements OnInit {
     this.clientEditObjFun();
     this.updateTabs(0);
     this.clear();
+    this.StartingBalanceDisable = false;
+    this.noEmailBool = false;
+    this.primaryCountryCode = '';
+    this.mobileCountryCode = '';
   }
 
-  AddClient() {
+  AddClient(bol) {
     this.clear();
+
     const EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (this.clientEditObj.FirstName === '') {
+    if (this.clientEditObj.FirstName.trim() === '') {
       this.ClientProError[0] = this.translateService.get('CLIENTS.NO_BLANK_FIRST_NAME');
-    } else if (this.clientEditObj.LastName === '') {
+    } else if (this.clientEditObj.FirstName === 'null') {
+      this.ClientProError[0] = this.translateService.get('Enter Valid Name.');
+    } else if (this.clientEditObj.LastName.trim() === '') {
       this.ClientProError[2] = this.translateService.get('CLIENTS.NO_BLANK_LAST_NAME');
-      // } else if (this.clientEditObj.Email === '') {
-    } else if (this.primaryEmail === true && this.clientEditObj.Email === '') {
-      this.ClientProError[5] = this.translateService.get('CLIENTS.NOBLANK_EMAIL');
-    } else if (this.clientEditObj.Email !== 'undefined' && this.clientEditObj.Email !== undefined && this.clientEditObj.Email !== '' && !EMAIL_REGEXP.test(this.clientEditObj.Email)) {
+    } else if (this.clientEditObj.LastName === 'null') {
+      this.ClientProError[2] = this.translateService.get('Enter Valid Name.');
+    } else if ((this.clientEditObj.No_Email__c === 0 || this.clientEditObj.No_Email__c === false) && (this.clientEditObj.Email === '' && this.primaryEmail === true)) {
+      this.ClientProError[5] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_PRIMARY_EMAIL');
+    } else if ((this.clientEditObj.No_Email__c === 0 || this.clientEditObj.No_Email__c === false) && (this.clientEditObj.Email !== '' && !EMAIL_REGEXP.test(this.clientEditObj.Email))) {
       this.ClientProError[5] = this.translateService.get('CLIENTS.INVALID_PRIMARY_EMAIL');
-      // } else if (this.clientEditObj.Phone === '') {
+    } else if ((this.clientEditObj.No_Email__c === 0 || this.clientEditObj.No_Email__c === false) && (this.clientEditObj.Secondary_Email__c === '' && this.secondaryEmail === true)) {
+      this.ClientProError[6] = this.translateService.get('CLIENTS.SEC_NOBLANK_EMAIL');
+    } else if ((this.clientEditObj.No_Email__c === 0 || this.clientEditObj.No_Email__c === false)
+      && (this.clientEditObj.Secondary_Email__c !== '' && !EMAIL_REGEXP.test(this.clientEditObj.Secondary_Email__c))) {
+      this.ClientProError[6] = this.translateService.get('CLIENTS.INVALID_SEC_EMAIL');
     } else if (this.primaryPhone === true && this.clientEditObj.Phone === '') {
       this.ClientProError[3] = this.translateService.get('CLIENTS.NOBLANK_PRIMARY_PHONE');
-      // } else if (this.clientEditObj.MobilePhone === '') {
-    } else if (this.mobilePhone === true && this.clientEditObj.MobilePhone === '') {
+    } else if (this.primaryPhone === true && (this.primaryCountryCode === '' || this.primaryCountryCode === undefined)) {
+      this.ClientProError[3] = this.translateService.get('Primary phone country code cannot be blank.');
+    } else if (this.clientEditObj.Phone === '' && this.primaryCountryCode !== '') {
+      this.ClientProError[3] = this.translateService.get('Primary phone cannot be blank.');
+    } else if (this.clientEditObj.Phone !== '' && this.primaryCountryCode === '') {
+      this.ClientProError[3] = this.translateService.get('Primary phone Country code cannot be blank.');
+    } else if (this.mobilePhone === true && this.clientEditObj.MobilePhone === '' && (this.clientEditObj.MobilePhone === '' && (this.mobileCountryCode === undefined ||
+      this.mobileCountryCode === ''))) {
       this.ClientProError[4] = this.translateService.get('CLIENTS.NOBLANK_MOBILE_PHONE');
+    } else if (this.mobilePhone === true && (this.clientEditObj.MobilePhone !== '' && (this.mobileCountryCode === undefined || this.mobileCountryCode === ''))) {
+      this.ClientProError[4] = this.translateService.get('Mobile Phone country code cannot be blank.');
+    } else if (this.mobilePhone === true && (this.mobileCountryCode !== '' && (this.clientEditObj.MobilePhone === undefined || this.clientEditObj.MobilePhone === ''))) {
+      this.ClientProError[4] = this.translateService.get('Mobile Phone cannot be blank.');
+    } else if (this.clientEditObj.MobilePhone === '' && this.mobileCountryCode !== '') {
+      this.ClientProError[3] = this.translateService.get('Mobile phone cannot be blank.');
+    } else if (this.clientEditObj.MobilePhone !== '' && this.mobileCountryCode === '') {
+      this.ClientProError[3] = this.translateService.get('Mobile phone Country code cannot be blank.');
+    } else if (this.gender === true && this.clientEditObj.Gender__c === '') {
+      this.ClientProError[7] = this.translateService.get('CLIENTS.GENDER_REQ');
+    } else if (this.birthDate === true && (this.clientEditObj.Birthdate === '' || this.clientEditObj.Birthdate === null)) {
+      this.ClientProError[7] = this.translateService.get('CLIENTS.BIRTH_DATE_REQ');
+    } else if (this.mailingAddress === true && this.clientEditObj.MailingStreet === '') {
+      this.ClientProError[0] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_ADDRESS');
+    } else if (this.mailingAddress === true && this.clientEditObj.MailingPostalCode === '') {
+      this.ClientProError[0] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_ZIP');
+    } else if (this.mailingAddress === true && this.clientEditObj.MailingCountry === '') {
+      this.ClientProError[0] = this.translateService.get('SETUPCOMPANY.VALID_NOBLANK_SETUPCOMPANY_COUNTRY_CODE');
+    } else if (this.mailingAddress === true && this.clientEditObj.MailingState === '') {
+      this.ClientProError[0] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_STATE');
+    } else if (this.mailingAddress === true && this.clientEditObj.MailingCity === '') {
+      this.ClientProError[0] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_CITY');
     } else {
       this.NewClient = {
         'firstname': this.clientEditObj.FirstName,
-        // 'middlename': '',
         'lastname': this.clientEditObj.LastName,
-        'primaryPhone': this.clientEditObj.Phone,
-        'mobilePhone': this.clientEditObj.MobilePhone,
+        'primaryPhone': this.clientEditObj.Phone !== '' ? this.primaryCountryCode + '-' + this.clientEditObj.Phone : '',
+        'mobilePhone': this.clientEditObj.MobilePhone !== '' ? this.mobileCountryCode + '-' + this.clientEditObj.MobilePhone : '',
         'email': this.clientEditObj.Email,
-        'gender': this.clientEditObj.Gender__c === '' ? 'Unspecified' : this.clientEditObj.Gender__c,
+        'secondaryEmail': this.clientEditObj.Secondary_Email__c,
+        'gender': this.clientEditObj.Gender__c,
         'isNewClient': true,
-        'type': this.actionmethod
+        'type': this.actionmethod,
+        'birthDay': new Date(this.clientEditObj.Birthdate).getDate(),
+        'birthMonth': new Date(this.clientEditObj.Birthdate).getMonth() + 1,
+        'birthYear': new Date(this.clientEditObj.Birthdate).getFullYear(),
+        'clientInfoMailingStreet': this.clientEditObj.MailingStreet,
+        'clientInfoMailingCountry': this.clientEditObj.MailingCountry,
+        'clientInfoPostalCode': this.clientEditObj.MailingPostalCode,
+        'clientInfoMailingCity': this.clientEditObj.MailingCity,
+        'clientInfoMailingState': this.clientEditObj.MailingState,
+        'reminderPrimaryEmail': 1,
+        'notificationPrimaryEmail': 1,
+        'clientInfoNoEmail': this.clientEditObj.No_Email__c === true ? 1 : 0,
       };
       this.newClientService.clientQuickEdit('noClientid', this.NewClient).subscribe(data => {
         const addStatus = data['result'];
@@ -1165,7 +1507,7 @@ export class NewClientComponent implements OnInit {
         this.getAllClients();
         this.clear();
         this.clientEditObjFun();
-        if (this.saveAndBookButt) {
+        if (this.saveAndBookButt === bol) {
           this.router.navigate(['/client/edit/' + data['result'].clientId]).then(() => {
             this.router.navigate(['/appointment/book/' + data['result'].clientId]);
           });
@@ -1186,6 +1528,9 @@ export class NewClientComponent implements OnInit {
           const statuscode = JSON.parse(error['_body']).status;
           switch (JSON.parse(error['_body']).status) {
             case '2033':
+              break;
+            case '2088':
+              this.ClientProError[18] = this.translateService.get('CLIENTS.DUPLICATE_CLIENT');
               break;
           }
           if (statuscode === '2085' || statuscode === '2071') {
@@ -1226,6 +1571,7 @@ export class NewClientComponent implements OnInit {
   }
   updateErrMsg(index: number) {
     this.ClientProError[index] = '';
+    this.ClientProError[18] = '';
   }
   getCountry(coun) {
     this.newClientService.getStates(coun)
@@ -1254,6 +1600,40 @@ export class NewClientComponent implements OnInit {
       (<HTMLInputElement>document.getElementById('mobile_id1')).value = value.concat(')');
     } if (value.length === 8) {
       (<HTMLInputElement>document.getElementById('mobile_id1')).value = value.concat('-');
+    }
+  }
+  pasteNum(value) {
+    let temp = '';
+    if (value.indexOf('(') !== 0) {
+      for (let i = 0; i < value.length; i++) {
+        if (i === 0) {
+          temp += '(' + value[i];
+        } else if (i === 2) {
+          temp += value[i] + ')';
+        } else if (i === 5) {
+          temp += value[i] + '-';
+        } else {
+          temp += value[i];
+        }
+        this.clientEditObj.MobilePhone = temp.substr(0, 13);
+      }
+    }
+  }
+  pasteNumPhone(value) {
+    let temp = '';
+    if (value.indexOf('(') !== 0) {
+      for (let i = 0; i < value.length; i++) {
+        if (i === 0) {
+          temp += '(' + value[i];
+        } else if (i === 2) {
+          temp += value[i] + ')';
+        } else if (i === 5) {
+          temp += value[i] + '-';
+        } else {
+          temp += value[i];
+        }
+        this.clientEditObj.Phone = temp.substr(0, 13);
+      }
     }
   }
   hyphen_generate_home(value) {
@@ -1287,7 +1667,23 @@ export class NewClientComponent implements OnInit {
     this.appointmentNotesModal.hide();
   }
 
-  commonSave() {
+  rewardCalError() {
+    let res = false;
+    this.rewardCalErrorMsg = [];
+    this.clientRewardData.forEach(element => {
+      if ((element.adjustPoints !== '') && ((element.Points_Balance__c + parseInt(element.adjustPoints, 10)) < 0)) {
+        this.rewardCalErrorMsg.push({ 'value': element.Name + ' Adjust Points cannot adjust the point balance below zero.' });
+        res = true;
+      }
+    });
+    return res;
+  }
+  commonSave(bol) {
+    if (this.myPin) {
+      if (this.myPin.nativeElement.value !== '****') {
+        this.pin = this.myPin.nativeElement.value;
+      }
+    }
     // Appointment tab start
     if (this.selectedFlagItems.length !== 0) {
       for (let i = 0; i < this.selectedFlagItems.length; i++) {
@@ -1334,11 +1730,11 @@ export class NewClientComponent implements OnInit {
       this.other = 0;
     }
 
-    if (this.hasStandingAppt === true) {
-      this.hasStandingAppt = 1;
-    } else if (this.hasStandingAppt === false) {
-      this.hasStandingAppt = 0;
-    }
+    // if (this.hasStandingAppt === true) {
+    //   this.hasStandingAppt = 1;
+    // } else if (this.hasStandingAppt === false) {
+    //   this.hasStandingAppt = 0;
+    // }
 
     for (let a = 0; a < this.apptSerList.length; a++) {
       if (this.apptSerList[a].PrefDur === true) {
@@ -1362,6 +1758,7 @@ export class NewClientComponent implements OnInit {
     }
     // Account tab start
     for (let y = 0; y < this.clientMemberShipsData.length; y++) {
+      this.clientMemberShipsData[y].nextBillDate = this.commonservice.getUsrDtStrFrmDBStr(this.clientMemberShipsData[y].Next_Bill_Date__c);
       if (this.clientMemberShipsData[y].Auto_Bill__c === true) {
         this.clientMemberShipsData[y].Auto_Bill__c = 1;
       } else if (this.clientMemberShipsData[y].Auto_Bill__c === false) {
@@ -1371,8 +1768,8 @@ export class NewClientComponent implements OnInit {
     // Account tab end
     this.clear();
     const EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (this.clientEditObj.FirstName === 'undefined' || this.clientEditObj.FirstName === undefined ||
-      this.clientEditObj.FirstName === '') {
+    if (this.clientEditObj.FirstName.trim() === 'undefined' || this.clientEditObj.FirstName.trim() === undefined ||
+      this.clientEditObj.FirstName.trim() === '') {
       this.updateTabs(0);
       this.ClientProError[6] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_FIRSTNAME');
       if (this.clienProfile.id === undefined) {
@@ -1380,8 +1777,16 @@ export class NewClientComponent implements OnInit {
       } else {
         window.scrollTo(0, 600);
       }
-    } else if (this.clientEditObj.LastName === 'undefined' || this.clientEditObj.LastName === undefined ||
-      this.clientEditObj.LastName === '') {
+    } else if (this.clientEditObj.FirstName === 'null') {
+      this.updateTabs(0);
+      this.ClientProError[6] = this.translateService.get('Enter Valid Name.');
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.LastName.trim() === 'undefined' || this.clientEditObj.LastName.trim() === undefined ||
+      this.clientEditObj.LastName.trim() === '') {
       this.updateTabs(0);
       this.ClientProError[7] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_LASTNAME');
       if (this.clienProfile.id === undefined) {
@@ -1389,32 +1794,15 @@ export class NewClientComponent implements OnInit {
       } else {
         window.scrollTo(0, 600);
       }
-
-    } else if (this.clientEditObj.MailingStreet === '' && this.clientCardMailingAddress === true) {
-      this.ClientProError[16] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_ADDRESS');
+    } else if (this.clientEditObj.LastName === 'null') {
       this.updateTabs(0);
+      this.ClientProError[7] = this.translateService.get('Enter Valid Name.');
       if (this.clienProfile.id === undefined) {
         window.scrollTo(0, 0);
       } else {
         window.scrollTo(0, 600);
       }
-    } else if ((this.clientEditObj.No_Email__c === 0) && (this.clientEditObj.Email === '' && this.clientCardPrimaryEmail === true)) {
-      this.updateTabs(0);
-      this.ClientProError[9] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_PRIMARY_EMAIL');
-      if (this.clienProfile.id === undefined) {
-        window.scrollTo(0, 0);
-      } else {
-        window.scrollTo(0, 600);
-      }
-    } else if ((this.clientEditObj.No_Email__c === 0) && (this.clientEditObj.Email !== '' && !EMAIL_REGEXP.test(this.clientEditObj.Email))) {
-      this.ClientProError[9] = this.translateService.get('CLIENTS.INVALID_CLIENT_INFO_PRIMARY_EMAIL');
-      this.updateTabs(0);
-      if (this.clienProfile.id === undefined) {
-        window.scrollTo(0, 0);
-      } else {
-        window.scrollTo(0, 600);
-      }
-    } else if (this.clientEditObj.Phone === '' && this.clientCardPrimaryPhone === true) {
+    } else if (this.clientEditObj.Phone === '' && this.clientCardPrimaryPhone === true && this.hideClientInfo === 0 && this.primaryCountryCode === '') {
       this.ClientProError[13] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_PRIMARY_PHONE');
       this.updateTabs(0);
       if (this.clienProfile.id === undefined) {
@@ -1422,8 +1810,17 @@ export class NewClientComponent implements OnInit {
       } else {
         window.scrollTo(0, 600);
       }
+    } else if (this.clientEditObj.Phone !== '' && this.clientCardPrimaryPhone === true && this.hideClientInfo === 0 && this.primaryCountryCode === '') {
+      this.ClientProError[13] = this.translateService.get('primary Phone country code cannot be blank.');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
     } else if ((this.clientEditObj.MobilePhone === 'undefined' || this.clientEditObj.MobilePhone === undefined ||
-      this.clientEditObj.MobilePhone === '' || this.clientEditObj.MobilePhone === null || this.clientEditObj.MobilePhone === 'null') && this.clientCardMobilePhone === true) {
+      this.clientEditObj.MobilePhone === '' || this.clientEditObj.MobilePhone === null || this.clientEditObj.MobilePhone === 'null') && this.clientCardMobilePhone === true &&
+      this.hideClientInfo === 0 && this.mobileCountryCode === '') {
       this.ClientProError[8] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_MOBILE_PHONE');
       this.updateTabs(0);
       if (this.clienProfile.id === undefined) {
@@ -1431,16 +1828,130 @@ export class NewClientComponent implements OnInit {
       } else {
         window.scrollTo(0, 600);
       }
-    } else if ((this.clientEditObj.No_Email__c === 0) && (this.clientEditObj.Reminder_Secondary_Email__c === 1 && this.clientEditObj.Secondary_Email__c === '')
-      && (this.clientEditObj.Secondary_Email__c === '' && this.clientCardSecondaryEmail === true)) {
-      this.ClientProError[11] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_SECONDARY_EMAIL');
+    } else if ((this.clientEditObj.MobilePhone === 'undefined' || this.clientEditObj.MobilePhone === undefined ||
+      this.clientEditObj.MobilePhone !== '' || this.clientEditObj.MobilePhone !== null || this.clientEditObj.MobilePhone !== 'null') && this.clientCardMobilePhone === true &&
+      this.hideClientInfo === 0 && this.mobileCountryCode === '') {
+      this.ClientProError[8] = this.translateService.get('Mobile phone country code cannot be blank.');
       this.updateTabs(0);
       if (this.clienProfile.id === undefined) {
         window.scrollTo(0, 0);
       } else {
         window.scrollTo(0, 600);
       }
-    } else if ((this.clientEditObj.No_Email__c === 0) && (this.clientEditObj.Secondary_Email__c !== '' && !EMAIL_REGEXP.test(this.clientEditObj.Secondary_Email__c))) {
+    } else if (this.clientEditObj.Marketing_Mobile_Phone__c === 1 && this.hideClientInfo === 0 &&
+      (this.clientEditObj.MobilePhone === '' || this.clientEditObj.MobilePhone === 'undefined' || this.clientEditObj.MobilePhone === undefined)) {
+      this.ClientProError[8] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_MOBILE_PHONE_USED_PREFERENCE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.Notification_Mobile_Phone__c && this.hideClientInfo === 0 &&
+      (this.clientEditObj.MobilePhone === '' || this.clientEditObj.MobilePhone === 'undefined' || this.clientEditObj.MobilePhone === undefined)) {
+      this.ClientProError[8] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_MOBILE_PHONE_USED_PREFERENCE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.Reminder_Mobile_Phone__c && this.hideClientInfo === 0 &&
+      (this.clientEditObj.MobilePhone === '' || this.clientEditObj.MobilePhone === 'undefined' || this.clientEditObj.MobilePhone === undefined)) {
+      this.ClientProError[8] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_MOBILE_PHONE_USED_PREFERENCE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.clientEditObj.Email === '' && this.clientCardPrimaryEmail === true) && (this.hideClientInfo === 0)) {
+      this.updateTabs(0);
+      this.ClientProError[9] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_PRIMARY_EMAIL');
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Email !== '' && !EMAIL_REGEXP.test(this.clientEditObj.Email))) {
+      this.ClientProError[9] = this.translateService.get('CLIENTS.INVALID_PRIMARY_EMAIL');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Secondary_Email__c === '' && this.clientCardSecondaryEmail === true)) {
+      this.updateTabs(0);
+      this.ClientProError[11] = this.translateService.get('CLIENTS.SEC_NOBLANK_EMAIL');
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Secondary_Email__c !== '' &&
+      !EMAIL_REGEXP.test(this.clientEditObj.Secondary_Email__c))) {
+      this.ClientProError[11] = this.translateService.get('CLIENTS.INVALID_SEC_EMAIL');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Reminder_Primary_Email__c === 1 && this.clientEditObj.Email === '')) {
+      this.ClientProError[9] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_PRIMARY_EMAIL_USED_PREFERENCE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Notification_Primary_Email__c === 1 && this.clientEditObj.Email === '')) {
+      this.updateTabs(0);
+      this.ClientProError[9] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_PRIMARY_EMAIL_USED_PREFERENCE');
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Marketing_Primary_Email__c === 1 && this.clientEditObj.Email === '')) {
+      this.updateTabs(0);
+      this.ClientProError[9] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_PRIMARY_EMAIL_USED_PREFERENCE');
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Reminder_Secondary_Email__c === 1 &&
+      this.clientEditObj.Secondary_Email__c === '')) {
+      this.ClientProError[11] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_SECONDARY_EMAIL_USED_PREFERENCE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Marketing_Secondary_Email__c === 1 &&
+      this.clientEditObj.Secondary_Email__c === '')) {
+      this.ClientProError[11] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_SECONDARY_EMAIL_USED_PREFERENCE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Notification_Secondary_Email__c === 1 &&
+      this.clientEditObj.Secondary_Email__c === '')) {
+      this.ClientProError[11] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_SECONDARY_EMAIL_USED_PREFERENCE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.No_Email__c === 0) && (this.hideClientInfo === 0) && (this.clientEditObj.Secondary_Email__c !== '' &&
+      !EMAIL_REGEXP.test(this.clientEditObj.Secondary_Email__c))) {
       this.ClientProError[11] = this.translateService.get('CLIENTS.INVALID_CLIENT_INFO_SECONDARY_EMAIL');
       this.updateTabs(0);
       if (this.clienProfile.id === undefined) {
@@ -1448,7 +1959,55 @@ export class NewClientComponent implements OnInit {
       } else {
         window.scrollTo(0, 600);
       }
-    } else if (this.clientEditObj.Birthdate === '' && this.clientCardBirthDate === true) {
+    } else if (this.clientEditObj.MailingStreet === '' && this.clientCardMailingAddress === true && this.hideClientInfo === 0) {
+      this.ClientProError[16] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_ADDRESS');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.MailingPostalCode === '' && this.clientCardMailingAddress === true && this.hideClientInfo === 0) {
+      this.ClientProError[0] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_ZIP');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.MailingCountry === '' && this.clientCardMailingAddress === true && this.hideClientInfo === 0) {
+      this.ClientProError[12] = this.translateService.get('SETUPCOMPANY.VALID_NOBLANK_SETUPCOMPANY_COUNTRY_CODE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.MailingState === '' && this.clientCardMailingAddress === true && this.hideClientInfo === 0) {
+      this.ClientProError[1] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_STATE');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.MailingCity === '' && this.clientCardMailingAddress === true && this.hideClientInfo === 0) {
+      this.ClientProError[17] = this.translateService.get('CLIENTS.NOBLANK_CLIENT_INFO_CITY');
+      this.updateTabs(0);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if (this.clientEditObj.Gender__c === '' && this.clientCardGender === true) {
+      this.ClientProError[15] = this.translateService.get('CLIENTS.SELECT_GENDER');
+      this.updateTabs(1);
+      if (this.clienProfile.id === undefined) {
+        window.scrollTo(0, 0);
+      } else {
+        window.scrollTo(0, 600);
+      }
+    } else if ((this.clientEditObj.Birthdate === '' || this.clientEditObj.Birthdate === null) && this.clientCardBirthDate === true) {
       this.ClientProError[15] = this.translateService.get('CLIENTS.SELECT_BIRTH_DATE');
       this.updateTabs(1);
       if (this.clienProfile.id === undefined) {
@@ -1465,6 +2024,8 @@ export class NewClientComponent implements OnInit {
       } else {
         window.scrollTo(0, 600);
       }
+    } else if (this.rewardCalError()) {
+      this.rewardCalError();
     } else {
       this.clientObj = {
         // client profile data
@@ -1477,8 +2038,8 @@ export class NewClientComponent implements OnInit {
         'clientInfoPostalCode': this.clientEditObj.MailingPostalCode,
         'clientInfoMailingCity': this.clientEditObj.MailingCity,
         'clientInfoMailingState': this.clientEditObj.MailingState,
-        'clientInfoPrimaryPhone': this.clientEditObj.Phone,
-        'clientInfoMobilePhone': this.clientEditObj.MobilePhone,
+        'clientInfoPrimaryPhone': this.clientEditObj.Phone !== '' ? this.primaryCountryCode + '-' + this.clientEditObj.Phone : '',
+        'clientInfoMobilePhone': this.clientEditObj.MobilePhone !== '' ? this.mobileCountryCode + '-' + this.clientEditObj.MobilePhone : '',
         'homePhone': this.clientEditObj.HomePhone,
         'clientInfoPrimaryMail': this.clientEditObj.Email,
         'clientInfoSecondaryEmail': this.clientEditObj.Secondary_Email__c,
@@ -1509,7 +2070,7 @@ export class NewClientComponent implements OnInit {
         'reminderMobilePhone': this.clientEditObj.Reminder_Mobile_Phone__c,
         'reminderPrimaryEmail': this.clientEditObj.Reminder_Primary_Email__c,
         'reminderSecondaryEmail': this.clientEditObj.Reminder_Secondary_Email__c,
-        'mobileCarrierName': this.clientEditObj.Mobile_Carrier__c,
+        // 'mobileCarrierName': this.clientEditObj.Mobile_Carrier__c,
         'notes': this.clientEditObj.Notes__c,
 
         // Appt data
@@ -1521,8 +2082,8 @@ export class NewClientComponent implements OnInit {
         'otherReason': this.clientEditObj.Booking_Restriction_Note__c,
         'apptNotes': this.apptNotes,
         'bookingFrequency': this.clientEditObj.Booking_Frequency__c,
-        'allowOnlineBooking': this.clientEditObj.Allow_Online_Booking__c,
-        'hasStandingAppt': this.hasStandingAppt,
+        'allowOnlineBooking': this.clientEditObj.Allow_Online_Booking__c === true || this.clientEditObj.Allow_Online_Booking__c === 1 ? 1 : 0,
+        // 'hasStandingAppt': this.hasStandingAppt,
         'pin': this.pin,
         'restrictionType': this.AppointmentsTab.restrictionsType,
 
@@ -1538,9 +2099,21 @@ export class NewClientComponent implements OnInit {
         'tokenPresent': this.clientEditObj.Token_Present__c,
         'clientMemberShipsData': this.clientMemberShipsData,
         'ApptServiceData': this.apptSerList,
-        'type': this.actionmethod
+        'type': this.actionmethod,
+        'CurrentBalance': this.clientEditObj.Current_Balance__c,
+        'startingBalDis': this.StartingBalanceDisable === false ? this.clientEditObj.Starting_Balance__c : 0,
+        // 'refRwds': this.refRwds
       };
-      this.leftProfileUpdate(this.clientEditObj);
+
+      // check already a client record with that Email and PIN combination.
+      if (this.AppointmentsTab.pin !== this.pin) {
+        this.clientObj.checkPin = this.pin;
+        this.clientObj.checkEmail = this.clientEditObj.Email;
+      }
+      if (this.clientEditObj.Email !== this.clienProfile.email) {
+        this.clientObj.checkEmail = this.clientEditObj.Email;
+        this.clientObj.checkPin = this.pin;
+      }
       for (const key in this.clientObj) {
         if (this.clientObj[key] === 'null' || this.clientObj[key] === null || this.clientObj[key] === 'undefined'
           || this.clientObj[key] === undefined || this.clientObj[key] === 'null-null-null') {
@@ -1554,8 +2127,13 @@ export class NewClientComponent implements OnInit {
         data => {
           const clientInfoDetails = data['result'];
           this.newClientId = data['result'].id;
+          this.leftProfileUpdate(this.clientEditObj);
           this.clear();
+          this.getClientRewards(this.clienProfile.id);
           this.displayddl = 'inline';
+          this.ClientProError[18] = '';
+          this.AppointmentsTab.pin = this.pin;
+          this.clienProfile.email = this.clientEditObj.Email;
           this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_EDIT_SUCCESS');
           if (!isNullOrUndefined(this.bookingUrl)) {
             if (this.action = 'findappt' && this.AppointmentsTab.restrictionsType === 'Do Not Book') {
@@ -1579,6 +2157,11 @@ export class NewClientComponent implements OnInit {
             if (this.newClientPictureFile) {
               this.removePic();
             }
+            if (this.clientEditObj.Starting_Balance__c === 0 || this.clientEditObj.Starting_Balance__c === '') {
+              this.StartingBalanceDisable = false;
+            } else {
+              this.StartingBalanceDisable = true;
+            }
             // this.router.navigate(['/client']);
             if (this.redirectTokenPage === true && this.newClientId !== undefined) {
               this.router.navigate(['/client/edit/' + this.newClientId]).then(() => {
@@ -1592,8 +2175,13 @@ export class NewClientComponent implements OnInit {
               this.router.navigate(['/appointment/bookstandingappt/' + this.newClientId]).then(() => {
               });
             } else if (this.router.url === '/client/quick/add?actionMethod=checkout') {
-              this.router.navigate(['/checkout/' + data['result'].apptId]).then(() => {
-              });
+              this.router.navigate(['/checkout/' + data['result'].apptId]);  // new client case
+            } else if (this.actionmethod === 'checkout') {
+              this.router.navigate(['/checkout/' + this.actionApptId]); // edit client case
+            } else if (this.actionmethod === 'checkoutList') {
+              this.router.navigate(['/checkout']);
+            } else if (this.actionmethod === 'appointmentdetail') {
+              this.router.navigate(['/appointmentdetail/' + this.clienProfile.id + '/' + this.actionApptId]);
             }
             // if (this.searchKeyValue === undefined && this.router.url === '/client/add') {
             //   this.searchKeyValue = '';
@@ -1607,11 +2195,9 @@ export class NewClientComponent implements OnInit {
             }
           }
 
-          if (this.saveAndBookButt) {
+          if (this.saveAndBookButt === bol) {
             if (this.newClientId === undefined) {
-              this.router.navigate(['/client/edit/' + this.clienProfile.id]).then(() => {
-                this.router.navigate(['/appointment/book/' + this.clienProfile.id]);
-              });
+              this.router.navigate(['/appointment/book/' + this.clienProfile.id]);
             } else {
               this.router.navigate(['/client/edit/' + this.newClientId]).then(() => {
                 this.router.navigate(['/appointment/book/' + this.newClientId]);
@@ -1626,6 +2212,14 @@ export class NewClientComponent implements OnInit {
               this.ClientProError[10] = this.translateService.get('CLIENTS.DUPLICATE_MEMBERSHIP_ID');
               this.updateTabs(7);
               window.scrollTo(0, 600);
+              break;
+            case '2088':
+              this.ClientProError[18] = this.translateService.get('CLIENTS.DUPLICATE_CLIENT');
+              this.updateTabs(0);
+              break;
+            case '2092':
+              this.ClientProError[18] = this.translateService.get(JSON.parse(error['_body']).message);
+              this.updateTabs(0);
               break;
           }
           if (statuscode === '2085' || statuscode === '2071') {
@@ -1643,6 +2237,7 @@ export class NewClientComponent implements OnInit {
       data => {
         const saveNoteResult = data['result'];
         this.serviceNotesModal.hide();
+        this.PreviousServiceNote = '';
         this.getServiceLog(this.clienProfile.id);
         this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_SERVICE_NOTES_SUCCESS');
         this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
@@ -1671,7 +2266,9 @@ export class NewClientComponent implements OnInit {
     this.filterlookupClient = [];
     this.searchLookupKeyValue = '';
     this.lookupModal.hide();
-    if (lookupType === 'responsible-party') {
+    if (lookupType === 'merge') {
+      this.router.navigate(['/client/merge/' + this.clienProfile.id + '/' + user.Id]).then(() => { });
+    } else if (lookupType === 'responsible-party') {
       this.clientEditObj.ResponsibleClient = user.FirstName + ' ' + user.LastName;
       this.clientEditObj.ResponsibleClientPic = user.Client_Pic__c;
       this.clientEditObj.Responsible_Party__c = user.Id;
@@ -1681,14 +2278,41 @@ export class NewClientComponent implements OnInit {
       this.clientEditObj.Referred_By__c = user.Id;
       this.clientEditObj.referedDate = new Date();
     }
-
-
+    if (this.refRwds && this.refRwds.length > 0) {
+      this.newClientService.getClientRewardsData(user.Id).subscribe(
+        data => {
+          const rwdData = data['result'];
+          if (rwdData && rwdData.length > 0) {
+            for (let i = 0; i < rwdData.length; i++) {
+              for (let j = 0; j < this.refRwds.length; j++) {
+                if (rwdData[i]['Reward__c'] === this.refRwds[j]['Reward__c']) {
+                  // this.refRwds[j]['type'] = 'static';
+                  this.refRwds[j]['Id'] = rwdData[i]['Id'];
+                  this.refRwds[j]['type'] = 'updateRef';
+                }
+              }
+            }
+          }
+          this.refRwds = this.refRwds.map((obj) => {
+            obj.clientId = this.clienProfile.id; obj.refClient = user.Id; obj.action = 'ref';
+            if (!obj.type) { obj.type = 'static'; }
+            return obj;
+          });
+          this.clientRewardData = this.clientRewardData.concat(this.refRwds);
+          this.refRwds = [];
+        });
+    }
   }
 
   openLookupModal(lookupType) {
-    this.lookUpType = lookupType;
-    this.lookupModal.show();
-    this.lookUpSearchData = [];
+    if (this.clienProfile.id) {
+      this.lookUpType = lookupType;
+      this.lookupModal.show();
+      this.lookUpSearchData = [];
+      this.noResult = '';
+    } else {
+      this.toastr.warning('Client Not Yet Created', null, { timeOut: 1500 });
+    }
   }
   lookupCloseModal() {
     this.lookUpSearchData = [];
@@ -1724,77 +2348,10 @@ export class NewClientComponent implements OnInit {
       }
     }
     this.clientObj = {
-      // client profile data
-      'clientInfoActive': this.clientEditObj.Active__c,
-      'clientInfoFirstName': this.clientEditObj.FirstName,
-      'clientInfoMiddleName': this.clientEditObj.MiddleName,
-      'clientInfoLastName': this.clientEditObj.LastName,
-      'clientInfoMailingStreet': this.clientEditObj.MailingStreet,
-      'clientInfoMailingCountry': this.clientEditObj.MailingCountry,
-      'clientInfoPostalCode': this.clientEditObj.MailingPostalCode,
-      'clientInfoMailingCity': this.clientEditObj.MailingCity,
-      'clientInfoMailingState': this.clientEditObj.MailingState,
-      'clientInfoPrimaryPhone': this.clientEditObj.Phone,
-      'clientInfoMobilePhone': this.clientEditObj.MobilePhone,
-      'clientInfoPrimaryMail': this.clientEditObj.Email,
-      'clientInfoSecondaryEmail': this.clientEditObj.Secondary_Email__c,
-      'clientInfoEmergName': this.clientEditObj.Emergency_Name__c,
-      'clientInfoEmergPrimaryPhone': this.clientEditObj.Emergency_Primary_Phone__c,
-      'clientInfoEmergSecondaryPhone': this.clientEditObj.Emergency_Secondary_Phone__c,
-      'homePhone': this.clientEditObj.HomePhone,
-      'clientInfoNoEmail': this.clientEditObj.No_Email__c,
-      'responsibleParty': this.clientEditObj.Responsible_Party__c,
-      'gender': this.clientEditObj.Gender__c,
-      'birthDay': new Date(this.clientEditObj.Birthdate).getDate(),
-      'birthMonth': new Date(this.clientEditObj.Birthdate).getMonth() + 1,
-      'occupationvalue': this.clientEditObj.Title,
-      'birthYear': new Date(this.clientEditObj.Birthdate).getFullYear(),
-      'selectedFlags': this.clientEditObj.Client_Flag__c,
-      'referredBy': this.clientEditObj.Referred_By__c,
-      'clientPicture': this.clientPicture,
-      'ReferedAFriendProspect': this.clientEditObj.Refer_A_Friend_Prospect__c,
-      'referedOnDate': this.commonservice.getDBDatTmStr(this.clientEditObj.referedDate),
-      'marketingOptOut': this.clientEditObj.Marketing_Opt_Out__c,
-      'marketingMobilePhone': this.clientEditObj.Marketing_Mobile_Phone__c,
-      'marketingPrimaryEmail': this.clientEditObj.Marketing_Primary_Email__c,
-      'marketingSecondaryEmail': this.clientEditObj.Marketing_Secondary_Email__c,
-      'notificationMobilePhone': this.clientEditObj.Notification_Mobile_Phone__c,
-      'notificationOptOut': this.clientEditObj.Notification_Opt_Out__c,
-      'notificationPrimaryEmail': this.clientEditObj.Notification_Primary_Email__c,
-      'notificationSecondaryEmail': this.clientEditObj.Notification_Secondary_Email__c,
-      'reminderOptOut': this.clientEditObj.Reminder_Opt_Out__c,
-      'reminderMobilePhone': this.clientEditObj.Reminder_Mobile_Phone__c,
-      'reminderPrimaryEmail': this.clientEditObj.Reminder_Primary_Email__c,
-      'reminderSecondaryEmail': this.clientEditObj.Reminder_Secondary_Email__c,
-      'mobileCarrierName': this.clientEditObj.Mobile_Carrier__c,
-      'notes': this.clientEditObj.Notes__c,
-
-      // Appt data
-      'noEmailAppt': this.noEmailAppt,
-      'accoutChargeBalance': this.accoutChargeBalance,
-      'depositRequired': this.depositRequired,
-      'persistanceNoShow': this.persistanceNoShow,
-      'other': this.other,
-      'otherReason': this.clientEditObj.Booking_Restriction_Note__c,
-      'apptNotes': this.apptNotes,
-      'bookingFrequency': this.clientEditObj.Booking_Frequency__c,
-      'allowOnlineBooking': this.clientEditObj.Allow_Online_Booking__c,
-      'hasStandingAppt': this.hasStandingAppt,
-      'pin': this.pin,
-      'restrictionType': this.AppointmentsTab.restrictionsType,
-
-      // Accounts
-      'activeRewards': this.clientEditObj.Active_Rewards__c,
-      'isNewClient': false,
-      'startingBalance': this.clientEditObj.Starting_Balance__c,
-      'clientMemberShipId': this.clientEditObj.Membership_ID__c,
-      'clientRewardsData': this.clientRewardData,
       'creditCardToken': 'token deleted',
       'tokenExpirationDate': '',
       'PaymentType': '',
       'tokenPresent': 0,
-      'clientMemberShipsData': this.clientMemberShipsData,
-      'ApptServiceData': this.apptSerList
     };
 
     for (const key in this.clientObj) {
@@ -1803,9 +2360,11 @@ export class NewClientComponent implements OnInit {
         this.clientObj[key] = '';
       }
     }
-    this.newClientService.saveClient(this.clienProfile.id, this.clientObj, this.clientPictureFile).subscribe(
+    this.newClientService.updatetokenClient(this.clienProfile.id, this.clientObj).subscribe(
       data => {
         const clientInfoDetails = data['result'];
+        this.CliData(this.paramsId);
+        this.updateTabs(0);
       },
       error => {
         const errStatus = JSON.parse(error['_body'])['status'];
@@ -1833,9 +2392,7 @@ export class NewClientComponent implements OnInit {
   goToFullClientCard() {
     this.isEdit = true;
     this.clientEditObj.Active__c = 1;
-    this.clientEditObj.MailingCountry = 'United States';
-    this.getCountry('United States');
-    this.clientEditObj.MailingState = '';
+    // this.clientEditObj.MailingState = '';
     this.getClientFlags();
     this.Cli_No_Email(false);
     this.noEmailAppt = 0;
@@ -1844,7 +2401,7 @@ export class NewClientComponent implements OnInit {
     this.persistanceNoShow = 0;
     this.other = 0;
     this.booking_restrictions('None');
-    this.hasStandingAppt = 0;
+    // this.hasStandingAppt = 0;
     this.apptNotes = '';
     this.clientServicesData = [];
     this.clientCommunicationList = [];
@@ -1864,7 +2421,7 @@ export class NewClientComponent implements OnInit {
 
   createToken() {
     if (this.clienProfile.id === undefined) {
-      this.commonSave();
+      this.commonSave(false);
       this.redirectTokenPage = true;
     } else {
       this.router.navigate(['/client/edit/' + this.clienProfile.id]).then(() => {
@@ -1881,18 +2438,30 @@ export class NewClientComponent implements OnInit {
       }
     } else if (this.router.url === '/client/quick/add?actionMethod=findAppt' || this.router.url === '/client/quick/add?actionMethod=bookStanding') {
       this.router.navigate(['/appointments']);
+    } else if (this.router.url === '/client/quick/add?actionMethod=checkout') {
+      this.router.navigate(['/checkout/newticket']);
+    } else if (this.actionmethod === 'checkout') {
+      this.router.navigate(['/checkout/' + this.actionApptId]);
+    } else if (this.actionmethod === 'checkoutList') {
+      this.router.navigate(['/checkout']);
+    } else if (this.actionmethod === 'appointmentdetail') {
+      this.router.navigate(['/appointmentdetail/' + this.clienProfile.id + '/' + this.actionApptId]);
     } else {
       this.isEdit = false;
       this.AddNewClient = false;
       this.leftProfile = false;
-      this.searchKeyValue = '';
-      this.filterClient = [];
+      // this.searchKeyValue = '';
+      // this.filterClient = [];
       this.router.navigate(['/client']);
     }
     this.clear();
-    this.removePic();
+    if (this.newclientPictureFileView) {
+      this.removePic();
+    }
+    window.scrollTo(0, 0);
   }
   clear() {
+    this.rewardCalErrorMsg = [];
     this.ClientProError[0] = '';
     this.ClientProError[1] = '';
     this.ClientProError[2] = '';
@@ -1910,6 +2479,7 @@ export class NewClientComponent implements OnInit {
     this.ClientProError[14] = '';
     this.ClientProError[15] = '';
     this.ClientProError[16] = '';
+
   }
   QuickAdd() {
     this.isEdit = false;
@@ -1918,11 +2488,11 @@ export class NewClientComponent implements OnInit {
   }
   saveAndBook() {
     this.saveAndBookButt = true;
-    this.commonSave();
+    this.commonSave(true);
   }
   newClientSaveAndBook() {
     this.saveAndBookButt = true;
-    this.AddClient();
+    this.AddClient(true);
   }
   selectFile(fileEvent) {
     this.newClientPictureFile = fileEvent.target.files[0];
@@ -2008,19 +2578,22 @@ export class NewClientComponent implements OnInit {
       }
     );
   }
-  navigateTicketDetail(cId) {
-    this.router.navigate(['/client']).then(() => {
-      this.router.navigate(['/client/edit/' + this.clienProfile.id]).then(() => {
-        this.router.navigate(['/completedticketdetailsview/' + cId]);
-      });
-    });
+  navigateTicketDetail(ser) {
+    if (ser.Status__c.toLowerCase() === 'checked in') {
+      this.router.navigate(['/checkout/' + ser.apptId]);
+    } else {
+      this.router.navigate(['/completedticketdetailsview/' + ser.apptId]);
+    }
+  }
+  navigateTicketDetailInProduct(ser) {
+    if (ser.Status__c.toLowerCase() === 'checked in') {
+      this.router.navigate(['/checkout/' + ser.Appt_Ticket__c]);
+    } else {
+      this.router.navigate(['/completedticketdetailsview/' + ser.Appt_Ticket__c]);
+    }
   }
   gotoApptDetail(details) {
-    this.router.navigate(['/client']).then(() => {
-      this.router.navigate(['/client/edit/' + this.clienProfile.id]).then(() => {
-        this.router.navigate(['/appointmentdetail/' + details.Client__c + '/' + details.Appt_Ticket__c], { queryParams: { actionMethod: 'AppointmentDetail' } });
-      });
-    });
+    this.router.navigate(['/appointmentdetail/' + details.Client__c + '/' + details.Appt_Ticket__c], { queryParams: { actionMethod: 'AppointmentDetail' } });
   }
   clientCardFeilds() {
     this.newClientService.getClientFields().subscribe(
@@ -2070,29 +2643,103 @@ export class NewClientComponent implements OnInit {
     this.noProPic = true;
     this.avProPic = false;
   }
-  genderBtn(gender) {
-    if (gender === 'Female') {
-      this.genderSeleUnselFemale = !this.genderSeleUnselFemale;
-      if (this.genderSeleUnselFemale) {
-        this.clientEditObj.Gender__c = gender;
-      } else {
-        this.clientEditObj.Gender__c = 'Unspecified';
-      }
-      this.genderSeleUnselMale = false;
-    } else {
-      this.genderSeleUnselMale = !this.genderSeleUnselMale;
-      if (this.genderSeleUnselMale) {
-        this.clientEditObj.Gender__c = gender;
-      } else {
-        this.clientEditObj.Gender__c = 'Unspecified';
-      }
-      this.genderSeleUnselFemale = false;
-    }
-  }
+  // genderBtn(gender) {
+  //   if (gender === 'Female') {
+  //     this.genderSeleUnselFemale = !this.genderSeleUnselFemale;
+  //     if (this.genderSeleUnselFemale) {
+  //       this.clientEditObj.Gender__c = gender;
+  //     } else {
+  //       this.clientEditObj.Gender__c = 'Unspecified';
+  //     }
+  //     this.genderSeleUnselMale = false;
+  //   } else {
+  //     this.genderSeleUnselMale = !this.genderSeleUnselMale;
+  //     if (this.genderSeleUnselMale) {
+  //       this.clientEditObj.Gender__c = gender;
+  //     } else {
+  //       this.clientEditObj.Gender__c = 'Unspecified';
+  //     }
+  //     this.genderSeleUnselFemale = false;
+  //   }
+  // }
 
   searchLookupclient(eve) {
     if (eve === '') {
       this.filterlookupClient = [];
+      this.noResult = '';
     }
+  }
+  deleteClient(id, name) {
+    this.newClientService.deleteClient(id, name).subscribe(data => {
+      const clientDelete = data['result'];
+      this.toastr.success('Client Record Deleted Successfully', null, { timeOut: 1500 });
+      this.router.navigate(['/client/add']).then(() => {
+        this.router.navigate(['/client']);
+      });
+    },
+      error => {
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
+          }
+        }
+      });
+  }
+  referedByNavigate(id) {
+    this.location.replaceState('/client/edit/' + id);
+    this.CliData(id);
+    this.updateTabs(0);
+    window.scrollTo(0, 0);
+  }
+  sortDatesDesc(JSONAry, JSONAttrb) {
+    const leng = JSONAry.length;
+    for (let i = 0; i < leng; i++) {
+      for (let j = i + 1; j < leng; j++) {
+        if (this.commonservice.getDateTmFrmDBDateStr(JSONAry[i][JSONAttrb]) <
+          this.commonservice.getDateTmFrmDBDateStr(JSONAry[j][JSONAttrb])) {
+          const tempObj = JSONAry[i];
+          JSONAry[i] = JSONAry[j];
+          JSONAry[j] = tempObj;
+        }
+      }
+    }
+    return JSONAry;
+  }
+  getLocation() {
+    if (this.clientEditObj.MailingPostalCode.length > 4) {
+      this.http.get('https://ziptasticapi.com/' + this.clientEditObj.MailingPostalCode).subscribe(
+        result => {
+          if (result['error']) {
+            const toastermessage: any = this.translateService.get('SETUPCOMPANY.ZIP_CODE_NOT_FOUND');
+            this.toastr.error(toastermessage.value, null, { timeOut: 1500 });
+          } else {
+            if (result['country'] === 'US') {
+              this.clientEditObj.MailingCountry = 'United States';
+              this.getCountry(this.clientEditObj.MailingCountry);
+              config.states.forEach(state => {
+                if (state.abbrev === result['state']) {
+                  this.clientEditObj.MailingState = state.name;
+                }
+              });
+            }
+            const cityArray = result['city'].split(' ');
+            for (let i = 0; i < cityArray.length; i++) {
+              if (i === 0) {
+                this.clientEditObj.MailingCity = cityArray[i].charAt(0).toUpperCase() + cityArray[i].slice(1).toLowerCase() + ' ';
+              } else {
+                this.clientEditObj.MailingCity += cityArray[i].charAt(0).toUpperCase() + cityArray[i].slice(1).toLowerCase() + ' ';
+              }
+            }
+          }
+        },
+        error => {
+        }
+      );
+    }
+  }
+  verifyNumber() {
+    this.verifyNumberPopup.show();
   }
 }

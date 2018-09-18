@@ -82,6 +82,8 @@ export class OnlineBookComponent implements OnInit {
   companyBookingRestriction: any;
   windowStartOption: any;
   windowEndOption: any;
+  showTotalDuration: any;
+  showTotalPrice: any;
   Id: any;
   /// payments
   constructor(
@@ -138,11 +140,14 @@ export class OnlineBookComponent implements OnInit {
     this.onlineBookService.getOnlineBookingData().subscribe(res => {
       this.windowStartOption = res.result.windowStartOption;
       this.windowEndOption = res.result.windowEndOption;
+      this.showTotalDuration = res.result.showTotalDuration;
+      this.showTotalPrice = res.result.showTotalPrice;
       if (this.windowStartOption === 'Days') {
         this.minDate.setDate(this.minDate.getDate() + parseInt(res.result.windowStartNumber, 10));
       } else if (this.windowStartOption === 'Hours') {
         this.minDate.setDate(this.minDate.getDate() + parseInt(res.result.windowStartNumber, 10) / 24);
       }
+      this.bsValue = this.minDate;
       if (this.windowEndOption === 'Days') {
         this.maxDate.setDate(this.maxDate.getDate() + parseInt(res.result.windowEndNumber, 10));
       } else if (this.windowEndOption === 'Hours') {
@@ -528,6 +533,11 @@ export class OnlineBookComponent implements OnInit {
     return this.commonService.calculatePercentage(this.serviceTax, taxableObj['Net_Price__c'], taxableObj['Taxable__c']);
   }
   servicesListOnChange(serviceId, i) {
+    let temp = [];
+    temp = this.serviceDetailsList[i].filter((obj) => obj.Id === serviceId);
+    if (temp && temp.length > 0) {
+      this.rows[i]['desc'] = temp[0]['Description__c'];
+    }
     this.apptSearchData = [];
     this.workerList[i] = [];
     this.rows[i].workerName = '';
@@ -644,38 +654,50 @@ export class OnlineBookComponent implements OnInit {
       window.scrollTo(0, 0);
     } else {
       this.selectedIndex = undefined;
-      const searchDate = this.bsValue.getFullYear()
-        + '-' + ('0' + (this.bsValue.getMonth() + 1)).slice(-2)
-        + '-' + ('0' + this.bsValue.getDate()).slice(-2);
-      const workerIds = [];
-      const durations = [];
-      for (let i = 0; i < this.rows.length; i++) {
-        workerIds.push(this.rows[i].workerName);
-        durations.push(this.rows[i].Duration__c);
+      if (this.bsValue >= this.minDate && this.bsValue <= this.maxDate) {
+        const searchDate = this.bsValue.getFullYear()
+          + '-' + ('0' + (this.bsValue.getMonth() + 1)).slice(-2)
+          + '-' + ('0' + this.bsValue.getDate()).slice(-2);
+        this.selectDate(searchDate);
+      } else if (this.bsValue <= this.minDate) {
+        const searchDate = this.minDate.getFullYear()
+          + '-' + ('0' + (this.minDate.getMonth() + 1)).slice(-2)
+          + '-' + ('0' + this.minDate.getDate()).slice(-2);
+        this.selectDate(searchDate);
+      } else {
+        this.apptSearchData = [];
       }
-      const dataObj = {
-        'date': searchDate,
-        'id': workerIds,
-        'dateformat': 'MM/DD/YYYY hh:mm:ss a',
-        'durations': durations,
-        'mindate': this.commonService.getDBDatTmStr(new Date()),
-        'Booked_Online__c': 1
-      };
-      this.onlineBookService.searchForAppts(dataObj)
-        .subscribe(data => {
-          this.apptSearchData = data['result'];
-        },
-          error => {
-            const errStatus = JSON.parse(error['_body'])['status'];
-            if (errStatus === '2085' || errStatus === '2071') {
-              if (this.router.url !== '/') {
-                localStorage.setItem('page', this.router.url);
-                this.router.navigate(['clientlogin/' + localStorage.getItem('param')]);
-              }
-            }
-          });
     }
 
+  }
+  selectDate(searchDate) {
+    const workerIds = [];
+    const durations = [];
+    for (let i = 0; i < this.rows.length; i++) {
+      workerIds.push(this.rows[i].workerName);
+      durations.push(this.rows[i].Duration__c);
+    }
+    const dataObj = {
+      'date': searchDate,
+      'id': workerIds,
+      'dateformat': 'MM/DD/YYYY hh:mm:ss a',
+      'durations': durations,
+      'mindate': this.commonService.getDBDatTmStr(new Date()),
+      'Booked_Online__c': 1
+    };
+    this.onlineBookService.searchForAppts(dataObj)
+      .subscribe(data => {
+        this.apptSearchData = data['result'];
+      },
+        error => {
+          const errStatus = JSON.parse(error['_body'])['status'];
+          if (errStatus === '2085' || errStatus === '2071') {
+            if (this.router.url !== '/') {
+              localStorage.setItem('page', this.router.url);
+              this.router.navigate(['clientlogin/' + localStorage.getItem('param')]);
+            }
+          }
+        });
   }
   checkForServices(services: Array<any>, property1, property2, property3): boolean {
     const properties = [property1, property2, property3];
@@ -736,6 +758,26 @@ export class OnlineBookComponent implements OnInit {
     this.onlineBookService.appointmentBooking(this.appointBookingData).subscribe(data => {
       const apptStatus = data['result'];
       this.Id = apptStatus.apptId;
+      this.onlineBookService.sendEmailToOwner(this.Id).subscribe(data1 => {
+        const dataStatus = data1['result'];
+      }, error1 => {
+        const status = JSON.parse(error1['status']);
+        const statuscode = JSON.parse(error1['_body']).status;
+        switch (JSON.parse(error1['_body']).status) {
+          case '2033':
+            break;
+        }
+        if (statuscode === '2085' || statuscode === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['clientlogin/' + localStorage.getItem('param')]);
+          }
+        } else if (statuscode === '2091') {
+          const bookingError = JSON.parse(error1['_body']).message;
+          // Warning Don't Delete This alert Code//
+          alert(bookingError);
+        }
+      });
       if (!this.paymentDetails) {
         if (this.Id) {
           this.router.navigate(['onlinebook/success'], { queryParams: { apptId: this.Id } });
@@ -759,6 +801,7 @@ export class OnlineBookComponent implements OnInit {
           }
         } else if (statuscode === '2091') {
           const bookingError = JSON.parse(error['_body']).message;
+          // Warning Don't Delete This alert Code//
           alert(bookingError);
         }
       });
@@ -1056,7 +1099,9 @@ export class OnlineBookComponent implements OnInit {
       // 'giftPurchaseObj': this.appointBookingData
       'isDepositRequired': (servesData.filter((obj) => obj.Deposit_Required__c && obj.Deposit_Required__c === 1).length > 0) ? true : false,
       'apptId1': this.Id,
-      'isUpdateAppt1': true
+      'isUpdateAppt1': true,
+      'Online__c': 1,
+      'clientId': this.clientId
     };
     this.onlineBookService.addToPaymentsTicket(paymentObj)
       .subscribe(data1 => {
@@ -1088,6 +1133,7 @@ export class OnlineBookComponent implements OnInit {
   getDoNotBook(clientId) {
     this.onlineBookService.getClientData(clientId).subscribe(data => {
       this.companyBookingRestriction = data.result.results[0].Booking_Restriction_Type__c;
+      this.clientName = data.result.results[0].FirstName + ' ' + data.result.results[0].LastName;
       if (this.companyBookingRestriction === 'Do Not Book') {
         this.serviceNotesModal.show();
         this.onlineBookService.getOnlineBookingData().subscribe(res => {

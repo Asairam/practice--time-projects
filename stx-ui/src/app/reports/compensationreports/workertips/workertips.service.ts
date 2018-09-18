@@ -14,9 +14,14 @@ export class WorkerTipsService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
-  getEveryTypes() {
-    return this.http.get(this.staticJsonFilesEndPoint + 'common.json')
-    .map(this.extractData);
+  getUserList() {
+    return this.http.get(this.apiEndPoint + '/api/setupworkers/setupworkerdetail')
+      .map(this.extractData);
+  }
+  getWorkerTipsRecords(obj) {
+    return this.http.post(this.apiEndPoint + '/api/reports/workertipsreport', obj)
+      .map(this.extractData);
+
   }
   /*To extract json data*/
   private extractData(res: Response) {

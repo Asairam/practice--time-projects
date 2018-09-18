@@ -542,16 +542,19 @@
     "browserObject": {
         "CreditCardDevice": [
             {
+                "value": "Clover"
+            },
+            {
                 "value": "MagTek"
             },
             {
-                "value":  "Walker"
+                "value": "Walker"
             },
             {
                 "value": "Walker BT"
             },
             {
-                "value":  "Nomad"
+                "value": "Nomad"
             }
         ],
         "CashDrawer": [
@@ -1329,6 +1332,56 @@
             "option": "December"
         }
     ],
+    "workerGoalMonths": [
+        {
+            "value": "01",
+            "option": "January"
+        },
+        {
+            "value": "02",
+            "option": "February"
+        },
+        {
+            "value": "03",
+            "option": "March"
+        },
+        {
+            "value": "04",
+            "option": "April"
+        },
+        {
+            "value": "05",
+            "option": "May"
+        },
+        {
+            "value": "06",
+            "option": "June"
+        },
+        {
+            "value": "07",
+            "option": "July"
+        },
+        {
+            "value": "08",
+            "option": "August"
+        },
+        {
+            "value": "09",
+            "option": "September"
+        },
+        {
+            "value": "10",
+            "option": "October"
+        },
+        {
+            "value": "11",
+            "option": "November"
+        },
+        {
+            "value": "12",
+            "option": "December"
+        }
+    ],
     "CalenderYears": [
         {
             "option": "2018"
@@ -1421,6 +1474,50 @@
         },
         {
             "fields": "Company Primary Phone"
+        },
+        {
+            "fields": "Booked Services"
+        }
+    ],
+    "giftMergeFields": [
+        {
+            "fields": "Client First Name"
+        },
+        {
+            "fields": "Client Last Name"
+        },
+        {
+            "fields": "Client Primary Email"
+        },
+        {
+            "fields": "Client Business Phone"
+        },
+        {
+            "fields": "Appointment Date / Time"
+        },
+        {
+            "fields": "Company Name"
+        },
+        {
+            "fields": "Company Email"
+        },
+        {
+            "fields": "Company Primary Phone"
+        },
+        {
+            "fields": "Gift Number"
+        },
+        {
+            "fields": "Gift Amount"
+        },
+        {
+            "fields": "Gift Issued"
+        },
+        {
+            "fields": "Gift Recipient"
+        },
+        {
+            "fields": "Gift Message"
         },
         {
             "fields": "Booked Services"

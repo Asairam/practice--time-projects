@@ -95,7 +95,7 @@ export class ClientAppointmentsService {
       .map(this.extractData);
   }
   failedDepositeOfNotifications() {
-    return this.http.get(this.staticJsonFilesEndPoint + this.bookingDataUrl)
+    return this.http.get(this.apiEndPoint + '/api/checkout/product/workers/' + 'retailonly')
       .map(this.extractData);
   }
   // online booking methods ends

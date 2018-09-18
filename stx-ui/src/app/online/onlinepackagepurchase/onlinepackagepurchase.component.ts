@@ -140,6 +140,8 @@ export class OnlinePackagePurchaseComponent implements OnInit {
       // 'apptId': this.apptId,
       'pckgDetails': tempPkgListJSON,
       'isDependedPackage': false,
+      'Online__c': 1,
+      isDepositRequired: 1
     });
     const amountToPay = parseFloat(this.amount) + parseFloat(filteredPackage[0]['Tax__c']);
     this.onlinePackagePurchaseService.addToTicket(obj, 'New').subscribe(data => {
@@ -327,7 +329,9 @@ export class OnlinePackagePurchaseComponent implements OnInit {
       'amountToPay': this.amount,
       'approvalCode': approvalCode,
       'refCode': refCode,
-      'clientPckgData': this.clientPckgArray
+      'clientPckgData': this.clientPckgArray,
+      'Online__c': 1,
+      'paymentType': this.cardType
     };
     this.onlinePackagePurchaseService.addToPaymentsTicket(paymentObj)
       .subscribe(data1 => {

@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont" class="setsubcont">
         <div class="container">
             <div class="row">
@@ -57,9 +56,7 @@
                         </div>
                         <div class="col-sm-7">
                             <input type="text" [maxlength]="'30'" class="text-capitalize form-control input-sm" (keypress)="clearErrMsg();" [(ngModel)]="resourceName">
-                            <div class=" text-danger">
-                                {{error | translate }}
-                            </div>
+                            <p class="red">{{error | translate }}</p>
                         </div>
                     </div>
                     <div class="row mt-20 res-mt-15">
@@ -103,22 +100,18 @@
                         <div class="col-sm-7">
                             <input type="text" [maxlength]="'30'" class="text-capitalize form-control input-sm" (keypress)="clearErrMsg();" value="{{updateResourceName}}"
                                 [(ngModel)]="updateResourceName">
-                            <div class=" text-danger">
-                                {{error | translate }}
-                            </div>
+                            <p class="red">{{error | translate }}</p>
                         </div>
                     </div>
                     <div class="row mt-20 res-mt-15">
                         <div class="col-sm-3 text-right res-tleft white">
                             <label>{{'SETUP_RESOURCES.RESOURCE_NUMBER_AVILABLE' | translate}}</label>
                         </div>
-                        <div class="col-sm-7">
                             <div class="col-sm-7">
                                 <select [(ngModel)]="updateNumberAvailable">
                                     <option *ngFor="let number of resoucesNumber;" [ngValue]="number">{{number}}</option>
                                 </select>
                             </div>
-                        </div>
                     </div>
                     <div class="row mt-30 res-mt-15 text-center res-tleft">
                         <div class="col-sm-10">

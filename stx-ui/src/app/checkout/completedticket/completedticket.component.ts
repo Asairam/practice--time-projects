@@ -4,29 +4,29 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { CompletedTicketService } from './completedticket.service';
-import { CheckOutEditTicketService } from '../../checkout/editticket/checkouteditticket.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from 'ng2-translate';
+import { CommonService } from '../../common/common.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { JwtHelper } from 'angular2-jwt';
 @Component({
   selector: 'app-completedticket',
   templateUrl: './completedticket.html',
   styleUrls: ['./completedticket.css'],
-  providers: [CompletedTicketService, CheckOutEditTicketService],
+  providers: [CompletedTicketService, CommonService],
 })
 export class CompletedTicketComponent implements OnInit {
   apptId: any;
-  TicketServiceData: any;
+  TicketServiceData = [];
+  bookApptVal = '';
   ticketPaymentList: any;
   ticketProductsList: any;
   error = '';
-  clientRwrdsData = [];
   rewardsList = [];
-  clientRwdArray = [];
   toastermessage: any;
   apptData = {
     'apdate': '', 'clientName': '', 'visttype': '', 'clientId': '', 'Status__c': '', 'aptName': '', 'cltemail': '',
-    'Name': ''
+    'Name': '', 'isRefund__c': 0
   };
   clientName: any;
   visitType: any;
@@ -46,22 +46,26 @@ export class CompletedTicketComponent implements OnInit {
   serTax = 0;
   prodTax = 0;
   totalTax = 0;
-  CreatedDate: any;
+  CreatedDate = ['', ''];
   emailTemplate = false;
-  LastModifiedDate: any;
+  LastModifiedDate = ['', ''];
   apptName: any;
   clientEmail: any;
   isRebook = false;
+  isBookAppt = false;
   balanceDue = 0.00;
   merchantName = '';
   ticketNumber: any;
+  companyInfo: any;
+  decodedToken: any;
+  packageTax = 0;
   @ViewChild('recieptModal') public recieptModal: ModalDirective;
   constructor(private completedTicketService: CompletedTicketService,
-    private checkOutEditTicketService: CheckOutEditTicketService,
     @Inject('apiEndPoint') public apiEndPoint: string,
     private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
+    private commonService: CommonService,
     private translateService: TranslateService,
     private sanitizer: DomSanitizer) {
     this.route.queryParams.subscribe(params => {
@@ -76,7 +80,19 @@ export class CompletedTicketComponent implements OnInit {
     this.getOthersTicketDetails();
     this.getWorkerTips();
     this.getIncludedTickets(this.apptId);
-    this.getRewards();
+    // this.getClientRewardDatabyApptId(this.apptId);
+    // ---Start of code for Permissions Implementation--- //
+    try {
+      this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+    } catch (error) {
+      this.decodedToken = {};
+    }
+    if (this.decodedToken.data && this.decodedToken.data.permissions) {
+      this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+    } else {
+      this.decodedToken = {};
+    }
+    // ---End of code for permissions Implementation--- //
   }
   /**
    * Method to get appointment details
@@ -92,6 +108,8 @@ export class CompletedTicketComponent implements OnInit {
         this.status = this.apptData.Status__c;
         this.apptName = this.apptData.aptName;
         this.clientEmail = this.apptData.cltemail;
+        const isRefund = this.apptData.isRefund__c;
+        this.getClientRewardDatabyApptId(this.apptId, isRefund);
         if (this.apptId && !this.clientName || this.clientName === '' || this.clientName === null) {
           this.noclientLabel = 'NO CLIENT';
           this.accountBal = 0;
@@ -118,8 +136,10 @@ export class CompletedTicketComponent implements OnInit {
           const date2 = new Date(this.apptData.apdate);
           const today = (date1.getMonth() + 1) + '-' + date1.getDate() + '-' + date1.getFullYear();
           const apptDate1 = (date2.getMonth() + 1) + '-' + date2.getDate() + '-' + date2.getFullYear();
-          if ((this.status === 'Checked In' || this.status === 'Complete') && (apptDate1 === today) && this.clientId !== null && this.clientId !== '') {
-            this.isRebook = true;
+          if ((this.status === 'Checked In' || this.status === 'Complete') && (apptDate1 === today) && this.clientId) {
+            this.isRebook = this.apptData['isNoService__c'] === 0 ? true : false;
+          } else if ((this.status === 'Checked In' || this.status === 'Complete') && (apptDate1 < today) && this.clientId) {
+            this.isBookAppt = this.apptData['isNoService__c'] === 0 ? true : false;
           }
         }
       }
@@ -145,7 +165,11 @@ export class CompletedTicketComponent implements OnInit {
   getTicketServices(apptid) {
     this.completedTicketService.getTicketServicesByApptId(apptid).subscribe(data => {
       this.TicketServiceData = data['result'].ticetServices;
-      this.calCharge();
+      if (this.TicketServiceData && this.TicketServiceData.length > 0) {
+        this.bookApptVal = 'Rebook';
+      } else {
+        this.bookApptVal = 'Book Appt';
+      }
       this.calServRetTax();
     },
       error => {
@@ -193,12 +217,21 @@ export class CompletedTicketComponent implements OnInit {
     this.completedTicketService.getTicketPaymentData(this.apptId)
       .subscribe(data => {
         this.ticketPaymentList = data['result'].paymentList;
-        if (this.ticketPaymentList.balanceDue) {
+        if (data['result'] && data['result'].balanceDue.length > 0) {
           this.balanceDue = data['result'].balanceDue[0].balancedue;
         }
         if (this.ticketPaymentList && this.ticketPaymentList.length > 0) {
-          this.CreatedDate = this.ticketPaymentList[0].CreatedDate;
-          this.LastModifiedDate = this.ticketPaymentList[0].LastModifiedDate;
+          this.CreatedDate = this.commonService.getUsrDtStrFrmDBStr(data['result'].balanceDue[0].CreatedDate);
+          // this.CreatedDate = data['result'].balanceDue[0].CreatedDate;
+          this.LastModifiedDate = this.commonService.getUsrDtStrFrmDBStr(data['result'].balanceDue[0].LastModifiedDate);
+        } else {
+          this.ticketPaymentList = [];
+          this.CreatedDate = this.commonService.getUsrDtStrFrmDBStr(data['result'].balanceDue[0].CreatedDate);
+          this.LastModifiedDate = this.commonService.getUsrDtStrFrmDBStr(data['result'].balanceDue[0].LastModifiedDate);
+          this.ticketPaymentList = data['result'].balanceDue.map((obj) => {
+            obj['paymentTypeName'] = 'Ticket # ' + obj['Name']; obj['Amount_Paid__c'] = -obj['inclAmount'];
+            obj['type'] = 'included'; return obj;
+          });
         }
         this.calCharge();
       },
@@ -254,6 +287,15 @@ export class CompletedTicketComponent implements OnInit {
   getOthersTicketDetails() {
     this.completedTicketService.getOthersTicketList(this.apptId).subscribe(data => {
       this.ticketOthersList = data['result'];
+      this.ticketOthersList = this.ticketOthersList.map((obj) => {
+        if (obj.Transaction_Type__c === 'Package') {
+          obj.packageName = '- ' + obj.packageName;
+          obj.Amount__c = obj.Package_Price__c;
+        } else {
+          obj.packageName = '';
+        }
+        return obj;
+      });
       this.calCharge();
     },
       error => {
@@ -313,7 +355,7 @@ export class CompletedTicketComponent implements OnInit {
     }
     if (this.ticketProductsList && this.ticketProductsList.length > 0) {
       for (let i = 0; i < this.ticketProductsList.length; i++) {
-        this.productTotal += parseFloat(this.ticketProductsList[i].Net_Price__c);
+        this.productTotal += parseFloat(this.ticketProductsList[i].Net_Price__c) * this.ticketProductsList[i].quantity;
       }
     }
     if (this.workerTipsList && this.workerTipsList.length > 0) {
@@ -336,221 +378,69 @@ export class CompletedTicketComponent implements OnInit {
     }
 
   }
-  getRewards() {
-    this.checkOutEditTicketService.getRewardsData().subscribe(
+  /**
+   * apptId method to get getClientRewardDatabyApptId
+   * @param apptId
+   */
+  getClientRewardDatabyApptId(apptId, isRefund) {
+    this.completedTicketService.clientRewardDatabyApptId(apptId).subscribe(
       data => {
-        const tempRwdData = data['result'].filter((obj) => obj.Active__c === 1);
-        this.clientRwrdsData = [];
-        if (tempRwdData && tempRwdData.length > 0) {
-          for (let i = 0; i < tempRwdData.length; i++) {
-            const temp = JSON.parse(tempRwdData[i].Award_Rules__c);
-            const temp2 = JSON.parse(tempRwdData[i].Redeem_Rules__c);
-            let points = 0;
-            let redeemPoints = 0;
-            for (let j = 0; j < temp.length; j++) {
-              points = 0;
-              redeemPoints = 0;
-              points += temp[j]['awardPoints'];
-              this.clientRwrdsData.push({
-                rwdId: tempRwdData[i].Id,
-                rwdName: tempRwdData[i].Name,
-                points: points,
-                item: temp[j].item,
-                // redeemPoints: redeemPoints,
-                redeemJson: temp2
-              });
+        this.rewardsList = data['result'];
+        if (this.rewardsList && this.rewardsList.length > 0) {
+          for (let i = 0; i < this.rewardsList.length; i++) {
+            this.rewardsList[i]['earnedPoints'] = 0;
+            this.rewardsList[i]['usedPoints'] = 0;
+            if (parseInt(isRefund, 10) === 1) {
+              if (this.rewardsList[i]['Points_c'] < 0) {
+                this.rewardsList[i]['earnedPoints'] += parseFloat(this.rewardsList[i]['Points_c']);
+              } else {
+                this.rewardsList[i]['usedPoints'] -= parseFloat(this.rewardsList[i]['Points_c']);
+              }
+            } else if (parseInt(isRefund, 10) === 0) {
+              if (this.rewardsList[i]['Points_c'] > 0) {
+                this.rewardsList[i]['earnedPoints'] += parseFloat(this.rewardsList[i]['Points_c']);
+              } else {
+                this.rewardsList[i]['usedPoints'] -= parseFloat(this.rewardsList[i]['Points_c']);
+              }
             }
           }
         }
-        this.getApptRewards();
       },
       error => {
         const errStatus = JSON.parse(error['_body'])['status'];
         if (errStatus === '2085' || errStatus === '2071') {
-          if (this.router.url !== '/') {
-            localStorage.setItem('page', this.router.url);
-            this.router.navigate(['/']).then(() => { });
-          }
+          this.router.navigate(['/']).then(() => { });
         }
-      }
-    );
+      });
   }
   calServRetTax() {
     this.serTax = 0;
     this.prodTax = 0;
+    this.packageTax = 0;
     this.totalTax = 0;
     if (this.TicketServiceData && this.TicketServiceData.length > 0) {
       for (let i = 0; i < this.TicketServiceData.length; i++) {
-        this.serTax += this.TicketServiceData[i].Service_Tax__c;
+        if (this.TicketServiceData[i]['Taxable__c'] === 1) {
+          this.serTax += +this.TicketServiceData[i].Service_Tax__c;
+        }
       }
     }
     if (this.ticketProductsList && this.ticketProductsList.length > 0) {
       for (let i = 0; i < this.ticketProductsList.length; i++) {
-        this.prodTax += this.ticketProductsList[i].Product_Tax__c;
-      }
-    }
-    this.totalTax = this.serTax + this.prodTax;
-  }
-  getApptRewards() {
-    this.clientRwdArray = [];
-    if ((this.TicketServiceData && this.TicketServiceData.length > 0) && (this.ticketProductsList && this.ticketProductsList.length > 0)) {
-      this.clientRwdArray = this.clientRwrdsData;
-    } else if ((this.TicketServiceData && this.TicketServiceData.length > 0) && (this.ticketProductsList && this.ticketProductsList.length <= 0)) {
-      this.clientRwdArray = this.clientRwrdsData.filter((obj) => obj.item === 'Services');
-    } else if ((this.TicketServiceData && this.TicketServiceData.length <= 0) && (this.ticketProductsList && this.ticketProductsList.length > 0)) {
-      this.clientRwdArray = this.clientRwrdsData.filter((obj) => obj.item === 'Products');
-    }
-    const dataFilter = [];
-    if (this.clientRwdArray && this.clientRwdArray.length > 0) {
-      for (let i = 0; i < this.clientRwdArray.length; i++) {
-        if (this.clientRwdArray[i]['isNew'] === undefined) {
-          this.clientRwdArray[i]['isNew'] = true;
-        }
-        if (this.clientRwdArray[i]['item'] === 'Services') {
-          this.clientRwdArray[i]['points'] = parseFloat(this.clientRwdArray[i]['points']) * ((+this.serviceTotal));
-        }
-        if (this.clientRwdArray[i]['item'] === 'Products') {
-          this.clientRwdArray[i]['points'] = parseFloat(this.clientRwdArray[i]['points']) * ((+this.productTotal));
-        }
-        this.clientRwdArray[i]['used'] = 0;
-        if (i === 0) {
-          dataFilter.push(this.clientRwdArray[i]);
-        } else {
-          const index = dataFilter.findIndex((data) => data.rwdId === this.clientRwdArray[i]['rwdId']);
-          if (index !== -1) {
-            dataFilter[index]['points'] = +dataFilter[index]['points'] + this.clientRwdArray[i]['points'];
-          } else {
-            dataFilter.push(this.clientRwdArray[i]);
-          }
-        }
-      }
-
-      this.clientRwdArray = dataFilter;
-      if (this.TicketServiceData && this.TicketServiceData.length > 0) {
-        let redeempoints = 0;
-        for (let i = 0; i < this.TicketServiceData.length; i++) {
-          if (this.TicketServiceData[i].reward__c && this.TicketServiceData[i].reward__c !== '' && this.TicketServiceData[i].reward__c !== null
-            && this.TicketServiceData[i].reward__c !== 'None') {
-            for (let j = 0; j < this.clientRwdArray.length; j++) {
-              for (let k = 0; k < this.clientRwdArray[j].redeemJson.length; k++) {
-                if ((this.TicketServiceData[i].reward__c === this.clientRwdArray[j].rwdId) && this.clientRwdArray[j].redeemJson[k]['onOneItem'] === 'Services') {
-                  redeempoints += this.clientRwdArray[j].redeemJson[k]['redeemPoints'];
-                  this.clientRwdArray[j]['points'] = this.clientRwdArray[j]['points'] - redeempoints;
-                  this.clientRwdArray[j]['used'] += redeempoints;
-                }
-              }
-              redeempoints = 0;
-            }
-          }
-        }
-      }
-      if (this.ticketProductsList && this.ticketProductsList.length > 0) {
-        let redeempoints = 0;
-        for (let i = 0; i < this.ticketProductsList.length; i++) {
-          if (this.ticketProductsList[i].Reward__c && this.ticketProductsList[i].Reward__c !== '' && this.ticketProductsList[i].Reward__c !== null
-            && this.ticketProductsList[i].Reward__c !== 'None') {
-            for (let j = 0; j < this.clientRwdArray.length; j++) {
-              for (let k = 0; k < this.clientRwdArray[j].redeemJson.length; k++) {
-                if (this.ticketProductsList[i].Reward__c === this.clientRwdArray[j].rwdId && this.clientRwdArray[j].redeemJson[k]['onOneItem'] === 'Products') {
-                  redeempoints += this.clientRwdArray[j].redeemJson[k]['redeemPoints'];
-                  this.clientRwdArray[j]['points'] = this.clientRwdArray[j]['points'] - redeempoints;
-                  this.clientRwdArray[j]['used'] += redeempoints;
-                }
-              }
-              redeempoints = 0;
-            }
-          }
+        if (this.ticketProductsList[i]['Taxable__c'] === 1) {
+          this.prodTax += +this.ticketProductsList[i].Product_Tax__c;
         }
       }
     }
-    for (let i = 0; i < this.clientRwdArray.length; i++) {
-      if (this.clientRwdArray[i].used === undefined) {
-        this.clientRwdArray[i]['used'] = 0;
-      }
-      // }
-    }
-  }
-  filterRewards(rewardsForClient) {
-    let rtnObj: any;
-    const rtnSrvObj = [];
-    const rtnProObj = [];
-    const rList = rewardsForClient.filter((obj) => obj.Active__c);
-    let serviceDate = new Date();
-    if (this.apptData && this.apptData.apdate) {
-      const tempDtStr = this.apptData.apdate.split(' ')[0].split('-');
-      serviceDate = new Date(+tempDtStr[0], (parseInt(tempDtStr[1], 10) - 1), +tempDtStr[2]);
-    }
-    // this.finalRewardsList = [];
-    for (let i = 0; i < rList.length; i++) {
-      const tempJSONObj = JSON.parse(rList[i].Redeem_Rules__c);
-      for (let j = 0; j < tempJSONObj.length; j++) {
-        if (tempJSONObj[j]['startDate'] !== '' && tempJSONObj[j]['startDate'] !== null) {
-          const stDtAry = tempJSONObj[j]['startDate'].split(' ')[0].split('-');
-          const stDt = new Date(stDtAry[0], (parseInt(stDtAry[1], 10) - 1), stDtAry[2]);
-          const endDtAry = tempJSONObj[j]['endDate'].split(' ')[0].split('-');
-          const endDt = new Date(endDtAry[0], (parseInt(endDtAry[1], 10) - 1), endDtAry[2]);
-          if (serviceDate.getTime() === stDt.getTime()
-            || serviceDate.getTime() === endDt.getTime()
-            || (serviceDate.getTime() > stDt.getTime() && serviceDate.getTime() < endDt.getTime())) {
-            if (tempJSONObj[j]['onOneItem'] === 'Services') {
-              rtnSrvObj.push({
-                'Name': rList[i]['Name'] + ': ' + tempJSONObj[j]['redeemName'],
-                'Id': rList[i]['Id'],
-                'redeemjson': tempJSONObj[j],
-                'crId': rList[i]['crId'],
-                'crdId': rList[i]['crdId']
-              });
-            } else if (tempJSONObj[j]['onOneItem'] === 'Products') {
-              rtnProObj.push({
-                'Name': rList[i]['Name'] + ': ' + tempJSONObj[j]['redeemName'],
-                'Id': rList[i]['Id'],
-                'redeemjson': tempJSONObj[j],
-                'crId': rList[i]['crId'],
-                'crdId': rList[i]['crdId']
-              });
-            }
-          } else {
-            if (tempJSONObj[j]['onOneItem'] === 'Services') {
-              rtnSrvObj.push({
-                'Name': rList[i]['Name'] + ': ' + tempJSONObj[j]['redeemName'],
-                'Id': rList[i]['Id'],
-                'redeemjson': tempJSONObj[j],
-                'crId': rList[i]['crId'],
-                'crdId': rList[i]['crdId']
-              });
-            } else if (tempJSONObj[j]['onOneItem'] === 'Products') {
-              rtnProObj.push({
-                'Name': rList[i]['Name'] + ': ' + tempJSONObj[j]['redeemName'],
-                'Id': rList[i]['Id'],
-                'redeemjson': tempJSONObj[j],
-                'crId': rList[i]['crId'],
-                'crdId': rList[i]['crdId']
-              });
-            }
-          }
-        } else {
-          if (tempJSONObj[j]['onOneItem'] === 'Services') {
-            rtnSrvObj.push({
-              'Name': rList[i]['Name'] + ': ' + tempJSONObj[j]['redeemName'],
-              'Id': rList[i]['Id'],
-              'redeemjson': tempJSONObj[j],
-              'crId': rList[i]['crId'],
-              'crdId': rList[i]['crdId']
-            });
-          } else if (tempJSONObj[j]['onOneItem'] === 'Products') {
-            rtnProObj.push({
-              'Name': rList[i]['Name'] + ': ' + tempJSONObj[j]['redeemName'],
-              'Id': rList[i]['Id'],
-              'redeemjson': tempJSONObj[j],
-              'crId': rList[i]['crId'],
-              'crdId': rList[i]['crdId']
-            });
-          }
+    if (this.ticketOthersList && this.ticketOthersList.length > 0) {
+      for (let i = 0; i < this.ticketOthersList.length; i++) {
+        if (this.ticketOthersList[i].Package__c) {
+          this.packageTax += this.ticketOthersList[i]['Service_Tax__c'];
         }
       }
     }
-    rtnObj = { 'srvcRwds': rtnSrvObj, 'prodRwds': rtnProObj };
-    return rtnObj;
+    this.totalTax = this.serTax + this.prodTax + this.packageTax;
+    this.calCharge();
   }
   calculateSum(total: number, value: number) {
     return total + value;
@@ -561,19 +451,22 @@ export class CompletedTicketComponent implements OnInit {
   }
   commonCancelModal() {
     this.recieptModal.hide();
+    this.error = '';
   }
   clearErrMsg() {
     this.error = '';
   }
   sendEmailReciept() {
     const EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if ((this.clientEmail !== '' && !EMAIL_REGEXP.test(this.clientEmail))) {
+    if (this.clientEmail === '' && !this.clientEmail) {
+      this.error = 'Primary Email is required';
+    } else if ((this.clientEmail !== '' && !EMAIL_REGEXP.test(this.clientEmail))) {
       this.error = 'CLIENTS.INVALID_CLIENT_INFO_PRIMARY_EMAIL';
     } else {
       const HtmlData = document.getElementById('inner_cont').innerHTML;
       const style = 'body{font-size:10px}.reports-main{border:1px solid #000}.reports,.reports-main{clear:left;overflow:auto}'
-        + ' .head1{width:32%;overflow:auto;margin:1%;margin-left: 0px;float:left}.head11{width:fit-content;border:1px solid black}.main-head p{'
-        + ' text-align:right;font-size:9px}.head2,.head3,.head4{width:12%;margin:.8%;float:left}.head11 p{text-align:left} '
+        + ' .head1{width:32%;overflow:auto;margin:1%;margin-left: 0px;float:left}.head11{width:fit-content;border:1px solid black;}.main-head p{'
+        + ' text-align:right;font-size:9px}.head2,.head3,.head4{width:12%;margin:.8%;float:left}.head11 p{text-align:left;word-break: break-all;} '
         + ' .head2{height:auto}.head5{width:23%;margin:1%;float:left}.reports{width:100%}.reports-heading{overflow:auto; '
         + ' background-color:#a9c7f2;margin:10px}.reports-heading-left{width:45%;float:left;text-align:left;height:auto; '
         + ' padding-left:10px}.reports-heading-right{width:45%;float:right;text-align:right;height:auto;padding-right:10px}'
@@ -611,6 +504,10 @@ export class CompletedTicketComponent implements OnInit {
           }
         });
     }
+  }
+
+  loadCompanyInfo(data) {
+    this.companyInfo = data;
   }
 
 }

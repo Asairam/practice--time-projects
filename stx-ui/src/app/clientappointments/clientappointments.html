@@ -1,5 +1,4 @@
 <div id="wrapper_setup_new" style="color:white;">
-	<!-- <app-header></app-header> -->
 	<app-header [newMenu]="'noNav'"></app-header>
 	<div class="form_cont12" *ngIf="clientId != 'undefined' && clientId != 'null' && clientId">
 		<h1>{{showCliName}}</h1>
@@ -21,8 +20,8 @@
 							<div class="col-md-8 col-sm-8" style="margin-bottom:3px;">
 								<!-- <input [(ngModel)] = "dateValue" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="dateValue" class="mb-25" value="vinod"/> -->
 								<!-- <pre>{{bsValue}}</pre> -->
-								<input type="text" [(ngModel)]="bsValue" (click)="clearErrMsg()" (ngModelChange)="getWorkersFromDate()" bsDatepicker [(bsValue)]="bsValue"
-								 [minDate]="minDate" [bsConfig]="datePickerConfig" class="datefield">
+								<input type="text" [(ngModel)]="bsValue" (click)="clearErrMsg()" (ngModelChange)="getWorkersFromDate()"
+								 bsDatepicker [(bsValue)]="bsValue" [minDate]="minDate" [bsConfig]="datePickerConfig" class="datefield">
 							</div>
 							<div class="button-align">
 								<!-- <button type="button" class="btn btn-default" (click)="getTodayDate()">Today</button>
@@ -52,7 +51,7 @@
 						<div class="mt-40">
 							<div class="col-md-4 col-sm-4 text-right res-tleft">
 								<label>Visit Type:</label>
-								<span class="red">*</span>
+								<!-- <span class="red">*</span> -->
 							</div>
 							<div class="col-md-8">
 								<select (click)="clearErrMsg()" [(ngModel)]="visitTypeValue" (change)="onVisitTypeChange($event.target.value);">
@@ -96,15 +95,16 @@
 													</select>
 												</td>
 												<td>
-													<select [(ngModel)]="row.serviceName" *ngIf='(serviceDetailsList[i] && serviceDetailsList[i].length > 0 )' (click)="clearErrMsg()"
-													 style="width:100%;" (change)="servicesListOnChange($event.target.value, i);clear()">
+													<select [(ngModel)]="row.serviceName" *ngIf='(serviceDetailsList[i] && serviceDetailsList[i].length > 0 )'
+													 (click)="clearErrMsg()" style="width:100%;" (change)="servicesListOnChange($event.target.value, i);clear()">
 														<!-- <option *ngIf ='rows[i].Id' >{{row.Name}}</option> -->
 														<option value="">--Select--</option>
 														<option *ngFor="let serviceData of serviceDetailsList[i]; let i='index'" value="{{serviceData.Id}}" id="serviceData{{i}}">{{serviceData.Name}}</option>
 													</select>
 												</td>
 												<td>
-													<select [(ngModel)]="row.workerName" style="width:100%;" *ngIf='workerList[i]?workerList[i].length>0:false' (change)="workerListOnChange($event.target.value, i);clear()">
+													<select [(ngModel)]="row.workerName" style="width:100%;" *ngIf='workerList[i]?workerList[i].length>0:false'
+													 (change)="workerListOnChange($event.target.value, i);clear()">
 														<!-- <option *ngIf ='rows[i].name'>{{row.name}}</option> -->
 														<option *ngFor="let workerData of workerList[i]; let i='index'" value="{{workerData.workername}}" id="serviceData{{i}}">{{workerData.name}}</option>
 													</select>
@@ -123,9 +123,12 @@
 														</span>
 													</a>
 												</td>
+												<td>
+													<span title="{{row.desc}}" *ngIf="row.desc">
+														<i class="fa fa-info-circle" aria-hidden="true"></i>
+													</span>
+												</td>
 											</tr>
-
-
 										</tbody>
 									</table>
 								</div>
@@ -180,10 +183,12 @@
 					<div class="appt-box">
 						<h1 class="sub_titles">Appointment Search Results</h1>
 						<div class="col-md-12 mt-20 text-center">
-							<button type="button" class="save-btn" (click)="bookAppointment()" *ngIf='showScheduleButton == true && apptSearchData.length!==0'>Schedule Appointment</button>
+							<button type="button" class="save-btn" (click)="bookAppointment()" *ngIf='showScheduleButton == true && apptSearchData.length!==0'>Schedule
+								Appointment</button>
 							<button type="button" class="save-btn" (click)="bookAppointment()" *ngIf="reScheduleButton == true && apptSearchData.length!==0">{{isRebooking?'Rebook':'ReSchedule'}}</button>
 							<button type="button" class="cancel-btn" [routerLink]="['/appointments']">Cancel</button>
-							<button *ngIf='showWaitinglist == true && apptSearchData.length!==0' type="button" class="add-btn">Add to Waiting List</button>
+							<button *ngIf='showWaitinglist == true && apptSearchData.length!==0' type="button" class="add-btn">Add to
+								Waiting List</button>
 						</div>
 						<div class="col-md-12">
 							<div class="table-responsive">
@@ -196,8 +201,8 @@
 									</thead>
 									<tbody>
 										<tr *ngFor="let searchData of apptSearchData; let i = 'index'" [ngClass]="{ 'row-selected': (selectedIndex === i) }">
-											<td (click)="scheduleButtonShow(apptSearchData[i].value, i)" >{{searchData.value}}</td>
-											<td (click)="scheduleButtonShow(apptSearchData[i].value, i)" >{{searchData.rank}}</td>
+											<td (click)="scheduleButtonShow(apptSearchData[i].value, i)">{{searchData.value}}</td>
+											<td (click)="scheduleButtonShow(apptSearchData[i].value, i)">{{searchData.rank}}</td>
 										</tr>
 									</tbody>
 								</table>
@@ -212,8 +217,8 @@
 </div>
 
 <!-- ----------------------popup--------- -->
-<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
- role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}"
+ tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-sm" style="width: 590px;">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -233,7 +238,8 @@
 					</tr>
 				</tbody>
 			</table>
-			<label style="margin: 0px 12px;">{{clientData?.FirstName+' '+clientData?.LastName}} has a booking alert for the following reason(s):</label>
+			<label style="margin: 0px 12px;">{{clientData?.FirstName+' '+clientData?.LastName}} has a booking alert for the
+				following reason(s):</label>
 			<table style="margin-left:100px">
 				<tbody>
 					<tr *ngIf="clientData?.BR_Reason_No_Email__c === 1">
@@ -263,16 +269,19 @@
 					</tr>
 				</tbody>
 			</table>
-			<label style="margin: 0px 12px;" *ngIf="clientData?.BR_Reason_Other_Note__c">Notes : {{clientData?.BR_Reason_Other_Note__c}}</label>
+			<label style="margin: 0px 12px;" *ngIf="clientData?.BR_Reason_Other_Note__c">Notes :
+				{{clientData?.BR_Reason_Other_Note__c}}</label>
 			<div class="modal-footer">
 				<table>
 					<tbody>
 						<tr>
 
 							<td>
-								<button class="save-btn" *ngIf="clientData?.Booking_Restriction_Type__c !== 'Do Not Book'" value="Book Anyway" (click)="bookAnyWay()">
+								<button class="save-btn" *ngIf="clientData?.Booking_Restriction_Type__c !== 'Do Not Book'" value="Book Anyway"
+								 (click)="bookAnyWay()">
 									Book Anyway</button>
-								<button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{clientData?.Booking_Restriction_Type__c === 'Do Not Book'?'Ok':'Don\'t Book'}}</button>
+								<button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{clientData?.Booking_Restriction_Type__c
+									=== 'Do Not Book'?'Ok':'Don\'t Book'}}</button>
 								<a *ngIf='clientId' [routerLink]="['/client/edit/' + clientId]" [queryParams]="{action:'findappt'}" class="btn btn-default mb-5">
 									<i class="fa fa-pencil"></i> Go To Full Client Card</a>
 							</td>

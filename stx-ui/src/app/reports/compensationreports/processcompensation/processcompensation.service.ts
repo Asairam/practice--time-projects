@@ -5,7 +5,7 @@
 */
 import { Injectable, Inject } from '@angular/core';
 import { Response } from '@angular/http';
-// import { Headers, RequestOptions, URLSearchParams } from '@angular/http';
+import { Headers } from '@angular/http';
 import { HttpClient } from '../../../common/http-client';
 
 @Injectable()
@@ -21,5 +21,34 @@ export class ProcessCompensationService {
     }
     const body = res.json();
     return body || {};
+  }
+  workerCompensationList(startDate: Date, endDate: Date) {
+    const stDtSt = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+    const endDtSt = endDate.getFullYear() + '-' + (endDate.getMonth() + 1) + '-' + endDate.getDate();
+    const headers = new Headers();
+    const today = new Date();
+    headers.append('today', today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2));
+    return this.http.getHeader(this.apiEndPoint + '/api/reports/processcompensation/' + stDtSt + '/' + endDtSt, headers)
+      .map(this.extractData);
+  }
+  archiveSer(archive) {
+    return this.http.post(this.apiEndPoint + '/api/reports/processcompensation/archive', archive)
+      .map(this.extractData);
+  }
+  resetSer(archive) {
+    return this.http.post(this.apiEndPoint + '/api/reports/processcompensation/reset', archive)
+      .map(this.extractData);
+  }
+  generateData(date) {
+    return this.http.get(this.apiEndPoint + '/api/reports/processcompensation/generate/' + date.stdate + '/' + date.eddate)
+      .map(this.extractData);
+  }
+  fullview(id, workerId, startDate, endDate) {
+    const headers = new Headers();
+    headers.append('sdate', startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate());
+    headers.append('edate', endDate.getFullYear() + '-' + (endDate.getMonth() + 1) + '-' + endDate.getDate());
+    headers.append('workerId', workerId);
+    return this.http.getHeader(this.apiEndPoint + '/api/reports/processcompensationrun/view/' + id, headers)
+      .map(this.extractData);
   }
 }

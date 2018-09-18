@@ -43,7 +43,9 @@
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th class="thcss">{{'TICKET_SALES_REPORT.APPOINTMENT_OR_TICKETNUMBER' | translate }}</th>
+                                        <th class="thcss">{{'TICKET_SALES_REPORT.APPOINTMENT_OR_TICKETNUMBER' | translate
+                                            }}
+                                        </th>
                                         <th class="thcss">{{'TICKET_SALES_REPORT.CLIENT' | translate }} </th>
                                         <th class="thcss">{{'COMMON.TOTAL' | translate }}</th>
                                         <th class="thcss">{{'TICKET_SALES_REPORT.VISIT_TYPE' | translate }}</th>
@@ -51,62 +53,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>000033</td>
-                                        <td>Rob Petry</td>
-                                        <td>$175.00</td>
-                                        <td>-</td>
-                                        <td>Complete</td>
-                                    </tr>
-                                    <tr>
-                                        <td>000034</td>
-                                        <td>Laura Petry</td>
-                                        <td> $125.00</td>
-                                        <td>walkin</td>
-                                        <td>Complete</td>
-                                    </tr>
-                                    <tr class="background-color">
-                                        <td>** 12/24/2017</td>
-                                        <td></td>
-                                        <td>300.00</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>000000</td>
-                                        <td> Jade Moran</td>
-                                        <td>$66.00</td>
-                                        <td> Regular Request</td>
-                                        <td>Complete</td>
-                                    </tr>
-                                    <tr>
-                                        <td>000003</td>
-                                        <td>January Moran</td>
-                                        <td> $62.00</td>
-                                        <td> Regular Request</td>
-                                        <td>Complete</td>
-                                    </tr>
-                                    <tr>
-                                        <td>000042</td>
-                                        <td>NO CLIENT</td>
-                                        <td> $62.00</td>
-                                        <td> Retail only</td>
-                                        <td>Complete</td>
-                                    </tr>
-                                    <tr>
-                                        <td>000071</td>
-                                        <td>CLASS CLIENT</td>
-                                        <td> $0.00</td>
-                                        <td>class</td>
-                                        <td>Complete</td>
-                                    </tr>
-                                    <tr class="background-color">
-                                        <td>** 1/23/2018</td>
-                                        <td></td>
-                                        <td>190.00</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+                                    <ng-container *ngFor="let list1 of salesList; let i='index'">
+                                        <tr *ngFor='let list of list1'>
+                                            <td>{{list.Name}}</td>
+                                            <td>{{list.ClientName}}</td>
+                                            <td>{{list.Payments__c | number:'2.2-2'}}</td>
+                                            <td>{{list.Client_Type__c}}</td>
+                                            <td>{{list.Status__c}}</td>
+                                        </tr>
+                                        <tr class="background-color">
+                                            <th>**{{list1.date}}</th>
+                                            <th>&nbsp;</th>
+                                            <th>{{list1.total | number:'2.2-2'}}</th>
+                                            <th>&nbsp;</th>
+                                            <th>&nbsp;</th>
+                                        </tr>
+                                    </ng-container>
                                 </tbody>
                             </table>
                         </div>

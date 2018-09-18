@@ -18,6 +18,10 @@ import { ToastrService } from 'ngx-toastr';
     providers: [WaitingListService]
 })
 export class WaitingListComponent implements OnInit {
+    disabledClass = '';
+    addDiv: any = false;
+    editDiv: any = false;
+    disableDiv = true;
     constructor(
         private waitingListService: WaitingListService,
         private toastr: ToastrService,
@@ -26,5 +30,23 @@ export class WaitingListComponent implements OnInit {
     /*Method for page Load */
     ngOnInit() {
     }
+    addNew() {
+        this.disabledClass = 'disabled';
+        this.addDiv = true;
+        this.editDiv = false;
+        this.disableDiv = false;
     }
+    showdata() {
+        this.disabledClass = 'disabled';
+        this.addDiv = false;
+        this.editDiv = true;
+        this.disableDiv = false;
+    }
+    cancel() {
+        this.disabledClass = '';
+        this.addDiv = false;
+        this.editDiv = false;
+        this.disableDiv = true;
+    }
+}
 

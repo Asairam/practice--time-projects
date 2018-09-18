@@ -59,20 +59,20 @@ export class CreateTokenComponent implements OnInit {
     getClientData() {
         this.createTokenService.getClientData(this.clientId).subscribe(
             data => {
-                this.clientInfo = JSON.parse(data['_body']).result.results[0];
+                this.clientInfo = data['result'].results[0];
                 for (const key in this.clientInfo) {
                     if (this.clientInfo[key] === 'null' || this.clientInfo[key] === null || this.clientInfo[key] === 'undefined' || this.clientInfo[key] === undefined) {
                         this.clientInfo[key] = '';
                     }
                 }
                 this.clientName = this.clientInfo.FirstName + ' ' + this.clientInfo.LastName;
-                const displayName = document.getElementById('displayNameId');
-                displayName.innerHTML = 'Create Token - ' + this.clientName;
-                   this.mailStreet = this.clientInfo.MailingStreet;
-                   this.mailCity = this.clientInfo.MailingCity;
-                    this.mailCountry = this.clientInfo.MailingCountry;
-                   this.mailState = this.clientInfo.MailingState;
-                    this.mailZIP = this.clientInfo.MailingPostalCode;
+                // const displayName = document.getElementById('displayNameId');
+                // displayName.innerHTML = 'Create Token - ' + this.clientName;
+                this.mailStreet = this.clientInfo.MailingStreet;
+                this.mailCity = this.clientInfo.MailingCity;
+                this.mailCountry = this.clientInfo.MailingCountry;
+                this.mailState = this.clientInfo.MailingState;
+                this.mailZIP = this.clientInfo.MailingPostalCode;
             },
             error => {
                 const errStatus = JSON.parse(error['_body'])['status'];
@@ -89,7 +89,7 @@ export class CreateTokenComponent implements OnInit {
     getCountriesList() {
         this.createTokenService.getLookupsList('COUNTRIES').subscribe(
             data => {
-                this.countriesList = JSON.parse(data['_body']).result;
+                this.countriesList = data['result'];
             },
             error => {
                 const errStatus = JSON.parse(error['_body'])['status'];
@@ -200,124 +200,126 @@ export class CreateTokenComponent implements OnInit {
         const hash = Md5.hashStr(config.ANYWHERECOMMERCE_DEVELOPER_TEST_MERCHANT_ID + this.clientId + dateTime + this.cardNum +
             expmonth + this.expYear.toString().substring(2) + this.determineCardType() + this.dummyClientName + config.ANYWHERECOMMERCE_DEVELOPER_TEST_MERCHANT_KEY);
         const clientData = {
-                merchantref: this.clientId,
-                terminalid: config.ANYWHERECOMMERCE_DEVELOPER_TEST_MERCHANT_ID,
-                dateTime: dateTime,
-                cardNum: this.cardNum,
-                cardExp: expmonth + this.expYear.toString().substring(2),
-                cardType: this.determineCardType(),
-                cardHolName: this.dummyClientName,
-                hash: hash,
-                cvv: this.cardCVV
-             };
+            merchantref: this.clientId,
+            terminalid: config.ANYWHERECOMMERCE_DEVELOPER_TEST_MERCHANT_ID,
+            dateTime: dateTime,
+            cardNum: this.cardNum,
+            cardExp: expmonth + this.expYear.toString().substring(2),
+            cardType: this.determineCardType(),
+            cardHolName: this.dummyClientName,
+            hash: hash,
+            cvv: this.cardCVV
+        };
 
         if (this.clientInfo.Credit_Card_Token__c === 'undefined' || this.clientInfo.Credit_Card_Token__c === null || this.clientInfo.Credit_Card_Token__c === '') {
-            this.tokenbody =  this.commonservice.createToken(clientData);
+            this.tokenbody = this.commonservice.createToken(clientData);
         } else if (this.clientInfo.Credit_Card_Token__c !== 'undefined' || this.clientInfo.Credit_Card_Token__c !== null || this.clientInfo.Credit_Card_Token__c !== '') {
-            this.tokenbody =  this.commonservice.updateToken(clientData);
+            this.tokenbody = this.commonservice.updateToken(clientData);
         }
         const url = config.ANYWHERECOMMERCE_PAYMENT_API;
-        this.http.post(url, this.tokenbody, {
-            headers: new HttpHeaders()
-                .set('Content-Type', 'text/xml')
-                .append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS')
-                .append('Access-Control-Allow-Origin', '*')
-                .append('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Request-Method')
-            , responseType: 'text'
-        }).subscribe(data => {
-            let cardTokenId: any = '';
-            const parseString = require('xml2js').parseString;
-            parseString(data, function (err, result) {
-                cardTokenId = result;
-            });
-            if (this.cardNum.toString().length < 12 && this.cardNum !== '' && this.cardNum.toString() !== '0') {
-                this.errorMsgAry[6] = 'Card number should allow 12 digits.';
-            } else if ((cardTokenId.ERROR) && (!cardTokenId.SECURECARDUPDATERESPONSE || !cardTokenId.SECURECARDREGISTRATIONRESPONSE)) {
-                if ((cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] === cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] || this.cardNum.toString() === '0')
-                      && (cardTokenId.ERROR.ERRORSTRING[0] !== 'INVALID CARDEXPIRY')) {
-                    this.errorMsgAry[6] = 'INVALID CARDNUMBER';
-                    this.errorMsgAry[8] = '';
-                } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID CARDEXPIRY') {
-                    this.errorMsgAry[8] = 'INVALID CARDEXPIRY';
-                    this.errorMsgAry[6] = '';
+        const reqObj = {
+            'url': url,
+            'xml': this.tokenbody
+        };
+        this.createTokenService.xmlPayment(reqObj).subscribe(
+            data => {
+                let cardTokenId: any = '';
+                const parseString = require('xml2js').parseString;
+                parseString(data['result'], function (err, result) {
+                    cardTokenId = result;
+                });
+                if (this.cardNum.toString().length < 12 && this.cardNum !== '' && this.cardNum.toString() !== '0') {
+                    this.errorMsgAry[6] = 'Card number should allow 12 digits.';
+                } else if ((cardTokenId.ERROR) && (!cardTokenId.SECURECARDUPDATERESPONSE || !cardTokenId.SECURECARDREGISTRATIONRESPONSE)) {
+                    if ((cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] === cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] || this.cardNum.toString() === '0')
+                        && (cardTokenId.ERROR.ERRORSTRING[0] !== 'INVALID CARDEXPIRY')) {
+                        this.errorMsgAry[6] = 'INVALID CARDNUMBER';
+                        this.errorMsgAry[8] = '';
+                        this.toastr.error('INVALID CARDNUMBER', null, { timeOut: 3000 });
+                    } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID CARDEXPIRY') {
+                        this.errorMsgAry[8] = 'INVALID CARDEXPIRY';
+                        this.errorMsgAry[6] = '';
+                        this.toastr.error('INVALID CARDEXPIRY', null, { timeOut: 3000 });
+                    }
+                } else if ((this.clientInfo.Credit_Card_Token__c === 'undefined' || this.clientInfo.Credit_Card_Token__c === null || this.clientInfo.Credit_Card_Token__c === '') &&
+                    (!cardTokenId.ERROR)) {
+                    parseString(data['result'], function (err, result) {
+                        cardTokenId = result.SECURECARDREGISTRATIONRESPONSE.CARDREFERENCE[0];
+
+                    });
+                    this.insertToken(cardTokenId, expmonth);
+                } else if ((this.clientInfo.Credit_Card_Token__c !== 'undefined' || this.clientInfo.Credit_Card_Token__c !== null || this.clientInfo.Credit_Card_Token__c !== '') &&
+                    (!cardTokenId.ERROR)) {
+                    parseString(data['result'], function (err, result) {
+                        cardTokenId = result.SECURECARDUPDATERESPONSE.CARDREFERENCE[0];
+                    });
+                    this.insertToken(cardTokenId, expmonth);
                 }
-            } else if ((this.clientInfo.Credit_Card_Token__c === 'undefined' || this.clientInfo.Credit_Card_Token__c === null || this.clientInfo.Credit_Card_Token__c === '') &&
-                (!cardTokenId.ERROR)) {
-                parseString(data, function (err, result) {
-                    cardTokenId = result.SECURECARDREGISTRATIONRESPONSE.CARDREFERENCE[0];
 
-                });
-                this.insertToken(cardTokenId, expmonth);
-            } else if ((this.clientInfo.Credit_Card_Token__c !== 'undefined' || this.clientInfo.Credit_Card_Token__c !== null || this.clientInfo.Credit_Card_Token__c !== '') &&
-                (!cardTokenId.ERROR)) {
-                parseString(data, function (err, result) {
-                    cardTokenId = result.SECURECARDUPDATERESPONSE.CARDREFERENCE[0];
-                });
-                this.insertToken(cardTokenId, expmonth);
+            },
+            error => {
+                const status = JSON.parse(error['status']);
+                const statuscode = JSON.parse(error['_body']).status;
+                switch (status) {
+                    case 500:
+                        break;
+                    case 400:
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
+                        } break;
+                }
             }
+        );
 
-        }, (err: HttpErrorResponse) => {
-        });
+
+
+        // this.http.post(url, this.tokenbody, {
+        //     headers: new HttpHeaders()
+        //         .set('Content-Type', 'text/xml')
+        //         .append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS')
+        //         .append('Access-Control-Allow-Origin', '*')
+        //         .append('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Request-Method')
+        //     , responseType: 'text'
+        // }).subscribe(data => {
+        //     let cardTokenId: any = '';
+        //     const parseString = require('xml2js').parseString;
+        //     parseString(data, function (err, result) {
+        //         cardTokenId = result;
+        //     });
+        //     if (this.cardNum.toString().length < 12 && this.cardNum !== '' && this.cardNum.toString() !== '0') {
+        //         this.errorMsgAry[6] = 'Card number should allow 12 digits.';
+        //     } else if ((cardTokenId.ERROR) && (!cardTokenId.SECURECARDUPDATERESPONSE || !cardTokenId.SECURECARDREGISTRATIONRESPONSE)) {
+        //         if ((cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] === cardTokenId.ERROR.ERRORSTRING[0].split(' ')[0] || this.cardNum.toString() === '0')
+        //             && (cardTokenId.ERROR.ERRORSTRING[0] !== 'INVALID CARDEXPIRY')) {
+        //             this.errorMsgAry[6] = 'INVALID CARDNUMBER';
+        //             this.errorMsgAry[8] = '';
+        //         } else if (cardTokenId.ERROR.ERRORSTRING[0] === 'INVALID CARDEXPIRY') {
+        //             this.errorMsgAry[8] = 'INVALID CARDEXPIRY';
+        //             this.errorMsgAry[6] = '';
+        //         }
+        //     } else if ((this.clientInfo.Credit_Card_Token__c === 'undefined' || this.clientInfo.Credit_Card_Token__c === null || this.clientInfo.Credit_Card_Token__c === '') &&
+        //         (!cardTokenId.ERROR)) {
+        //         parseString(data, function (err, result) {
+        //             cardTokenId = result.SECURECARDREGISTRATIONRESPONSE.CARDREFERENCE[0];
+
+        //         });
+        //         this.insertToken(cardTokenId, expmonth);
+        //     } else if ((this.clientInfo.Credit_Card_Token__c !== 'undefined' || this.clientInfo.Credit_Card_Token__c !== null || this.clientInfo.Credit_Card_Token__c !== '') &&
+        //         (!cardTokenId.ERROR)) {
+        //         parseString(data, function (err, result) {
+        //             cardTokenId = result.SECURECARDUPDATERESPONSE.CARDREFERENCE[0];
+        //         });
+        //         this.insertToken(cardTokenId, expmonth);
+        //     }
+
+        // }, (err: HttpErrorResponse) => {
+        // });
     }
     insertToken(cardTokenId, expmonth) {
         this.clientObj = {
-            'clientInfoActive': this.clientInfo.Active__c,
-            'clientInfoFirstName': this.clientInfo.FirstName,
-            'clientInfoMiddleName': this.clientInfo.MiddleName,
-            'clientInfoLastName':  this.clientInfo.LastName,
-            'clientInfoMailingStreet': this.clientInfo.MailingStreet,
-            'clientInfoMailingCountry': this.clientInfo.MailingCountry,
-            'clientInfoPostalCode': this.clientInfo.MailingPostalCode,
-            'clientInfoMailingCity': this.clientInfo.MailingCity,
-            'clientInfoMailingState': this.clientInfo.MailingState,
-            'clientInfoPrimaryPhone': this.clientInfo.Phone,
-            'clientInfoMobilePhone': this.clientInfo.MobilePhone,
-            'clientInfoPrimaryMail': this.clientInfo.Email,
-            'clientInfoSecondaryEmail': this.clientInfo.Secondary_Email__c,
-            'clientInfoEmergName': this.clientInfo.Emergency_Name__c,
-            'clientInfoEmergPrimaryPhone': this.clientInfo.Emergency_Primary_Phone__c,
-            'clientInfoEmergSecondaryPhone': this.clientInfo.Emergency_Secondary_Phone__c,
-            'clientInfoNoEmail': this.clientInfo.No_Email__c,
-            'responsibleParty': this.clientInfo.Responsible_Party__c,
-            'gender': this.clientInfo.Gender__c,
-            'birthDay': this.clientInfo.BirthDateNumber__c,
-            'birthMonth': this.clientInfo.BirthMonthNumber__c,
-            'occupationvalue': this.clientInfo.Title,
-            'birthYear': this.clientInfo.BirthYearNumber__c,
-            'selectedFlags': this.clientInfo.Client_Flag__c,
-            'notes': this.clientInfo.Notes__c,
-            'referredBy': this.clientInfo.Referred_By__c,
-            'ReferedAFriendProspect': this.clientInfo.Refer_A_Friend_Prospect__c,
-            'referedOnDate': this.clientInfo.Referred_On_Date__c,
-            'marketingOptOut': this.clientInfo.Marketing_Opt_Out__c,
-            'marketingMobilePhone': this.clientInfo.Marketing_Mobile_Phone__c,
-            'marketingPrimaryEmail': this.clientInfo.Marketing_Primary_Email__c,
-            'marketingSecondaryEmail': this.clientInfo.Marketing_Secondary_Email__c,
-            'notificationMobilePhone': this.clientInfo.Notification_Mobile_Phone__c,
-            'notificationOptOut': this.clientInfo.Notification_Opt_Out__c,
-            'notificationPrimaryEmail': this.clientInfo.Notification_Primary_Email__c,
-            'notificationSecondaryEmail': this.clientInfo.Notification_Secondary_Email__c,
-            'reminderOptOut': this.clientInfo.Reminder_Opt_Out__c,
-            'reminderMobilePhone': this.clientInfo.Reminder_Mobile_Phone__c,
-            'reminderPrimaryEmail': this.clientInfo.Reminder_Primary_Email__c,
-            'reminderSecondaryEmail': this.clientInfo.Reminder_Secondary_Email__c,
-            'mobileCarrierName': this.clientInfo.Mobile_Carrier__c,
-            'clientImagePath': this.clientInfo.Client_Pic__c,
-            'noEmailAppt': this.clientInfo.BR_Reason_No_Email__c,
-            'accoutChargeBalance': this.clientInfo.BR_Reason_Account_Charge_Balance__c,
-            'depositRequired': this.clientInfo.BR_Reason_Deposit_Required__c,
-            'persistanceNoShow': this.clientInfo.BR_Reason_No_Show__c,
-            'other': this.clientInfo.BR_Reason_Other__c,
-            'otherReason': this.clientInfo.Booking_Restriction_Note__c,
-            'apptNotes': this.clientInfo.BR_Reason_Other_Note__c,
-            'bookingFrequency': this.clientInfo.Booking_Frequency__c,
-            'allowOnlineBooking': this.clientInfo.Allow_Online_Booking__c,
-            'hasStandingAppt': this.clientInfo.Has_Standing_Appts__c,
-            'pin': this.clientInfo.Pin__c,
-            'restrictionType': this.clientInfo.Booking_Restriction_Type__c,
-            'activeRewards': this.clientInfo.Active_Rewards__c,
-            'startingBalance': this.clientInfo.Starting_Balance__c,
-            'clientMemberShipId': this.clientInfo.Membership_ID__c,
             'creditCardToken': cardTokenId,
             'tokenExpirationDate': expmonth + '/' + this.expYear.toString().substring(2) + ' (MM/YY)',
             'PaymentType': this.determineCardType(),
@@ -351,5 +353,138 @@ export class CreateTokenComponent implements OnInit {
         }
         return cardType;
     }
+    getLocation() {
+        if (this.mailZIP.length > 4) {
+            this.http.get('https://ziptasticapi.com/' + this.mailZIP).subscribe(
+                result => {
+                    if (result['error']) {
+                        const toastermessage: any = this.translateService.get('SETUPCOMPANY.ZIP_CODE_NOT_FOUND');
+                        this.toastr.error(toastermessage.value, null, { timeOut: 1500 });
+                    } else {
+                        if (result['country'] === 'US') {
+                            this.mailCountry = 'United States';
+                            config.states.forEach(state => {
+                                if (state.abbrev === result['state']) {
+                                    this.mailState = state.name;
+                                }
+                            });
+                        }
+                        const cityArray = result['city'].split(' ');
+                        for (let i = 0; i < cityArray.length; i++) {
+                            if (i === 0) {
+                                this.mailCity = cityArray[i].charAt(0).toUpperCase() + cityArray[i].slice(1).toLowerCase() + ' ';
+                            } else {
+                                this.mailCity += cityArray[i].charAt(0).toUpperCase() + cityArray[i].slice(1).toLowerCase() + ' ';
+                            }
+                        }
+                    }
+                },
+                error => {
+                }
+            );
+        }
+    }
+
+    clearSwipe() {
+        this.swipePwd = '';
+        this.autofocusSwipe();
+        this.toastr.info('Card data cleared', null, { timeOut: 3000 });
+    }
+
+    autofocusSwipe() {
+        if (this.checkboxFlag) {
+            setTimeout(() => {
+                if (document.getElementById('swipeId')) {
+                    const swipeField = <HTMLInputElement>document.getElementById('swipeId');
+                    swipeField.focus();
+                }
+            }, 200);
+        }
+    }
+
+    getCardDetails() {
+        const details1 = this.swipePwd.split('^');
+        // const card_number = details1[0];
+        this.cardNum = details1[0].substring(2);
+        // const names = details1[1].split('/');
+        // const first_name = names[1];
+        // const last_name = names[0];
+        let details2 = details1[2].split(';');
+        details2 = details2[1].split('=');
+        const exp_date = details2[1];
+        // exp_date = exp_date.substring(2, 4) + '/' + exp_date.substring(0, 2);
+        this.expMonth = parseInt(exp_date.substring(2, 4), 10);
+        this.expYear = parseInt('20' + exp_date.substring(0, 2), 10);
+        this.cardCVV = '123';
+        this.generateToken();
+    }
 
 }
+
+
+// back up
+// this.clientObj = {
+//     'clientInfoActive': this.clientInfo.Active__c,
+//     'clientInfoFirstName': this.clientInfo.FirstName,
+//     'clientInfoMiddleName': this.clientInfo.MiddleName,
+//     'clientInfoLastName': this.clientInfo.LastName,
+//     'clientInfoMailingStreet': this.clientInfo.MailingStreet,
+//     'clientInfoMailingCountry': this.clientInfo.MailingCountry,
+//     'clientInfoPostalCode': this.clientInfo.MailingPostalCode,
+//     'clientInfoMailingCity': this.clientInfo.MailingCity,
+//     'clientInfoMailingState': this.clientInfo.MailingState,
+//     'clientInfoPrimaryPhone': this.clientInfo.Phone,
+//     'clientInfoMobilePhone': this.clientInfo.MobilePhone,
+//     'clientInfoPrimaryMail': this.clientInfo.Email,
+//     'clientInfoSecondaryEmail': this.clientInfo.Secondary_Email__c,
+//     'clientInfoEmergName': this.clientInfo.Emergency_Name__c,
+//     'clientInfoEmergPrimaryPhone': this.clientInfo.Emergency_Primary_Phone__c,
+//     'clientInfoEmergSecondaryPhone': this.clientInfo.Emergency_Secondary_Phone__c,
+//     'clientInfoNoEmail': this.clientInfo.No_Email__c,
+//     'responsibleParty': this.clientInfo.Responsible_Party__c,
+//     'gender': this.clientInfo.Gender__c,
+//     'birthDay': this.clientInfo.BirthDateNumber__c,
+//     'birthMonth': this.clientInfo.BirthMonthNumber__c,
+//     'occupationvalue': this.clientInfo.Title,
+//     'birthYear': this.clientInfo.BirthYearNumber__c,
+//     'selectedFlags': this.clientInfo.Client_Flag__c,
+//     'notes': this.clientInfo.Notes__c,
+//     'referredBy': this.clientInfo.Referred_By__c,
+//     'ReferedAFriendProspect': this.clientInfo.Refer_A_Friend_Prospect__c,
+//     'referedOnDate': this.clientInfo.Referred_On_Date__c,
+//     'marketingOptOut': this.clientInfo.Marketing_Opt_Out__c,
+//     'marketingMobilePhone': this.clientInfo.Marketing_Mobile_Phone__c,
+//     'marketingPrimaryEmail': this.clientInfo.Marketing_Primary_Email__c,
+//     'marketingSecondaryEmail': this.clientInfo.Marketing_Secondary_Email__c,
+//     'notificationMobilePhone': this.clientInfo.Notification_Mobile_Phone__c,
+//     'notificationOptOut': this.clientInfo.Notification_Opt_Out__c,
+//     'notificationPrimaryEmail': this.clientInfo.Notification_Primary_Email__c,
+//     'notificationSecondaryEmail': this.clientInfo.Notification_Secondary_Email__c,
+//     'reminderOptOut': this.clientInfo.Reminder_Opt_Out__c,
+//     'reminderMobilePhone': this.clientInfo.Reminder_Mobile_Phone__c,
+//     'reminderPrimaryEmail': this.clientInfo.Reminder_Primary_Email__c,
+//     'reminderSecondaryEmail': this.clientInfo.Reminder_Secondary_Email__c,
+//     'mobileCarrierName': this.clientInfo.Mobile_Carrier__c,
+//     'clientImagePath': this.clientInfo.Client_Pic__c,
+//     'noEmailAppt': this.clientInfo.BR_Reason_No_Email__c,
+//     'accoutChargeBalance': this.clientInfo.BR_Reason_Account_Charge_Balance__c,
+//     'depositRequired': this.clientInfo.BR_Reason_Deposit_Required__c,
+//     'persistanceNoShow': this.clientInfo.BR_Reason_No_Show__c,
+//     'other': this.clientInfo.BR_Reason_Other__c,
+//     'otherReason': this.clientInfo.Booking_Restriction_Note__c,
+//     'apptNotes': this.clientInfo.BR_Reason_Other_Note__c,
+//     'bookingFrequency': this.clientInfo.Booking_Frequency__c,
+//     'allowOnlineBooking': this.clientInfo.Allow_Online_Booking__c,
+//     // 'hasStandingAppt': this.clientInfo.Has_Standing_Appts__c,
+//     'pin': this.clientInfo.Pin__c,
+//     'restrictionType': this.clientInfo.Booking_Restriction_Type__c,
+//     'activeRewards': this.clientInfo.Active_Rewards__c,
+//     'startingBalance': this.clientInfo.Starting_Balance__c,
+//     'clientMemberShipId': this.clientInfo.Membership_ID__c,
+//     'creditCardToken': cardTokenId,
+//     'tokenExpirationDate': expmonth + '/' + this.expYear.toString().substring(2) + ' (MM/YY)',
+//     'PaymentType': this.determineCardType(),
+//     'tokenPresent': 1,
+//     'CurrentBalance': this.clientInfo.Current_Balance__c,
+//     'homePhone' : this.clientInfo.HomePhone
+// };

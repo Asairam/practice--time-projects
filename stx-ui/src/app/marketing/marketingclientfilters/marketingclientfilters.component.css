@@ -83,6 +83,12 @@
 label{
     color:#fff;
 }
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .setsubcont select, .setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email] {
+    color: white;
+}
+.form_cont input[type=text]:focus, .form-control:focus, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus, .setsubcont input[type=text]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=email]:focus {
+    color: black;
+}
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) 
 and (orientation : portrait){
 	.filter-params .text-right{

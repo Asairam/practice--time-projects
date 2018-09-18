@@ -2,16 +2,15 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import * as moment from 'moment/moment';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { SetupPromotionsService } from './setuppromotions.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from 'ng2-translate';
+import { CommonService } from '../../common/common.service';
 @Component({
   selector: 'app-setuppromotions-app',
   templateUrl: './setuppromotions.html',
   styleUrls: ['./setuppromotions.css'],
-  providers: [SetupPromotionsService],
+  providers: [SetupPromotionsService, CommonService],
 })
 export class SetupPromotionsComponent implements OnInit {
   disableEnable: any;
@@ -46,6 +45,7 @@ export class SetupPromotionsComponent implements OnInit {
   updatePromotionDetails: any;
   toastermessage: any;
   promotionError: any;
+  discountErr: any;
   promotionError1: any;
   promotionError2: any;
   promotionError3: any;
@@ -60,7 +60,7 @@ export class SetupPromotionsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
-    private translateService: TranslateService,
+    private translateService: TranslateService, private commonService: CommonService,
     private setupPromotionsService: SetupPromotionsService,
     @Inject('defaultActive') public defaultActive: string,
     @Inject('defaultInActive') public defaultInActive: string) {
@@ -99,6 +99,7 @@ export class SetupPromotionsComponent implements OnInit {
     this.promotionError = '';
     this.promotionError1 = '';
     this.promotionError2 = '';
+    this.discountErr = '';
     this.promotionError3 = '';
     this.promotionError4 = '';
   }
@@ -149,8 +150,14 @@ export class SetupPromotionsComponent implements OnInit {
     }
   }
   showData(promotionslist) {
-    const newDate = moment(promotionslist.Start_Date__c).format('MM/DD/YYYY');
-    const endDate = moment(promotionslist.End_Date__c).format('MM/DD/YYYY');
+    let newDate: any;
+    let endDate: any;
+    if (promotionslist.Start_Date__c) {
+      newDate = this.commonService.getDateFrmDBDateStr(promotionslist.Start_Date__c);
+    }
+    if (promotionslist.End_Date__c) {
+      endDate = this.commonService.getDateFrmDBDateStr(promotionslist.End_Date__c);
+    }
     this.updatePromotionId = promotionslist.Id;
     this.updateActive = promotionslist.Active__c;
     this.updatePromotionName = promotionslist.Name;
@@ -167,12 +174,12 @@ export class SetupPromotionsComponent implements OnInit {
       this.updateDiscountPercentage = promotionslist.Discount_Percentage__c;
     }
     this.updateSortOrder = promotionslist.Sort_Order__c;
-    if (newDate !== 'Invalid date') {
+    if (newDate) {
       this.updatePromotionStartDate = newDate;
     } else {
       this.updatePromotionStartDate = '';
     }
-    if (endDate !== 'Invalid date') {
+    if (endDate) {
       this.updatePromotionEndDate = endDate;
     } else {
       this.updatePromotionEndDate = '';
@@ -189,6 +196,15 @@ export class SetupPromotionsComponent implements OnInit {
     this.editDiv = false;
     this.clear();
     this.clearMessages();
+  }
+  /* method to restrict specialcharecters  */
+  numbersOnly(event: any) {
+    const pattern = /[0-9]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
   }
   getPromotions() {
     this.setupPromotionsService.getPromotions().subscribe(
@@ -213,12 +229,28 @@ export class SetupPromotionsComponent implements OnInit {
     if (this.promotionName === undefined || this.promotionName === 'undefined' ||
       this.promotionName === '') {
       this.promotionError = 'VALIDATION_MSG.NAME_REQUIRED';
-    } else if (this.sort === undefined || this.sort === 'undefined' ||
-      this.sort === '') {
+    } else if ((this.serviceDiscount === false || this.serviceDiscount === '') && (this.productDiscount === false || this.productDiscount === '')) {
+      this.discountErr = 'Select any one of Service Discount Or Product Discount';
+    } else if (this.serviceDiscount &&
+      ((this.discountAmount === undefined || this.discountAmount === '' || this.discountAmount === 'undefined') &&
+        (this.discountPercentage === undefined || this.discountPercentage === '' || this.discountPercentage === 'undefined'))) {
+      this.discountErr = 'Discount Amount OR Discount Percentage should not be blank';
+    } else if (this.productDiscount &&
+      ((this.discountAmount === undefined || this.discountAmount === '' || this.discountAmount === 'undefined') &&
+        (this.discountPercentage === undefined || this.discountPercentage === '' || this.discountPercentage === 'undefined'))) {
+      this.discountErr = 'Discount Amount OR Discount Percentage should not be blank';
+    } else if (this.discountAmount !== '' && this.discountPercentage !== '' &&
+      this.discountPercentage !== undefined && this.discountAmount !== undefined) {
+      this.promotionError2 = 'SETUP_PROMOTIONS.INVALID_EITHER_DISCOUNT_AMOUNT_OR_DISCOUNT_PERCENTAGE';
+    } else if (this.sort === undefined || this.sort === 'undefined' || this.sort === '') {
       this.promotionError1 = 'SETUP_PROMOTIONS.INVALID_SORT_ORDER_BLANK';
     } else if (this.discountAmount !== '' && this.discountPercentage !== '' &&
       this.discountPercentage !== undefined && this.discountAmount !== undefined) {
       this.promotionError2 = 'SETUP_PROMOTIONS.INVALID_EITHER_DISCOUNT_AMOUNT_OR_DISCOUNT_PERCENTAGE';
+    } else if ((this.promotionStartDate === null || this.promotionStartDate === '') && (this.promotionEndDate !== null && this.promotionEndDate !== '')) {
+      this.promotionError3 = 'Start Date is required';
+    } else if ((this.promotionStartDate !== null && this.promotionStartDate !== '') && (this.promotionEndDate === null || this.promotionEndDate === '')) {
+      this.promotionError3 = 'End Date is required';
     } else if (this.promotionStartDate > this.promotionEndDate) {
       this.promotionError3 = 'SETUP_PROMOTIONS.NOVALID_START_DATE_BEFORE_END_DATE';
     } else {
@@ -239,13 +271,13 @@ export class SetupPromotionsComponent implements OnInit {
       }
       this.promotionData = {
         'Active__c': this.active,
-        'Name': this.promotionName,
+        'Name': this.promotionName.trim(),
         'Service_Discount__c': this.serviceDiscount,
         'Product_Discount__c': this.productDiscount,
         'Discount_Amount__c': this.discountAmount,
         'Discount_Percentage__c': this.discountPercentage,
-        'Start_Date__c': this.promotionStartDate,
-        'End_Date__c': this.promotionEndDate,
+        'Start_Date__c': this.promotionStartDate === null ? null : this.commonService.getDBDatStr(this.promotionStartDate),
+        'End_Date__c': this.promotionEndDate === null ? null : this.commonService.getDBDatStr(this.promotionEndDate),
         'Sort_Order__c': this.sort,
       };
       this.setupPromotionsService.createPromotion(this.promotionData).subscribe(
@@ -284,18 +316,44 @@ export class SetupPromotionsComponent implements OnInit {
     }
   }
   editPromotion() {
+    if (this.updateProductDiscount === 0) {
+      this.updateProductDiscount = false;
+    } else if (this.updateProductDiscount === 1) {
+      this.updateProductDiscount = true;
+    }
+    if (this.updateServiceDiscount === 0) {
+      this.updateServiceDiscount = false;
+    } else if (this.updateServiceDiscount === 1) {
+      this.updateServiceDiscount = true;
+    }
     if (this.updatePromotionName === undefined || this.updatePromotionName === 'undefined' ||
       this.updatePromotionName === '') {
       this.promotionError = 'VALIDATION_MSG.NAME_REQUIRED';
-    } else if (this.updateSortOrder === undefined || this.updateSortOrder === 'undefined' ||
-      this.updateSortOrder === '') {
-      this.promotionError1 = 'SETUP_PROMOTIONS.INVALID_SORT_ORDER_BLANK';
+    } else if (this.updateServiceDiscount === false && this.updateProductDiscount === false) {
+      this.discountErr = 'Select any one of Service Discount Or Product Discount';
+
+    } else if (this.updateServiceDiscount === true  &&
+      ((this.updateDiscountAmount === undefined || this.updateDiscountAmount === '' || this.updateDiscountAmount === 'undefined') &&
+        (this.updateDiscountPercentage === undefined || this.updateDiscountPercentage === '' || this.updateDiscountPercentage === 'undefined'))) {
+      this.discountErr = 'Discount Amount OR Discount Percentage should not be blank';
+    } else if (this.updateProductDiscount  &&
+      ((this.updateDiscountAmount === undefined || this.updateDiscountAmount === '' || this.updateDiscountAmount === 'undefined') &&
+        (this.updateDiscountPercentage === undefined || this.updateDiscountPercentage === '' || this.updateDiscountPercentage === 'undefined'))) {
+      this.discountErr = 'Discount Amount OR Discount Percentage should not be blank';
+
     } else if (this.updateDiscountAmount !== '' && this.updateDiscountPercentage !== ''
       && this.updateDiscountAmount !== null && this.updateDiscountPercentage !== null &&
       this.updateDiscountPercentage !== undefined && this.updateDiscountAmount !== undefined) {
       this.promotionError2 = 'SETUP_PROMOTIONS.INVALID_EITHER_DISCOUNT_AMOUNT_OR_DISCOUNT_PERCENTAGE';
+    } else if ((this.updatePromotionStartDate === null || this.updatePromotionStartDate === '') && (this.updatePromotionEndDate !== null && this.updatePromotionEndDate !== '')) {
+      this.promotionError3 = 'Start Date is required';
+    } else if ((this.updatePromotionStartDate !== null && this.updatePromotionStartDate !== '') && (this.updatePromotionEndDate === null || this.updatePromotionEndDate === '')) {
+      this.promotionError3 = 'End Date is required';
     } else if (this.updatePromotionStartDate > this.updatePromotionEndDate) {
       this.promotionError3 = 'SETUP_PROMOTIONS.NOVALID_START_DATE_BEFORE_END_DATE';
+    } else if (this.updateSortOrder === undefined || this.updateSortOrder === 'undefined' ||
+      this.updateSortOrder === '') {
+      this.promotionError1 = 'SETUP_PROMOTIONS.INVALID_SORT_ORDER_BLANK';
     } else {
       if (this.updateActive === false) {
         this.updateActive = this.defaultInActive;
@@ -314,19 +372,19 @@ export class SetupPromotionsComponent implements OnInit {
       }
       this.updatePromotionObj = {
         'updateActive': this.updateActive,
-        'updateName': this.updatePromotionName,
+        'updateName': this.updatePromotionName.trim(),
         'updateServiceDiscount': this.updateServiceDiscount,
         'updateProductDiscount': this.updateProductDiscount,
         'updateDiscountAmount': this.updateDiscountAmount,
         'updateDiscountPercentage': this.updateDiscountPercentage,
-        'updatePromotionStartDate': this.updatePromotionStartDate,
-        'updatePromotionEndDate': this.updatePromotionEndDate,
+        'updatePromotionStartDate': this.updatePromotionStartDate === null ? null : this.commonService.getDBDatStr(this.updatePromotionStartDate),
+        'updatePromotionEndDate': this.updatePromotionEndDate === null ? null : this.commonService.getDBDatStr(this.updatePromotionEndDate),
         'updateSortOrder': this.updateSortOrder,
       };
       this.setupPromotionsService.editPromotion(this.updatePromotionId, this.updatePromotionObj).subscribe(
         data => {
           this.updatePromotionDetails = data['result'];
-          this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_CREATE_SUCCESS');
+          this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_UPDATE_SUCCESS');
           this.toastr.success(this.toastermessage.value, null, { timeOut: 1500 });
           this.getPromotions();
           this.clearMessages();

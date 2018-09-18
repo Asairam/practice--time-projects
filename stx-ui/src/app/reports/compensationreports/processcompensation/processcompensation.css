@@ -11,6 +11,28 @@
 .form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
 	color: black;
 }
+
+.btn-gradient-txt .fa-file-archive-o, .fa-print, .fa-cog {
+    background: -webkit-linear-gradient(0deg, #16337d 0, #05c9d0 100%);
+    background: -moz-linear-gradient(90deg, #16337d 0, #05c9d0 100%);
+    background: linear-gradient(90deg, #16337d 0, #05c9d0 100%);
+    background-position: 50% 50%;
+    -webkit-background-origin: padding-box;
+    background-origin: padding-box;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-background-size: auto auto;
+    background-size: auto auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+    -ms-background-clip: text;
+    -ms-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 300;
+}
+
 @media (device-width: 768px){
     #inner_cont {
         margin-right: 11%;

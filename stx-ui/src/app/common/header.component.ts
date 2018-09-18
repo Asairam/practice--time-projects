@@ -1,7 +1,8 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject, Input, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
 import { HeaderService } from './header.service';
+import { JwtHelper } from 'angular2-jwt';
 
 @Component({
     selector: 'app-header',
@@ -18,12 +19,30 @@ export class HeaderComponent implements OnInit {
     show = false;
     comapanyLogo = '';
     logo: SafeUrl = '';
-    navPages = [{ 'displayName': 'Home', 'link': '/home' }];
+    companyInfo: any;
+    @Output('emitCompanyInfo')
+    emitCompanyInfo: EventEmitter<any> = new EventEmitter<any>();
+    // navPages = [{ 'displayName': 'Home', 'link': '/home' }];
+    navPages = [];
+    decodedToken: any;
     constructor(private router: Router,
         @Inject('apiEndPoint') private apiEndPoint: string,
         private headerService: HeaderService) {
     }
     ngOnInit() {
+        // console.log(this.newMenu)
+        // ---Start of code for Permissions Implementation--- //
+        try {
+            this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+        } catch (error) {
+            this.decodedToken = {};
+        }
+        if (this.decodedToken.data && this.decodedToken.data.permissions) {
+            this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+        } else {
+            this.decodedToken = {};
+        }
+        // ---End of code for permissions Implementation--- //
         this.getCompanyInfo();
         // this.createTimezones(new Date());
         const navURL = window.location.href.replace(window.location.origin, '').substring(3);
@@ -155,7 +174,7 @@ export class HeaderComponent implements OnInit {
             this.navPages.push(
                 { 'displayName': 'Setup', 'link': '/setup' },
                 { 'displayName': 'Setup Company', 'link': '/setup/company' },
-                { 'displayName': 'Setup Company Info', 'link': '/setup/company/info' }
+                { 'displayName': 'Company Info', 'link': '/setup/company/info' }
             );
         } else if (navURL === 'setup/company/hours') {
             this.displayName = 'Company Hours List';
@@ -621,6 +640,8 @@ export class HeaderComponent implements OnInit {
             data => {
                 const companyData = data['result'];
                 if (companyData.cmpresult && companyData.cmpresult.length > 0) {
+                    this.companyInfo = companyData.cmpresult[0];
+                    this.emitCompanyInfo.emit(this.companyInfo);
                     this.comapanyLogo = this.apiEndPoint + '/' + companyData.cmpresult[0].Logo__c;
                 }
             },

@@ -30,7 +30,6 @@ import { FormsModule } from '@angular/forms';
 import { SafeUrl } from '@angular/platform-browser';
 import { ModifyApptService } from './modifyappt.service';
 import { ToastrService } from 'ngx-toastr';
-import * as moment from 'moment/moment';
 import { TranslateService } from 'ng2-translate';
 import { CommonService } from '../../common/common.service';
 import { DatePipe } from '@angular/common';
@@ -92,7 +91,6 @@ export class ModifyApptComponent implements OnInit {
     apptNotes: any;
     workersWithServiceDuration: any = [];
     workerHours = [];
-    weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     serviceDetailKeys = ['Duration_1__c', 'Duration_2__c', 'Duration_3__c',
         'Buffer_After__c', 'Guest_Charge__c', 'Net_Price__c'];
     appData: any;
@@ -102,6 +100,9 @@ export class ModifyApptComponent implements OnInit {
     checkBookingInterval = true;
     totalPrice = 0;
     showOptions = false;
+    activeSelect = true;
+    duplicateBookedRecords = [];
+    serviceTax: any;
     constructor(
         private activatedRoute: ActivatedRoute,
         private modifyApptService: ModifyApptService,
@@ -147,8 +148,28 @@ export class ModifyApptComponent implements OnInit {
             }
         );
         this.getApptServiceDetails(this.clientId, this.apptid);
-        this.getServiceGroups();
+        //  this.getServiceGroups();   // 30-7-2018
         this.getAllActivePackages();
+        this.getServRetTaxs();
+    }
+    /**
+ * Method to get service tax  and retail tax calculation
+ */
+    getServRetTaxs() {
+        this.modifyApptService.getServProdTax().subscribe(
+            data => {
+                const taxData = JSON.parse(data['result'][3].JSON__c);
+                this.serviceTax = taxData.serviceTax;
+            },
+            error => {
+                const errStatus = JSON.parse(error['_body'])['status'];
+                if (errStatus === '2085' || errStatus === '2071') {
+                    if (this.router.url !== '/') {
+                        localStorage.setItem('page', this.router.url);
+                        this.router.navigate(['/']).then(() => { });
+                    }
+                }
+            });
     }
     /* method to getTimeFromDate  */
     getTimeFromDate(dateObj: Date) {
@@ -175,8 +196,9 @@ export class ModifyApptComponent implements OnInit {
                     this.rows[i]['IsPackage'] = 0;
                     this.rows[i]['Booked_Package__c'] = '';
                     this.serviceDetailsList[i] = this.rows[i].servList;
+                    console.log(this.serviceDetailsList[i])
                     this.workerList[i] = this.rows[i].workerList;
-                    this.assaignServiceDurations(this.workerList[i], this.rows[i].workerName, i);
+                    this.assaignServiceDurations(this.workerList[i], this.rows[i].workerName, i, true);
                     this.rows[i]['serviceName'] = this.rows[i]['Id'];
                     const pckgId = this.rows[i]['pckgId'];
                     if (!isNullOrUndefined(pckgId) && pckgId !== '') {
@@ -265,25 +287,42 @@ export class ModifyApptComponent implements OnInit {
         // this.clientdata = JSON.parse(localStorage.getItem('bookstanding'));
     }
 
-    assaignServiceDurations(workers: Array<any>, workerId: string, index: number) {
+    assaignServiceDurations(workers: Array<any>, workerId: string, index: number, onLoading?: boolean) {
         const selectedWorker = workers.filter((worker) => worker.workername === workerId).map((worker) => {
-            Object.assign(this.rows[index], this.commonService.getServiceDurations(worker));
+            if (!onLoading) {
+                Object.assign(this.rows[index], this.commonService.getServiceDurations(worker));
+            }
         });
         if (selectedWorker.length === 0) {
-            const serviceDetails = this.rows[index].serviceName.split('$');
-            this.rows[index]['Duration_1__c'] = +serviceDetails[1];
-            this.rows[index]['Duration_2__c'] = +serviceDetails[2];
-            this.rows[index]['Duration_3__c'] = +serviceDetails[3];
-            this.rows[index]['Buffer_After__c'] = +serviceDetails[4];
-            this.rows[index]['Guest_Charge__c'] = +serviceDetails[5];
-            this.rows[index]['Net_Price__c'] = +serviceDetails[6];
-            this.rows[index]['Duration_1_Available_for_Other_Work__c'] = this.rows[index]['sDuration1Available'];
-            this.rows[index]['Duration_2_Available_for_Other_Work__c'] = this.rows[index]['sDuration2Available'];
-            this.rows[index]['Duration_3_Available_for_Other_Work__c'] = this.rows[index]['sDuration3Available'];
-            this.workerList[index].push({ workername: workerId, name: '(' + this.rows[index].name + ')' });
+            const serviceIndex = this.serviceDetailsList[index].findIndex((service) => service.Id === this.rows[index]['Id']);
+            this.workerList[index].push(
+                {
+                    workername: workerId,
+                    name: '(' + this.rows[index].name + ')',
+                    sduration1: this.serviceDetailsList[index][serviceIndex]['Duration_1__c'],
+                    sduration2: this.serviceDetailsList[index][serviceIndex]['Duration_2__c'],
+                    sduration3: this.serviceDetailsList[index][serviceIndex]['Duration_3__c'],
+                    sbuffer: this.serviceDetailsList[index][serviceIndex]['Buffer_After__c'],
+                    sDuration_1_Available_for_Other_Work__c: this.serviceDetailsList[index][serviceIndex]['Duration_1_Available_for_Other_Work__c'],
+                    sDuration_2_Available_for_Other_Work__c: this.serviceDetailsList[index][serviceIndex]['Duration_2_Available_for_Other_Work__c'],
+                    sDuration_3_Available_for_Other_Work__c: this.serviceDetailsList[index][serviceIndex]['Duration_3_Available_for_Other_Work__c'],
+                    Net_Price__c: this.serviceDetailsList[index][serviceIndex]['Net_Price__c'],
+                    Guest_Charge__c: this.serviceDetailsList[index][serviceIndex]['Guest_Charge__c'],
+                    Taxable__c: this.serviceDetailsList[index][serviceIndex]['Taxable__c']
+                });
+            // const serviceDetails = this.rows[index].serviceName.split('$');
+            // this.rows[index]['Duration_1__c'] = +serviceDetails[1];
+            // this.rows[index]['Duration_2__c'] = +serviceDetails[2];
+            // this.rows[index]['Duration_3__c'] = +serviceDetails[3];
+            // this.rows[index]['Buffer_After__c'] = +serviceDetails[4];
+            // this.rows[index]['Guest_Charge__c'] = +serviceDetails[5];
+            // this.rows[index]['Net_Price__c'] = +serviceDetails[6];
+            // this.rows[index]['Duration_1_Available_for_Other_Work__c'] = this.rows[index]['sDuration1Available'];
+            // this.rows[index]['Duration_2_Available_for_Other_Work__c'] = this.rows[index]['sDuration2Available'];
+            // this.rows[index]['Duration_3_Available_for_Other_Work__c'] = this.rows[index]['sDuration3Available'];
+            // this.workerList[index].push({ workername: workerId, name: '(' + this.rows[index].name + ')' });
         }
     }
-
     removeServiceDetails(index) {
         this.serviceDetailKeys.map((key) => {
             delete this.rows[index][key];
@@ -291,11 +330,17 @@ export class ModifyApptComponent implements OnInit {
     }
     /* Method to get service details */
     getApptServiceDetails(clientId, apptId) {
-        this.modifyApptService.getApptServices(clientId, apptId).subscribe(data => {
+        const reqDate = this.commonService.getDBDatStr(new Date());
+        this.modifyApptService.getApptServices(clientId, apptId, reqDate).subscribe(data => {
             const resData = data['result'];
             this.rows = resData.srvcresult;
+            this.duplicateBookedRecords.push(resData.srvcresult);
             this.appData = resData.apptrst[0];
-            this.apptNotes = this.appData.Notes__c === 'null' || this.appData.Notes__c === 'undefined' ? null : this.appData.Notes__c;
+            this.apptNotes = this.appData.notes === 'null' || this.appData.notes === 'undefined' ? null : this.appData.notes;
+            // 30-7-2018
+            this.serviceGroupList = resData.srvgResult;
+            this.serviceGroupName = this.serviceGroupList.length > 0 ? this.serviceGroupList[0].serviceGroupName + '$' + this.serviceGroupList[0].serviceGroupColor : undefined;
+            // 30-7-2018
             this.updateBookedRecords();
             this.bsValue = this.commonService.getDateTmFrmDBDateStr(this.appData.Appt_Date_Time__c);
             this.modifyTime = new DatePipe('en-Us').transform(this.bsValue, 'hh:mm a');
@@ -321,7 +366,7 @@ export class ModifyApptComponent implements OnInit {
     addServices(i) {
         this.rows.push({
             workerName: '', Id: '', serviceGroup: this.serviceGroupName, IsPackage: 0, Booked_Package__c: '',
-            Duration_1__c: '', Duration_2__c: '', Duration_3__c: '', Buffer_After__c: '', Rebooked__c: 0
+            Duration_1__c: '', Duration_2__c: '', Duration_3__c: '', Buffer_After__c: '', Rebooked__c: 0, apptId: ''
         });
         const index = this.rows.length - 1;
         this.workerList[i] = [];
@@ -334,8 +379,8 @@ export class ModifyApptComponent implements OnInit {
     removeServices(row, index) {
         if (this.rows[index].tsId) {
             this.rows[index]['delete'] = true;
+            this.daleteArray.push(this.rows[index]);
         }
-        this.daleteArray.push(this.rows[index]);
         this.rows.splice(index, 1);
         this.workerList.splice(index, 1);
         this.serviceDetailsList.splice(index, 1);
@@ -346,7 +391,8 @@ export class ModifyApptComponent implements OnInit {
     }
     /*method to get service groups */
     getServiceGroups() {
-        this.modifyApptService.getServiceGroups('Service').subscribe(data => {
+        const reqDate = this.commonService.getDBDatStr(this.bsValue);
+        this.modifyApptService.getServiceGroups('Service', reqDate).subscribe(data => {
             this.serviceGroupList = [];
             this.serviceGroupList = data['result']
                 .filter(filterList => filterList.active && !filterList.isSystem);
@@ -409,7 +455,8 @@ export class ModifyApptComponent implements OnInit {
                 }
                 const length = this.rows.length;
                 services.filter((service, index) => {
-                    this.rows.push({ Id: '', serviceGroup: DupserviceGroupName });
+                    this.rows.push({ Id: '', serviceGroup: DupserviceGroupName, Rebooked__c: 0, apptId: '' });
+
                     this.rows[length + 0] = updateRow ? updateRow : this.rows[length + 0];
                     this.serviceDetailsList[length + index] = services;
                     const workers = [];
@@ -488,6 +535,7 @@ export class ModifyApptComponent implements OnInit {
             }
             this.duration1Error = isDurationEmpty > 0 ? this.duration1Error : '';
         }
+        // this.searchForAppointment1();
     }
     servicesListOnChange(serviceId, i) {
         this.finalTimes = [];
@@ -547,7 +595,7 @@ export class ModifyApptComponent implements OnInit {
     }
 
     setWorkerServiceDuration() {
-        let serviceStartDate: Date = this.timeConversionToDate(this.modifyTime, this.bsValue);
+        let serviceStartDate: Date = this.commonService.timeConversionToDate(this.modifyTime, this.bsValue);
         this.workersWithServiceDuration = [];
         let apptDuration: { 'startTime': Date, 'endTime': Date };
         this.rows.forEach((obj, i) => {
@@ -576,23 +624,7 @@ export class ModifyApptComponent implements OnInit {
         return selectedDate;
     }
 
-    timeConversionToDate(time: string, bookingDate: Date): Date {
-        let hours: any;
-        let minutes: any = time.split(' ')[0].split(':')[1];
-        if (time.split(' ')[1] === 'AM') {
-            hours = time.split(' ')[0].split(':')[0];
-            if (+hours === 12) {
-                hours = 0;
-            }
-        } else if (time.split(' ')[1] === 'PM') {
-            hours = time.split(' ')[0].split(':')[0];
-            if (parseInt(hours, 10) !== 12) {
-                hours = parseInt(hours, 10) + 12;
-            }
-        }
-        minutes = parseInt(minutes, 10);
-        return new Date(bookingDate.getFullYear(), bookingDate.getMonth(), bookingDate.getDate(), hours, minutes);
-    }
+
 
     /* Method to get on select time and date */
     scheduleButtonShow(searchData, index) {
@@ -603,90 +635,16 @@ export class ModifyApptComponent implements OnInit {
         this.selectedIndex = index;
     }
 
-    /* Method to search for appointments */
-    compareWorkerTimings(workerStartDate: Date, workerEndDate: Date, reqApptStart: Date, reqApptEnd: Date): boolean {
-        const isExsistInworkerHours = (reqApptStart.getTime() >= workerStartDate.getTime()) && (reqApptEnd.getTime() <= workerEndDate.getTime()) ? true : false;
-        return isExsistInworkerHours;
-    }
 
-    checkWorkerServiceStatus(reqApptStart: Date, reqApptEnd: Date, workerId: string): boolean {
-        const workerHours = this.getWorkerHours(reqApptStart, workerId);
-        let isExsistInworkerHours: boolean;
-        if ((workerHours.startTime !== '' && !isNullOrUndefined(workerHours.startTime)) || (workerHours.endTime !== '' && !isNullOrUndefined(workerHours.endTime))) {
-            const startTime = this.timeConversionToDate(workerHours.startTime, reqApptStart);
-            const endTime = this.timeConversionToDate(workerHours.endTime, reqApptStart);
-            isExsistInworkerHours = this.compareWorkerTimings(startTime, endTime, reqApptStart, reqApptEnd);
-        } else {
-            isExsistInworkerHours = false;
-        }
 
-        return !isExsistInworkerHours;
-    }
 
-    getWorkerHours(reqApptStart: Date, workerId: string): { 'startTime': string, 'endTime': string } {
-        const selectedWorker = this.workerHours.filter((worker) => worker.Id === workerId)[0];
-        const day = this.weekDays[reqApptStart.getDay()];
-        let workerTimings: any;
-        if (!isNullOrUndefined(selectedWorker.Date__c)) {
-            workerTimings = this.getCustomHoursData(selectedWorker, reqApptStart);
-        }
-        if (!workerTimings) {
-            workerTimings = {};
-            for (const key in selectedWorker) {
-                if (key.toLowerCase() === day.toLowerCase() + 'starttime__c') {
-                    workerTimings['startTime'] = selectedWorker[key];
-                } else if (key.toLowerCase() === day.toLowerCase() + 'endtime__c') {
-                    workerTimings['endTime'] = selectedWorker[key];
-                }
-            }
-        }
-        return workerTimings;
-    }
-
-    dateMatch(apptDate: Date, customHoursDate: Date): boolean {
-
-        return (apptDate.getTime() === customHoursDate.getTime());
-    }
-
-    getCustomHoursData(selectedWorker, reqApptStart: Date) {
-        const length = selectedWorker.Date__c.split(',').length;
-        let workerTimings: any;
-        for (let i = 0; i < length; i++) {
-            const year = selectedWorker.Date__c.split(',')[i].split('-')[0];
-            const month = +selectedWorker.Date__c.split(',')[i].split('-')[1] - 1;
-            const day = selectedWorker.Date__c.split(',')[i].split('-')[2];
-            const isOffDay = selectedWorker.All_Day_Off__c.split(',')[i];
-            const StartTime__c = +isOffDay === 1 ? '' : selectedWorker.StartTime__c.split(',')[i];
-            const EndTime__c = +isOffDay === 1 ? '' : selectedWorker.EndTime__c.split(',')[i];
-            const apptDateNoTime = new Date(reqApptStart.getFullYear(), reqApptStart.getMonth(), reqApptStart.getDate(), 0, 0, 0);
-            if (this.dateMatch(apptDateNoTime, new Date(year, month, day, 0, 0, 0))) {
-                workerTimings = {
-                    startTime: StartTime__c,
-                    endTime: EndTime__c,
-                };
-                break;
-            }
-        }
-        return workerTimings;
-
-    }
-
-    compareDatesForAppointment(apptStart: Date, apptEnd: Date, reqApptStart: Date, reqApptEnd: Date): boolean {
-        if (reqApptStart.getTime() >= apptStart.getTime() && reqApptStart.getTime() < apptEnd.getTime()) {
-            return true;
-        } else if (reqApptEnd.getTime() > apptStart.getTime() && reqApptEnd.getTime() <= apptEnd.getTime()) {
-            return true;
-        } else if (reqApptStart.getTime() <= apptStart.getTime() && reqApptEnd.getTime() >= apptEnd.getTime()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    searchForAppointment1() {
+    searchForAppointment1(isSaving?: boolean) {
+        this.activeSelect = false;
         if (this.bookingInterValError !== '' && this.duration1Error !== '') {
             this.checkBookingInterval = false;
             window.scrollTo(0, 0);
         }
+        this.workerHours = [];
         this.setWorkerServiceDuration();
         this.dateAndTimeError = '';
         const ids = [];
@@ -705,25 +663,27 @@ export class ModifyApptComponent implements OnInit {
             'Appt_Start': this.commonService.getDBDatTmStr(startdate).split(' ')[0],
             'Appt_End': this.commonService.getDBDatTmStr(endDate).split(' ')[0],
             // 'serviceId': this.serviceId,
-            'page': 'bookStanding'
+            'page': 'modify',
+            'apptId': this.apptid
         };
         this.finalTimes = [];
         this.modifyApptService.searchAppt(searchObj).subscribe(data => {
+            this.activeSelect = true;
             this.workerHours = data['result']['companyhours'];
             const apptList = data['result']['result'];
             for (let i = 0; i < this.rows.length; i++) {
                 const workerTime = this.workersWithServiceDuration[i];
                 if (this.rows[i]['workerName']) {
-                    if (this.checkWorkerServiceStatus(workerTime.startTime, workerTime.endTime, workerTime.workerId)) {
+                    if (this.commonService.checkWorkerServiceStatus(workerTime.startTime, workerTime.endTime, workerTime.workerId, this.workerHours)) {
                         this.dateAndTimeError = 'MODIFY_APPT.APPOINTMENT_DATEANDTIME_ERROR_MSG';
                     } else {
                         if (apptList.length > 0) {
                             for (let j = 0; j < apptList.length; j++) {
-                                if (this.rows[i]['workerName'] === apptList[j]['workerId']) {
+                                if (this.rows[i]['workerName'] === apptList[j]['workerId'] && this.rows[i]['apptId'] !== apptList[j]['Id']) {
                                     const apptDuration = data['result']['result'][j]['Service_Duration'];
                                     const apptStartTime = this.commonService.getDateTmFrmDBDateStr(data['result']['result'][j]['Booking_Date_Time']);
                                     const apptEndDate = new Date(apptStartTime.getTime() + parseInt(apptDuration, 10) * 60000);
-                                    if (this.compareDatesForAppointment(apptStartTime, apptEndDate, workerTime.startTime, workerTime.endTime)) {
+                                    if (this.commonService.compareDatesForAppointment(apptStartTime, apptEndDate, workerTime.startTime, workerTime.endTime)) {
                                         this.dateAndTimeError = 'MODIFY_APPT.APPOINTMENT_DATEANDTIME_ERROR_MSG';
                                         break;
                                     }
@@ -731,6 +691,13 @@ export class ModifyApptComponent implements OnInit {
                             }
                         }
                     }
+                }
+            }
+            if (isSaving) {
+                if (!this.dateAndTimeError) {
+                    this.modifyAppt();
+                } else {
+                    window.scrollTo(0, 0);
                 }
             }
         },
@@ -797,65 +764,80 @@ export class ModifyApptComponent implements OnInit {
             this.checkBookingInterval = true;
             window.scrollTo(0, 0);
         } else {
-            const otherDetails = ['Duration_1_Available_for_Other_Work__c', 'Duration_2_Available_for_Other_Work__c',
-                'Duration_3_Available_for_Other_Work__c'];
-            otherDetails.map((key) => {
-                this.rows.map((data) => {
-                    data[key] = data[key] ? this.defaultActive : this.defaultInActive;
-                    return data;
-                });
-            });
-            let startTimeHour: any = 0;
-            let startTimeMins = 0;
-            if (this.modifyTime.split(' ')[1] === 'AM') {
-                startTimeHour = this.modifyTime.split(' ')[0].split(':')[0];
-                startTimeMins = this.modifyTime.split(' ')[0].split(':')[1];
-            } else if (this.modifyTime.split(' ')[1] === 'PM') {
-                startTimeHour = this.modifyTime.split(' ')[0].split(':')[0];
-                if (parseInt(startTimeHour, 10) !== 12) {
-                    startTimeHour = parseInt(startTimeHour, 10) + 12;
-                }
-                startTimeMins = this.modifyTime.split(' ')[0].split(':')[1];
+            if (this.dateAndTimeError) {
+                this.modifyAppt();
+            } else {
+                this.searchForAppointment1(true);
             }
-            // new Date(this.bsValue.getFullYear(), this.bsValue.getMonth(),
-            //    this.bsValue.getDate(), startTimeHour, startTimeMins),
-            const apptDate = this.commonService.getDBDatTmStr(new Date(this.bsValue.getFullYear(), this.bsValue.getMonth(),
-                this.bsValue.getDate(), startTimeHour, startTimeMins));
-            const IsPackageLength = this.rows.filter((obj) => obj['IsPackage'] === 1).length;
-            this.rows = this.rows.filter((obj) => {
-                if (IsPackageLength > 0) {
-                    obj['IsPackage'] = 1;
-                }
-                return obj;
-            });
-            const modifyBookingData = {
-                'Client_Type__c': this.appData.Client_Type__c,
-                'Client__c': this.clientId,
-                'Duration__c': this.sumOfServiceDurations,
-                'Appt_Date_Time__c': apptDate,
-                'servicesData': this.rows,
-                'apptId': this.apptid,
-                'daleteArray': this.daleteArray,
-                'Rebooked__c': 0,
-                'IsPackage': IsPackageLength > 0 ? 1 : 0,
-                'Notes__c': this.apptNotes
-            };
-            this.modifyApptService.modifyAppointment(modifyBookingData).subscribe(data => {
-                this.router.navigate(['/appointments'], { queryParams: { date: apptDate.split(' ')[0] } }).then(() => {
-                    const toastermessage: any = this.translateService.get('MODIFY_APPT.MODIFIED_SUCCESS');
-                    this.toastr.success(toastermessage.value, null, { timeOut: 2000 });
-                });
-            },
-                error => {
-                    const errStatus = JSON.parse(error['_body'])['status'];
-                    if (errStatus === '2085' || errStatus === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
-                        }
-                    }
-                });
         }
+    }
+
+    modifyAppt() {
+        // const otherDetails = ['Duration_1_Available_for_Other_Work__c', 'Duration_2_Available_for_Other_Work__c',
+        //     'Duration_3_Available_for_Other_Work__c'];
+        // otherDetails.map((key) => {
+        //     this.rows.map((data) => {
+        //         data[key] = data[key] ? this.defaultActive : this.defaultInActive;
+        //         return data;
+        //     });
+        // });
+        let startTimeHour: any = 0;
+        let startTimeMins = 0;
+        if (this.modifyTime.split(' ')[1] === 'AM') {
+            startTimeHour = this.modifyTime.split(' ')[0].split(':')[0];
+            startTimeMins = this.modifyTime.split(' ')[0].split(':')[1];
+        } else if (this.modifyTime.split(' ')[1] === 'PM') {
+            startTimeHour = this.modifyTime.split(' ')[0].split(':')[0];
+            if (parseInt(startTimeHour, 10) !== 12) {
+                startTimeHour = parseInt(startTimeHour, 10) + 12;
+            }
+            startTimeMins = this.modifyTime.split(' ')[0].split(':')[1];
+        }
+        // new Date(this.bsValue.getFullYear(), this.bsValue.getMonth(),
+        //    this.bsValue.getDate(), startTimeHour, startTimeMins),
+        const apptDate = this.commonService.getDBDatTmStr(new Date(this.bsValue.getFullYear(), this.bsValue.getMonth(),
+            this.bsValue.getDate(), startTimeHour, startTimeMins));
+        const IsPackage = this.rows.filter((obj) => obj['IsPackage'] === 1).length > 0 ? true : false;
+        const serviceTaxResult = this.commonService.calculateServiceTax(+this.serviceTax, this.rows, IsPackage);
+        const servicesData = serviceTaxResult.bookingData;
+            for (let i = 0; i < servicesData.length; i++) {
+                for (let j = 0; j < this.serviceDetailsList[i].length; j++) {
+                    if (this.serviceDetailsList[i][j]['Id'] === servicesData[i]['Id']) {
+                        servicesData[i]['Resources__c'] = this.serviceDetailsList[i][j]['Resources__c'];
+                    }
+                }
+            }
+        const modifyBookingData = {
+            'Client_Type__c': this.appData.visttype,
+            'Client__c': this.clientId,
+            'Duration__c': this.sumOfServiceDurations,
+            'Appt_Date_Time__c': apptDate,
+            'servicesData': serviceTaxResult.bookingData,
+            'apptId': this.apptid,
+            'daleteArray': this.daleteArray,
+            'Rebooked__c': 0,
+            'IsPackage': IsPackage ? 1 : 0,
+            'Notes__c': this.apptNotes,
+            'Service_Tax__c': serviceTaxResult.serviceTax,
+            'Service_Sales__c': serviceTaxResult.sales,
+            'Status__c': this.appData.apstatus,
+            'bookingType': 'modify'
+        };
+        this.modifyApptService.modifyAppointment(modifyBookingData).subscribe(data => {
+            this.router.navigate(['/appointments'], { queryParams: { date: apptDate.split(' ')[0] } }).then(() => {
+                const toastermessage: any = this.translateService.get('MODIFY_APPT.MODIFIED_SUCCESS');
+                this.toastr.success(toastermessage.value, null, { timeOut: 2000 });
+            });
+        },
+            error => {
+                const errStatus = JSON.parse(error['_body'])['status'];
+                if (errStatus === '2085' || errStatus === '2071') {
+                    if (this.router.url !== '/') {
+                        localStorage.setItem('page', this.router.url);
+                        this.router.navigate(['/']).then(() => { });
+                    }
+                }
+            });
     }
     checkForServices(services: Array<any>, property1, property2, property3): boolean {
         const properties = [property1, property2, property3];

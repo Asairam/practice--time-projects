@@ -39,21 +39,15 @@
 </style>
 
 <body class="drawer drawer--left">
-    <!-- <app-header></app-header>-->
-
-
     <app-header [newMenu]="'noNav'"></app-header>
     <div id="wrapper_setup_new">
         <section id="inner_cont">
             <div class="container form_cont" style="overflow: inherit;">
-
                 <div class="col-md-3 apointmnet-left">
-
                     <!-- Select Date:-->
                     <form #myForm="ngForm" novalidate>
                         <my-date-picker name="mydate" [options]="myDatePickerOptions" [(ngModel)]="datePickerDate" (dateChanged)="onDateChanged($event); datepickerChange($event);"></my-date-picker>
                     </form>
-
                     <!-- <form #myForm="myForm" novalidate>
                         <my-date-picker name="mydate" [options]="myDatePickerOptions" formControlName="myDate"></my-date-picker>
 
@@ -141,9 +135,9 @@
                             <label class="appointment-label">Worker:</label>
                         </div>-->
                         <div class="col-sm-12">
-                            <select [(ngModel)]="selWorker" (change)="fetchWorkerCalendar($event.target.value); fetchWorkerCalendarPerDay($event.target.value);"
+                            <select [(ngModel)]="selWorker" [disabled]="View_Only_My_Appointments__c === 1" (change)="fetchWorkerCalendar($event.target.value); fetchWorkerCalendarPerDay($event.target.value);"
                                 class="appointment-select-width select-bg">
-                                <option value="all">All</option>
+                                <option value="all" *ngIf="View_Only_My_Appointments__c !== 1">All</option>
                                 <option *ngFor="let workers of getWorker" value="{{workers.workerId}}${{workers.names}}">{{workers.names}} </option>
                             </select>
                         </div>
@@ -181,7 +175,7 @@
                             </li> -->
                             <li *ngFor="let items of callenderIcons" [style.opacity]="items.opacity" style="cursor: pointer;">
                                 <a>
-                                    <img (click)="fetchWeek(items.id)" class="img-responsive" src="{{items.img}}" alt="img">
+                                    <img (click)="fetchWeek(items.id)" class="img-responsive" src="{{items.img}}" alt="img" id="ajaxRefresh{{items.name}}">
                                     <span>{{items.name}}</span>
                                 </a>
                             </li>
@@ -215,23 +209,29 @@
                     </div> -->
                     <div class="row mt-10">
                         <div class="col-md-12 appointment-button-sidenav">
-                            <a (click)="showBookApptModal()" class="btn btn-default btn-lg mb-10">
-                                FIND APPT</a>
-
-                            <a (click)="showBookStandingModal()" class="btn btn-default btn-lg mb-10">
-                                STANDING</a>
-
-                            <!-- <a [routerLink]="['/appointment/bookoutappointment']" class="btn btn-default mb-10">
-                                BOOK OUT TIME</a>
-
-                            <a [routerLink]="['/appointment/bookclass']" class="btn btn-default mb-10">
-                                BOOK CLASS</a> -->
-
-                            <a [routerLink]="['/appointment/waitinglist']" class="btn btn-default btn-lg mb-10">
-                                WAITING LIST </a>
-
+                            <div *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][2]['allowAcces']">
+                                <a (click)="showBookApptModal()" class="btn btn-default btn-lg mb-10">
+                                    FIND APPT</a>
+                            </div>
+                            <div *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][6]['allowAcces']">
+                                <a (click)="showBookStandingModal()" class="btn btn-default btn-lg mb-10">
+                                    STANDING</a>
+                            </div>
+                            <!-- <div *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][3]['allowAcces']"> -->
+                            <!-- <a [routerLink]="['/appointment/bookclass']" class="btn btn-default mb-10">
+                                BOOK CLASS</a>  -->
+                            <!-- </div> -->
+                            <!-- <div *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][9]['allowAcces']">
+                                <a [routerLink]="['/appointment/waitinglist']" class="btn btn-default btn-lg mb-10">
+                                    WAITING LIST </a>
+                            </div> -->
                             <a (click)="showMessageBoardModal()" class="btn btn-default btn-lg mb-10">
                                 MESSAGE BOARD</a>
+
+                            <div *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][4]['allowAcces']">
+                                <a [routerLink]="['/appointment/bookoutappointment']" class="btn btn-default mb-10">
+                                    BOOK OUT TIME</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -257,8 +257,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="text-center mt-40">
-                                        <button class="save-btn" type="button" (click)='cancelModel()'>Close</button>
-                                        <button class="cancel-btn" type="button" (click)='cancelModel()'>{{'BUTTON.CANCEL' | translate}}</button>
+                                        <button class="save-btn" type="button" (click)="msgBoardModal.hide()">Close</button>
+                                        <button class="cancel-btn" type="button" (click)="msgBoardModal.hide()">{{'BUTTON.CANCEL' | translate}}</button>
                                     </div>
                                 </div>
                             </div>
@@ -298,7 +298,7 @@
                                 </div>
                             </div>-->
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12" style="width: 102%;">
                             <!-- <div class="table-responsive calender-table">
                                 <table class="table  table-bordered-white white">
                                     <thead>
@@ -327,6 +327,9 @@
                                     </tbody>
                                 </table>
                             </div>  -->
+                            <div *ngIf="weekdayDateDisplay" class="apont-head-large2  mb-20 mt-25">
+                                {{weekdayDateDisplay}}
+                            </div>
 
                             <div id='calendar' #calendar></div>
 
@@ -351,7 +354,7 @@
                                     </thead>-->
                                     <tbody>
                                         <tr *ngFor='let apptData of appointmentsList'>
-                                            <td style="min-width:106px; width:106px; opacity: 0.8;" class="font-400">{{ apptData.apdate | date: 'MM/dd/yyyy'}} {{apptData.apdate | date:'h:mm a'}}
+                                            <td style="min-width:106px; width:106px; opacity: 0.8;" class="font-400">{{apptData.displayAptdate[0]}} {{apptData.displayAptdate[1]}}
                                             </td>
                                             <td style="min-width:200px" class="tbl-txt text-center font-400" style="cursor:pointer" *ngIf="apptData.clientId" width="15%"
                                                 [routerLink]="['/client/edit/'+apptData.clientId]">
@@ -434,11 +437,11 @@
                                                     *ngIf="apptData.notes != ''  && apptData.notes != 'null' && apptData.notes != null && apptData.notes != undefined && apptData.notes != 'undefined'">
                                                     <img src="assets/images/notes.png" width="25" alt="img">
                                                 </a>
-                                                <a *ngIf="apptData.Is_Booked_Out__c == 0 && apptData.apstatus != 'No Show'" [routerLink]="['/appointment/modifyappt/' + apptData.clientId + '/' + apptData.apptid]"
+                                                <a *ngIf="apptData.Is_Booked_Out__c == 0 && apptData.apstatus != 'No Show' && apptData.apstatus != 'Complete'" [routerLink]="['/appointment/modifyappt/' + apptData.clientId + '/' + apptData.apptid]"
                                                     style="display:inline-block;cursor:pointer; vertical-align:middle; margin-right:10px;">
                                                     <img src="assets/images/edit.png" width="16" alt="img">
                                                 </a>
-
+                                                <!-- {{apptDatas.apdate | date: 'yyyy-MM-dd'}} {{cldDate}} -->
                                             </td>
                                         </tr>
 
@@ -450,8 +453,8 @@
                 </div>
             </div>
         </section>
-        <!-- <app-rightbar></app-rightbar> -->
-        <div class="sidebar1-icons">
+        <app-rightbar></app-rightbar>
+        <!-- <div class="sidebar1-icons">
             <ul>
                 <li>
                     <a [routerLink]="['/appointments']">
@@ -496,7 +499,7 @@
                     </a>
                 </li>
             </ul>
-        </div>
+        </div> -->
     </div>
     <!----------------------book Appt modal------------------------>
     <button style="display: none" id="bookApptModalModalmyBtn">Open Modal</button>
@@ -541,8 +544,10 @@
                                         </div>
                                         <div class="staff-search-list-name" (click)="getUserData(client)" [routerLink]="['/appointment/book']">
                                             <span id="findApptClear">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
-                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
-                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                            <span *ngIf="hideClientInfo === 0">
+                                                <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
+                                                <div class="staff-search-list-email">{{client.Email}}</div>
+                                            </span>
                                         </div>
 
                                     </div>
@@ -599,8 +604,10 @@
                                         </div>
                                         <div class="staff-search-list-name" (click)="bookStandingPage(client)">
                                             <span id="bookStandingClear">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
-                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
-                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                            <span *ngIf="hideClientInfo === 0">
+                                                <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
+                                                <div class="staff-search-list-email">{{client.Email}}</div>
+                                            </span>
                                         </div>
 
                                     </div>
@@ -644,7 +651,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <button *ngIf="(expbookskipbutton == 'true' && expbookskipbutton != '')" type="button" class="btn btn-primary pull-left ml-10"
+                                    <button *ngIf="(expbookskipbutton == 'true' && expbookskipbutton != '')" type="button" class="btn btn-primary pull-left ml-9"
                                         style="background: #0188bd;" (click)="skip()">Skip </button>
                                 </div>
                             </div>
@@ -666,8 +673,10 @@
                                         </div>
                                         <div class="staff-search-list-name" (click)="expressBookingGetUserData(client)">
                                             <span id="firstLastClearData">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
-                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
-                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                            <span *ngIf="hideClientInfo === 0">
+                                                <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}} | {{client.MobilePhone}}</div>
+                                                <div class="staff-search-list-email">{{client.Email}}</div>
+                                            </span>
                                         </div>
 
                                     </div>
@@ -687,7 +696,9 @@
         <div class="modal-content">
             <span id="cancel1" (click)="closePopup()" class="close close-list">&times;</span>
             <div class="modal-dialog ">
-
+                <div *ngIf="errResources" class="red text-center errmsg1">
+                    <h6>{{errResources | translate}}</h6>
+                </div>
                 <div class="modal-body">
                     <!-- <h4 class="mb-10"> Express Booking </h4> -->
                     <h5 class="appoinment-heading">
@@ -746,15 +757,23 @@
                             <label>{{ 'APPOINTMENTS_MAIN_PAGE.MOBILE' | translate }}</label>
                         </div>
                         <div class="col-md-7 mb-5">
-                            <input type="text" class="form-control" maxlength="15" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                            <input type="text" class="form-control" style="width:70px !important; float: left;" maxlength="3" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                id="countrycode" (keypress)='hyphen_generate_mobile(countrycode);clearErrorMsg();' name="countrycode"
+                                [(ngModel)]="countrycode">
+
+                            <input type="text" class="form-control" style="width:calc(100% - 80px) !important; float:right;" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
                                 id="mobileNumber" (keypress)='hyphen_generate_mobile(mobileNumber);clearErrorMsg();' name="mobileNumber"
                                 [(ngModel)]="mobileNumber">
                         </div>
                     </div>
                     <div class="red text-center">
+                        <h6> {{countrycodeError | translate}}</h6>
+                    </div>
+                    <div class="red text-center">
                         <h6> {{errormobilephone | translate}}</h6>
                     </div>
-                    <div class="clearfix">
+
+                    <!-- <div class="clearfix">
                         <div class="col-md-5">
                             <label> {{ 'APPOINTMENTS_MAIN_PAGE.MOBILE_CARRIER' | translate }}</label>
                         </div>
@@ -763,7 +782,7 @@
                                 <option *ngFor="let mobile of mobileCarrierslist" id="mobileCarrier" value="{{mobile}}">{{mobile}}</option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="clearfix">
                         <div class="col-md-5">
                             <span class="red" *ngIf="allowQuickAddAccess == true && clientfieldPrimaryEmail == true">*</span>
@@ -775,6 +794,9 @@
                     </div>
                     <div class="red text-center">
                         <h6> {{errorEmail | translate}}</h6>
+                    </div>
+                    <div class="red text-center">
+                        <h6> {{validationEmailError | translate}}</h6>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -857,13 +879,33 @@
 
                                     <p class="mb-5">*Express Booking may cause overbooking and/or conflicting appointments</p>
                                     <div class="text-center">
+                                        <div id="loader1" style="display: none; margin-bottom: 7px; ">
+                                            <img style="width:20px;" src="../../../assets/images/Ripple.gif">
+                                        </div>
 
-                                        <button class="btn btn-sucess btn-gradient-txt" (click)="saveExpressBooking()">
-                                            <span>Save</span>
-                                        </button>
-                                        <button class="btn btn-danger" (click)="closePopup()" id="cancelExpress2">
-                                            <span>Cancel</span>
-                                        </button>
+                                        <div *ngIf="(bookAnyWay !== 'Book Anyway' && bookRoomAnyWay !== 'Book RoomAnyWay')" class="text-center">
+                                            <button class="btn btn-sucess btn-gradient-txt" (click)="saveExpressBooking()">
+                                                <span>Save</span>
+                                            </button>
+                                            <button class="btn btn-danger" (click)="closePopup()" id="cancelExpress2">Cancel</button>
+                                        </div>
+
+                                        <div *ngIf="bookAnyWay === 'Book Anyway' " class="text-center">
+                                            <input type="hidden" value="0" id="anyway" />
+                                            <button class="btn btn-sucess btn-gradient-txt" (click)="saveExpressBooking()">
+                                                <span>Book Anyway</span>
+                                            </button>
+                                            <button class="btn btn-danger" (click)="closePopup();expressModel.hide(); ">Cancel</button>
+                                        </div>
+                                        <div *ngIf="bookRoomAnyWay === 'Book RoomAnyWay' " class="text-center">
+                                            <input type="hidden" value="0" id="bookRoomAnyWay" />
+                                            <button class="btn btn-sucess btn-gradient-txt" (click)="saveExpressBooking()">
+                                                <span>Book Anyway</span>
+                                            </button>
+                                            <button class="btn btn-danger" (click)="closePopup();expressModel.hide(); ">Cancel</button>
+                                        </div>
+
+
 
                                     </div>
 
@@ -886,7 +928,9 @@
         <div class="modal-content">
             <span id="expressClose" (click)="closePopup()" class="close close-list">&times;</span>
             <div class="modal-dialog ">
-
+                <div *ngIf="errResources" class="red text-center errmsg1">
+                    <h6>{{errResources | translate}}</h6>
+                </div>
                 <div class="modal-body">
                     <!-- <h4 class="mb-10"> Express Booking </h4> -->
                     <h5 class="appoinment-heading">
@@ -902,6 +946,7 @@
                             <input type="hidden" value="" id="expressworkername">
                             <input type="hidden" value="" id="expressworkerId">
                             <input type="hidden" value="" [(ngModel)]="expressClientIds" id="expressClientIds">
+
                         </div>
                     </div>
                     <div class="clearfix">
@@ -947,14 +992,24 @@
                             <!-- <span class="red">*</span> -->
                             <label>{{ 'APPOINTMENTS_MAIN_PAGE.MOBILE' | translate }}</label>
                         </div>
+
                         <div class="col-md-7 mb-5">
-                            <input type="text" class="form-control" id="mobileNumber" [(ngModel)]="mobileNumber" (keyPress)="clearErrorMsg();" />
+
+                            <!-- <input type="text" class="form-control" style="width:70px !important; float: left;" maxlength="3" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                id="countrycode" (keypress)='hyphen_generate_mobile(countrycode);clearErrorMsg();' name="countrycode"
+                                [(ngModel)]="countrycode"> -->
+
+                            <input type="text" class="form-control" maxlength="14" id="mobileNumber" [(ngModel)]="mobileNumber" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+                                (keypress)='hyphen_generate_mobile(mobileNumber);clearErrorMsg();' />
                         </div>
                     </div>
+                    <!-- <div class="red text-center">
+                        <h6> {{existingCountrycodeError | translate}}</h6>
+                    </div> -->
                     <div class="red text-center">
                         <h6> {{errormobilephone | translate}}</h6>
                     </div>
-                    <div class="clearfix">
+                    <!-- <div class="clearfix">
                         <div class="col-md-5">
                             <label> {{ 'APPOINTMENTS_MAIN_PAGE.MOBILE_CARRIER' | translate }}</label>
                         </div>
@@ -963,7 +1018,7 @@
                                 <option *ngFor="let mobile of mobileCarrierslist" id="mobileCarrier" value="{{mobile}}">{{mobile}}</option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="clearfix">
                         <div class="col-md-5">
                             <!-- <span class="red">*</span> -->
@@ -972,6 +1027,9 @@
                         <div class="col-md-7 mb-5">
                             <input type="text" (keyPress)="clearErrorMsg();" id="primaryEmail" class="form-control" [(ngModel)]="primaryEmail" />
                         </div>
+                    </div>
+                    <div class="red text-center">
+                        <h6>{{ existingValidationError | translate}}</h6>
                     </div>
                     <div class="red text-center">
                         <h6> {{errorEmail | translate}}</h6>
@@ -1057,12 +1115,26 @@
 
                                     <p class="mb-5">*Express Booking may cause overbooking and/or conflicting appointments</p>
 
-                                    <div class="text-center">
-
+                                    <div *ngIf="(bookAnyWay !== 'Book Anyway' && bookRoomAnyWay !== 'Book RoomAnyWay')" class="text-center">
                                         <button class="btn btn-sucess btn-gradient-txt" (click)="existingExpressBooking()">
                                             <span>Save</span>
                                         </button>
                                         <button class="btn btn-danger" (click)="closePopup()" id="expressCancelExpress2">Cancel</button>
+                                    </div>
+
+                                    <div *ngIf="bookAnyWay === 'Book Anyway' " class="text-center">
+                                        <input type="hidden" value="0" id="anyway" />
+                                        <button class="btn btn-sucess btn-gradient-txt" (click)="existingExpressBooking()">
+                                            <span>Book Anyway</span>
+                                        </button>
+                                        <button class="btn btn-danger" (click)="closePopup();existingExpressModel.hide(); ">Cancel</button>
+                                    </div>
+                                    <div *ngIf="bookRoomAnyWay === 'Book RoomAnyWay' " class="text-center">
+                                        <input type="hidden" value="0" id="bookRoomAnyWay" />
+                                        <button class="btn btn-sucess btn-gradient-txt" (click)="existingExpressBooking()">
+                                            <span>Book Anyway</span>
+                                        </button>
+                                        <button class="btn btn-danger" (click)="closePopup();existingExpressModel.hide(); ">Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -1219,7 +1291,49 @@
 
     </div>
 
-
+    <!-- alert show for not book appt restications -->
+    <div bsModal #serviceNotesModal="bs-modal" class="modal fade" [config]="{ backdrop: 'static', keyboard: false}" tabindex="-1"
+        role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="width: 730px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <button type="button" class="close" (click)="closeServiceNotesModal()" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button> -->
+                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 10px;">
+                                <img src="assets/images/declinedIcon.png">
+                            </td>
+                            <td>
+                                There is a booking alert for this client.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <label style="margin: 0px 15px;">
+                    <strong> {{fullName}} </strong> has a booking alert for the following reason(s): Do Not Book</label>
+                <div class="modal-footer">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a (click)="serviceNotesModal.hide()">
+                                        <button class="cancel-btn">Ok</button>
+                                    </a>
+                                    <a *ngIf="expressClientIds" [routerLink]="['/client/edit/' + expressClientIds]" class="btn btn-default mb-5">
+                                        <i class="fa fa-pencil"></i> Go To Full Client Card</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
 
 </body>
 

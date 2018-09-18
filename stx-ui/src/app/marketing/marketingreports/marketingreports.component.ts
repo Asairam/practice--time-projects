@@ -6,6 +6,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { MarketingReportsService } from './marketingreports.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from 'ng2-translate';
+import { JwtHelper } from 'angular2-jwt';
 @Component({
   selector: 'app-setuprewards-app',
   templateUrl: './marketingreports.html',
@@ -13,6 +14,7 @@ import { TranslateService } from 'ng2-translate';
   providers: [MarketingReportsService],
 })
 export class MarketingReportsComponent implements OnInit {
+  decodedToken: any;
   constructor(private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
@@ -21,5 +23,18 @@ export class MarketingReportsComponent implements OnInit {
 
   }
   ngOnInit() {
+    // ---Start of code for Permissions Implementation--- //
+    try {
+      this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+  } catch (error) {
+      this.decodedToken = {};
+  }
+  if (this.decodedToken.data && this.decodedToken.data.permissions) {
+      this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+  } else {
+      this.decodedToken = {};
+  }
+  // ---End of code for permissions Implementation--- //
+
   }
 }

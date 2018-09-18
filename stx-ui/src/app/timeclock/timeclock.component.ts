@@ -43,6 +43,7 @@ export class TimeClockComponent implements OnInit {
   companyHours = [];
   workerHours: any = {};
   isScheduleApplied = false;
+  hideField = 'inline';
   weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -70,6 +71,9 @@ export class TimeClockComponent implements OnInit {
       if (data['result']['workerresult'].length > 0) {
         this.errorMessage = '';
         this.workerData = data['result']['workerresult'][0];
+        if ( this.workerData.workerId !== '') {
+          this.hideField = 'none';
+        }
         this.companyHours = data['result']['companyhours'];
         if (data['result']['timeClockresult'].length > 0) {
           this.workerData['Time_In__c'] = data['result']['timeClockresult'][0]['Time_In__c'];
@@ -311,7 +315,7 @@ export class TimeClockComponent implements OnInit {
         const timeIn = this.timeConversionToDate(data['timeIn']);
         const timeOut = this.timeConversionToDate(data['timeOut']);
         data['Hours__c'] = this.calculateDurations(timeIn, timeOut);
-        if (+data['Hours__c'] <= 0) {
+        if (+data['Hours__c'] < 0) {
           this.adjustmentErrorMessage = 'Time In must be less than Time Out';
         }
       }

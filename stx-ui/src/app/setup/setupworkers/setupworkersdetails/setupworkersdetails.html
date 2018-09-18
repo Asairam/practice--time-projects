@@ -1,6 +1,5 @@
 <div class="drawer drawer--left">
-	<!-- <app-header></app-header> -->
-	<app-header [newMenu]="'noNav'"></app-header>
+	<app-header [newMenu]="'nav'"></app-header>
 	<div role="banner">
 		<nav class="drawer-nav" role="navigation">
 		</nav>
@@ -13,6 +12,8 @@
 				<p class="red mb-0"> {{goalListError | translate }} </p>
 				<p class="red mb-0">{{serviceErrorName}} {{workerServiceError | translate }} </p>
 				<p class="red mb-0"> {{otherError | translate }} </p>
+				<p class="red mb-0"> {{otherErr1 | translate }} </p>
+				<p class="red mb-0"> {{otherErr2 | translate }} </p>
 				<p class="red mb-0"> {{error1 | translate }} </p>
 				<p class="red mb-0"> {{error3 | translate }} </p>
 				<p class="red mb-0"> {{error4 | translate }} </p>
@@ -23,8 +24,10 @@
 				<p class="red mb-0"> {{error8 | translate }} </p>
 				<p class="red mb-0"> {{error9 | translate }} </p>
 				<p class="red mb-0"> {{error10 | translate }} </p>
+				<p class="red mb-0"> {{pcodeErr | translate }} </p>
+				<p class="red mb-0"> {{mcodeErr | translate }} </p>
 			</div>
-			
+
 			<div class="container">
 
 				<div class="row">
@@ -59,7 +62,7 @@
 										<td>{{workerData.Display_Order__c}}</td>
 									</tr>
 									<tr>
-										<td align="center" colspan="3">
+										<td align="center" colspan="3" *ngIf="decodedToken['Setup Workers'] && decodedToken['Setup Workers'][0]['allowAcces']">
 											<a class="white btn btn-hovr" (click)="addNewWorker()">
 												<i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
 										</td>
@@ -78,7 +81,8 @@
 											<input id="c1" type="checkbox" class="pull-left" (click)='showInActive()'> &nbsp;&nbsp;
 											<label for="c1" class="c1 activelabel">
 												<span [class.labelshow]="showupdate">{{ 'COMMON.SHOW' | translate }}</span>
-												<span [class.labelhide]="hideupdate">{{ 'COMMON.HIDE' | translate }}</span>{{'SETUP_WORKERS_DETAILS.INACTIVE' | translate }}</label>
+												<span [class.labelhide]="hideupdate">{{ 'COMMON.HIDE' | translate }}</span>{{'SETUP_WORKERS_DETAILS.INACTIVE'
+												| translate }}</label>
 											<!-- <label *ngIf="hideupdate" for="c1" class="c1">Hide Inactive</label> -->
 										</td>
 									</tr>
@@ -87,7 +91,8 @@
 										<td>{{'COMMON.NAME' | translate }}</td>
 										<td>{{'SETUP_WORKERS_DETAILS.DISPLAY_ORDER' | translate }}</td>
 									</tr>
-									<tr *ngFor='let workerData of userList' [ngClass]="{ hideinactive: workerData.IsActive == 0 }" [class.showinactive]="showInactiveData">
+									<tr *ngFor='let workerData of userList' [ngClass]="{ hideinactive: workerData.IsActive == 0 }"
+									 [class.showinactive]="showInactiveData">
 										<td *ngIf='workerData.IsActive == 1'>
 											<input type="checkbox" checked disabled>
 										</td>
@@ -99,7 +104,7 @@
 										<td>{{workerData.Display_Order__c}}</td>
 									</tr>
 									<tr>
-										<td align="center" colspan="3">
+										<td align="center" colspan="3" *ngIf="decodedToken['Setup Workers'] && decodedToken['Setup Workers'][0]['allowAcces']">
 											<a class="white btn btn-hovr" (click)="addNewWorker()">
 												<i class="fa fa-plus"></i> {{'BUTTON.NEW' | translate}}</a>
 										</td>
@@ -141,7 +146,7 @@
 											<label>{{'SETUP_WORKERS_DETAILS.ACTIVE_LOGIN' | translate }}</label>
 										</div>
 										<div class="col-sm-7" *ngIf='activeStatus == 1'>
-											<input type="checkbox" [(ngModel)]="activeStatus" checked>
+											<input type="checkbox" checked [(ngModel)]="activeStatus">
 										</div>
 										<div class="col-sm-7" *ngIf='activeStatus == 0'>
 											<input type="checkbox" [(ngModel)]="activeStatus">
@@ -193,8 +198,8 @@
 											<span class="red">*</span>
 										</div>
 										<div class="col-sm-7">
-											<input type="text" (click)="clearErrMsg()" value="{{ bsValue | date:'MM/d/y'}}" [maxDate]="maxDate" bsDatepicker [(bsValue)]="bsValue"
-											 [bsConfig]="datePickerConfig" [minDate]="minDate" class="datefield">
+											<input type="text" (click)="clearErrMsg()" value="{{ bsValue | date:'MM/d/y'}}" [maxDate]="maxDate"
+											 bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig" [minDate]="minDate" class="datefield">
 										</div>
 									</div>
 
@@ -204,7 +209,7 @@
 											<span class="red">*</span>
 										</div>
 										<div class="col-sm-7">
-											<input type="text" (keypress)="clearErrMsg()" [(ngModel)]="workerPin">
+											<input type="text" (keypress)="clearErrMsg();numOnly($event)" onpaste="return false;" [(ngModel)]="workerPin">
 										</div>
 									</div>
 
@@ -224,8 +229,8 @@
 											<label>{{'COMMON.PASSWORD' | translate }}</label>
 										</div>
 										<div class="col-sm-5">
-											<input type="{{passwordType1}}" style="width: 100%" class="setupworkerdetails-password" [(ngModel)]="password1" (keypress)="clearErrMsg()"
-											 maxlength="100">
+											<input type="{{passwordType1}}" style="width: 100%" class="setupworkerdetails-password" [(ngModel)]="password1"
+											 (keypress)="clearErrMsg()" (keyup)="clearErrMsg()" maxlength="100">
 										</div>
 										<div class="col-sm-4">
 											<span class="glyphicon {{glyphiconClass1}} setworkdtl-show-password" (click)="togglePassword(1);" *ngIf="password1 && password1.length > 0"></span>
@@ -238,8 +243,8 @@
 											<span class="red">*</span>
 										</div>
 										<div class="col-sm-5">
-											<input type="{{passwordType2}}" style="width: 100%" class="setupworkerdetails-password" [(ngModel)]="password2" (keypress)="clearErrMsg()"
-											 maxlength="100">
+											<input type="{{passwordType2}}" style="width: 100%" class="setupworkerdetails-password" [(ngModel)]="password2"
+											 (keypress)="clearErrMsg()" (keyup)="clearErrMsg()" maxlength="100">
 										</div>
 										<div class="col-sm-4">
 											<span class="glyphicon {{glyphiconClass2}} setworkdtl-show-password" (click)="togglePassword(2);" *ngIf="password2 && password2.length > 0"></span>
@@ -258,8 +263,7 @@
 										<div class="col-sm-3 text-right res-tleft white">
 										</div>
 										<div class="col-sm-7">
-											<img [src]="workerImage.srcURL" (error)="imageErrorHandler($event);" width="auto" height="200" style="max-width: 380px;"
-											/>
+											<img [src]="workerImage.srcURL" (error)="imageErrorHandler($event);" width="auto" height="200" style="max-width: 380px;" />
 										</div>
 									</div>
 									<div class="row mt-20 res-mt-15">
@@ -313,6 +317,15 @@
 
 									<div class="row mt-20 res-mt-15">
 										<div class="col-sm-3 text-right res-tleft white">
+											<label>{{'SETUP_WORKERS_DETAILS.ZIP_POSTAL_CODE' | translate }}</label>
+										</div>
+										<div class="col-sm-7">
+											<input type="text" [(ngModel)]="zipCode" (keyup)="getLocation();">
+										</div>
+									</div>
+
+									<div class="row mt-20 res-mt-15">
+										<div class="col-sm-3 text-right res-tleft white">
 											<label>{{'SETUP_WORKERS_DETAILS.COUNTRY' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
@@ -320,24 +333,6 @@
 												<option>{{country}}</option>
 												<option *ngFor="let country of countries; let i='index'" value="{{country.NAME}}" id="country{{i}}">{{country.NAME}}</option>
 											</select>
-										</div>
-									</div>
-
-									<div class="row mt-20 res-mt-15">
-										<div class="col-sm-3 text-right res-tleft white">
-											<label>{{'SETUP_WORKERS_DETAILS.ZIP_POSTAL_CODE' | translate }}</label>
-										</div>
-										<div class="col-sm-7">
-											<input type="text" [(ngModel)]="zipCode">
-										</div>
-									</div>
-
-									<div class="row mt-20 res-mt-15">
-										<div class="col-sm-3 text-right res-tleft white">
-											<label>{{'SETUP_WORKERS_DETAILS.CITY' | translate }}</label>
-										</div>
-										<div class="col-sm-7">
-											<input type="text" [(ngModel)]="city">
 										</div>
 									</div>
 
@@ -355,10 +350,23 @@
 
 									<div class="row mt-20 res-mt-15">
 										<div class="col-sm-3 text-right res-tleft white">
+											<label>{{'SETUP_WORKERS_DETAILS.CITY' | translate }}</label>
+										</div>
+										<div class="col-sm-7">
+											<input type="text" [(ngModel)]="city">
+										</div>
+									</div>
+
+									<div class="row mt-20 res-mt-15">
+										<div class="col-sm-3 text-right res-tleft white">
 											<label>{{'SETUP_WORKERS_DETAILS.PRIMARY_PHONE' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
-											<input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+											<span>
+												<input type="text" style="width:20%;" placeholder="Code" maxlength="3" [(ngModel)]="primaryCountryCode"
+												 (click)="clearErrMsg()" (keypress)="numOnly($event)" onpaste="return false;" (keyup)="clearErrMsg()">
+											</span>
+											<input type="text" class="float-left" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
 											 id="mobile_id1" (keypress)='hyphen_generate_mobile1(primaryPhone);' [(ngModel)]="primaryPhone" />
 										</div>
 									</div>
@@ -368,7 +376,11 @@
 											<label>{{'SETUP_WORKERS_DETAILS.MOBILE_PHONE' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
-											<input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
+											<span>
+												<input type="text" style="width:20%;" placeholder="Code" maxlength="3" [(ngModel)]="mobileCountryCode"
+												 (click)="clearErrMsg()" (keypress)="numOnly($event)" onpaste="return false;" (keyup)="clearErrMsg()">
+											</span>
+											<input type="text" class="float-left" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
 											 id="mobile_id2" (keypress)='hyphen_generate_mobile2(mobilePhone);' [(ngModel)]="mobilePhone" />
 										</div>
 									</div>
@@ -447,9 +459,14 @@
 									</div>
 									<div class="row mt-20 res-mt-15">
 										<div class="col-sm-3 text-right res-tleft white">
+											
 											<label>{{'SETUP_WORKERS_DETAILS.EMERGENCY_PRIMARY_PHONE' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
+												<span>
+														<input type="text" style="width:20%;" placeholder="Code" maxlength="3" [(ngModel)]="emrgencyCountryCode1"
+														 (click)="clearErrMsg()" (keypress)="numOnly($event)" onpaste="return false;" (keyup)="clearErrMsg()">
+													</span>
 											<input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
 											 id="mobile_id3" (keypress)='hyphen_generate_mobile3(emergencyPrimaryPhone);' [(ngModel)]="emergencyPrimaryPhone">
 										</div>
@@ -459,6 +476,10 @@
 											<label>{{'SETUP_WORKERS_DETAILS.EMERGENCY_SECONDARY_PHONE' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
+												<span>
+														<input type="text" style="width:20%;" placeholder="Code" maxlength="3" [(ngModel)]="emrgencyCountryCode2"
+														 (click)="clearErrMsg()" (keypress)="numOnly($event)" onpaste="return false;" (keyup)="clearErrMsg()">
+													</span>
 											<input type="text" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
 											 id="mobile_id4" (keypress)='hyphen_generate_mobile4(emergencySecondaryPhone);' [(ngModel)]="emergencySecondaryPhone">
 										</div>
@@ -479,7 +500,7 @@
 										</div>
 										<div class="col-sm-7">
 											<select [(ngModel)]="appointmentsValue" (change)="getAppointmentsOnChange($event.target.value)">
-												<option value="-" selected>{{'SETUP_WORKERS_DETAILS.NONE' | translate }}</option>
+												<option value="">{{'SETUP_WORKERS_DETAILS.NONE' | translate }}</option>
 												<option *ngFor="let value of onlineValues; let i='index'" value="{{value.Id}}" id="value{{i}}">{{value.Name}}</option>
 											</select>
 										</div>
@@ -491,7 +512,7 @@
 										</div>
 										<div class="col-sm-7">
 											<select [(ngModel)]="onlineBookingHoursValue" (change)="getOnlineBookingHoursOnChange($event.target.value)">
-												<option value="-" selected>{{'SETUP_WORKERS_DETAILS.NONE' | translate }}</option>
+												<option value="">{{'SETUP_WORKERS_DETAILS.NONE' | translate }}</option>
 												<option *ngFor="let value of onlineValues; let i='index'" value="{{value.Id}}" id="value{{i}}">{{value.Name}}</option>
 											</select>
 										</div>
@@ -503,7 +524,8 @@
 										</div>
 										<div class="col-sm-7">
 											<select [(ngModel)]="appointmentsBookEveryValue" (change)="getAppointmentBookEveryOnChange($event.target.value)">
-												<option *ngFor="let intData of intervalValues; let i='index'" value="{{intData.IntValue}}" id="intData{{i}}">{{intData.IntValue}} {{'SETUP_WORKERS_DETAILS.MINUTES' | translate }}</option>
+												<option *ngFor="let intData of intervalValues; let i='index'" value="{{intData.IntValue}}" id="intData{{i}}">{{intData.IntValue}}
+													{{'SETUP_WORKERS_DETAILS.MINUTES' | translate }}</option>
 											</select>
 										</div>
 									</div>
@@ -527,7 +549,8 @@
 											<button type="button" (click)="unSelectAll()">{{'BUTTON.UNSELECT_ALL' | translate }}</button>
 										</div>
 										<div class="col-sm-7">
-											<button type="button" (click)="selectAllOnline()">{{'BUTTON.SELECT_ALL_ONLINE' | translate }}</button> &nbsp;&nbsp;
+											<button type="button" (click)="selectAllOnline()">{{'BUTTON.SELECT_ALL_ONLINE' | translate }}</button>
+											&nbsp;&nbsp;
 											<button type="button" (click)="unSelectAllOnline()">{{'BUTTON.UNSELECT_ALL_ONLINE' | translate }}</button>
 										</div>
 									</div>
@@ -535,11 +558,12 @@
 									<div class="row mt-20 res-mt-15">
 										<div class="col-sm-3 text-right res-tleft white">
 											<label>{{'SETUP_WORKERS_DETAILS.SELECT_LEVEL' | translate }}</label>
-											<span class="red">*</span>
+											<!-- <span class="red">*</span> -->
 										</div>
 										<div class="col-sm-7">
-											<select [(ngModel)]="serviceLevel" (click)="clearErrMsg()" (change)="levelsOnChange($event.target.value)">
-												<option *ngFor="let levels of levelValues; let i='index'" value="{{levels.level}}">{{'Level'}} {{levels.level}}</option>
+											<select [(ngModel)]="serviceLevel" (click)="clearErrMsg()">
+												<option *ngFor="let levels of levelValues; let i='index'" value="{{levels.level}}">{{'Level'}}
+													{{levels.level}}</option>
 											</select>
 										</div>
 									</div>
@@ -569,15 +593,16 @@
 															<!-- <td *ngIf="serviceData.Active__c == 0">
 																<input type="checkbox">
 															</td> -->
-															<td *ngIf='serviceData.performs == true || serviceData.performs == 1'>
-																<input type="checkbox" [(ngModel)]="serviceData.performs" (click)="selectedValues($event.target.checked, serviceDetailsList, i)" checked>
+															<td>
+																<input type="checkbox" [(ngModel)]="serviceData.performs" (click)="selectedValues($event.target.checked,'performs', serviceDetailsList, i)"
+																 [checked]="serviceData.performs">
 															</td>
-															<td *ngIf='serviceData.performs != true || serviceData.performs == 0 || serviceData.performs == undefined '>
+															<!-- <td *ngIf='serviceData.performs != true || serviceData.performs == 0 || serviceData.performs == undefined '>
 																<input type="checkbox" [(ngModel)]="serviceData.performs" (click)="selectedValues($event.target.checked, serviceDetailsList, i)">
-															</td>
+															</td> -->
 															<td (click)="showServiceData(serviceData, serviceDetailsList, i)">{{serviceData.Name}}</td>
 															<td>
-																<input type="checkbox" [(ngModel)]="serviceData.online">
+																<input type="checkbox" [(ngModel)]="serviceData.online" (click)="selectedValues($event.target.checked, 'online',serviceDetailsList, i)">
 															</td>
 															<td>{{serviceData.priceValue}}</td>
 														</tr>
@@ -669,7 +694,7 @@
 
 										<div class="row mt-20 res-mt-15">
 											<div class="col-sm-3"></div>
-											<div class="col-sm-7"style="color:white;">
+											<div class="col-sm-7" style="color:white;">
 												{{'SETUP_WORKERS_DETAILS.OR' | translate }}
 											</div>
 										</div>
@@ -716,7 +741,8 @@
 												<label>{{'SETUP_WORKERS_DETAILS.DURATION 1' | translate }}</label>
 											</div>
 											<div class="col-sm-2">
-												<input type="number" [min]="0" (blur)="updateWorkerServiceValues()" (keypress)="clearErrMsg();isNumeric($event)" [(ngModel)]="serviceDuration_1">
+												<input type="number" [min]="0" (blur)="updateWorkerServiceValues()" (keypress)="clearErrMsg();isNumeric($event)"
+												 [(ngModel)]="serviceDuration_1">
 											</div>
 										</div>
 										<div class="row mt-20 res-mt-15">
@@ -731,7 +757,8 @@
 												<label>{{'SETUP_WORKERS_DETAILS.DURATION 2' | translate }}</label>
 											</div>
 											<div class="col-sm-2">
-												<input type="number" [min]="0" (blur)="updateWorkerServiceValues()" (keypress)="clearErrMsg();isNumeric($event)" [(ngModel)]="serviceDuration_2">
+												<input type="number" [min]="0" (blur)="updateWorkerServiceValues()" (keypress)="clearErrMsg();isNumeric($event)"
+												 [(ngModel)]="serviceDuration_2">
 											</div>
 										</div>
 
@@ -739,14 +766,15 @@
 											<div class="col-sm-3 text-right res-tleft white">
 												<label>{{'SETUP_WORKERS_DETAILS.AVAILABLE' | translate }}</label>
 											</div>
-											<div class="col-sm-1" >
+											<div class="col-sm-1">
 												<input type="checkbox" (blur)="updateWorkerServiceValues()" [(ngModel)]="serviceavailable_3" [checked]="serviceavailable_3">
 											</div>
 											<div class="col-sm-2 text-right res-tleft white">
 												<label>{{'SETUP_WORKERS_DETAILS.DURATION 3' | translate }}</label>
 											</div>
 											<div class="col-sm-2">
-												<input type="number" [min]="0" (blur)="updateWorkerServiceValues()" (keypress)="clearErrMsg();isNumeric($event)" [(ngModel)]="serviceDuration_3">
+												<input type="number" [min]="0" (blur)="updateWorkerServiceValues()" (keypress)="clearErrMsg();isNumeric($event)"
+												 [(ngModel)]="serviceDuration_3">
 											</div>
 
 										</div>
@@ -757,7 +785,8 @@
 												<label>{{'SETUP_WORKERS_DETAILS.BUFFER_AFTER' | translate }}</label>
 											</div>
 											<div class="col-sm-7">
-												<input type="text" (keypress)="isNumeric($event)"  (blur)="updateWorkerServiceValues()" [(ngModel)]="serviceBufferAfter">
+												<input type="text" (keypress)="clearErrMsg();isNumeric($event)" (blur)="updateWorkerServiceValues()"
+												 [(ngModel)]="serviceBufferAfter">
 											</div>
 										</div>
 
@@ -782,7 +811,8 @@
 												<label>{{'SETUP_WORKERS_DETAILS.SERVICE_FEE_PERCENTAGE' | translate }}</label>
 											</div>
 											<div class="col-sm-7">
-												<input type="number" [min]="0" (keypress)="isNumeric($event)" (blur)="updateWorkerServiceValues()" (click)="clearErrMsg()" [(ngModel)]="serviceFeePercentage">
+												<input type="number" [min]="0" (keypress)="isNumeric($event)" (blur)="updateWorkerServiceValues()" (click)="clearErrMsg()"
+												 [(ngModel)]="serviceFeePercentage">
 											</div>
 										</div>
 									</div>
@@ -815,8 +845,8 @@
 											<label>{{'SETUP_WORKERS_DETAILS.WORKER_ROLE' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
-											<select  [(ngModel)]="workerRole" (change)="onChangeWorkerRole($event.target.value)">
-											<option value=''>{{'SETUP_WORKERS_DETAILS.NONE' | translate }} </option>
+											<select [(ngModel)]="workerRole" (change)="onChangeWorkerRole($event.target.value)">
+												<option value=''>{{'SETUP_WORKERS_DETAILS.NONE' | translate }} </option>
 												<option *ngFor="let workerRole of workerRoledData" value="{{workerRole.value}}" selected>{{workerRole.value}}</option>
 											</select>
 										</div>
@@ -895,7 +925,7 @@
 											<label>{{'SETUP_WORKERS_DETAILS.HIDE_CLIENT_CONTACT_INFO' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
-											<input type="checkbox">
+											<input type="checkbox" [(ngModel)]="hideClientContactInfo" [checked]="hideClientContactInfo === 0 ? false : true">
 										</div>
 									</div>
 
@@ -930,7 +960,8 @@
 											<label>{{'SETUP_WORKERS_DETAILS.MERCHANT_TERMINAL_ID' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
-											<input type="text" type="number" onKeyPress="if(this.value.length==8) return false;" [(ngModel)]="merchantTerminalId" (keydown)="clearErrMsg()">
+											<input type="text" type="number" onKeyPress="if(this.value.length==8) return false;" [(ngModel)]="merchantTerminalId"
+											 (keydown)="clearErrMsg()" (keyup)="clearErrMsg()">
 										</div>
 									</div>
 
@@ -951,7 +982,7 @@
 											<label>{{'SETUP_WORKERS_DETAILS.MERCHANT_SHARED_SECRET' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
-											<input type="password" [(ngModel)]="merchantAccountKey" maxlength="40">
+											<input type="password" [(ngModel)]="merchantAccountKey" maxlength="40" (keydown)="clearErrMsg()" (keyup)="clearErrMsg()">
 										</div>
 									</div>
 
@@ -986,18 +1017,20 @@
 										<!--  table-over-desk -->
 										<div class="col-md-12">
 											<div class="table-responsive">
-												<table class="table table-bordered-light">
-													<tbody>
+												<table class="form_cont_one mobile-table table table-bordered-light">
+													<thead>
 														<tr class="grey_th">
-															<td>{{'SETUP_WORKERS_DETAILS.GOALS' | translate }}</td>
-															<td>{{'COMMON.START_DATE' | translate }}</td>
-															<td>{{'COMMON.END_DATE' | translate }}</td>
-															<td>{{'SETUP_WORKERS_DETAILS.GOAL_TARGET' | translate }}</td>
-															<td>{{'SETUP_WORKERS_DETAILS.CALCULATED_GOAL' | translate }}</td>
-															<td>{{'SETUP_WORKERS_DETAILS.PERCENTAGE_OF_GOAL' | translate }}</td>
-															<td></td>
-															<td></td>
+															<th>{{'SETUP_WORKERS_DETAILS.GOALS' | translate }}</th>
+															<th>{{'COMMON.START_DATE' | translate }}</th>
+															<th>{{'COMMON.END_DATE' | translate }}</th>
+															<th>{{'SETUP_WORKERS_DETAILS.GOAL_TARGET' | translate }}</th>
+															<th>{{'SETUP_WORKERS_DETAILS.CALCULATED_GOAL' | translate }}</th>
+															<th>{{'SETUP_WORKERS_DETAILS.PERCENTAGE_OF_GOAL' | translate }}</th>
+															<th></th>
+															<th></th>
 														</tr>
+													</thead>
+													<tbody>
 														<tr *ngFor="let goallist of goalList; let i='index'" id="goallist{{i}}">
 															<td *ngIf="!goallist.delete">
 																<!-- <input type="hidden" [(ngModel)]="goallist.Id"> -->
@@ -1009,21 +1042,24 @@
 																</select> -->
 															</td>
 															<td *ngIf="!goallist.delete">
-																<input style="min-width: 105px" type="text" class="form-control datefield" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker
-																 [(bsValue)]="goallist.startDate" [bsConfig]="datePickerConfig" [(ngModel)]="goallist.startDate" (click)='clearErrMsg()'>
+																<input style="min-width: 105px" type="text" class="form-control datefield" [maxDate]="maxDate" #dp="bsDatepicker"
+																 bsDatepicker [(bsValue)]="goallist.startDate" [bsConfig]="datePickerConfig" [(ngModel)]="goallist.startDate"
+																 (click)='clearErrMsg()'>
 																<!-- <p-calendar inputStyleClass="timezone-calendar calendar" dateFormat="mm-dd-yy" [showIcon]="true" [(minDate)]="currentDate"
 																 [(ngModel)]="goallist.Start_Date__c"></p-calendar> -->
 																<!-- <input type="text" [(ngModel)]="goalsRow.startDate"> -->
 															</td>
 															<td *ngIf="!goallist.delete">
-																<input style="min-width: 105px" type="text" class="form-control datefield" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker
-																 [(bsValue)]="goallist.endDate" [bsConfig]="datePickerConfig" [(ngModel)]="goallist.endDate" (click)='clearErrMsg()'>
+																<input style="min-width: 105px" type="text" class="form-control datefield" [maxDate]="maxDate" #dp="bsDatepicker"
+																 bsDatepicker [(bsValue)]="goallist.endDate" [bsConfig]="datePickerConfig" [(ngModel)]="goallist.endDate"
+																 (click)='clearErrMsg()'>
 																<!-- <p-calendar inputStyleClass="timezone-calendar calendar" dateFormat="mm-dd-yy" [showIcon]="true" [(minDate)]="currentDate"
 																 [(ngModel)]="goallist.End_Date__c"></p-calendar> -->
 																<!-- <input type="text"> -->
 															</td>
 															<td *ngIf="!goallist.delete">
-																<input type="text" style="min-width: 50px" [(ngModel)]="goallist.target">
+																<input type="text" class="pd-lr" style="min-width: 50px;" maxlength="10" [(ngModel)]="goallist.target"
+																 (keypress)="numberOnly($event);goallineerror=[]">
 															</td>
 															<td *ngIf="!goallist.delete">{{calculatedGoal[i] | number:'2.2-4'}}</td>
 															<td *ngIf="!goallist.delete">{{percentOfGoal[i]}}%</td>
@@ -1053,21 +1089,24 @@
 																	</select>
 																</td>
 																<td>
-																	<input style="min-width: 105px" type="text" class="form-control datefield" #dp="bsDatepicker" [minDate]="currenDate" bsDatepicker
-																	 [(bsValue)]="goalsRow.startDate" [bsConfig]="datePickerConfig" [(ngModel)]="goalsRow.startDate" (click)='clearErrMsg()'>
+																	<input style="min-width: 105px" type="text" class="form-control datefield" #dp="bsDatepicker"
+																	 [minDate]="currenDate" bsDatepicker [(bsValue)]="goalsRow.startDate" [bsConfig]="datePickerConfig"
+																	 [(ngModel)]="goalsRow.startDate" (click)='clearErrMsg()'>
 																	<!-- <p-calendar inputStyleClass="timezone-calendar calendar" dateFormat="mm-dd-yy" [showIcon]="true"
 																	 [(ngModel)]="goalsRow.startDate"></p-calendar> -->
 																	<!-- <input type="text" [(ngModel)]="goalsRow.startDate"> -->
 																</td>
 																<td>
-																	<input style="min-width: 105px" type="text" class="form-control datefield" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker
-																	 [(bsValue)]="goalsRow.endDate" [bsConfig]="datePickerConfig" [(ngModel)]="goalsRow.endDate" (click)='clearErrMsg()'>
+																	<input style="min-width: 105px" type="text" class="form-control datefield" [maxDate]="maxDate" #dp="bsDatepicker"
+																	 bsDatepicker [(bsValue)]="goalsRow.endDate" [bsConfig]="datePickerConfig" [(ngModel)]="goalsRow.endDate"
+																	 (click)='clearErrMsg()'>
 																	<!-- <p-calendar inputStyleClass="timezone-calendar calendar" dateFormat="mm-dd-yy" [showIcon]="true" 
 																	 [(ngModel)]="goalsRow.endDate"></p-calendar> -->
 																	<!-- <input type="text"> -->
 																</td>
 																<td>
-																	<input style="min-width: 50px" type="text" [(ngModel)]="goalsRow.goalTarget">
+																	<input class="pd-lr" style="min-width: 50px" type="text" maxlength="10" [(ngModel)]="goalsRow.target"
+																	 (keypress)="numberOnly($event);goallineerror=[]">
 																</td>
 																<td></td>
 																<td></td>
@@ -1085,6 +1124,7 @@
 													</tbody>
 												</table>
 											</div>
+											<p style="color: red;" *ngFor="let item of goallineerror">{{item.error}}</p>
 										</div>
 									</div>
 								</div>
@@ -1093,8 +1133,9 @@
 								<div class="row mt-40 mb-30 res-mt-15 text-center res-tleft">
 									<div class="col-sm-10">
 										<!-- <button type="button" class="save-btn" *ngIf="newClient" (click)="insertWorker()">{{'BUTTON.SAVE' | translate }}</button> -->
-										<button type="button" class="save-btn" (click)="commonSave()">{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
-										<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate }}</button>
+										<button type="button" class="save-btn" (click)="commonSave()">{{'BUTTON.SAVE' | translate }}</button>
+										&nbsp;&nbsp;
+										<button type="button" class="cancel-btn" (click)="cancel();goallineerror=[]">{{'BUTTON.CANCEL' | translate }}</button>
 									</div>
 								</div>
 							</div>
@@ -1176,8 +1217,8 @@
 											<label>{{'COMMON.START_DATE' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
-											<input class="datefield" type="text" [(ngModel)]="startDate" [maxDate]="maxDate" #dp="bsDatepicker" bsDatepicker [(bsValue)]="startDate"
-											 [bsConfig]="datePickerConfig">
+											<input class="datefield" type="text" [(ngModel)]="startDate" [maxDate]="maxDate" #dp="bsDatepicker"
+											 bsDatepicker [(bsValue)]="startDate" [bsConfig]="datePickerConfig">
 										</div>
 									</div>
 
@@ -1249,6 +1290,16 @@
 
 									<div class="row mt-20 res-mt-15">
 										<div class="col-sm-3 text-right res-tleft white">
+											<label>{{ 'SETUP_WORKERS_DETAILS.ZIP_POSTAL_CODE' | translate }}</label>
+										</div>
+										<div class="col-sm-7">
+											<input type="text" [(ngModel)]="zipCode">
+										</div>
+									</div>
+
+
+									<div class="row mt-20 res-mt-15">
+										<div class="col-sm-3 text-right res-tleft white">
 											<label>{{ 'SETUP_WORKERS_DETAILS.COUNTRY' | translate }}</label>
 										</div>
 										<div class="col-sm-7">
@@ -1257,25 +1308,6 @@
 											</select>
 										</div>
 									</div>
-
-									<div class="row mt-20 res-mt-15">
-										<div class="col-sm-3 text-right res-tleft white">
-											<label>{{ 'SETUP_WORKERS_DETAILS.ZIP_POSTAL_CODE' | translate }}</label>
-										</div>
-										<div class="col-sm-7">
-											<input type="text" [(ngModel)]="zipCode">
-										</div>
-									</div>
-
-									<div class="row mt-20 res-mt-15">
-										<div class="col-sm-3 text-right res-tleft white">
-											<label>{{ 'SETUP_WORKERS_DETAILS.CITY' | translate }}</label>
-										</div>
-										<div class="col-sm-7">
-											<input type="text" [(ngModel)]="city">
-										</div>
-									</div>
-
 									<div class="row mt-20 res-mt-15">
 										<div class="col-sm-3 text-right res-tleft white">
 											<label>{{ 'SETUP_WORKERS_DETAILS.STATE_PROVINCE' | translate }}</label>
@@ -1284,6 +1316,14 @@
 											<select [(ngModel)]="state" (change)="getStatesOnChange($event.target.value)">
 												<option *ngFor="let state of states; let i='index'" value="{{state.STATE}}" id="state{{i}}">{{state.STATE}}</option>
 											</select>
+										</div>
+									</div>
+									<div class="row mt-20 res-mt-15">
+										<div class="col-sm-3 text-right res-tleft white">
+											<label>{{ 'SETUP_WORKERS_DETAILS.CITY' | translate }}</label>
+										</div>
+										<div class="col-sm-7">
+											<input type="text" [(ngModel)]="city">
 										</div>
 									</div>
 
@@ -1399,7 +1439,8 @@
 								<div id="goals" class="tab-pane tabcontent"></div>
 								<div class="row mt-40 mb-30 res-mt-15 text-center res-tleft">
 									<div class="col-sm-10">
-										<button type="button" class="save-btn" (click)="commonSave()">{{'BUTTON.SAVE' | translate }}</button> &nbsp;&nbsp;
+										<button type="button" class="save-btn" (click)="commonSave()">{{'BUTTON.SAVE' | translate }}</button>
+										&nbsp;&nbsp;
 										<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate }}</button>
 									</div>
 								</div>

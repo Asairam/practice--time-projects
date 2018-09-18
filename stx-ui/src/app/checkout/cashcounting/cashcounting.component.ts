@@ -180,7 +180,7 @@ export class CashCountingComponent implements OnInit {
     this.cashCountingService.
       getPosdevices().subscribe(data => {
         if (data['result'][0].JSON__c) {
-          this.posDevicesList = JSON.parse(data['result'][0].JSON__c);
+          this.posDevicesList = JSON.parse(data['result'][0].JSON__c).filter((obj) => obj.readOnly === true);
         }
       },
         error => {

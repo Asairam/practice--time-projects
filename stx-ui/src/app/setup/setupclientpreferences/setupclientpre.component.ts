@@ -367,6 +367,7 @@ export class SetupClientPreferenceComponent implements OnInit {
   }
   clearClientFlagsErrorDuplicate() {
     this.error0 = '';
+    this.error1 = '';
     this.Uniqueness1 = '';
   }
   /*Client Flags methods end */
@@ -408,6 +409,7 @@ export class SetupClientPreferenceComponent implements OnInit {
     });
     if (this.isDuplicate === true) {
       this.Uniqueness2 = 'SETUP_CLIENT_PREFERENCES.VALID_OCCUPATION_NAME_FIELD_UNIQUE';
+      this.updateTabs(3);
     }
   }
   /* Occupations methods ends*/
@@ -479,8 +481,10 @@ export class SetupClientPreferenceComponent implements OnInit {
     const rtnVal = this.validMobCar(mobileInputs);
     if (!rtnVal) {
       this.Uniqueness3 = 'SETUP_CLIENT_PREFERENCES.VALID_NOBLANK_MOBILE_CARRIER_NAME_FIELD';
+      this.updateTabs(4);
     } else if (this.isDuplicate === true) {
       this.Uniqueness3 = 'SETUP_CLIENT_PREFERENCES.VALID_MOBILECARRIER_NAME_FIELD_UNIQUE';
+      this.updateTabs(4);
     }
   }
   /* Mobile carriers methods ends*/
@@ -509,8 +513,9 @@ export class SetupClientPreferenceComponent implements OnInit {
     this.checkIfmobileCarrierNameExists(this.mobileInputs);
     // }
     for (let i = 0; i < this.inputs.length; i++) {
-      if (this.inputs[i].active === true && (this.inputs[i].occupationName === '' || this.inputs[i].occupationName === undefined)) {
+      if ((this.inputs[i].active === true || this.inputs[i].active === 'true') && (this.inputs[i].occupationName === '' || this.inputs[i].occupationName === undefined)) {
         this.Required2 = 'SETUP_CLIENT_PREFERENCES.VALID_NOBLANK_OCCUPATION_NAME_FIELD';
+        this.updateTabs(3);
       }
     }
     const tempAr = [];
@@ -546,67 +551,95 @@ export class SetupClientPreferenceComponent implements OnInit {
     const sorted_array = tempArray.slice().sort();
     const resultss = [];
     for (let i = 0; i < sorted_array.length - 1; i++) {
-      if (sorted_array[i + 1] === sorted_array[i]) {
+      if ((sorted_array[i + 1] === sorted_array[i]) && sorted_array[i] !== '') {
         resultss.push(sorted_array[i]);
       }
     }
     // client flags and visit Types validations
     if (this.checkBoxs0 === true && this.visitTypesData0 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs1 === true && this.visitTypesData1 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs2 === true && this.visitTypesData2 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs3 === true && this.visitTypesData3 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs4 === true && this.visitTypesData4 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs5 === true && this.visitTypesData5 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs6 === true && this.visitTypesData6 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs7 === true && this.visitTypesData7 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs8 === true && this.visitTypesData8 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBoxs9 === true && this.visitTypesData9 === '') {
       this.error1 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_VISTITYPES_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.checkBox0 === true && this.textBox0 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(1);
     } else if (this.textBox0.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox11 === true && this.textBox11 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox11.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox12 === true && this.textBox12 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox12.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox13 === true && this.textBox13 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox13.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox14 === true && this.textBox14 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox14.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox15 === true && this.textBox15 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox15.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox16 === true && this.textBox16 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox16.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox17 === true && this.textBox17 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox17.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if (this.checkBox18 === true && this.textBox18 === '') {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_ACTIVE_CLIENTFLAGS_NO_BLANK';
+      this.updateTabs(2);
     } else if (this.textBox18.length > 40) {
       this.error0 = 'SETUP_CLIENT_PREFERENCES.VALID_LIMIT_CLIENTFLAGS_FIELD';
+      this.updateTabs(2);
     } else if ((this.Required2 === undefined || this.Required2 === '' || this.Required2 === 'undefined') &&
       (this.Uniqueness2 === undefined || this.Uniqueness2 === '' || this.Uniqueness2 === 'undefined')
       && (this.Uniqueness3 === undefined || this.Uniqueness3 === '' || this.Uniqueness3 === 'undefined')) {

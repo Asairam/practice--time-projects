@@ -5,7 +5,7 @@
 */
 import { Injectable, Inject } from '@angular/core';
 import { Response } from '@angular/http';
-import { Headers} from '@angular/http';
+import { Headers } from '@angular/http';
 import { HttpClient } from '../../common/http-client';
 
 @Injectable()
@@ -15,8 +15,10 @@ export class BookStandingApptService {
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
 
-  getServiceGroups(type) {
-    return this.http.get(this.apiEndPoint + '/api/setupservices/servicegroups/' + type)
+  getServiceGroups(type, reqDate) {
+    const headers = new Headers();
+    headers.append('bookingdate', reqDate);
+    return this.http.getHeader(this.apiEndPoint + '/api/setupservices/servicegroups/active/forappts', headers)
       .map(this.extractData);
   }
   getServices(serviceName, type, bookingdate: string) {
@@ -79,7 +81,17 @@ export class BookStandingApptService {
     return this.http.get(this.apiEndPoint + '/api/setupservices/servicepackages/' + 'true')
       .map(this.extractData);
   }
-
+  /**
+ * Method to get preferences for service tax and retail tax calculation
+ */
+  getServProdTax() {
+    return this.http.get(this.apiEndPoint + '/api/setup/ticketpreferences/pos')
+      .map(this.extractData);
+  }
+  sendApptNotifs(apptsAry) {
+    return this.http.post(this.apiEndPoint + '/api/notification/email', { 'apptIds': apptsAry })
+      .map(this.extractData);
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

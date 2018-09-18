@@ -59,6 +59,9 @@ export class CashInOutComponent implements OnInit {
     if (this.cashAmount === 'undefined' || this.cashAmount === undefined || this.cashAmount === '') {
       this.cashError2 = 'CHECK_OUT_LIST.CASH_IN_OUT.VALID_NO_BLANK_AMOUNT';
     }
+    if (this.cashAmount > 999999.99) {
+      this.cashError2 = 'CHECK_OUT_LIST.CASH_IN_OUT.INVALID_NUMBER';
+    }
     if (this.cashType === config.cashinout.cashTypeIn && (this.cashFrom === undefined || this.cashFrom === 'undefined' || this.cashFrom === '')) {
       this.cashError3 = 'CHECK_OUT_LIST.CASH_IN_OUT.VALID_NO_BLANK_FROM';
     }
@@ -67,7 +70,7 @@ export class CashInOutComponent implements OnInit {
     }
     if (this.cashReason === 'undefined' || this.cashReason === undefined || this.cashReason === '') {
       this.cashError5 = 'CHECK_OUT_LIST.CASH_IN_OUT.VALID_NO_BLANK_REASON';
-    } else {
+    } else if (this.cashError2 === '' || this.cashError2 === undefined) {
       const cashInOutObj = {
         'Amount__c': this.cashAmount,
         'Drawer_Name__c': this.cashDrawerName,
@@ -82,7 +85,7 @@ export class CashInOutComponent implements OnInit {
         const cashInOutList = data['result'];
         this.router.navigate(['/checkout']);
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -90,7 +93,7 @@ export class CashInOutComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
     }
   }
   clearMsg() {
@@ -100,18 +103,34 @@ export class CashInOutComponent implements OnInit {
     this.cashError4 = '';
     this.cashError5 = '';
   }
+  clear() {
+    this.transactionName = '';
+    this.cashAmount = '';
+    this.cashFrom = '';
+    this.cashTo = '';
+    this.cashReason = '';
+  }
   IsAlphaNumeric(e) {
-            const value = e.target.value;
-            let ret: boolean;
-            const code = e.keyCode === 0 ? e.charCode : e.keyCode;
-            if ((code >= 48 && code <= 57) || code === 46 || (code === 8) || code >= 37 && code <= 40) { // check digits
-                ret = true;
-            } else {
-                ret = false;
-            }
-          this.clearMsg();
-            return ret;
-        }
+    const value = e.target.value;
+    let ret: boolean;
+    const code = e.keyCode === 0 ? e.charCode : e.keyCode;
+    if ((code >= 48 && code <= 57) || code === 46 || (code === 8) || code >= 37 && code <= 40) { // check digits
+      ret = true;
+    } else {
+      ret = false;
+    }
+    this.clearMsg();
+    return ret;
+  }
+  /* method to restrict specialcharecters  */
+  numOnly(event: any) {
+    const pattern = /[0-9]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
+  }
 
   cancel() {
     this.router.navigate(['/checkout']);

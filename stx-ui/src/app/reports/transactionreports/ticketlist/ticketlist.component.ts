@@ -179,9 +179,14 @@ export class TicketListComponent implements OnInit, AfterViewInit {
       });
   }
   getTicketDetailsReport() {
+/* stDate ,edDate are passing in service for db date purpose only */
     const stDate = this.startDate.getFullYear() + '-' + (this.startDate.getMonth() + 1) + '-' + this.startDate.getDate();
     const edDate = this.endDate.getFullYear() + '-' + (this.endDate.getMonth() + 1) + '-' + this.endDate.getDate();
-    if (this.startDate > this.endDate) {
+    const startTime = ('00' + (this.startDate.getMonth() + 1)).slice(-2) + '-' + ('00' + this.startDate.getDate()).slice(-2) + '-' +
+      (this.startDate.getFullYear() + '');
+      const endTime = ('00' + (this.endDate.getMonth() + 1)).slice(-2) + '-' + ('00' + this.endDate.getDate()).slice(-2) + '-' +
+      (this.endDate.getFullYear() + '');
+    if (startTime > endTime) {
       this.SdateEdateError = 'REPORT_TICKET_DETAILS.INVALID_BEGIN_DATE';
     } else {
 
@@ -196,6 +201,7 @@ export class TicketListComponent implements OnInit, AfterViewInit {
           this.apptData = this.apptData.filter(filterList => filterList.appId);
 
           for (let i = 0; i < this.apptData.length; i++) {
+            this.apptData[i].disaplayDate = this.commonService.getUsrDtStrFrmDBStr(this.apptData[i].Appt_Date_Time__c);
             this.serviceTotal = this.apptData[i].Service_Sales__c;
             this.productTotal = this.apptData[i].Product_Sales__c;
             this.otherTotal = this.apptData[i].Other_Sales__c;

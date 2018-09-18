@@ -14,6 +14,10 @@ export class InventoryusageReportService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+  getInvUsageRecords(stDt, endDt) {
+    return this.http.get(this.apiEndPoint + '/api/reports/inventory/usage/' + stDt + '/' + endDt)
+      .map(this.extractData);
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

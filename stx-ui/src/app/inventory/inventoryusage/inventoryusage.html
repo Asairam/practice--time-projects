@@ -7,7 +7,7 @@
           <label>{{'INVENTORY_USAGE.SKU' | translate }}</label>
         </div>
         <div class="col-md-7 col-sm-8">
-          <input [(ngModel)]="searchKeyWord"  type="text" value="809"  (keyup.enter)="searchProduct()" (keypress)="clearErrMsg();keyPress($event)"/><span> <p class="red">{{showNoDataMsg}} </p></span>
+          <input [(ngModel)]="searchKeyWord" type="text" value="809"  (keyup.enter)="searchProduct()" (keypress)="keyPress($event)" (keyup)="clearErrMsg1()" (click)="clearErrMsg1()"/><span> <p class="red">{{showNoDataMsg}} </p></span>
         </div>
          
       </div>
@@ -54,7 +54,7 @@
                 <tr *ngFor="let data of productsList; let i = 'index'" id="data{{i}}">
                   <td>{{data.Name}}</td>
                   <td>
-                    <input type="text" maxlength="3"  (keypress)="clearErrMsg(); keyPress1($event)" [(ngModel)]="data.Quantity_On_Hand__c">
+                    <input type="text" maxlength="3"  (keypress)="clearErrMsg(); keyPress1($event)" [(ngModel)]="data.Quantity_On_Hand__c" onpaste="return false;">
                   </td>
                   <td>{{data.Standard_Cost__c}}</td>
                   <td>

@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont" class="setsubcont">
         <div class="container">
             <div class="row mb-40">
@@ -25,7 +24,7 @@
                                     <td align="center" *ngIf="serviceslist.Active__c==1">
                                         <input type="checkbox" checked disabled/>
                                     </td>
-                                    <td class="tbl-txt" (click)="showData(serviceslist)">{{serviceslist.Name}}</td>
+                                    <td class="tbl-txt word-break" (click)="showData(serviceslist)">{{serviceslist.Name}}</td>
                                 </tr>
                                 <tr>
                                     <td align="center" colspan="2" (click)="addNew()">
@@ -58,7 +57,7 @@
                                     </td>
                                     <td align="center" *ngIf="serviceslist.Active__c==1">
                                         <input type="checkbox" checked disabled>
-                                        <td class="tbl-txt" disabled>{{serviceslist.Name}}</td>
+                                        <td class="tbl-txt word-break" disabled>{{serviceslist.Name}}</td>
                                 </tr>
                                 <tr>
                                     <td align="center" colspan="2" (click)="addNew()">

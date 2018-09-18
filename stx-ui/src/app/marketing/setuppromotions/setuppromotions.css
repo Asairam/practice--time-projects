@@ -11,6 +11,9 @@ label{
 .table-bordered-white>tbody>tr>td {
     color: white;
 }
+.word-break {
+    word-break: break-all!important;
+}
 @media screen and (min-width: 992px){
     .col-md-5 {
         width: 33%;

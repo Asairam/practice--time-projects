@@ -45,7 +45,7 @@ export class CompletedTicketService {
      * To get other list
      */
     getOthersTicketList(ticketId) {
-        return this.http.get(this.apiEndPoint + '/api/checkout/ticketother/' + 'other' + '/' + ticketId)
+        return this.http.get(this.apiEndPoint + '/api/checkout/ticketother/' + ticketId)
             .map(this.extractData);
     }
     /**
@@ -62,6 +62,13 @@ export class CompletedTicketService {
         return this.http.post(this.apiEndPoint + '/api/checkout/emailreciept', { 'data': dataObj })
             .map(this.extractData);
     }
+ /**
+   * To get clientRewards List
+   */
+  clientRewardDatabyApptId(apptid) {
+    return this.http.get(this.apiEndPoint + '/api/checkout/clientRewards/' + apptid)
+      .map(this.extractData);
+  }
     /*To extract json data*/
     private extractData(res: Response) {
         if (res.headers && res.headers.get('token')) {

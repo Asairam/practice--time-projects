@@ -24,10 +24,14 @@ export class CheckOutService {
   // }
   getCheckOutList() {
     return this.http.get(this.apiEndPoint + '/api/checkout/list')
-    .map(this.extractData);
+      .map(this.extractData);
   }
   addTickets(ticketsData) {
     return this.http.post(this.apiEndPoint + '/api/checkout/includetickets', ticketsData)
+      .map(this.extractData);
+  }
+  getHideCliContactInfo(id) {
+    return this.http.get(this.apiEndPoint + '/api/client/getHideClientContactInfo/' + id)
       .map(this.extractData);
   }
   /*To extract json data*/

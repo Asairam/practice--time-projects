@@ -9,7 +9,7 @@
                     </label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="startDate"  [maxDate]="minDate" [bsConfig]="datePickerConfig"
+                    <input type="text"  bsDatepicker [(ngModel)]='startDate' (ngModelChange)='isGenerate = false' [maxDate]="minDate" [bsConfig]="datePickerConfig"
                         class="datefield" (click) ="clearMsg();">
                 </div>
             </div>
@@ -20,7 +20,7 @@
                     </label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="endDate"  [maxDate]="minDate" [bsConfig]="datePickerConfig"
+                    <input type="text"  bsDatepicker [(ngModel)]='endDate' (ngModelChange)='isGenerate = false' [maxDate]="minDate" [bsConfig]="datePickerConfig"
                         class="datefield" (click) ="clearMsg();" >
                 </div>
             </div>
@@ -36,13 +36,13 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-20" *ngIf="itemsDisplay">
+        <div class="row mt-20" *ngIf="isGenerate">
             <div class="col-md-12">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered form_cont_one style-align" border="0" cellspacing="0" cellpadding="0">
                         <thead>
                             <tr>
-                                <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate}}</th>
+                                <th class="thcss">{{companyName}}</th>
                                 <th class="thcss">{{'TOTAL_SHEETS.TOTAL_SHEET' | translate}}</th>
                                 <th class="thcss">{{startDate | date: 'MM/dd/yyyy'}} - {{endDate | date: 'MM/dd/yyyy'}}</th>
                             </tr>

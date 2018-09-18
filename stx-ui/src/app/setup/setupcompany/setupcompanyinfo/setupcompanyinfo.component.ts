@@ -271,7 +271,7 @@ export class SetupCompanyInfoComponent implements OnInit {
     } if (this.email !== 'undefined' && this.email !== undefined && this.email !== '' && !EMAIL_REGEXP.test(this.email)) {
       this.emailError = 'SETUPCOMPANY.INVALID_EMAIL_ID';
     } else {
-      this.company.companyName = this.companyName;
+      this.company.companyName = this.companyName.trim();
       this.company.headerColor = {
         'headerColor': this.color,
         'footerColor': this.color1
@@ -340,7 +340,7 @@ export class SetupCompanyInfoComponent implements OnInit {
     } else if (this.updateEmail && this.updateEmail !== 'undefined' && this.updateEmail !== undefined && this.updateEmail !== '' && !EMAIL_REGEXP.test(this.updateEmail)) {
       this.emailError = 'SETUPCOMPANY.INVALID_EMAIL_ID';
     } else {
-      this.company.updateCompanyName = this.updateCompanyName;
+      this.company.updateCompanyName = this.updateCompanyName.trim();
       // this.company.headerColor = {
       //   'headerColor': this.updateHeaderColor,
       //   'footerColor': this.updateFooterColor
@@ -501,7 +501,7 @@ export class SetupCompanyInfoComponent implements OnInit {
   getLocation(param) {
     if (param === 'edit') {
       if (this.updatePostalCode.length > 4) {
-        this.http.get('http://ziptasticapi.com/' + this.updatePostalCode).subscribe(
+        this.http.get('https://ziptasticapi.com/' + this.updatePostalCode).subscribe(
           result => {
             if (result['error']) {
               const toastermessage: any = this.translateService.get('SETUPCOMPANY.ZIP_CODE_NOT_FOUND');
@@ -533,7 +533,7 @@ export class SetupCompanyInfoComponent implements OnInit {
       }
     } else {
       if (this.postalCodes1.length > 4) {
-        this.http.get('http://ziptasticapi.com/' + this.postalCodes1).subscribe(
+        this.http.get('https://ziptasticapi.com/' + this.postalCodes1).subscribe(
           result => {
             if (result['error']) {
               const toastermessage: any = this.translateService.get('SETUPCOMPANY.ZIP_CODE_NOT_FOUND');

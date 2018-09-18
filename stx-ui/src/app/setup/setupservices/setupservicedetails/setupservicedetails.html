@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-	<!-- <app-header></app-header> -->
-	<app-header [newMenu]="'noNav'"></app-header>
+	<app-header [newMenu]="'nav'"></app-header>
 	<section id="inner_cont" class="setsubcont" style="margin-top: -38px;">
 		<div class="container W-color">
 			<div class="row mb-40">
@@ -35,7 +34,7 @@
 									<td align="center" *ngIf='serviceDetails.Active__c == 0'>
 										<input type="checkbox" disabled>
 									</td>
-									<td class="tbl-txt" (click)="editServiceDetails(serviceDetails);clearErrorMsg();">
+									<td class="tbl-txt word-break" (click)="editServiceDetails(serviceDetails);clearErrorMsg();">
 										<a class="W-color">{{serviceDetails.Name}}</a>
 									</td>
 								</tr>
@@ -51,7 +50,7 @@
 					</div>
 				</div>
 				<!-- Start : Setup service add -->
-				<div class="col-md-9 pdgl30" [class.disabled]="addEnableDisable" *ngIf="isAdding" style="margin-top: -15px;">
+				<div class="col-md-8 pdgl30" [class.disabled]="addEnableDisable" *ngIf="isAdding" style="margin-top: -15px;">
 					<div class="row mt-20 res-mt-15">
 						<div class="col-md-8 pdgl30 mt-40">
 							<h1>{{'SETUP_SERVICES.SERVICE_DETAILS' | translate}}</h1>
@@ -325,7 +324,7 @@
 								<tr *ngFor="let resourcesUsedRow of resourcesUsedRows; let i = index">
 									<td>
 										<select [(ngModel)]="resourcesUsedRow.name" class="mb-15" style="width:fit-content" (click)="clearErrorMsg();">
-											<option value="">-- Select Resource --</option>
+											<option value="">{{'SETUP_SERVICES.SELECT_RESOURCE'  | translate}}</option>
 											<option *ngFor='let name of getResourcesDropdown' value="{{name.Id}}">{{name.Name}}</option>
 										</select>
 									</td>
@@ -369,7 +368,7 @@
 				</div>
 				<!-- End : Setup service add -->
 				<!-- Start : Setup service edit -->
-				<div class="col-md-9 pdgl30" [class.disabled]="addEnableDisable" *ngIf="isEditing" style="margin-top: -15px;">
+				<div class="col-md-8 pdgl30" [class.disabled]="addEnableDisable" *ngIf="isEditing" style="margin-top: -15px;">
 					<div class="row mt-20 res-mt-15">
 						<div class="col-md-8 pdgl30 mt-40">
 							<h1>{{'SETUP_SERVICES.SERVICE_DETAILS' | translate}}</h1>
@@ -643,7 +642,7 @@
 								<tr *ngFor="let resourcesUsedRow of resourcesUsedRows; let i = index">
 									<td>
 										<select [(ngModel)]="resourcesUsedRow.name" class="mb-15" style="width:90% " (click)="clearErrorMsg();">
-											<option value="">-- Select Resource --</option>
+											<option value="">{{'SETUP_SERVICES.SELECT_RESOURCE'  | translate}}</option>
 											<option *ngFor='let name of getResourcesDropdown' value="{{name.Id}}">{{name.Name}}</option>
 										</select>
 									</td>

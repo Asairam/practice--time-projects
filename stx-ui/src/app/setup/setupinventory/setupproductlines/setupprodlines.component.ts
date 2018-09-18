@@ -75,10 +75,10 @@ export class SetupProductLinesComponent implements OnInit {
     /*-- Method used to add inventory groups,
      units of measure and removing them --*/
     addRows() {
-        this.rows.push({ inventoryGroups: '' });
+        this.rows.push({ inventoryGroups:  this.inventoryGroupList[0].inventoryGroupName });
     }
     addUpdateRows() {
-        this.updaterows.push({ inventoryGroups: '' });
+        this.updaterows.push({ inventoryGroups: this.inventoryGroupList[0].inventoryGroupName });
     }
     addMeasures() {
         this.measures.push({ unitOfMeasures: '' });
@@ -197,8 +197,8 @@ export class SetupProductLinesComponent implements OnInit {
                 'productLineName': this.productLineName,
                 'productColor': this.productColor === '' ? '#ffffff' : this.productColor,
                 'inventoryGroups': this.rows,
-                'unitOfMeasures': this.measures
-            },
+                'unitOfMeasures': this.measures.filter(filterList => filterList.unitOfMeasures)
+            };
                 this.productLinesService.createProductLine(this.productLineObj)
                     .subscribe(data => {
                         this.productLineData = data['result'];
@@ -302,7 +302,7 @@ export class SetupProductLinesComponent implements OnInit {
                 'updateProductLineName': this.updateProductLineName,
                 'updateProductColor': this.updateProductColor === '' ? '#ffffff' : this.updateProductColor,
                 'updateInventoryGroups': this.inventoryGroups,
-                'updateUnitOfMeasures': this.unitOfMeasures
+                'updateUnitOfMeasures': this.unitOfMeasures.filter(filterList => filterList.unitOfMeasures)
             };
             this.productLinesService.updateInventoryProductLine(this.updateProductLineObj, this.updateId)
                 .subscribe(data => {

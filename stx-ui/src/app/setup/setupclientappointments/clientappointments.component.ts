@@ -26,13 +26,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
-import * as moment from 'moment/moment';
 import { ClientAppointmentsService } from './clientappointments.service';
 import { TabsetComponent } from 'ngx-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from 'ng2-translate';
 import { JwtHelper } from 'angular2-jwt';
+import * as config from '../../app.config';
+
 @Component({
   selector: 'app-clientappointments-popup',
   templateUrl: './clientappointments.html',
@@ -143,7 +143,7 @@ export class ClientAppointmentsComponent implements OnInit {
   ApptOnlineBooking: any;
   timesData: any;
   onlineValues: any;
-  dataByFields: any;
+  dataByFields: any = [];
   onlineBookingError: any;
   onlineBookingError1: any;
   // gifts online
@@ -176,6 +176,7 @@ export class ClientAppointmentsComponent implements OnInit {
   };
   activeTab2 = [false, false, false, false, false, false];
   activeTabClass = ['active', '', '', '', '', ''];
+  url = config['BASE_URL'] + '/#/clientlogin/';
   @ViewChild('staticTabs') staticTabs: TabsetComponent;
   selectTab(tab_id: number) {
     this.staticTabs.tabs[tab_id].active = true;
@@ -232,6 +233,7 @@ export class ClientAppointmentsComponent implements OnInit {
       this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('token'));
       // this.firstName = this.decodedToken.data.firstName;
       // this.lastName = this.decodedToken.data.lastName;
+      this.url += this.decodedToken['data']['db'];
     } catch (error) {
       this.decodedToken = {};
     }
@@ -263,13 +265,13 @@ export class ClientAppointmentsComponent implements OnInit {
         this.expressBookingClientNameNotRequired = this.bookingDataList.expressBookingClientNameNotRequired;
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   /*--- Method used to get static data ---*/
@@ -279,13 +281,13 @@ export class ClientAppointmentsComponent implements OnInit {
         this.DisplayAvailData = data['data'];
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   /*--- Method to display availabilities data ---*/
@@ -376,16 +378,16 @@ export class ClientAppointmentsComponent implements OnInit {
   getCommonData() {
     this.clientAppointmentsService.getCommonData().subscribe(
       data => {
-        this.mergeFieldsList = data['mergeFields'];
+        this.mergeFieldsList = data['giftMergeFields'];
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       }
     );
   }
@@ -410,13 +412,13 @@ export class ClientAppointmentsComponent implements OnInit {
           }
         },
         error => {
-            const errStatus = JSON.parse(error['_body'])['status'];
-            if (errStatus === '2085' || errStatus === '2071') {
-              if (this.router.url !== '/') {
-                localStorage.setItem('page', this.router.url);
-                this.router.navigate(['/']).then(() => { });
-              }
+          const errStatus = JSON.parse(error['_body'])['status'];
+          if (errStatus === '2085' || errStatus === '2071') {
+            if (this.router.url !== '/') {
+              localStorage.setItem('page', this.router.url);
+              this.router.navigate(['/']).then(() => { });
             }
+          }
         });
   }
   /*method used to get remainders data */
@@ -437,13 +439,13 @@ export class ClientAppointmentsComponent implements OnInit {
           this.reminderEmailTemplate = this.remainderListing.emailTemplate;
         },
         error => {
-            const errStatus = JSON.parse(error['_body'])['status'];
-            if (errStatus === '2085' || errStatus === '2071') {
-              if (this.router.url !== '/') {
-                localStorage.setItem('page', this.router.url);
-                this.router.navigate(['/']).then(() => { });
-              }
+          const errStatus = JSON.parse(error['_body'])['status'];
+          if (errStatus === '2085' || errStatus === '2071') {
+            if (this.router.url !== '/') {
+              localStorage.setItem('page', this.router.url);
+              this.router.navigate(['/']).then(() => { });
             }
+          }
         });
   }
   displayInTemplateRemainder(value, ckEditorId) {
@@ -461,7 +463,7 @@ export class ClientAppointmentsComponent implements OnInit {
       .subscribe(data => {
         this.getHourse = data['result'];
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -469,7 +471,7 @@ export class ClientAppointmentsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
   /**
    * Reminders methods ends
@@ -484,13 +486,13 @@ export class ClientAppointmentsComponent implements OnInit {
         this.timesData = data['timeFormats'];
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   /*--- Method used to get hours for online data ---*/
@@ -500,30 +502,39 @@ export class ClientAppointmentsComponent implements OnInit {
         this.onlineValues = data['result'].filter(filterList => filterList.isActive__c);
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       });
   }
   /*--- Method used to get failed deposites of notifications ---*/
   failedDepositeOfNotificationsData() {
-    this.clientAppointmentsService.failedDepositeOfNotifications().subscribe(
-      data => {
-        this.dataByFields = data['failedDepositesOfNotifications'];
+    this.clientAppointmentsService.failedDepositeOfNotifications()
+      .subscribe(data => {
+        this.dataByFields = data['result'];
       },
-      error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        error => {
+          const status = JSON.parse(error['status']);
+          const statuscode = JSON.parse(error['_body']).status;
+          switch (status) {
+            case 500:
+              break;
+            case 400:
+              if (statuscode === '2040') {
+                this.error = 'COMMON_STATUS_CODES.' + JSON.parse(error['_body']).status;
+                window.scrollTo(0, 0);
+              } else if (statuscode === '2085' || statuscode === '2071') {
+                if (this.router.url !== '/') {
+                  localStorage.setItem('page', this.router.url);
+                  this.router.navigate(['/']).then(() => { });
+                }
+              } break;
           }
-      });
+        });
   }
   /*--- Method used to get formated data ---*/
   formatData(value) {
@@ -560,12 +571,12 @@ export class ClientAppointmentsComponent implements OnInit {
           case 500:
             break;
           case 400:
-          if (statuscode === '2085' || statuscode === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
+            if (statuscode === '2085' || statuscode === '2071') {
+              if (this.router.url !== '/') {
+                localStorage.setItem('page', this.router.url);
+                this.router.navigate(['/']).then(() => { });
+              }
             }
-          }
             break;
         }
       }
@@ -585,13 +596,13 @@ export class ClientAppointmentsComponent implements OnInit {
         this.giftsEmailTemplate = this.giftOnlineDatalist.emailTemplate;
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       }
     );
   }
@@ -612,7 +623,7 @@ export class ClientAppointmentsComponent implements OnInit {
       .subscribe(data => {
         this.servicedata = data['result'];
       },
-      error => {
+        error => {
           const errStatus = JSON.parse(error['_body'])['status'];
           if (errStatus === '2085' || errStatus === '2071') {
             if (this.router.url !== '/') {
@@ -620,7 +631,7 @@ export class ClientAppointmentsComponent implements OnInit {
               this.router.navigate(['/']).then(() => { });
             }
           }
-      });
+        });
   }
 
   /*--- Method used to clear messages ---*/
@@ -643,13 +654,13 @@ export class ClientAppointmentsComponent implements OnInit {
         this.friendEmailTemplate = this.inviteFriendDataList.emailTemplate;
       },
       error => {
-          const errStatus = JSON.parse(error['_body'])['status'];
-          if (errStatus === '2085' || errStatus === '2071') {
-            if (this.router.url !== '/') {
-              localStorage.setItem('page', this.router.url);
-              this.router.navigate(['/']).then(() => { });
-            }
+        const errStatus = JSON.parse(error['_body'])['status'];
+        if (errStatus === '2085' || errStatus === '2071') {
+          if (this.router.url !== '/') {
+            localStorage.setItem('page', this.router.url);
+            this.router.navigate(['/']).then(() => { });
           }
+        }
       }
     );
   }
@@ -731,47 +742,86 @@ export class ClientAppointmentsComponent implements OnInit {
       if (remainder[i].howMuch > 24 && remainder[i].timeUnit === 'hours') {
         this.remainderError1 = 'SETUP_CLIENTOPPOINTMENTS.RAMINDERS_VALID_HOURS_FEILD';
         window.scrollTo(0, 0);
+        this.updateTabs(2);
       } else if (remainder[i].howMuch === '' && (remainder[i].timeUnit === 'hours' || remainder[i].timeUnit === 'days')) {
         this.remainderError2 = 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_NOBALNK_FILED';
         window.scrollTo(0, 0);
+        this.updateTabs(2);
       } else if (remainder[i].howMuch <= 0 && (remainder[i].timeUnit === 'hours' || remainder[i].timeUnit === 'days')) {
         this.remainderError3 = 'SETUP_CLIENTOPPOINTMENTS.ONLINE_BOOKING_NOBALNK_FILED';
         window.scrollTo(0, 0);
+        this.updateTabs(2);
       }
     }
     if (this.bookingIntervalMinutes === undefined || this.bookingIntervalMinutes === '' ||
       this.bookingIntervalMinutes === null || this.bookingIntervalMinutes === 'undefined') {
       this.error1 = 'BOOKING.VALID_NOBLANK_BOOKING_INTERVAL';
+      window.scrollTo(0, 0);
+      this.updateTabs(0);
     } else if (this.bookingIntervalMinutes < 5 || this.bookingIntervalMinutes > 240) {
       this.error1 = 'BOOKING.VALID_BOOKING_INTERVAL_LIMIT';
       window.scrollTo(0, 0);
+      this.updateTabs(0);
     } else if (nearestFive !== 0) {
       this.error1 = 'Please enter a valid value. The two nearest valid values are ' + (nearestRound - 5) + ' and ' + nearestRound + '.';
       window.scrollTo(0, 0);
+      this.updateTabs(0);
     } else if (this.maximumAvailableToShow === undefined || this.maximumAvailableToShow === '' ||
       this.maximumAvailableToShow === null || this.maximumAvailableToShow === 'undefined') {
       this.error2 = 'BOOKING.VALID_NOBLANK_MAXIMUM_AVAILABILTY';
+      window.scrollTo(0, 0);
+      this.updateTabs(0);
     } else if (this.maximumAvailableToShow < 10 || this.maximumAvailableToShow > 100) {
       this.error2 = 'BOOKING.VALID_MAXIMUM_AVAILABILTY_LIMIT';
+      window.scrollTo(0, 0);
+      this.updateTabs(0);
     } else if (this.notificationEmailAddress !== '' && !EMAIL_REGEXP.test(this.notificationEmailAddress)) {
       this.notificationError = 'COMMON.VALID_EMAIL_ID_FORMAT';
+      window.scrollTo(0, 0);
+      this.updateTabs(1);
     } else if (this.subject === undefined || this.subject === '' || this.subject === 'undefined') {
       this.notificationError1 = 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_NO_BLANK_SUBJECT_FEILD';
+      window.scrollTo(0, 0);
+      this.updateTabs(1);
     } else if (this.NumberofAvailabilities < 10 || this.NumberofAvailabilities > 100) {
       this.onlineBookingError = 'BOOKING.VALID_MAXIMUM_AVAILABILTY_LIMIT';
+      window.scrollTo(0, 0);
+      this.updateTabs(3);
     } else if (this.isDuplicate) {
       this.colorerror = 'BOOKING.VALID_COLOR';
+      window.scrollTo(0, 0);
+      this.updateTabs(0);
     } else if (this.sendReminders === true && (this.reminderEmailAddress === '' || this.reminderEmailAddress === 'undefined')) {
       this.remainderError = 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_NOBLANK_FROM_EMAIL_ADDRESS';
+      this.updateTabs(2);
       window.scrollTo(0, 0);
     } else if (this.reminderEmailAddress !== '' && !EMAIL_REGEXP.test(this.reminderEmailAddress)) {
       this.remainderError4 = 'SETUP_CLIENTOPPOINTMENTS.REMINDERS_INVALID_FROM_EMAIL_ADDRESS';
+      this.updateTabs(2);
       window.scrollTo(0, 0);
     } else if (this.sendNotification === true && (this.notificationEmailAddress === '' || this.notificationEmailAddress === 'undefined')) {
       this.notificationError2 = 'SETUP_CLIENTOPPOINTMENTS.NOTIFICATIONS_NOBLANK_FROM_EMAIL_ADDRESS';
+      this.updateTabs(1);
       window.scrollTo(0, 0);
-    } else if (this.windowStartTime > this.windowEndTime) {
+    } else if (((this.windowStartTime && this.windowStarts === 'Days') && (this.windowEndTime && this.windowEnds === 'Hours'))
+      && (this.windowStartTime * 24) > this.windowEndTime) {
       this.onlineBookingError1 = 'SETUP_CLIENTOPPOINTMENTS.BOOKING_WINDOW_STARTS_BEFORE_BOOKING_WINDOW_END';
+      this.updateTabs(3);
+      window.scrollTo(0, 0);
+    } else if (((this.windowStartTime && this.windowStarts === 'Hours') && (this.windowEndTime && this.windowEnds === 'Days'))
+      && (this.windowStartTime) > (this.windowEndTime * 24)) {
+      this.onlineBookingError1 = 'SETUP_CLIENTOPPOINTMENTS.BOOKING_WINDOW_STARTS_BEFORE_BOOKING_WINDOW_END';
+      this.updateTabs(3);
+      window.scrollTo(0, 0);
+    } else if (((this.windowStartTime && this.windowStarts === 'Days') && (this.windowEndTime && this.windowEnds === 'Days'))
+      && (this.windowStartTime > this.windowEndTime)) {
+      this.onlineBookingError1 = 'SETUP_CLIENTOPPOINTMENTS.BOOKING_WINDOW_STARTS_BEFORE_BOOKING_WINDOW_END';
+      this.updateTabs(3);
+      window.scrollTo(0, 0);
+    } else if (((this.windowStartTime && this.windowStarts === 'Hours') && (this.windowEndTime && this.windowEnds === 'Hours'))
+      && (this.windowStartTime > this.windowEndTime)) {
+      this.onlineBookingError1 = 'SETUP_CLIENTOPPOINTMENTS.BOOKING_WINDOW_STARTS_BEFORE_BOOKING_WINDOW_END';
+      this.updateTabs(3);
       window.scrollTo(0, 0);
     } else if ((this.remainderError1 === '' || this.remainderError1 === undefined || this.remainderError1 === 'undefined') &&
       (this.remainderError2 === '' || this.remainderError2 === undefined || this.remainderError2 === 'undefined') &&
@@ -846,19 +896,6 @@ export class ClientAppointmentsComponent implements OnInit {
             // this.clearmessage();
           },
           error => {
-              const errStatus = JSON.parse(error['_body'])['status'];
-              if (errStatus === '2085' || errStatus === '2071') {
-                if (this.router.url !== '/') {
-                  localStorage.setItem('page', this.router.url);
-                  this.router.navigate(['/']).then(() => { });
-                }
-              }
-          });
-      this.clientAppointmentsService.setupNotificationData(this.notificationData).subscribe(
-        data => {
-          this.notificationData = data['result'];
-        },
-        error => {
             const errStatus = JSON.parse(error['_body'])['status'];
             if (errStatus === '2085' || errStatus === '2071') {
               if (this.router.url !== '/') {
@@ -866,6 +903,19 @@ export class ClientAppointmentsComponent implements OnInit {
                 this.router.navigate(['/']).then(() => { });
               }
             }
+          });
+      this.clientAppointmentsService.setupNotificationData(this.notificationData).subscribe(
+        data => {
+          this.notificationData = data['result'];
+        },
+        error => {
+          const errStatus = JSON.parse(error['_body'])['status'];
+          if (errStatus === '2085' || errStatus === '2071') {
+            if (this.router.url !== '/') {
+              localStorage.setItem('page', this.router.url);
+              this.router.navigate(['/']).then(() => { });
+            }
+          }
         });
       this.clientAppointmentsService.saveRemainder(this.dataObjects)
         .subscribe(
@@ -873,13 +923,13 @@ export class ClientAppointmentsComponent implements OnInit {
 
           },
           error => {
-              const errStatus = JSON.parse(error['_body'])['status'];
-              if (errStatus === '2085' || errStatus === '2071') {
-                if (this.router.url !== '/') {
-                  localStorage.setItem('page', this.router.url);
-                  this.router.navigate(['/']).then(() => { });
-                }
+            const errStatus = JSON.parse(error['_body'])['status'];
+            if (errStatus === '2085' || errStatus === '2071') {
+              if (this.router.url !== '/') {
+                localStorage.setItem('page', this.router.url);
+                this.router.navigate(['/']).then(() => { });
               }
+            }
           });
       this.clientAppointmentsService.onlineData(this.ApptOnlineBooking)
         .subscribe(
@@ -887,13 +937,13 @@ export class ClientAppointmentsComponent implements OnInit {
             this.onlineBookingData = data['data'];
           },
           error => {
-              const errStatus = JSON.parse(error['_body'])['status'];
-              if (errStatus === '2085' || errStatus === '2071') {
-                if (this.router.url !== '/') {
-                  localStorage.setItem('page', this.router.url);
-                  this.router.navigate(['/']).then(() => { });
-                }
+            const errStatus = JSON.parse(error['_body'])['status'];
+            if (errStatus === '2085' || errStatus === '2071') {
+              if (this.router.url !== '/') {
+                localStorage.setItem('page', this.router.url);
+                this.router.navigate(['/']).then(() => { });
               }
+            }
           });
       this.clientAppointmentsService.Giftonline(this.dataObject)
         .subscribe(
@@ -902,13 +952,13 @@ export class ClientAppointmentsComponent implements OnInit {
             this.clearmessage();
           },
           error => {
-              const errStatus = JSON.parse(error['_body'])['status'];
-              if (errStatus === '2085' || errStatus === '2071') {
-                if (this.router.url !== '/') {
-                  localStorage.setItem('page', this.router.url);
-                  this.router.navigate(['/']).then(() => { });
-                }
+            const errStatus = JSON.parse(error['_body'])['status'];
+            if (errStatus === '2085' || errStatus === '2071') {
+              if (this.router.url !== '/') {
+                localStorage.setItem('page', this.router.url);
+                this.router.navigate(['/']).then(() => { });
               }
+            }
           });
       this.clientAppointmentsService.invitefriend(this.friendDataObject)
         .subscribe(
@@ -917,13 +967,13 @@ export class ClientAppointmentsComponent implements OnInit {
             this.clearmessage();
           },
           error => {
-              const errStatus = JSON.parse(error['_body'])['status'];
-              if (errStatus === '2085' || errStatus === '2071') {
-                if (this.router.url !== '/') {
-                  localStorage.setItem('page', this.router.url);
-                  this.router.navigate(['/']).then(() => { });
-                }
+            const errStatus = JSON.parse(error['_body'])['status'];
+            if (errStatus === '2085' || errStatus === '2071') {
+              if (this.router.url !== '/') {
+                localStorage.setItem('page', this.router.url);
+                this.router.navigate(['/']).then(() => { });
               }
+            }
           }
         );
       this.router.navigate(['/setup']).then(() => {

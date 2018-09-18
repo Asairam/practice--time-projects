@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont" class="setsubcont">
         <div class="container">
             <div class="row">
@@ -27,7 +26,7 @@
                                     <td align="center" *ngIf='productlinelist.Active__c == defaultInActive'>
                                         <input type="checkbox" disabled>
                                     </td>
-                                    <td class="tbl-txt" (click)="showData(productlinelist);">{{productlinelist.Name}}</td>
+                                    <td class="tbl-txt word-break" (click)="showData(productlinelist);">{{productlinelist.Name}}</td>
                                     <td>
                                         <input type="text" (keypress)="clear();" [(ngModel)]="productlinelist.Color__c" [(colorPicker)]="productlinelist.Color__c"
                                             [style.background]="productlinelist.Color__c" [cpHeight]="'290px'" [value]="productlinelist.Color__c"
@@ -64,11 +63,11 @@
                                     <td align="center" *ngIf='productlinelist.Active__c == defaultInActive' disabled>
                                         <input type="checkbox" disabled>
                                     </td>
-                                    <td>{{productlinelist.Name}}</td>
+                                    <td class="tbl-txt word-break">{{productlinelist.Name}}</td>
                                     <td disabled>
                                         <input type="text" (keypress)="clear();" [(ngModel)]="productlinelist.Color__c" [(colorPicker)]="productlinelist.Color__c"
                                             [style.background]="productlinelist.Color__c" [cpHeight]="'290px'" [value]="productlinelist.Color__c"
-                                            disabled maxlength="7"/>
+                                            disabled maxlength="7" [style.color]="productlinelist.Color__c === '#ffffff' ? 'black' : 'white'"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -130,10 +129,9 @@
                                             </td>
                                             <td>{{ 'COMMON.REMOVE' | translate }}</td>
                                         </tr>
-                                        <tr *ngFor="let row of rows">
+                                        <tr *ngFor="let row of rows; let i= 'index'">
                                             <td>
                                                 <select [(ngModel)]="row.inventoryGroups" (click)='clearmessage();'>
-                                                    <option value='Select'>{{ 'COMMON.SELECT' | translate }}</option>
                                                     <option *ngFor="let inventorygrouplist of inventoryGroupList; let i='index'" id="inventorygrouplist{{i}}">{{inventorygrouplist.inventoryGroupName}}</option>
                                                 </select>
                                             </td>
@@ -314,7 +312,7 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                        <tr *ngFor="let updaterow of updaterows">
+                                        <tr *ngFor="let updaterow of updaterows; let i= 'index'">
                                             <td>
                                                 <select [(ngModel)]="updaterow.inventoryGroups" (click)="clearmessage()">
                                                     <option *ngFor="let inventorygrouplist of inventoryGroupList; let i='index'" id="inventorygrouplist{{i}}">{{inventorygrouplist.inventoryGroupName}}</option>
@@ -340,14 +338,14 @@
                                             <td>{{ 'COMMON.REMOVE' | translate }}</td>
                                         </tr>
                                         <tr *ngFor='let updatemeasure of updateUnitOfMeasures'>
-                                            <td>
+                                            <td *ngIf = "updatemeasure.unitOfMeasures !== ''">
                                                 <input type='text' (keypress)="clearmessage()" value='{{updatemeasure.unitOfMeasures}}' [(ngModel)]="updatemeasure.unitOfMeasures"
                                                     maxlength="10" />
                                             </td>
                                         </tr>
                                         <tr *ngFor='let updatemeasure of updatemeasures'>
                                             <td>
-                                                <input type='text' [(ngModel)]='updatemeasure.unitOfMeasures' (keypress)='clearmessage();' maxlength="10"/>
+                                                <input type='text'  [(ngModel)]='updatemeasure.unitOfMeasures' (keypress)='clearmessage();' maxlength="10"/>
                                             </td>
                                             <td>
                                                 <span class="f-minus">

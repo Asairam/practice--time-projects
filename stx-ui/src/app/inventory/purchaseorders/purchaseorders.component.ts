@@ -8,6 +8,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { PurchaseOrderService } from './purchaseorders.service';
 import { parse } from 'querystring';
 import { CommonService } from '../../common/common.service';
+import { Tooltip } from '../../../custommodules/primeng/primeng';
 @Component({
     selector: 'app-home-popup',
     templateUrl: './purchaseorders.html',
@@ -53,7 +54,7 @@ export class PurchaseOrderComponent implements OnInit {
     closedSupplierName: any;
     closedNote: any;
     closedOrederDate: any;
-    closedRecievedDate: any;
+    closedRecievedDate = ['', ''];
     closedRecievedBy: any;
     closedestimatedCost: any;
     totalOrderCost: any;
@@ -85,15 +86,15 @@ export class PurchaseOrderComponent implements OnInit {
 
     ngOnInit() {
         this.getPurchaseOrderListing();
-    // this.getProductsList();
+        // this.getProductsList();
     }
     /*Method which is used to save purchase order data */
     saveOrders() {
         for (let i = 0; i < this.productsList.length; i++) {
-            if (this.productsList[i]['orderQty'] < 0 || this.productsList[i]['orderQty'] === '' || this.productsList[i]['orderQty'] === undefined ) {
-                this.ordrQtyErr = 'Order Qty: Only a whole number may be entered';
+            if (this.productsList[i]['orderQty'] < 0 || this.productsList[i]['orderQty'] === '' || this.productsList[i]['orderQty'] === undefined) {
+                this.ordrQtyErr = 'PURCHASE_ORDERS.INAVLID_ORDER_QTY';
             } else if (this.productsList[i]['Standard_Cost__c'] < 0) {
-                this.cosstErr = 'Cost Each: Only a whole number may be entered';
+                this.cosstErr = 'PURCHASE_ORDERS.INVALID_COST_EACH';
             }
         }
         if ((this.error === '' || this.error !== undefined || this.error !== 'undefined')
@@ -107,7 +108,7 @@ export class PurchaseOrderComponent implements OnInit {
                 'totalEstimatedOrderCost': this.totalEstimatedOrderCost
             };
             if (this.trigger) {
-            this.trigger = false;
+                this.trigger = false;
                 this.purchaseOrderService.saveData(dataObj).subscribe(
                     data => {
                         const purchaseOrdersData = data['result'];
@@ -127,12 +128,12 @@ export class PurchaseOrderComponent implements OnInit {
                             case 500:
                                 break;
                             case 400:
-                            if (statuscode === '2085' || statuscode === '2071') {
-                                if (this.router.url !== '/') {
-                                    localStorage.setItem('page', this.router.url);
-                                    this.router.navigate(['/']).then(() => { });
+                                if (statuscode === '2085' || statuscode === '2071') {
+                                    if (this.router.url !== '/') {
+                                        localStorage.setItem('page', this.router.url);
+                                        this.router.navigate(['/']).then(() => { });
+                                    }
                                 }
-                              }
                                 break;
                         }
                     }
@@ -163,12 +164,12 @@ export class PurchaseOrderComponent implements OnInit {
                     case 500:
                         break;
                     case 400:
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
                         }
-                      }
                         break;
                 }
             }
@@ -207,62 +208,65 @@ export class PurchaseOrderComponent implements OnInit {
             } else {
                 delete this.productsList[i]['action'];
             }
-            if (this.productsList[i]['orderQty'] < 0 || this.productsList[i]['orderQty'] === '' || this.productsList[i]['orderQty'] === undefined ) {
-                this.editOrdrQtyErr = 'Order Qty: Only a whole number may be entered';
+            if (this.productsList[i]['orderQty'] < 0 || this.productsList[i]['orderQty'] === '' || this.productsList[i]['orderQty'] === undefined) {
+                this.editOrdrQtyErr = 'PURCHASE_ORDERS.INAVLID_ORDER_QTY';
             } else if (this.productsList[i]['Standard_Cost__c'] < 0) {
-                this.editCostError = 'Cost Each: Only a whole number may be entered';
+                this.editCostError = 'PURCHASE_ORDERS.INVALID_COST_EACH';
             } else if (this.productsList[i]['Standard_Cost__c'] >= 999999.99) {
-                this.editCostEachCondErr = 'Cost Each: Must be less than 999,999.99 ';
+                this.editCostEachCondErr = 'PURCHASE_ORDERS.NO_VALID_COST_EACH';
             }
         }
         if (this.recievedEnable === true) {
             if (this.receivedDate === null || this.receivedDate === '' || this.receivedDate === undefined || this.receivedDate === 'undefined') {
-                this.error2 = 'Received Date is required';
+                this.error2 = 'PURCHASE_ORDERS.NO_BLANK_RECIEVED_DATE';
+                window.scrollTo(0, 0);
+            } else if (date < this.orderDate) {
+                this.error2 = 'PURCHASE_ORDERS.INVALID_RECIEVED_DATE';
+                window.scrollTo(0, 0);
             } else if (this.recievedBy === null || this.recievedBy === '' || this.recievedBy === 'undefined' || this.recievedBy === undefined) {
-                this.error1 = 'Received By is required';
+                this.error1 = 'PURCHASE_ORDERS.NO_BLANK_RECIEVED_BY';
+                window.scrollTo(0, 0);
             }
         }
-        //  else {
-            if ((this.editOrdrQtyErr === '' || this.editOrdrQtyErr === undefined) &&
-                (this.editCostError === '' || this.editCostError === undefined) &&
-                (this.editCostEachCondErr === '' || this.editCostEachCondErr === undefined) &&
-                (this.error2 === '' || this.error2 === undefined) &&
-                (this.error1 === '' || this.error1 === undefined)) {
-                this.editDataObj = {
-                    'receivedDate': date,
-                    'receivedBy': this.recievedBy,
-                    'totalEstimatedOrderCost': this.totalEstimatedOrderCost,
-                    'totalActualOrderCost': this.totalActualOrderCost,
-                    'supplierId': this.supId,
-                    'notes': this.note,
-                    'purchaseOrderDetailData': this.productsList,
-                    'orderDate': this.orderDate,
-                };
-                this.purchaseOrderService.editPurchaseOrderData(this.updateId, this.editDataObj).subscribe(
-                    data => {
-                        const receivedData = data['result'];
-                        this.disableSelect = false;
-                        this.getPurchaseOrderListing();
-                    },
-                    error => {
-                        const status = JSON.parse(error['status']);
-                        const statuscode = JSON.parse(error['_body']).status;
-                        switch (status) {
-                            case 500:
-                                break;
-                            case 400:
+        if ((this.editOrdrQtyErr === '' || this.editOrdrQtyErr === undefined) &&
+            (this.editCostError === '' || this.editCostError === undefined) &&
+            (this.editCostEachCondErr === '' || this.editCostEachCondErr === undefined) &&
+            (this.error2 === '' || this.error2 === undefined) &&
+            (this.error1 === '' || this.error1 === undefined)) {
+            this.editDataObj = {
+                'receivedDate': date,
+                'receivedBy': this.recievedBy,
+                'totalEstimatedOrderCost': this.totalEstimatedOrderCost,
+                'totalActualOrderCost': this.totalActualOrderCost,
+                'supplierId': this.supId,
+                'notes': this.note,
+                'purchaseOrderDetailData': this.productsList,
+                'orderDate': this.orderDate,
+            };
+            this.purchaseOrderService.editPurchaseOrderData(this.updateId, this.editDataObj).subscribe(
+                data => {
+                    const receivedData = data['result'];
+                    this.disableSelect = false;
+                    this.getPurchaseOrderListing();
+                },
+                error => {
+                    const status = JSON.parse(error['status']);
+                    const statuscode = JSON.parse(error['_body']).status;
+                    switch (status) {
+                        case 500:
+                            break;
+                        case 400:
                             if (statuscode === '2085' || statuscode === '2071') {
                                 if (this.router.url !== '/') {
                                     localStorage.setItem('page', this.router.url);
                                     this.router.navigate(['/']).then(() => { });
                                 }
-                              }
-                                break;
-                        }
+                            }
+                            break;
                     }
-                );
-            }
-        // }
+                }
+            );
+        }
     }
     /*Method which is used to display suppliers list */
     getSuppliers() {
@@ -279,12 +283,12 @@ export class PurchaseOrderComponent implements OnInit {
                     case 500:
                         break;
                     case 400:
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
                         }
-                      }
                         break;
                 }
             }
@@ -296,7 +300,29 @@ export class PurchaseOrderComponent implements OnInit {
             this.purchaseOrderService.checkIfSupplierAndOrderDateisExist(this.selSupl, this.commonService.getDBDatTmStr(this.bsValue)).subscribe(
                 data => {
                     this.productsList = data.result;
+                    const showDesc = [];
+                    if (this.productsList.length > 0) {
+                        this.productsList[0]['purchaseDesc'] = this.productsList[0]['supplierName'] + ';' + this.productsList[0]['Order_Date__c'];
+                        showDesc.push(this.productsList[0]);
+                    }
+                    data.result.splice(0, 1);
+                    data.result.forEach(element => {
+                        const index = showDesc.findIndex((obj) => obj.Id === element.Id);
+                        if (index === -1) {
+                            element.purchaseDesc = element.supplierName + ' ; ' + element.Order_Date__c;
+                            showDesc.push(element);
+                        } else {
+                            showDesc[index].purchaseDesc = showDesc[index].purchaseDesc + ', ' + element.supplierName + ' ; ' + element.Order_Date__c;
+                        }
+                    });
+                    this.productsList = showDesc;
+                    for (let i = 0; i < this.productsList.length; i++) {
+                        if (this.productsList[i]['Order_Date__c'] !== null) {
+                            this.productsList[i]['purchaseDesc'] = 'This item is being ordered on purchase order for' + ' ' + this.productsList[i]['purchaseDesc'];
+                        }
+                    }
                     this.updateTotOrdCst();
+                    this.resultDiv = true;
                 },
                 error => {
                     const status = JSON.parse(error['status']);
@@ -305,13 +331,14 @@ export class PurchaseOrderComponent implements OnInit {
                         case 500:
                             break;
                         case 400:
-                        if (statuscode === '2085' || statuscode === '2071') {
-                            if (this.router.url !== '/') {
-                                localStorage.setItem('page', this.router.url);
-                                this.router.navigate(['/']).then(() => { });
+                            if (statuscode === '2085' || statuscode === '2071') {
+                                if (this.router.url !== '/') {
+                                    localStorage.setItem('page', this.router.url);
+                                    this.router.navigate(['/']).then(() => { });
+                                }
                             }
-                          }
-                            this.error = 'There is already a Purchase Order for this Supplier and Order Date. Please select a different Supplier or specify a different Order Date.';
+                            this.error = 'PURCHASE_ORDERS.DUPLICATE_PRODUCT_DATA';
+                            this.resultDiv = false;
                             this.productsList = [];
                             break;
                     }
@@ -321,6 +348,7 @@ export class PurchaseOrderComponent implements OnInit {
     }
     /*Method which is used to display purchase order data */
     showData(purchaseData) {
+        // console.log(purchaseData)
         this.disabledClass = 'disabled';
         this.disableSelect = false;
         /* this.orderdate is used to send order date in getProductsSupplier() method to data based on order date*/
@@ -356,10 +384,15 @@ export class PurchaseOrderComponent implements OnInit {
             this.closedSupplierName = purchaseData.supplierName;
             this.closedNote = purchaseData.Note__c;
             this.closedOrederDate = purchaseData.Order_Date__c;
-            this.closedRecievedDate = purchaseData.Received_Date__c;
+            // this.closedRecievedDate = purchaseData.Received_Date__c;
+            this.closedRecievedDate = this.commonService.getUsrDtStrFrmDBStr(purchaseData.Received_Date__c);
             this.closedRecievedBy = purchaseData.Received_By__c;
             this.closedestimatedCost = purchaseData.Estimated_Cost__c;
-            this.totalOrderCost = purchaseData.Total_Cost__c;
+            if (purchaseData.Total_Cost__c === 0) {
+                this.totalOrderCost = '';
+            } else {
+                this.totalOrderCost = purchaseData.Total_Cost__c;
+            }
             this.supplierId = purchaseData.Supplier__c;
             this.closedDiv = true;
             this.addDiv = false;
@@ -388,12 +421,12 @@ export class PurchaseOrderComponent implements OnInit {
                     case 500:
                         break;
                     case 400:
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
                         }
-                      }
                         break;
                 }
             }
@@ -438,12 +471,12 @@ export class PurchaseOrderComponent implements OnInit {
                         case 500:
                             break;
                         case 400:
-                        if (statuscode === '2085' || statuscode === '2071') {
-                            if (this.router.url !== '/') {
-                                localStorage.setItem('page', this.router.url);
-                                this.router.navigate(['/']).then(() => { });
+                            if (statuscode === '2085' || statuscode === '2071') {
+                                if (this.router.url !== '/') {
+                                    localStorage.setItem('page', this.router.url);
+                                    this.router.navigate(['/']).then(() => { });
+                                }
                             }
-                          }
                             break;
                     }
                 }
@@ -456,6 +489,7 @@ export class PurchaseOrderComponent implements OnInit {
         const duplicate = this.checkProduct(this.productsList, temp[0]);
         if (!duplicate) {
             this.productsList.push(temp[0]);
+            this.searchKeyWord = '';
             this.updateTotOrdCst();
         } else {
             this.toastermessage = this.translateService.get('COMMON_TOAST_MESSAGES.DUPLICATE_RECORD');
@@ -491,12 +525,12 @@ export class PurchaseOrderComponent implements OnInit {
                     case 500:
                         break;
                     case 400:
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
+                        if (statuscode === '2085' || statuscode === '2071') {
+                            if (this.router.url !== '/') {
+                                localStorage.setItem('page', this.router.url);
+                                this.router.navigate(['/']).then(() => { });
+                            }
                         }
-                      }
                         break;
                 }
             }
@@ -561,11 +595,11 @@ export class PurchaseOrderComponent implements OnInit {
         this.resultDiv = false;
         this.recievedEnable = false;
     }
-/*Method which is used to change order date */
+    /*Method which is used to change order date */
     orderDateChange() {
         setTimeout(() => this.uniqnessWithSupplierAndOrderDate(), 200);
     }
-/*Method which is used to check products ar unique or not */
+    /*Method which is used to check products ar unique or not */
     checkProduct(prdAry, prdObj) {
         for (let i = 0; i < prdAry.length; i++) {
             if (prdAry[i]['Id'] === prdObj['Id']) {
@@ -574,7 +608,7 @@ export class PurchaseOrderComponent implements OnInit {
         }
         return false;
     }
-/*Method which is used to calculate estimated cost */
+    /*Method which is used to calculate estimated cost */
     updateTotOrdCst() {
         this.totalEstimatedOrderCost = 0;
         // productData.Standard_Cost__c * productData.orderQty

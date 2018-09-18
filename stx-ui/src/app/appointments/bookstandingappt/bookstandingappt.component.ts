@@ -76,15 +76,16 @@ export class BookStandingApptComponent implements OnInit {
     startDateWithTime: any;
     workerHours: any = [];
     workersWithServiceDuration = [];
-    weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     selectedStartDates: any = [];
     datePickerConfig: any;
     clientData: any;
     checkConflictError: any = '';
     showCliName: any;
     passdate: any;
+    serviceTax: any = 0;
     serviceDetailKeys = ['Duration_1__c', 'Duration_2__c', 'Duration_3__c',
         'Buffer_After__c', 'Guest_Charge__c', 'Net_Price__c'];
+    apptEndDate: Date;
     // clientInfo: any;
     @ViewChild('serviceNotesModal') public serviceNotesModal: ModalDirective;
     constructor(
@@ -104,10 +105,10 @@ export class BookStandingApptComponent implements OnInit {
         this.activatedRoute.queryParams.subscribe(params => {
             this.clientId = activatedRoute.snapshot.params['Id'];
         });
-        this.minDate = new Date();
     }
     /*Method for page Load */
     ngOnInit() {
+        this.apptEndDate = this.bsValue;
         this.getClientData(this.clientId);
         this.addServices(0);
         this.getServiceGroups();
@@ -119,7 +120,27 @@ export class BookStandingApptComponent implements OnInit {
         this.getNumberofBookOuts();
         this.getClientInfo();
         this.getAllActivePackages();
+        this.getServRetTaxs();
         // this.getWorkerListHours();
+    }
+    /**
+* Method to get service tax  and retail tax calculation
+*/
+    getServRetTaxs() {
+        this.bookStandingApptService.getServProdTax().subscribe(
+            data => {
+                const taxData = JSON.parse(data['result'][3].JSON__c);
+                this.serviceTax = taxData.serviceTax;
+            },
+            error => {
+                const errStatus = JSON.parse(error['_body'])['status'];
+                if (errStatus === '2085' || errStatus === '2071') {
+                    if (this.router.url !== '/') {
+                        localStorage.setItem('page', this.router.url);
+                        this.router.navigate(['/']).then(() => { });
+                    }
+                }
+            });
     }
     /**
     * Common methods starts
@@ -241,7 +262,8 @@ export class BookStandingApptComponent implements OnInit {
     }
     // Method for service groups
     getServiceGroups() {
-        this.bookStandingApptService.getServiceGroups('Service').subscribe(data => {
+        const reqDate = this.commonService.getDBDatStr(this.bsValue);
+        this.bookStandingApptService.getServiceGroups('Service', reqDate).subscribe(data => {
             this.serviceGroupList = data['result']
                 .filter(filterList => filterList.active && !filterList.isSystem);
             if (this.serviceGroupList.length > 0) {
@@ -251,7 +273,6 @@ export class BookStandingApptComponent implements OnInit {
                 this.categoryOfService(this.serviceGroupName, 0);
             }
 
-            // console.log(this.serviceGroupList[0].serviceGroupName);
         },
             error => {
                 const status = JSON.parse(error['status']);
@@ -343,6 +364,9 @@ export class BookStandingApptComponent implements OnInit {
                     this.rows[length + index].serviceGroupColour = '';
                     this.calculateServiceDurations(length + index);
                 });
+                if (this.rows) {
+                    this.rows = this.rows.filter((obj) => obj.workerName !== '');
+                }
             } else {
                 this.serviceDetailsList[i] = data['result'];
                 this.rows[i]['IsPackage'] = 0;
@@ -370,6 +394,13 @@ export class BookStandingApptComponent implements OnInit {
     // Method to chane service list
 
     servicesListOnChange(serviceId, i) {
+          /*  below  description is used to show the service description for the service*/
+          let temp = [];
+          temp = this.serviceDetailsList[i].filter((obj) => obj.Id === serviceId);
+          if (temp && temp.length > 0) {
+              this.rows[i]['desc'] = temp[0]['Description__c'];
+          }
+          /* end of service description */
         this.appointmentData = [];
         this.workerList[i] = [];
         this.rows[i].workerName = '';
@@ -538,6 +569,19 @@ export class BookStandingApptComponent implements OnInit {
     // Method to clear error messages
     clearErrorMsg() {
         this.bookStandErr = '';
+        this.checkConflictError = '';
+    }
+
+    // To calculate End Date
+    calculateEndDate() {
+        const serviceStartDate: any = {};
+        serviceStartDate['startTime'] = this.bsValue;
+        if (this.numberOfBookStandings === 1) {
+            this.apptEndDate = serviceStartDate['startTime'];
+        } else {
+            const enddate = this.setApptDates(serviceStartDate, this.bookEvery1, +this.numberOfBookStandings - 1);
+            this.apptEndDate = enddate['startTime'];
+        }
     }
     // Method validating for search appointment results
     searchAppointmentData() {
@@ -552,7 +596,7 @@ export class BookStandingApptComponent implements OnInit {
             window.scrollTo(0, 0);
         } else {
             this.bookStandErr = '';
-            let serviceStartDate: Date = this.timeConversionToDate(this.bookStandingTime, this.bsValue);
+            let serviceStartDate: Date = this.commonService.timeConversionToDate(this.bookStandingTime, this.bsValue);
             this.workersWithServiceDuration = [[]];
             this.rows.forEach((obj, i) => {
                 let apptDuration: { 'startTime': Date, 'endTime': Date };
@@ -590,6 +634,14 @@ export class BookStandingApptComponent implements OnInit {
             const startdate = this.workersWithServiceDuration[0][0].startTime;
             // const workerIds: any = this.rows.map((obj) => obj.workerName.split('$')[0]);
             const endDate = this.workersWithServiceDuration[+this.numberOfBookStandings - 1][this.rows.length - 1].endTime;
+            const servicesData = this.rows;
+            for (let i = 0; i < servicesData.length; i++) {
+                for (let j = 0; j < this.serviceDetailsList[i].length; j++) {
+                    if (this.serviceDetailsList[i][j]['Id'] === servicesData[i]['Id']) {
+                        servicesData[i]['Resources__c'] = this.serviceDetailsList[i][j]['Resources__c'];
+                    }
+                }
+            }
             const appointmentBookingData = {
                 'clientId': this.clientId,
                 'Worker__c': workerIds,
@@ -633,9 +685,10 @@ export class BookStandingApptComponent implements OnInit {
                             for (let k = 0; k < this.workersWithServiceDuration[i].length; k++) {
                                 let status = 'Booked';
                                 let FullName = this.setName(this.rows[k].workerName, k, this.workerList);
-                                const workerTime = this.workersWithServiceDuration[i][k];
+                                const workerTime: any = this.workersWithServiceDuration[i][k];
+                                const workerId = this.workersWithServiceDuration[i][k].workerId;
                                 if (j === 0) {
-                                    if (this.checkWorkerServiceStatus(workerTime.startTime, workerTime.endTime, this.workersWithServiceDuration[i][k].workerId)) {
+                                    if (this.commonService.checkWorkerServiceStatus(workerTime.startTime, workerTime.endTime, workerId, this.workerHours)) {
                                         status = 'Closed';
                                     }
                                 }
@@ -643,7 +696,7 @@ export class BookStandingApptComponent implements OnInit {
                                     if (j === 0) {
                                         if (status !== 'Closed') {
                                             if (data['result']['result'][j]['workerId'] === this.workersWithServiceDuration[i][k].workerId) {
-                                                if (this.compareDatesForAppointment(datesArray[j].startDate, datesArray[j].endDate, workerTime.startTime, workerTime.endTime)) {
+                                                if (this.commonService.compareDatesForAppointment(datesArray[j].startDate, datesArray[j].endDate, workerTime.startTime, workerTime.endTime)) {
                                                     status = 'Conflicting';
                                                     FullName = data['result']['result'][j].FullName;
                                                 }
@@ -652,7 +705,7 @@ export class BookStandingApptComponent implements OnInit {
                                     } else {
                                         if (apptData[i][k].Status__c === 'Booked') {
                                             if (data['result']['result'][j]['workerId'] === this.workersWithServiceDuration[i][k].workerId) {
-                                                if (this.compareDatesForAppointment(datesArray[j].startDate, datesArray[j].endDate, workerTime.startTime, workerTime.endTime)) {
+                                                if (this.commonService.compareDatesForAppointment(datesArray[j].startDate, datesArray[j].endDate, workerTime.startTime, workerTime.endTime)) {
                                                     apptData[i][k].Status__c = 'Conflicting';
                                                     apptData[i][k].FullName = data['result']['result'][j].FullName;
                                                 }
@@ -710,103 +763,121 @@ export class BookStandingApptComponent implements OnInit {
 
     // Method to schedule appoitnment
     scheduleAvailable(apptType) {
-        if (this.bookStandingVisitType === '' || this.bookStandingVisitType === 'undefined' || this.bookStandingVisitType === undefined) {
-            this.bookStandErr = 'Select a Visit Type';
-            window.scrollTo(0, 0);
-        } else {
-            const year = this.bsValue.getFullYear();
-            const month = this.bsValue.getMonth();
-            const day = this.bsValue.getDate();
-            const workerIds = this.rows.map((obj) => obj.workerName.split('$')[0]);
-            this.startDateWithTime = new Date(year, month, day,
-                this.timeConversion(this.bookStandingTime),
-                parseInt(this.bookStandingTime.split(' ')[0].split(':')[1], 10), 0, 0);
-            const apptDates: any = [];
-            let isConflicting: any = false;
-            if (apptType === 'scheduleAvailable') {
-                let i = 0;
-                this.appointmentData.filter((obj1: Array<any>) => {
-                    if (obj1.length > 0) {
-                        const IsPackageLength = obj1.filter((obj) => obj['IsPackage'] === 1).length;
-                        const filterStatusList = obj1.filter((obj) => obj['Status__c'].toLowerCase() === 'booked');
-                        const length = filterStatusList.length;
-                        if (length > 0) {
-                            apptDates.push([]);
-                            const filterOBj = obj1.filter((obj) => {
-                                if (IsPackageLength > 0) {
-                                    obj['IsPackage'] = 1;
-                                }
-                                const changedObj = Object.assign({ 'Appt_Status__c': 'Booked' }, obj);
-                                if (length !== obj1.length) {
-                                    changedObj['Appt_Status__c'] = 'Conflicting';
-                                }
-                                apptDates[i].push(changedObj);
-                            });
-                            i++;
-                        }
+        // if (this.bookStandingVisitType === '' || this.bookStandingVisitType === 'undefined' || this.bookStandingVisitType === undefined) {
+        //     this.bookStandErr = 'Select a Visit Type';
+        //     window.scrollTo(0, 0);
+        // } else {
+        const year = this.bsValue.getFullYear();
+        const month = this.bsValue.getMonth();
+        const day = this.bsValue.getDate();
+        const workerIds = this.rows.map((obj) => obj.workerName.split('$')[0]);
+        this.startDateWithTime = new Date(year, month, day,
+            this.timeConversion(this.bookStandingTime),
+            parseInt(this.bookStandingTime.split(' ')[0].split(':')[1], 10), 0, 0);
+        const apptDates: any = [];
+        let isConflicting: any = false;
+        const ApptServiceTax = [];
+        const ApptNetPrice = [];
+        if (apptType === 'scheduleAvailable') {
+            let i = 0;
+            this.appointmentData.filter((obj1: Array<any>) => {
+                let totalServiceTax = 0;
+                let netPrice = 0;
+                if (obj1.length > 0) {
 
-                    }
-                });
-            } else {
-                let i = 0;
-
-                this.appointmentData.filter((obj1: Array<any>) => {
-                    if (obj1.length > 0) {
-                        const IsPackageLength = obj1.filter((obj) => obj['IsPackage'] === 1).length;
-                        const length = obj1.filter((obj) => obj['Status__c'].toLowerCase() !== 'booked').length;
+                    const filterStatusList = obj1.filter((obj) => obj['Status__c'].toLowerCase() === 'booked');
+                    const IsPackageLength = filterStatusList.filter((obj) => obj['IsPackage'] === 1).length;
+                    const length = filterStatusList.length;
+                    if (length > 0) {
                         apptDates.push([]);
-                        const filterOBj = obj1.filter((obj) => {
+                        const filterOBj = filterStatusList.filter((obj) => {
                             if (IsPackageLength > 0) {
                                 obj['IsPackage'] = 1;
                             }
+
                             const changedObj = Object.assign({ 'Appt_Status__c': 'Booked' }, obj);
-                            if (obj['Status__c'].toLowerCase() === 'closed') {
-                                changedObj['Status__c'] = 'Booked';
-                            }
-                            if (length > 0) {
-                                changedObj['Appt_Status__c'] = 'Conflicting';
-                                isConflicting = true;
-                            }
+                            changedObj['Service_Tax__c'] = this.calculateServiceTax(changedObj);
+                            totalServiceTax += changedObj['Service_Tax__c'];
+                            netPrice += changedObj['Net_Price__c'];
                             apptDates[i].push(changedObj);
                         });
                         i++;
                     }
-                });
-            }
-            const dates = {
-                'Client__c': this.clientId,
-                'serviceId': this.serviceId,
-                'AppDates': JSON.stringify(apptDates),
-                // 'workerId': workerIds,
-                'apptime': this.bookStandingTime,
-                'Client_Type__c': this.bookStandingVisitType,
-                'apptBookDate': this.startDateWithTime,
-                'apptNote': this.bookStandingText,
-                'serviceGroupColour': this.serviceGroupColour,
-                // 'serviceData': workersInfo,
-                'Duration__c': this.sumOfServiceDurations,
-                'apptId': ''
-            };
-            if (isConflicting) {
-                if (confirm('There are conflicts with booking the standing appointment, which will directly affect the booking calendar. Schedule anyway?')
-                    && this.checkConflictError !== '') {
-                    this.scheduleAppointments(dates);
-                } else {
-                    this.bookStandErr = 'New appointment conflicts were found';
-                    this.checkConflictError = 'New appointment conflicts were found';
-                    window.scrollTo(0, 0);
-                    this.appointmentData = [];
-                    return;
                 }
-            } else {
-                this.scheduleAppointments(dates);
-            }
+                ApptServiceTax.push(totalServiceTax);
+                ApptNetPrice.push(netPrice);
+            });
+        } else {
+            let i = 0;
+            this.appointmentData.filter((obj1: Array<any>) => {
+                let totalServiceTax = 0;
+                let netPrice = 0;
+                if (obj1.length > 0) {
+                    const IsPackageLength = obj1.filter((obj) => obj['IsPackage'] === 1).length;
+                    const length = obj1.filter((obj) => obj['Status__c'].toLowerCase() !== 'booked').length;
+                    apptDates.push([]);
+                    const filterOBj = obj1.filter((obj) => {
+                        if (IsPackageLength > 0) {
+                            obj['IsPackage'] = 1;
+                        }
+                        const changedObj = Object.assign({ 'Appt_Status__c': 'Booked' }, obj);
+                        if (obj['Status__c'].toLowerCase() === 'closed') {
+                            changedObj['Status__c'] = 'Booked';
+                        }
+                        if (length > 0) {
+                            changedObj['Appt_Status__c'] = 'Conflicting';
+                            isConflicting = true;
+                        }
+                        changedObj['Service_Tax__c'] = this.calculateServiceTax(changedObj);
+                        totalServiceTax += changedObj['Service_Tax__c'];
+                        netPrice += changedObj['Net_Price__c'];
+                        apptDates[i].push(changedObj);
+                    });
+                    i++;
+                }
+                ApptServiceTax.push(totalServiceTax);
+                ApptNetPrice.push(netPrice);
+            });
         }
+        const dates = {
+            'Client__c': this.clientId,
+            'serviceId': this.serviceId,
+            'AppDates': JSON.stringify(apptDates),
+            // 'workerId': workerIds,
+            'apptime': this.bookStandingTime,
+            'Client_Type__c': this.bookStandingVisitType,
+            'apptBookDate': this.startDateWithTime,
+            'apptNote': this.bookStandingText,
+            'serviceGroupColour': this.serviceGroupColour,
+            // 'serviceData': workersInfo,
+            'Duration__c': this.sumOfServiceDurations,
+            'apptId': '',
+            'ApptTax': ApptServiceTax,
+            'NetPrice': ApptNetPrice,
+            'apptCreatedDate': this.commonService.getDBDatTmStr(new Date())
+        };
+        if (isConflicting) {
+            if (confirm('There are conflicts with booking the standing appointment, which will directly affect the booking calendar. Schedule anyway?')) {
+                this.scheduleAppointments(dates);
+            } else {
+                this.bookStandErr = 'New appointment conflicts were found';
+                this.checkConflictError = 'New appointment conflicts were found';
+                window.scrollTo(0, 0);
+                this.appointmentData = [];
+                return;
+            }
+        } else {
+            this.scheduleAppointments(dates);
+        }
+        // }
     }
-
+    calculateServiceTax(taxableObj): number {
+        return this.commonService.calculatePercentage(this.serviceTax, taxableObj['Net_Price__c'], taxableObj['Taxable__c']);
+    }
     scheduleAppointments(apptData) {
         this.passdate = apptData.apptBookDate.getFullYear() + '-' + (apptData.apptBookDate.getMonth() + 1) + '-' + apptData.apptBookDate.getDate();
         this.bookStandingApptService.scheduleAvailable(apptData).subscribe(data => {
+            this.bookStandingApptService.sendApptNotifs(data['result']['apptIds']).subscribe(data2 => { }, error => { });
             this.workerList = [];
             // this.workerList = data['result'];
             this.router.navigate(['/appointments'], { queryParams: { date: this.passdate } }).then(() => {
@@ -826,6 +897,10 @@ export class BookStandingApptComponent implements OnInit {
                         localStorage.setItem('page', this.router.url);
                         this.router.navigate(['/']).then(() => { });
                     }
+                } else if (statuscode === '2091') {
+                    const bookingError = JSON.parse(error['_body']).message;
+                    // Warning Don't Delete This alert Code//
+                    alert(bookingError)
                 }
             });
     }
@@ -882,17 +957,6 @@ export class BookStandingApptComponent implements OnInit {
 
     // comparing the dates whether they are in booked appointment list.written  by ravi
 
-    compareDatesForAppointment(apptStart: Date, apptEnd: Date, reqApptStart: Date, reqApptEnd: Date): boolean {
-        if (reqApptStart.getTime() >= apptStart.getTime() && reqApptStart.getTime() < apptEnd.getTime()) {
-            return true;
-        } else if (reqApptEnd.getTime() > apptStart.getTime() && reqApptEnd.getTime() <= apptEnd.getTime()) {
-            return true;
-        } else if (reqApptStart.getTime() <= apptStart.getTime() && reqApptEnd.getTime() >= apptEnd.getTime()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     setApptDates(apptDate: { 'startTime': Date, 'endTime': Date }, dateType: string, setDatebyNumber: number): { 'startTime': Date, 'endTime': Date } {
         const apptTimings: any = {};
         for (const key in apptDate) {
@@ -911,55 +975,8 @@ export class BookStandingApptComponent implements OnInit {
 
         return apptTimings;
     }
-    getWorkerHours(reqApptStart: Date, workerId: string): { 'startTime': string, 'endTime': string } {
-        const selectedWorker = this.workerHours.filter((worker) => worker.Id === workerId)[0];
-        const day = this.weekDays[reqApptStart.getDay()];
-        const workerTimings: any = {};
-        for (const key in selectedWorker) {
-            if (key.toLowerCase() === day.toLowerCase() + 'starttime__c') {
-                workerTimings.startTime = selectedWorker[key];
-            } else if (key.toLowerCase() === day.toLowerCase() + 'endtime__c') {
-                workerTimings.endTime = selectedWorker[key];
-            }
-        }
-        return workerTimings;
-    }
 
-    compareWorkerTimings(workerStartDate: Date, workerEndDate: Date, reqApptStart: Date, reqApptEnd: Date): boolean {
-        const isExsistInworkerHours = (reqApptStart.getTime() >= workerStartDate.getTime()) && (reqApptEnd.getTime() <= workerEndDate.getTime()) ? true : false;
-        return isExsistInworkerHours;
-    }
 
-    checkWorkerServiceStatus(reqApptStart: Date, reqApptEnd: Date, workerId: string): boolean {
-        const workerHours = this.getWorkerHours(reqApptStart, workerId);
-        let isExsistInworkerHours: boolean;
-        if ((workerHours.startTime !== '' && !isNullOrUndefined(workerHours.startTime)) || (workerHours.endTime !== '' && !isNullOrUndefined(workerHours.endTime))) {
-            const startTime = this.timeConversionToDate(workerHours.startTime, reqApptStart);
-            const endTime = this.timeConversionToDate(workerHours.endTime, reqApptStart);
-            isExsistInworkerHours = this.compareWorkerTimings(startTime, endTime, reqApptStart, reqApptEnd);
-        } else {
-            isExsistInworkerHours = false;
-        }
-
-        return !isExsistInworkerHours;
-    }
-    timeConversionToDate(time: string, bookingDate: Date): Date {
-        let hours: any;
-        let minutes: any = time.split(' ')[0].split(':')[1];
-        if (time.split(' ')[1] === 'AM') {
-            hours = time.split(' ')[0].split(':')[0];
-            if (+hours === 12) {
-                hours = 0;
-            }
-        } else if (time.split(' ')[1] === 'PM') {
-            hours = time.split(' ')[0].split(':')[0];
-            if (parseInt(hours, 10) !== 12) {
-                hours = parseInt(hours, 10) + 12;
-            }
-        }
-        minutes = parseInt(minutes, 10);
-        return new Date(bookingDate.getFullYear(), bookingDate.getMonth(), bookingDate.getDate(), hours, minutes);
-    }
 
     modifyObject(listToModify: Array<any>, index) {
         const workersInfo = listToModify.map((obj) => {
@@ -1002,12 +1019,12 @@ export class BookStandingApptComponent implements OnInit {
     }
     clearAppts() {
         this.appointmentData = [];
-        this.checkConflictError = '';
         this.clearErrorMsg();
     }
     getWorkersFromDate() {
         const serviceIds = [];
         const selectedIds = [];
+        this.calculateEndDate();
         this.rows.filter((data) => {
             if (data['Id'] !== '' || !isNullOrUndefined(data['Id'])) {
                 serviceIds.push(data['Id']);

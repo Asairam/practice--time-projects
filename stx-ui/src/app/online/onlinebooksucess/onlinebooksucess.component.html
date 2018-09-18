@@ -16,7 +16,8 @@
         <h4>Online Appointment Booking - Success!</h4>
       </div>
       <div class="col-md-12 thcss mt-20">
-        <p> {{clientBookingInfo[0]?.Appt_Date_Time__c | date:'MM/dd/yyyy hh:mm a'}} -
+        <!-- <p> {{clientBookingInfo[0]?.Appt_Date_Time__c | date:'MM/dd/yyyy hh:mm a'}} - -->
+            <p> {{clientBookingInfo[0]?.apptTime[0]}} {{clientBookingInfo[0]?.apptTime[1]}} -
           <small>{{clientBookingInfo[0]?.srvcName}}</small>
         </p>
       </div>

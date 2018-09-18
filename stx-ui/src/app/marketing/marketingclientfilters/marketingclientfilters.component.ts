@@ -281,12 +281,12 @@ export class MarketingClientFiltersComponent implements OnInit {
         if (data.dateSelector === 'Specified') {
           const isNotExsist = ['yearNumber', 'monthNumber', 'endDay', 'beginDay'].filter((name) => data[name] !== 0 && data[name]).length === 0;
           if (isNotExsist) {
-            this.error = 'MARKETING_FILTERS.SHOULD_HAVE_ATLEAST_ONE_BIRTHDATE_FILTER';
+            this.error = 'At least one criteria must specified on the Birthdate filter';
             return;
           } else {
             this.clientFlags['Birthdate']['yearNumber'] = data.yearNumber ? data.yearNumber : 0;
             if (data.yearNumber !== 0 && (data.yearNumber < 1900 || data.yearNumber > 2020)) {
-              this.error = 'MARKETING_FILTERS.NO_VALID_YEAR_GREATERTHAN_OR_EQUAL_TO_1900_AND_LESSTHAN_OR_EQUAL_TO_2020';
+              this.error = 'Year Must be grater than or equal to 1900 and less than or equal to 2020';
               return;
             }
             ['yearNumber', 'monthNumber', 'endDay', 'beginDay'].filter((name) => this.clientFlags['Birthdate'][name] = +data[name]);
@@ -336,7 +336,7 @@ export class MarketingClientFiltersComponent implements OnInit {
         data = this.clientFlags['Status/Service'];
         const isNotExsist = ['apptType', 'serviceGroup', 'serviceName', 'worker', 'dateSelector', 'status'].filter((name) => data[name] !== 'Any' && data[name]).length === 0;
         if (isNotExsist) {
-          this.error = 'MARKETING_FILTERS.SHOULD_HAVE_ATLEAST_ONE_STATUS_OR_SERVICE';
+          this.error = 'At least one criteria must specified on the Status / Service';
           return;
         } else {
           if (this.isHavingDateSelector('Status/Service', 'dateSelector')) {
@@ -490,17 +490,17 @@ export class MarketingClientFiltersComponent implements OnInit {
     const apptFilter = this.clientFlags[filterName];
     if (apptFilter[type] === 'Before') {
       if (isNullOrUndefined(apptFilter['beginDate']) || apptFilter['beginDate'] === '') {
-        this.error = 'MARKETING_FILTERS.MUST_HAVE_BEFORE_DATE';
+        this.error = 'Before date must be selected';
         return false;
       }
     } else if (apptFilter[type] === 'After') {
       if (isNullOrUndefined(apptFilter['beginDate']) || apptFilter['beginDate'] === '') {
-        this.error = 'MARKETING_FILTERS.MUST_HAVE_AFTER_DATE';
+        this.error = 'After date must be selected';
         return false;
       }
     } else if (apptFilter[type] === 'Between') {
       if (isNullOrUndefined(apptFilter['beginDate']) || apptFilter['beginDate'] === '' || isNullOrUndefined(apptFilter['endDate']) || apptFilter['endDate'] === '') {
-        this.error = 'MARKETING_FILTERS.MUST_HAVE_BEFORE_AND_AFTER_DATE';
+        this.error = 'Begin and end date must be selected';
         return false;
       }
     } else {

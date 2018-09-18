@@ -98,8 +98,15 @@ export class SetupWorkersDetailsService {
     return this.http.get(this.apiEndPoint + '/api/setupworkers/setupgoals')
       .map(this.extractData);
   }
-  previousGoals(goals, workerId) {
-    return this.http.get(this.apiEndPoint + '/api/setup/workers/workergoals/' + goals + '/' + workerId)
+  previousGoals(goals, workerId, date) {
+    const header = new Headers();
+    const dataObj = {
+      'type': goals,
+      'workerId': workerId,
+      'date': date
+    };
+    header.append('params', JSON.stringify(dataObj));
+    return this.http.getHeader(this.apiEndPoint + '/api/setup/workers/workergoals', header)
       .map(this.extractData);
   }
   createGoals(goalsData) {

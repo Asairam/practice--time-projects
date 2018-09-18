@@ -1,3 +1,16 @@
+/**
+ ngOnInit(): method used on page loading
+ usedByData(): Mehtod used to get workers data
+ removeOne(data, i): Method is used remove product line
+ removeAll(): Method which is used remove all
+ getProductsList(): method used to get all product lists
+ productOnChange(value): Method which is used to select the product by selecting
+ searchProduct(): Method which is used to get product by sku Based search
+ searchOnSelect(): Method is used to get all products by partial search
+ saveInventoryUsage(): Method which is used to save inventory
+ onChangeUsedBy(value, i): Method which is used to change worker and company
+ checkProduct(prdAry, prdObj):  method for checking duplicates products in list
+ */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
@@ -39,7 +52,7 @@ export class InventoryUsageComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router) {
     }
-
+    /* method which is used onload page time */
     ngOnInit() {
         this.usedByData();
         // this.getProductsList();
@@ -53,6 +66,7 @@ export class InventoryUsageComponent implements OnInit {
         }
 
     }
+    /* method Which is used to get the worker list */
     usedByData() {
         this.inventoryUsageService.getUsedByDataValues().subscribe(
             data => {
@@ -76,6 +90,7 @@ export class InventoryUsageComponent implements OnInit {
             }
         );
     }
+    /* Method which is used remove the product line */
     removeOne(data, i) {
         this.removedPrdct.push(data);
         this.productsList.splice(i, 1);
@@ -86,12 +101,14 @@ export class InventoryUsageComponent implements OnInit {
         /* method used here because of every time while click on remove button qty defaluted to 1 */
         this.getProductsList();
     }
+    /* Method which is used to remove all listings */
     removeAll() {
         this.productsList = [];
         this.resultDiv = false;
         this.showButtons = false;
         this.disableSelect = false;
     }
+    /* Method is used to get the product list */
     getProductsList() {
         this.inventoryUsageService.getProductsBySelect().subscribe(
             data => {
@@ -119,9 +136,11 @@ export class InventoryUsageComponent implements OnInit {
             }
         );
     }
+    /* Method which is used to select the product by selecting */
     productOnChange(value) {
         this.selectSearchKeyWord = value;
     }
+    /* Method which is used to get product by sku Based search */
     searchProduct() {
         if (this.searchKeyWord === '' || this.searchKeyWord === undefined || this.searchKeyWord === 'undefined') {
             this.disableSelect = true;
@@ -137,6 +156,7 @@ export class InventoryUsageComponent implements OnInit {
                         this.showNoDataMsg = '** No Results found **';
                     } else if (data.result.length === 1) {
                         this.searchKeyWord = '';
+                        this.showNoDataMsg = '';
                         this.disableSelect = false;
                         this.resultDiv = true;
                         const duplicate = this.checkProduct(this.productsList, data['result'][0]);
@@ -173,6 +193,7 @@ export class InventoryUsageComponent implements OnInit {
             );
         }
     }
+    /* Method is used to get all products by partial search */
     searchOnSelect() {
         this.resultDiv = true;
         const test = this.prdListMdl;
@@ -185,6 +206,7 @@ export class InventoryUsageComponent implements OnInit {
             this.productsList[index]['Quantity_On_Hand__c'] += 1;
         }
     }
+    /* Method which is used to save inventory */
     saveInventoryUsage() {
         for (let i = 0; i < this.productsList.length; i++) {
             if (this.productsList[i].Quantity_On_Hand__c === 0 || this.productsList[i].Quantity_On_Hand__c === '0' ||
@@ -217,7 +239,7 @@ export class InventoryUsageComponent implements OnInit {
             );
         }
     }
-
+    /* Method which is used to change worker and company  */
     onChangeUsedBy(value, i) {
         if (value === 'Worker') {
             this.inventoryUsageService.getUserList()
@@ -238,17 +260,24 @@ export class InventoryUsageComponent implements OnInit {
             this.userList[i] = [];
         }
     }
+    /* Method to change worker */
     onChangeUser(value, i) {
         this.productsList[i].userId = value;
 
     }
+    /* method to clear error msgs */
     clearErrMsg() {
         this.error = '';
+    }
+    /* method to clear error msgs */
+    clearErrMsg1() {
         this.showNoDataMsg = '';
     }
+    /* method for cancel changes */
     cancel() {
         this.productsList = [];
     }
+    /* method for checking duplicates products in list*/
     checkProduct(prdAry, prdObj) {
         for (let i = 0; i < prdAry.length; i++) {
             if (prdAry[i]['Id'] === prdObj['Id']) {
@@ -266,8 +295,9 @@ export class InventoryUsageComponent implements OnInit {
             event.preventDefault();
         }
     }
+    /* method to restrict charecters  */
     keyPress1(event: any) {
-        const pattern = /^[0-9]*$/;
+        const pattern = /^[-0-9]*$/;
         const inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             // invalid character, prevent input

@@ -8,7 +8,7 @@
                     </label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                   <a [routerLink]="['/client/edit/' + clientId]"><span  style="text-decoration: underline;color: white;">{{clientName}}</span></a>
+                    <a [routerLink]="['/client/edit/' + clientId]"><span style="text-decoration: underline;color: white;">{{clientName}}</span></a>
                 </div>
             </div>
             <div class="row mt-20">
@@ -32,7 +32,7 @@
                     </label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" [(ngModel)]="refundedBy" (keypress)="clear();" (keyup.enter)="refundSearch()"/>
+                    <input type="text" [(ngModel)]="refundedBy" (keypress)="clear();" (keyup.enter)="refundSearch()" />
                 </div>
                 <p class="red" style="text-align:center;"> {{refundByError | translate}}</p>
             </div>
@@ -45,13 +45,13 @@
                 </div>
                 <div class="col-md-7 col-sm-8">
                     <div style="float:left;width: 219px;">
-                        <input type="text"  [bsConfig]="datePickerConfig" [maxDate]="maxdate" [(ngModel)]="startDate" bsDatepicker  class="datefield" [disabled]="Electronicdisabled"
-                            (click)="clear();">
+                        <input type="text" [bsConfig]="datePickerConfig" [maxDate]="maxdate" [(ngModel)]="startDate"
+                            bsDatepicker class="datefield" [disabled]="Electronicdisabled" (click)="clear();">
                     </div>
                     <div style="float:left;width: 219px;margin-left: -82px;">
                         to &nbsp;
-                        <input type="text"  [bsConfig]="datePickerConfig" [maxDate]="maxdate"  [(ngModel)]="endDate" bsDatepicker class="datefield" [disabled]="Electronicdisabled"
-                            (click)="clear();">
+                        <input type="text" [bsConfig]="datePickerConfig" [maxDate]="maxdate" [(ngModel)]="endDate"
+                            bsDatepicker class="datefield" [disabled]="Electronicdisabled" (click)="clear();">
                     </div>
                 </div>
             </div>
@@ -66,140 +66,151 @@
                 </div>
             </div>
         </div>
-    <div class="row mt-20 res-mt-15 setsubcont" *ngIf="searchList">
-        <div class="col-md-12" *ngIf="servicelist">
-            <div class="table-responsive">
-                <table class="table table-bordered table-border-color" >
-                    <thead>
-                        <tr>
-                            <th class="thcss">{{'COMMON.SELECT' | translate }} </th>
-                            <th class="thcss">{{'COMMON.DATE' | translate }}</th>
-                            <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate }}</th>
-                            <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.WORKER' | translate }}</th>
-                            <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.SERVICE' | translate }}</th>
-                            <th class="thcss">{{'COMMON.AMOUNT' | translate }}</th>
-                            <th class="thcss">{{'SETUP_SERVICES.TAXABLE' | translate }}</th>
-                            <th class="thcss">{{'COMMON.DEDUCT_WORKER' | translate }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       <tr *ngFor="let item of refundData;let i = index;">
-                           <td>
-                            <input type="checkbox" [checked]='item.selectVal' [(ngModel)] = "item.selectVal" [disabled]='item.seleCheckBox'  (change) = "calculateRefundAmount($event.target.checked,item,i)">                               
-                           </td>
-                           <td>{{item.Service_Date_Time__c | date: 'M/dd/yy'}}</td>
-                           <td>{{item.apptName}}</td>
-                           <td>{{item.workerName}}</td>
-                           <td>{{item.serviceName}}</td>
-                           <td>
-                               <input type="number" [(ngModel)]="item.Net_Price__c" (blur) = "calculateRefundAmount(item.selectVal,item)" (keypress)="clear();">
-                            </td>
-                           <td>
-                            <input type="checkbox" disabled *ngIf="item.Taxable__c === 1" checked>
-                            <input type="checkbox" disabled *ngIf="item.Taxable__c === 0">
-                           </td>
-                           <td>
-                            <input type="checkbox" [(ngModel)] ="item.deductFromWorker" *ngIf="item.deductFromWorker === 1 || item.deductFromWorker === true" checked>
-                            <input type="checkbox" [(ngModel)] ="item.deductFromWorker" *ngIf="item.deductFromWorker === 0 || item.deductFromWorker === false" >
-                           </td>
-                       </tr>
-                    </tbody>
-                </table>
-                
-            </div>
-        </div>
+        <div class="row mt-20 res-mt-15 setsubcont" *ngIf="searchList">
+            <div class="col-md-12" *ngIf="servicelist">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-border-color">
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{'COMMON.SELECT' | translate }} </th>
+                                <th class="thcss">{{'COMMON.DATE' | translate }}</th>
+                                <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate }}</th>
+                                <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.WORKER' | translate }}</th>
+                                <th class="thcss">{{'CLIENT_EDIT.APPOINTMENTS.SERVICE' | translate }}</th>
+                                <th class="thcss">{{'COMMON.AMOUNT' | translate }}</th>
+                                <th class="thcss">{{'SETUP_SERVICES.TAXABLE' | translate }}</th>
+                                <th class="thcss">{{'COMMON.DEDUCT_WORKER' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of refundData;let i = index;">
+                                <td>
+                                    <input type="checkbox" [checked]='item.selectVal' [(ngModel)]="item.selectVal"
+                                        [disabled]='item.seleCheckBox' (change)="calculateRefundAmount($event.target.checked,item,i)">
+                                </td>
+                                <td>{{item.disaplayDate[0]}}</td>
+                                <td>{{item.apptName}}</td>
+                                <td>{{item.workerName}}</td>
+                                <td>{{item.serviceName}}</td>
+                                <td>
+                                    <input type="number" step="0.01" min="0" [(ngModel)]="item.Net_Price__c" (blur)="calculateRefundAmount(item.selectVal,item)"
+                                        (keypress)="clear();">
+                                </td>
+                                <td>
+                                    <input type="checkbox" disabled *ngIf="item.Taxable__c === 1" checked>
+                                    <input type="checkbox" disabled *ngIf="item.Taxable__c === 0">
+                                </td>
+                                <td>
+                                    <input type="checkbox" [(ngModel)]="item.deductFromWorker" *ngIf="item.deductFromWorker === 1 || item.deductFromWorker === true"
+                                        checked>
+                                    <input type="checkbox" [(ngModel)]="item.deductFromWorker" *ngIf="item.deductFromWorker === 0 || item.deductFromWorker === false">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-        <div class="col-md-12" *ngIf="productlist">
-            <div class="table-responsive">
-                <table class="table table-bordered table-border-color" >
-                    <thead>
-                        <tr>
-                            <th class="thcss">{{'COMMON.SELECT' | translate }} </th>
-                            <th class="thcss">{{'COMMON.DATE' | translate }}</th>
-                            <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate }}</th>
-                            <th class="thcss">Product</th>
-                            <th class="thcss">Quantity</th>
-                            <th class="thcss">{{'COMMON.AMOUNT' | translate }}</th>
-                            <th class="thcss">{{'SETUP_SERVICES.TAXABLE' | translate }}</th>
-                            <th class="thcss">{{'COMMON.DEDUCT_WORKER' | translate }}</th>
-                            <th class="thcss">Return to Inventory</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       <tr *ngFor="let item of refundData;let i = index;">
-                           <td>
-                            <input type="checkbox" [checked]='item.selectVal' [(ngModel)] = "item.selectVal" [disabled]='item.seleCheckBox' (change) = "calculateRefundAmount($event.target.checked,item,i)">                               
-                           </td>
-                           <td>{{item.Service_Date_Time__c | date: 'M/dd/yy'}}</td>
-                           <td>{{item.apptName}}</td>
-                           <td>{{item.Name}}</td>
-                           <td>
-                            <input type="number" [(ngModel)]="item.Qty_Sold__c" (keypress)="clear();">
-                           </td>
-                           <td>
-                               <input type="number" [(ngModel)]="item.Net_Price__c" (blur) = "calculateRefundAmount(item.selectVal,item)" (keypress)="clear();">
-                            </td>
-                           <td>
-                            <input type="checkbox" disabled *ngIf="item.Taxable__c === 1" checked>
-                            <input type="checkbox" disabled *ngIf="item.Taxable__c === 0">
-                           </td>
-                           <td>
-                            <input type="checkbox" [(ngModel)] = "item.deductFromWorker" *ngIf="item.deductFromWorker === 1 || item.deductFromWorker === true" checked >
-                            <input type="checkbox" [(ngModel)] = "item.deductFromWorker" *ngIf="item.deductFromWorker === 0 || item.deductFromWorker === false" >
-                           </td>
-                           <td>
-                            <input type="checkbox" *ngIf="item.returnToInventory === 1 || item.returnToInventory === true" checked [(ngModel)] ="item.returnToInventory">
-                            <input type="checkbox" *ngIf="item.returnToInventory === 0 || item.returnToInventory === false" [(ngModel)] ="item.returnToInventory">
-                           </td>
-                       </tr>
-                    </tbody>
-                </table>
-                
+                </div>
             </div>
-        </div>
 
-        <div class="col-md-12" *ngIf="electroniclist">
-            <div class="table-responsive">
-                <table class="table table-bordered table-border-color" >
-                    <thead>
-                        <tr>
-                            <th class="thcss">{{'COMMON.SELECT' | translate }} </th>
-                            <th class="thcss">{{'COMMON.DATE' | translate }}</th>
-                            <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate }}</th>
-                            <th class="thcss">Payment Type</th>
-                            <th class="thcss">Amount Paid</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       <tr *ngFor="let item of refundData;let i = index;">
-                           <td>
-                            <input type="checkbox" [checked]='item.selectVal' [(ngModel)] = "item.selectVal" [disabled]='item.seleCheckBox' (change) = "calculateRefundAmount($event.target.checked,item,i)">                               
-                           </td>
-                           <td>{{item.Appt_Date_Time__c | date: 'M/dd/yy'}}</td>
-                           <td>{{item.apptName}}</td>
-                           <td>{{item.Name}}</td>
-                           <td>${{item.Amount_Paid__c}}</td>
-                       </tr>
-                    </tbody>
-                </table>
-                
+            <div class="col-md-12" *ngIf="productlist">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-border-color">
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{'COMMON.SELECT' | translate }} </th>
+                                <th class="thcss">{{'COMMON.DATE' | translate }}</th>
+                                <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate }}</th>
+                                <th class="thcss">Product</th>
+                                <th class="thcss">Quantity</th>
+                                <th class="thcss">{{'COMMON.AMOUNT' | translate }}</th>
+                                <th class="thcss">{{'SETUP_SERVICES.TAXABLE' | translate }}</th>
+                                <th class="thcss">{{'COMMON.DEDUCT_WORKER' | translate }}</th>
+                                <th class="thcss">Return to Inventory</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of refundData;let i = index;">
+                                <td>
+                                    <input type="checkbox" [checked]='item.selectVal' [(ngModel)]="item.selectVal"
+                                        [disabled]='item.seleCheckBox' (change)="calculateRefundAmount($event.target.checked,item,i)">
+                                </td>
+                                <!-- <td>{{item.Service_Date_Time__c | date: 'M/dd/yy'}}</td> -->
+                                <td>{{item.disaplayDate[0]}}</td>
+                                <td>{{item.apptName}}</td>
+                                <td>{{item.Name}}</td>
+                                <td>
+                                    <input type="number" [(ngModel)]="item.Qty_Sold__c" (keypress)="clear();">
+                                </td>
+                                <td>
+                                    <input type="number" [(ngModel)]="item.newPrice" (blur)="calculateRefundAmount(item.selectVal,item)"
+                                        (keypress)="clear();">
+                                </td>
+                                <td>
+                                    <input type="checkbox" disabled *ngIf="item.Taxable__c === 1" checked>
+                                    <input type="checkbox" disabled *ngIf="item.Taxable__c === 0">
+                                </td>
+                                <td>
+                                    <input type="checkbox" [(ngModel)]="item.deductFromWorker" *ngIf="item.deductFromWorker === 1 || item.deductFromWorker === true"
+                                        checked>
+                                    <input type="checkbox" [(ngModel)]="item.deductFromWorker" *ngIf="item.deductFromWorker === 0 || item.deductFromWorker === false">
+                                </td>
+                                <td>
+                                    <input type="checkbox" *ngIf="item.returnToInventory === 1 || item.returnToInventory === true"
+                                        checked [(ngModel)]="item.returnToInventory">
+                                    <input type="checkbox" *ngIf="item.returnToInventory === 0 || item.returnToInventory === false"
+                                        [(ngModel)]="item.returnToInventory">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="col-md-12" *ngIf="electroniclist">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-border-color">
+                        <thead>
+                            <tr>
+                                <th class="thcss">{{'COMMON.SELECT' | translate }} </th>
+                                <th class="thcss">{{'COMMON.DATE' | translate }}</th>
+                                <th class="thcss">{{'CLIENT_EDIT.PRODUCT_LOG.TICKET' | translate }}</th>
+                                <th class="thcss">Payment Type</th>
+                                <th class="thcss">Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of refundData;let i = index;">
+                                <td>
+                                    <input type="checkbox" [checked]='item.selectVal' [(ngModel)]="item.selectVal"
+                                        [disabled]='item.seleCheckBox' (change)="calculateRefundAmount($event.target.checked,item,i)">
+                                </td>
+                                <!-- {{item.Appt_Date_Time__c | date: 'M/dd/yy'}} -->
+                                <td>{{item.apptTime[0]}}</td>
+                                <td>{{item.apptName}}</td>
+                                <td>{{item.Name}}</td>
+                                <td>${{item.Amount_Paid__c}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
         </div>
-    </div>
-    <span  *ngIf="!electroniclist">
-    <div style="height: 25px;">
-            <div style="float: right;width:30%;border-bottom: 1px solid grey;">Tax &nbsp; {{totaltaxAmt}}</div>
-            <div style="float: right;width:70%;"></div>
-        </div>
-        <div>
-            <div style="float: right;width:30%;">Total &nbsp;{{totalfixAmt}}</div>
-            <div style="float: right;width:70%;"></div>
-        </div>
-    </span>
-    <div class="row mt-20 res-mt-15 setsubcont" *ngIf="refundto">
+        <span *ngIf="!electroniclist">
+            <div style="height: 25px;">
+                <div style="float: right;width:30%;border-bottom: 1px solid grey;">Tax &nbsp; {{totaltaxAmt}}</div>
+                <div style="float: right;width:70%;"></div>
+            </div>
+            <div>
+                <div style="float: right;width:30%;">Total &nbsp;{{totalfixAmt}}</div>
+                <div style="float: right;width:70%;"></div>
+            </div>
+        </span>
+        <div class="row mt-20 res-mt-15 setsubcont" *ngIf="refundto">
             <div class="col-md-12 col-sm-12">
                 <div class="table-responsive">
-                        Refund To
+                    Refund To
                     <table class="table table-bordered table-border-color">
                         <thead>
                             <tr>
@@ -211,29 +222,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                           <tr *ngFor="let item of refundTOData">
-                            <td>{{item.Name}}</td>
-                            <td>${{item.OriginalPaymentAmount}}</td>
-                            <!-- <td>{{item.Merchant_Account_Name__c}}</td> -->
-                            <td></td>
-                            <td>{{item.Reference_Number__c}}</td>
-                            <td>
-                                <input type="number" [(ngModel)]="item.Amount_Paid__c" (keypress)="clear();">
-                            </td>
-                           </tr>
+                            <tr *ngFor="let item of refundTOData">
+                                <td>{{item.Name}}</td>
+                                <td *ngIf="!item.Ineligible">${{item.OriginalPaymentAmount}}</td>
+                                <td *ngIf="item.Ineligible">$0.00</td>
+                                <td>{{item.Merchant_Account_Name__c}}</td>
+                                <td>{{item.Reference_Number__c}}</td>
+                                <td *ngIf="!item.Ineligible">
+                                    <input type="number" step="0.01" min="0" [(ngModel)]="item.Amount_Paid__c"
+                                        (keypress)="clear();">
+                                </td>
+                                <td *ngIf="item.Ineligible">
+                                    {{item.Ineligible}}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-   <div>
-        <p class="red" style="text-align:center;"> {{amountMatcherror | translate}}</p>       
-      Cash Drawer &nbsp;<span style="font-weight: normal;">{{local}} </span>
-   </div>
-   <div style="text-align: center;">
-        <button class="save-btn" type="button" (click)="RefundToSave()" *ngIf="refundSaveBut">Save</button>
-        <button class="cancel-btn" type="button" (click)="cancel()">Cancel</button>
-   </div>
-</section>
-<app-rightbar></app-rightbar>
+        <div>
+            <p class="red" style="text-align:center;"> {{amountMatcherror | translate}}</p>
+            Cash Drawer &nbsp;<span style="font-weight: normal;">{{local}} </span>
+        </div>
+        <div style="text-align: center;">
+            <button class="save-btn" type="button" (click)="RefundToSave()" *ngIf="refundSaveBut">Save</button>
+            <button class="cancel-btn" type="button" (click)="cancel()">Cancel</button>
+        </div>
+    </section>
+    <app-rightbar></app-rightbar>
 </div>

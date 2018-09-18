@@ -1,5 +1,4 @@
 <div id="wrapper_setup_new" style="color:white;">
-  <!-- <app-header></app-header> -->
   <app-header [newMenu]="'noNav'"></app-header>
   <div class="form_cont12" *ngIf="clientId">
     <h1 [routerLink]="['/client/edit/' + clientId]" [queryParams]="{action:'modify',apptid:apptid}"> {{appData?.clientName}}</h1>
@@ -25,8 +24,8 @@
                     <tbody>
                       <tr *ngFor="let row of rows; let i='index'">
                         <td>
-                          <select style="width:100%;" [(ngModel)]="row.serviceGroup" (change)="categoryOfService($event.target.value, i);clearReports();"
-                            (click)="clearMsg()">
+                          <select style="width:100%;" [disabled]="!activeSelect" [ngClass]="{'disabled':!activeSelect}" [(ngModel)]="row.serviceGroup"
+                            (change)="categoryOfService($event.target.value, i);clearReports();" (click)="clearMsg()">
                             <option *ngFor="let groupData of serviceGroupList; let i='index'" value="{{groupData.serviceGroupName}}${{groupData.serviceGroupColor}}"
                               id="groupData{{i}}">{{groupData.serviceGroupName}}</option>
                             <option value="-" disabled="disabled">--- Packages ---</option>
@@ -34,16 +33,16 @@
                           </select>
                         </td>
                         <td>
-                          <select style="width:100%;" [(ngModel)]="row.Id" *ngIf="(serviceDetailsList[i] && serviceDetailsList[i].length > 0 )" (change)="servicesListOnChange($event.target.value, i);clearReports();"
-                            (click)="clearMsg()">
+                          <select style="width:100%;" [disabled]="!activeSelect" [ngClass]="{'disabled':!activeSelect}" [(ngModel)]="row.Id" *ngIf="(serviceDetailsList[i] && serviceDetailsList[i].length > 0 )"
+                            (change)="servicesListOnChange($event.target.value, i);clearReports();" (click)="clearMsg()">
 
                             <option value="">--select--</option>
                             <option *ngFor="let serviceData of serviceDetailsList[i]; let i='index'" [value]="serviceData.Id" id="serviceData{{i}}">{{serviceData.Name}}</option>
                           </select>
                         </td>
                         <td>
-                          <select style="width:100%;" [(ngModel)]="row.workerName" *ngIf='workerList[i]?workerList[i].length>0:false' (click)="clearMsg()"
-                            (change)="workerListOnChange($event.target.value, i);clearReports();">
+                          <select style="width:100%;" [disabled]="!activeSelect" [ngClass]="{'disabled':!activeSelect}" [(ngModel)]="row.workerName"
+                            *ngIf='workerList[i]?workerList[i].length>0:false' (click)="clearMsg()" (change)="workerListOnChange($event.target.value, i);clearReports();">
                             <option *ngFor="let workerData of workerList[i]; let i='index'" value="{{workerData.workername}}" id="serviceData{{i}}">{{workerData.name}}</option>
                           </select>
                         </td>
@@ -116,7 +115,7 @@
                           {{show.Buffer_After__c}}
                         </td>
                         <td>
-                          <input type="checkbox" [(ngModel)]="show.Preferred_Duration__c" class="disabled" [checked]='show.Preferred_Duration__c' />
+                          <input type="checkbox" [(ngModel)]="show.Preferred_Duration__c" [checked]='show.Preferred_Duration__c' />
                         </td>
                       </tr>
                     </tbody>
@@ -160,8 +159,7 @@
           &nbsp;
         </div>
         <div class="col-md-7 col-sm-8" *ngIf="!checkBookingInterval">
-          <button type="button" *ngIf="dateAndTimeError == ''" (click)="saveModifyAppointment()" class="save-btn">{{'BUTTON.SAVE' | translate}}</button>
-          <button type="button" *ngIf="dateAndTimeError != ''" (click)="saveModifyAppointment()" class="save-btn">Book Anyway</button>
+          <button type="button" *ngIf="activeSelect" (click)="saveModifyAppointment()" class="save-btn">{{dateAndTimeError ? 'Book Anyway':'BUTTON.SAVE' | translate}}</button>
           <button type="button" class="cancel-btn" [routerLink]="['/appointments']">{{'BUTTON.CANCEL' | translate}}</button>
           <button type="button" class="btn btn-primary" (click)="searchForAppointment()">
             <i class="fa fa-binoculars" aria-hidden="true"></i>{{'BUTTON.SEARCH_FOR_APPOINTMENT' | translate}} </button>

@@ -25,7 +25,7 @@ export class OnlineGiftComponent implements OnInit {
   companyLogo = 'assets/images/logo.png';
   apiEndPoints = config['API_END_POINT'];
   mainDiv: any = true;
-  amountList = [25, 50, 75, 100, 'other'];
+  amountList = ['25.00', '50.00', '75.00', '100.00', 'other'];
   deliveryTypes = ['Email to Recipient', 'Email to Me'];
   dbName = '';
   giftErr = '';
@@ -392,7 +392,8 @@ export class OnlineGiftComponent implements OnInit {
       'isGiftPurchase': true,
       'giftPurchaseObj': this.giftPurchaseObj,
       'paymentType': this.cardType,
-      'giftNumber': paymentData.Gift_Number__c
+      'giftNumber': paymentData.Gift_Number__c,
+      'Online__c': 1
     };
     this.onlineGiftService.addToPaymentsTicket(paymentObj, this.withoutLogin)
       .subscribe(data1 => {
@@ -440,7 +441,7 @@ export class OnlineGiftComponent implements OnInit {
       this.giftErr = 'Your Email is required';
       window.scrollTo(0, 0);
     } else if (!(/^(?!0)\d{1,9}(\.\d{1,2})?$/g).test(this.giftPurchaseObj['Amount'])) {
-      this.giftErr = 'Only a positive, whole number may be entered and must be less than 999,999,999.99';
+      this.giftErr = 'Only a positive, whole number may be entered and must be less than 100.00';
       window.scrollTo(0, 0);
     } else if (this.giftPurchaseObj['RecipientEmail'] ? !EMAIL_REGEXP.test(this.giftPurchaseObj['RecipientEmail']) : false) {
       this.giftErr = 'Invalid Recipient Email Address';
@@ -450,6 +451,7 @@ export class OnlineGiftComponent implements OnInit {
       window.scrollTo(0, 0);
     } else {
       this.showPayment = true;
+      this.clientName = this.giftPurchaseObj['firstname'] + ' ' + this.giftPurchaseObj['lastname'];
       if (this.showPayment) {
         this.countdown();
       }

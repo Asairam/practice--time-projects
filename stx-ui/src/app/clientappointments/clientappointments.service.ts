@@ -14,8 +14,11 @@ export class ClientappointmentsService {
     return this.http.get(this.apiEndPoint + '/api/setup/clientpreferences/visittype/active')
       .map(this.extractData);
   }
-  getServiceGroups(type) {
-    return this.http.get(this.apiEndPoint + '/api/setupservices/servicegroups/' + type)
+  getServiceGroups(type, reqDate) {
+    const headers = new Headers();
+    headers.append('onlinebooking', 'false');
+    headers.append('bookingdate', reqDate);
+    return this.http.getHeader(this.apiEndPoint + '/api/setupservices/servicegroups/active/forappts', headers)
       .map(this.extractData);
   }
   searchAppt(dataObj) {
@@ -56,12 +59,26 @@ export class ClientappointmentsService {
   }
   getUsers(bookingdata: any) {
     const headers = new Headers();
+    headers.append('onlinebooking', 'false');
     headers.append('bookinginfo', JSON.stringify(bookingdata));
     return this.http.getHeader(this.apiEndPoint + '/api/bookingdata/bookappt', headers)
       .map(this.extractData);
   }
-  getApptServices(clientId, apptId) {
-    return this.http.get(this.apiEndPoint + '/api/appointments/services/' + clientId + '/' + apptId)
+  getApptServices(clientId, apptId, reqDate) {
+    const headers = new Headers();
+    headers.append('bookingdate', reqDate);
+    return this.http.getHeader(this.apiEndPoint + '/api/appointments/services/' + clientId + '/' + apptId, headers)
+      .map(this.extractData);
+  }
+  /**
+* Method to get preferences for service tax and retail tax calculation
+*/
+  getServProdTax() {
+    return this.http.get(this.apiEndPoint + '/api/setup/ticketpreferences/pos')
+      .map(this.extractData);
+  }
+  sendApptNotifs(apptsAry) {
+    return this.http.post(this.apiEndPoint + '/api/notification/email', { 'apptIds': apptsAry })
       .map(this.extractData);
   }
   private extractData(res: Response) {

@@ -7,17 +7,18 @@
                     <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
-                        class="datefield">
+                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="startDate" [maxDate]="minDate" [bsConfig]="datePickerConfig"
+                        (click)="clearErr()" (keyup)="clearErr()" class="datefield">
+                    <p class='red'>{{error | translate}}</p>
                 </div>
             </div>
             <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
-                    <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
+                    <label>{{'COMMON.END_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
-                        class="datefield">
+                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="endDate" [maxDate]="minDate" [bsConfig]="datePickerConfig"
+                        (click)="clearErr()" (keyup)="clearErr()" class="datefield">
                 </div>
             </div>
             <div class="row mt-20">
@@ -25,8 +26,9 @@
                     <label>{{'COMMON.WORKER' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select [ngModel]="workerTipsData">
-                        <option *ngFor='let data1 of dataList'>{{ data1.option }}</option>
+                    <select (change)="onChangeUser($event.target.value)">
+                        <option>--Company--</option>
+                        <option *ngFor='let data1 of userList' value="{{data1.Id}}">{{ data1.FullName }}</option>
                     </select>
                 </div>
             </div>
@@ -46,140 +48,135 @@
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate }}</th>
-                                    <th class="thcss">{{'WORKER_TIPS.COMMON_TIPS' | translate }}</th>
-                                    <th class="thcss">{{ bsValue | date:'MM/d/y'}} - {{ bsValue1 | date:'MM/d/y'}}</th>
+                                    <th class="thcss">{{companyName}}</th>
+                                    <th class="thcss">{{type}}</th>
+                                    <th class="thcss">{{ startDate | date:'MM/d/y'}} - {{ endDate | date:'MM/d/y'}}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div>{{'PRODUCT_SALES_REPORT.APPT_DATE_AND_TIME' | translate }} : {{ bsValue | date:'MM/d/y'}}</div>
-                    <div>{{'TICKET_SALES_REPORT.APPOINTMENT_OR_TICKETNUMBER' | translate }} : 000058</div>
-                </div>
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="thcss">{{'COMMON.WORKER' | translate }}</th>
-                                    <th class="thcss">{{'COMMON.CLIENT' | translate }}</th>
-                                    <th class="thcss">{{'TOTAL_SHEETS.SERVICE_SALES' | translate }}</th>
-                                    <th class="thcss">{{'TOTAL_SHEETS.TOTAL_TIPS' | translate }}</th>
-                                    <th class="thcss">{{'WORKER_TIPS.TIP_PAID_OUT' | translate }}</th>
-                                    <th class="thcss">{{'WORKER_TIPS.TIP_LEFT_IN_DRAWER' | translate }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Isabella Moran</td>
-                                    <td>Jade Moran</td>
-                                    <td>40.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="thcss">{{'WORKER_TIPS.TIPS_TICKET_TOTAL' | translate }}</th>
-                                    <th class="thcss">0.00</th>
-                                </tr>
-                            </thead>
-                        </table>
+                <ng-container *ngFor="let obj1 of tipsWithDates;let i = index">
+                    <ng-container *ngFor="let obj2 of obj1;let j = index">
+                        <div class="col-md-12">
+                            <div> {{'TICKET_SALES_REPORT.APPOINTMENT_OR_TICKETNUMBER' | translate }}: {{obj2[0]['Name']}}</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="thcss">{{'COMMON.WORKER' | translate }}</th>
+                                            <th class="thcss">{{'COMMON.CLIENT' | translate }}</th>
+                                            <th class="thcss">{{'TOTAL_SHEETS.SERVICE_SALES' | translate }}</th>
+                                            <th class="thcss">{{'TOTAL_SHEETS.TOTAL_TIPS' | translate }}</th>
+                                            <th class="thcss">{{'WORKER_TIPS.TIP_PAID_OUT' | translate }}</th>
+                                            <th class="thcss">{{'WORKER_TIPS.TIP_LEFT_IN_DRAWER' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let obj3 of obj2;let k = index">
+                                            <tr>
+                                                <td>{{obj3.userName}}</td>
+                                                <td>{{obj3.clientName}}</td>
+                                                <td>{{obj3.Service_Sales__c}}</td>
+                                                <td>{{obj3.Tip_Amount__c}}</td>
+                                                <td>{{obj3.Tip_Paid_Out__c}}</td>
+                                                <td>{{obj3.Tip_Left_in_Drawer__c}}</td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="thcss">{{'WORKER_TIPS.TIPS_TICKET_TOTAL' | translate }}</th>
+                                            <th class="thcss">{{tipsAmount[i][j]}}</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="thcss">{{'WORKER_TIPS.TIPS_DAILY_TOTAL' | translate }} {{ obj1[0][0].aptDt | date:'MM/d/y'}}:</th>
+                                        <th class="thcss">{{tipsAmountWithDate[i]}} </th>
+                                        <!-- <th class="thcss"> 12</th> -->
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div> {{'TICKET_SALES_REPORT.APPOINTMENT_OR_TICKETNUMBER' | translate }}: 000025</div>
-                </div>
+                </ng-container>
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="thcss">{{'COMMON.WORKER' | translate }}</th>
-                                    <th class="thcss">{{'COMMON.CLIENT' | translate }}</th>
-                                    <th class="thcss">{{'TOTAL_SHEETS.SERVICE_SALES' | translate }}</th>
-                                    <th class="thcss">{{'TOTAL_SHEETS.TOTAL_TIPS' | translate }}</th>
-                                    <th class="thcss">{{'WORKER_TIPS.TIP_PAID_OUT' | translate }}</th>
-                                    <th class="thcss">{{'WORKER_TIPS.TIP_LEFT_IN_DRAWER' | translate }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Isabella Moran</td>
-                                    <td>Jade Moran</td>
-                                    <td>40.00</td>
-                                    <td>20.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="thcss">{{'WORKER_TIPS.TIPS_TICKET_TOTAL' | translate }}</th>
-                                    <th class="thcss">20.00</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="thcss">{{'COMMON.WORKER' | translate }}</th>
-                                    <th class="thcss">{{'COMMON.CLIENT' | translate }}</th>
-                                    <th class="thcss">{{'TOTAL_SHEETS.SERVICE_SALES' | translate }}</th>
-                                    <th class="thcss">{{'TOTAL_SHEETS.TOTAL_TIPS' | translate }}</th>
-                                    <th class="thcss">{{'WORKER_TIPS.TIP_PAID_OUT' | translate }}</th>
-                                    <th class="thcss">{{'WORKER_TIPS.TIP_LEFT_IN_DRAWER' | translate }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Isabella Moran</td>
-                                    <td>Jade Moran</td>
-                                    <td>40.00</td>
-                                    <td>10.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="thcss">{{'WORKER_TIPS.TIPS_DAILY_TOTAL' | translate }}  {{ bsValue | date:'MM/d/y'}}:</th>
-                                    <th class="thcss">10.00</th>
-                                </tr>
-                            </thead>
-                        </table>
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th class="thcss">{{'WORKER_TIPS.TIPS_GRAND_TOTAL' | translate }}:</th>
-                                    <th class="thcss">30.00</th>
+                                    <th class="thcss">{{totalTipsAmount}}</th>
                                 </tr>
                             </thead>
                         </table>
                     </div>
                 </div>
+                
                 <!-- <div class="col-md-12">
-                <div> Appt/Ticket Nbr: 000078</div>
-            </div>
-            <div class="col-md-12">
-                <div >Appointment Date/Time: 3/3/2018</div>
-                <div> Appt/Ticket Nbr: 000000</div>
-            </div> -->
+                    <div> Appt/Ticket Nbr: 000078</div>
+                </div>
+                <div class="col-md-12">
+                    <div>Appointment Date/Time: 3/3/2018</div>
+                    <div> Appt/Ticket Nbr: 000000</div>
+                </div> -->
             </div>
         </div>
     </section>
     <app-rightbar></app-rightbar>
 </div>
+<!--
+<div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th class="thcss">{{'COMMON.WORKER' | translate }}</th>
+                        <th class="thcss">{{'COMMON.CLIENT' | translate }}</th>
+                        <th class="thcss">{{'TOTAL_SHEETS.SERVICE_SALES' | translate }}</th>
+                        <th class="thcss">{{'TOTAL_SHEETS.TOTAL_TIPS' | translate }}</th>
+                        <th class="thcss">{{'WORKER_TIPS.TIP_PAID_OUT' | translate }}</th>
+                        <th class="thcss">{{'WORKER_TIPS.TIP_LEFT_IN_DRAWER' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Isabella Moran</td>
+                        <td>Jade Moran</td>
+                        <td>40.00</td>
+                        <td>10.00</td>
+                        <td>0.00</td>
+                        <td>0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th class="thcss">{{'WORKER_TIPS.TIPS_DAILY_TOTAL' | translate }}  {{ bsValue | date:'MM/d/y'}}:</th>
+                        <th class="thcss">10.00</th>
+                    </tr>
+                </thead>
+            </table>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th class="thcss">{{'WORKER_TIPS.TIPS_GRAND_TOTAL' | translate }}:</th>
+                        <th class="thcss">30.00</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div> -->

@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header>    -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont" class="setsubcont">
         <div class="container">
             <div class="row">
@@ -12,7 +11,7 @@
                                     <td>{{ 'COMMON.NAME' | translate }}</td>
                                     <td>{{ 'COMMON.SORT_ORDER' | translate }}</td>
                                 </tr>
-                                <tr class="tbl-txt" (click)="showData(groupData)" *ngFor="let groupData of groupList; let i='index'" id="groupData{{i}}">
+                                <tr class="tbl-txt word-break" (click)="showData(groupData)" *ngFor="let groupData of groupList; let i='index'" id="groupData{{i}}">
                                     <td class="white">
                                         {{groupData.inventoryGroupName}}
                                     </td>
@@ -40,11 +39,11 @@
                                     <td>{{ 'COMMON.NAME' | translate }}</td>
                                     <td>{{ 'COMMON.SORT_ORDER' | translate }}</td>
                                 </tr>
-                                <tr class="white" *ngFor="let groupData of groupList; let i='index'" id="groupData{{i}}">
+                                <tr class="white  word-break" *ngFor="let groupData of groupList; let i='index'" id="groupData{{i}}">
                                     <td>
                                         {{groupData.inventoryGroupName}}
                                     </td>
-                                    <td>
+                                    <td class="tbl-txt">
                                         {{groupData.sortOrder}}
                                     </td>
                                 </tr>
@@ -73,7 +72,7 @@
                         </div>
 
                         <div class="col-sm-7">
-                            <input type="text" (keypress)="clearErrMsg()" [(ngModel)]="inventoryGroupName">
+                            <input type="text" (keypress)="clearErrMsg()" [(ngModel)]="inventoryGroupName" maxlength="40">
                             <div class="red">{{error | translate }}</div>
                         </div>
 
@@ -127,7 +126,7 @@
                             </label>
                         </div>
                         <div class="col-sm-7">
-                            <input type="text" (keypress)="clearErrMsg();" [(ngModel)]="updateInventoryGroupName">
+                            <input type="text" maxlength="40" (keypress)="clearErrMsg();" [(ngModel)]="updateInventoryGroupName">
                         </div>
                     </div>
 

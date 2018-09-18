@@ -7,7 +7,8 @@
                     <label>{{'COMMON.BEGIN_DATE' | translate}}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input class="datefield" type="text" [bsConfig]="datePickerConfig"  bsDatepicker [(ngModel)]="startDate" (click)="clear()" >
+                    <input class="datefield" type="text" [bsConfig]="datePickerConfig" (ngModelChange)='isGenerate = false'
+                        bsDatepicker [(ngModel)]="startDate" (click)="clear()">
                 </div>
             </div>
             <div class="row mt-20">
@@ -15,16 +16,17 @@
                     <label>{{'COMMON.END_DATE' | translate}}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input class="datefield" type="text" [bsConfig]="datePickerConfig"  bsDatepicker [(ngModel)]="endDate" (click)="clear()" >
+                    <input class="datefield" type="text" [bsConfig]="datePickerConfig" (ngModelChange)='isGenerate = false'
+                        bsDatepicker [(ngModel)]="endDate" (click)="clear()">
                 </div>
             </div>
-            <p class="red" style="text-align:center;"> {{dateError | translate}}</p>                        
+            <p class="red" style="text-align:center;"> {{dateError | translate}}</p>
             <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
                     <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate}}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select [(ngModel)]="reporttype" (change) = "reportType($event.target.value)">
+                    <select [(ngModel)]="reporttype" (change)="reportType($event.target.value)">
                         <option value="Company">Company</option>
                         <option value="Worker">Worker</option>
                     </select>
@@ -34,12 +36,19 @@
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
                     <label>{{'COMMON.WORKER' | translate}}</label>
                 </div>
-                <div class="col-md-7 col-sm-8">
-                    <select [(ngModel)]="seleWorker" [disabled] = 'WorkerList' (click)="clear()">
-                        <option value="">Select Worker</option>
-                        <option value="Catherine_Stockard">Catherine Stockard</option>
+                <div class="col-md-7 col-sm-8 disabled" *ngIf="WorkerList == true">
+                    <select (change)="merchantOnChange($event.target.value)" (click)="clear()">
+                        <option *ngFor='let list of merchantWorkerList' value='{{list.Id}}'>{{list.FirstName}}
+                            {{list.LastName}}</option>
                     </select>
                 </div>
+                <div class="col-md-7 col-sm-8" *ngIf="WorkerList == false">
+                        <select (change)="merchantOnChange($event.target.value)" (click)="clear()">
+                                <!-- [disabled]='WorkerList' -->
+                            <option *ngFor='let list of merchantWorkerList' value='{{list.Id}}'>{{list.FirstName}}
+                                {{list.LastName}}</option>
+                        </select>
+                    </div>
             </div>
             <p class="red" style="text-align:center;"> {{workerError | translate}}</p>
             <div class="row mt-20">
@@ -51,7 +60,7 @@
                         <i class="fa fa-binoculars" aria-hidden="true"></i> &nbsp;{{'BUTTON.GENERATE' | translate}}</button>
                 </div>
             </div>
-            <div class="row mt-20 res-mt-15" *ngIf="itemsDisplay">
+            <div class="row mt-20 res-mt-15" *ngIf="isGenerate">
 
                 <div class="row mt-20 mr-10 res-mt-15">
                     <div class="col-md-12">
@@ -59,7 +68,8 @@
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th class="thcss">{{'ELECTRONIC_PAYMENT_DETAILS.PAYMENT_DATE_TIME' | translate}}</th>
+                                        <th class="thcss">{{'ELECTRONIC_PAYMENT_DETAILS.PAYMENT_DATE_TIME' |
+                                            translate}}</th>
                                         <th class="thcss">{{'ELECTRONIC_PAYMENT_DETAILS.REFERENCE_NUMBER' | translate}}</th>
                                         <th class="thcss">{{'COMMON.TICKET' | translate}} </th>
                                         <th class="thcss">{{'ELECTRONIC_PAYMENT_DETAILS.CLIENT_NAME' | translate}}</th>
@@ -69,50 +79,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-
-                                        <td>3/29/2018 10:59 AM</td>
-                                        <td>EIKDN4YUNB</td>
-                                        <td>000268</td>
-                                        <td>NO CLIENT</td>
-                                        <td>1.00</td>
-                                        <td>288726</td>
-
+                                    <tr *ngFor='let list of paymentsList'>
+                                        <td>{{list.apptDt}} {{list.apptTime}}</td>
+                                        <td>{{list.Reference_Number__c}}</td>
+                                        <td>{{list.Name}}</td>
+                                        <td *ngIf='list.clientName !== null'>{{list.clientName}}</td>
+                                        <td *ngIf='list.clientName === null'>NO CLIENT</td>
+                                        <td>{{list.Amount_Paid__c}}</td>
+                                        <td>{{list.Approval_Code__c}}</td>
                                     </tr>
-                                    <tr>
-                                        <td>3/29/2018 11:07 AM</td>
-                                        <td></td>
-                                        <td> 000269 </td>
-                                        <td>NO CLIENT</td>
-                                        <td>-1.00</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                            <td>3/29/2018 11:07 AM</td>
-                                            <td>BFHYUESMKS</td>
-                                            <td> 000854 </td>
-                                            <td>NO CLIENT</td>
-                                            <td>1.00</td>
-                                            <td>5958455</td>
-                                        </tr>
-                                        <tr>
-                                                <td>4/1/2018 11:07 AM</td>
-                                                <td>DDYSDSFSS</td>
-                                                <td> 000269 </td>
-                                                <td>NO CLIENT</td>
-                                                <td>-1.00</td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                    <td>3/30/2018 11:07 AM</td>
-                                                    <td>BFHYUESMKS</td>
-                                                    <td> 000854 </td>
-                                                    <td>NO CLIENT</td>
-                                                    <td>1.00</td>
-                                                    <td>5958455</td>
-                                                </tr>
-
-
                                 </tbody>
                             </table>
                         </div>

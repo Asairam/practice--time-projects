@@ -5,7 +5,7 @@
 */
 import { Injectable, Inject } from '@angular/core';
 import { Response } from '@angular/http';
-// import { Headers, RequestOptions, URLSearchParams } from '@angular/http';
+import { Headers } from '@angular/http';
 import { HttpClient } from '../../common/http-client';
 
 @Injectable()
@@ -38,6 +38,20 @@ export class ApptDetailService {
     return this.http.put(this.apiEndPoint + '/api/client/savenotes/' + id, notes)
       .map(this.extractData);
   }
+  sendText(dataObj) {
+    return this.http.post(this.apiEndPoint + '/api/client/send/text', dataObj)
+      .map(this.extractData);
+
+  }
+  sendCancelReminder(apptId) {
+    const dataObj = {
+      'apptId': apptId
+    };
+    return this.http.post(this.apiEndPoint + '/api/notification/email/cancel', dataObj)
+    .map(this.extractData);
+
+
+  }
   // getCommonData() {
   //   return this.http.get(this.staticJsonFilesEndPoint + 'common.json')
   //     .map(this.extractData);
@@ -48,13 +62,20 @@ export class ApptDetailService {
       .map(this.extractData);
   }
 
-  getApptServices(clientid, apptid) {
-    return this.http.get(this.apiEndPoint + '/api/appointments/services/' + clientid + '/' + apptid)
+  getApptServices(clientid, apptid, reqDate) {
+    const headers = new Headers();
+    headers.append('bookingdate', reqDate);
+    return this.http.getHeader(this.apiEndPoint + '/api/appointments/services/' + clientid + '/' + apptid, headers)
       .map(this.extractData);
   }
-  changeApptStatus(apptDataObj, pckgObj) {
+  changeApptStatus(apptDataObj, pckgObj, nonPckgSrvcs) {
     apptDataObj.pckgObj = pckgObj;
+    apptDataObj.nonPckgSrvcs = nonPckgSrvcs;
     return this.http.put(this.apiEndPoint + '/api/appointments/changestatus/' + apptDataObj.apptId, apptDataObj)
+      .map(this.extractData);
+  }
+  getHideCliContactInfo(id) {
+    return this.http.get(this.apiEndPoint + '/api/client/getHideClientContactInfo/' + id)
       .map(this.extractData);
   }
   /*To extract json data*/

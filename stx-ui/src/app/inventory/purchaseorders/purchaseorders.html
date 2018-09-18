@@ -19,8 +19,8 @@
 									<td>{{'COMMON.STATUS'| translate }}</td>
 								</tr>
 								<tr *ngFor='let orderData of purchaseOrdersList' [ngClass]="{ hideinactive: orderData.Status__c == 'Closed' }" [class.showinactive]="showInactiveData">
-									<td class="tbl-txt" (click)="showData(orderData)" align="center">{{orderData.Order_Date__c| date :'MM/dd/yyyy'}}</td>
-									<td>{{orderData.supplierName}}</td>
+									<td class="tbl-txt word-break" (click)="showData(orderData)" align="center">{{orderData.Order_Date__c| date :'MM/dd/yyyy'}}</td>
+									<td class="word-break">{{orderData.supplierName}}</td>
 									<td>{{orderData.Status__c}}</td>
 								</tr>
 								<tr>
@@ -44,9 +44,9 @@
 							<label>{{'PURCHASE_ORDERS.SUPPLIER'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<select [(ngModel)]="selSupl" (change)="onChangeSuppliers($event.target.value);uniqnessWithSupplierAndOrderDate()" (click)="clearErrMsg()">
+							<select [(ngModel)]="selSupl" (change)="onChangeSuppliers($event.target.value);uniqnessWithSupplierAndOrderDate()" (click)="clearErrMsg()" (keyup)="clearErrMsg()">
 								<option value="">{{'PURCHASE_ORDERS.SELECT_SUPPLIER'| translate }}</option>
-								<option *ngFor="let supData of suppliersData; let i = 'index'" value='{{supData.Id}}' id="supData{{i}}">{{supData.Name}}</option>
+								<option *ngFor="let supData of suppliersData; let i = 'index'" value='{{supData.Id}}' id="supData{{i}}">{{supData.Name | slice:0:25}}{{supData.Name.length > 25 ? '...' : ''}}</option>
 							</select>
 						</div>
 					</div>
@@ -55,7 +55,7 @@
 							<label>{{'PURCHASE_ORDERS.ORDER_DATE'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" maxlength="10" (bsValueChange)="orderDateChange()" (click)="clearErrMsg()" value="{{ bsValue | date:'MM/d/y'}}"
+							<input type="text" maxlength="10" (bsValueChange)="orderDateChange()" (click)="clearErrMsg()" (keyup)="clearErrMsg()" value="{{ bsValue | date:'MM/d/y'}}"
 							 bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig" class="datefield">
 						</div>
 					</div>
@@ -110,12 +110,17 @@
 											<td>{{productData.Product_Code__c}}</td>
 											<td>{{productData.Name}}</td>
 											<td>{{productData.Size__c}}</td>
-											<td>{{productData.Quantity_On_Hand__c}}</td>
-											<td>
-												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()" [(ngModel)]="productData.orderQty" />
+											<td>{{productData.Quantity_On_Hand__c}} 
+												<span title="{{productData.purchaseDesc}}" *ngIf = "productData.Order_Date__c">
+														<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+												</span>
 											</td>
 											<td>
-												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()" [(ngModel)]="productData.Standard_Cost__c" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;"
+												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()" (keyup)="clearErrMsg()" [(ngModel)]="productData.orderQty" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;"onpaste="return false;"
+												/>
+											</td>
+											<td>
+												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()" (keyup)="clearErrMsg()" [(ngModel)]="productData.Standard_Cost__c" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;"onpaste="return false;"
 												/>
 											</td>
 											<td>{{productData.Standard_Cost__c * productData.orderQty | number:'1.2-4'}}</td>
@@ -138,17 +143,17 @@
 							<label>{{'PURCHASE_ORDERS.ADD_SKU'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<input [(ngModel)]="searchKeyWord" (keyup.enter)="getProductsBySupplier()" type="text" (keypress)="keyPress($event);clearErrMsg();"
+							<input [(ngModel)]="searchKeyWord" (keyup.enter)="getProductsBySupplier()" type="text" (keypress)="keyPress($event);clearErrMsg();"(keyup)="clearErrMsg()"
 							 maxlength="13" />
 							<button type="button" class="btn btn-primary" (click)="getProductsBySupplier()">
 								<i class="fa fa-binoculars" aria-hidden="true"></i>{{'BUTTON.SEARCH'| translate }} </button>
-								<div>
-									<p class="red"> {{searchError | translate}}</p>
-									<p class="red"> {{message | translate}}</p>
-								</div>
+							<div>
+								<p class="red"> {{searchError | translate}}</p>
+								<p class="red"> {{message | translate}}</p>
+							</div>
 						</div>
 					</div>
-					
+
 					<div class="row mt-20 res-mt-15" *ngIf='disableSelect == true'>
 						<div class="col-sm-3 text-right res-tleft">
 							<label>{{'INVENTORY_USAGE.SELECT'| translate }}</label>
@@ -195,7 +200,7 @@
 							<label>{{'PURCHASE_ORDERS.SUPPLIER'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<label>{{supplierName}}</label>
+							<label>{{supplierName | slice:0:30}}{{supplierName.length > 30 ? '...' : ''}}</label>
 						</div>
 					</div>
 					<div class="row mt-20 res-mt-15">
@@ -225,7 +230,7 @@
 							<label></label>
 						</div>
 						<div class="col-sm-7" *ngIf='recievedEnable == true'>
-							<input type="text" maxlength="10" (click)="clearErrMsg()" value="{{ receivedDate | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="receivedDate"
+							<input type="text" maxlength="10" (click)="clearErrMsg()" (keyup)="clearErrMsg()" value="{{ receivedDate | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="receivedDate" [bsConfig]="datePickerConfig"
 							 class="datefield">
 							<div>
 								<p class="red"> {{error2 | translate}}</p>
@@ -246,7 +251,7 @@
 						</div>
 						<div class="col-sm-7">
 							<label>
-								<input type="text" maxlength="20" (click)="clearErrMsg()" [(ngModel)]="recievedBy">
+								<input type="text" maxlength="20" (click)="clearErrMsg()" (keyup)="clearErrMsg()" [(ngModel)]="recievedBy">
 							</label>
 							<div>
 								<p class="red"> {{error1 | translate}}</p>
@@ -281,18 +286,23 @@
 											<td>{{productData.Product_Code__c}}</td>
 											<td>{{productData.Name}}</td>
 											<td>{{productData.Size__c}}</td>
-											<td>{{productData.Quantity_On_Hand__c}}</td>
-											<td>
-												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()" [(ngModel)]="productData.orderQty" />
+											<td>{{productData.Quantity_On_Hand__c}}
+												<!-- <span title="{{productData.purchaseDesc}}" *ngIf = "productData.purchaseDesc">
+													<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+											</span> -->
 											</td>
 											<td>
-												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()" [(ngModel)]="productData.Standard_Cost__c" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;"
+												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()"(keyup)="clearErrMsg()" [(ngModel)]="productData.orderQty" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;" onpaste="return false;"
+												/>
+											</td>
+											<td>
+												<input type="text" (keyup)="updateTotOrdCst()" (keypress)="clearErrMsg()"(keyup)="clearErrMsg()" [(ngModel)]="productData.Standard_Cost__c" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;" onpaste="return false;"
 												/>
 											</td>
 											<!-- <td>{{productData.Standard_Cost__c * productData.orderQty}}</td> -->
 											<td>{{productData.Order_Cost__c | number:'1.2-4'}}</td>
 											<td *ngIf='recievedEnable == true'>
-												<input type="number" [(ngModel)]="productData.Received_Quantity__c" />
+												<input type="number"[min]="0" [(ngModel)]="productData.Received_Quantity__c" class=" align-pd" onpaste="return false;"/>
 											</td>
 											<td *ngIf='recievedEnable == false'>&nbsp;</td>
 										</tr>
@@ -310,10 +320,10 @@
 							 maxlength="13" />
 							<button type="button" class="btn btn-primary" (click)="getProductsBySupplier()">
 								<i class="fa fa-binoculars" aria-hidden="true"></i>{{'BUTTON.SEARCH'| translate }}</button>
-								<div>
-									<p class="red"> {{searchError | translate}}</p>
-									<p class="red"> {{message | translate}}</p>
-								</div>
+							<div>
+								<p class="red"> {{searchError | translate}}</p>
+								<p class="red"> {{message | translate}}</p>
+							</div>
 						</div>
 					</div>
 					<div class="row mt-20 res-mt-15" *ngIf='disableSelect == true'>
@@ -343,7 +353,7 @@
 						</div>
 						<div class="col-sm-7" *ngIf='recievedEnable == true'>
 							<label>
-								<input type="number" [(ngModel)]="totalActualOrderCost" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;">
+								<input type="number" [min]="0" [(ngModel)]="totalActualOrderCost" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127)  return true; else if ( key < 46 || key > 57 ) return false; else return true;">
 							</label>
 						</div>
 					</div>
@@ -387,7 +397,7 @@
 							<label>{{'PURCHASE_ORDERS.RECEIVED_DATE'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<label>{{closedRecievedDate | date:'MM/d/y'}}</label>
+							<label>{{closedRecievedDate[0]}}</label>
 						</div>
 					</div>
 					<div class="row mt-20 res-mt-15">

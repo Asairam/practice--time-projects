@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-	<!-- <app-header></app-header> -->
-	<app-header [newMenu]="'noNav'"></app-header>
+	<app-header [newMenu]="'nav'"></app-header>
 		<section id="inner_cont" class="setsubcont">
 			<div class="container">
 				<div class="row">
@@ -12,7 +11,7 @@
 										<td>{{ 'COMMON.NAME' | translate }}</td>
 									</tr>
 									<tr *ngFor='let permissionData of permissionsList'>
-										<td class="tbl-txt" (click)="showData(permissionData)">{{permissionData.Name}}</td>
+										<td class="tbl-txt word-break" (click)="showData(permissionData)">{{permissionData.Name}}</td>
 									</tr>
 									<tr>
 										<td align="center" class="tbl-txt" (click)="addNew()">
@@ -30,7 +29,7 @@
 										<td>{{ 'COMMON.NAME' | translate }}</td>
 									</tr>
 									<tr *ngFor='let permissionData of permissionsList'>
-										<td class="td_active" (click)="showData(permissionData)">{{permissionData.Name}}</td>
+										<td class="td_active word-break" (click)="showData(permissionData)">{{permissionData.Name}}</td>
 									</tr>
 									<tr>
 										<td align="center">

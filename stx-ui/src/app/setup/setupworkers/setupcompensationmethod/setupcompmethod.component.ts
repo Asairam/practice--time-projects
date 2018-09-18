@@ -179,7 +179,21 @@ export class SetupCompMethodComponent implements OnInit {
         const GROSS_RETAIL = 200;
         const COST_OF_SERVICE_FEE = 17.50;
         for (let i = 0; i < this.rows.length; i++) {
-
+            if (this.rows[i].operand.split(':')[0] === 'scale') {
+                let Scalec = [];
+                this.scalesData.forEach(element => {
+                    if (element.Id === this.rows[i].operand.split(':')[1]) {
+                        Scalec = JSON.parse(element.Scale__c);
+                        Scalec.forEach(obj => {
+                            if (Number(this.rows[i - 1].result) <= Number(obj.upTo)) {
+                                if (Number(this.rows[i - 1].result) > Number(obj.over)) {
+                                    this.rows[i]['numeral'] = obj.percent;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
             if (this.rows[i].operand === 'Salary') {
                 this.operandvalue = SALARY;
             } else if (this.rows[i].operand === 'Hourly Wage') {
@@ -269,8 +283,8 @@ export class SetupCompMethodComponent implements OnInit {
                 this.setupCompMethodService.getServices()
                     .subscribe(data => {
                         this.servicesList[j] = data['result']
-                            .filter(filterList =>  !filterList.isSystem);
-                       // this.rows[j]['operandSubOption'] = this.servicesList[j][0].serviceGroupName;
+                            .filter(filterList => !filterList.isSystem);
+                        // this.rows[j]['operandSubOption'] = this.servicesList[j][0].serviceGroupName;
                     },
                         error => {
                             const errStatus = JSON.parse(error['_body'])['status'];
@@ -314,8 +328,8 @@ export class SetupCompMethodComponent implements OnInit {
                 this.setupCompMethodService.getServices()
                     .subscribe(data => {
                         this.servicesList[j] = data['result']
-                            .filter(filterList =>  !filterList.isSystem);
-                       // this.rows[j]['operandSubOption'] = this.servicesList[j][0].serviceGroupName;
+                            .filter(filterList => !filterList.isSystem);
+                        // this.rows[j]['operandSubOption'] = this.servicesList[j][0].serviceGroupName;
                     },
                         error => {
                             const errStatus = JSON.parse(error['_body'])['status'];
@@ -408,7 +422,8 @@ export class SetupCompMethodComponent implements OnInit {
                 .subscribe(data => {
                     this.servicesList[i] = data['result']
                         .filter(filterList => !filterList.isSystem);
-                    this.rows[i]['operandSubOption'] = this.servicesList[i][0].serviceGroupName;
+                    this.rows[i]['operandSubOption'] = 'All';
+                    // this.rows[i]['operandSubOption'] = this.servicesList[i][0].serviceGroupName;
                 },
                     error => {
                         const errStatus = JSON.parse(error['_body'])['status'];
@@ -425,7 +440,8 @@ export class SetupCompMethodComponent implements OnInit {
                 .subscribe(data => {
                     this.servicesList[i] = data['result']
                         .filter(filterList => !filterList.isSystem);
-                    this.rows[i]['operandSubOption'] = this.servicesList[i][0].serviceGroupName;
+                    this.rows[i]['operandSubOption'] = 'All';
+                    // this.rows[i]['operandSubOption'] = this.servicesList[i][0].serviceGroupName;
                 },
                     error => {
                         const errStatus = JSON.parse(error['_body'])['status'];
@@ -501,6 +517,7 @@ export class SetupCompMethodComponent implements OnInit {
         if (this.hidePlus === 1) {
             this.hideDelete = false;
         }
+        this.servicesList[index] = [];
     }
     addNewRecord() {
         this.addDiv = true;

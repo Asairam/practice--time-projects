@@ -1,28 +1,39 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
     <app-header [newMenu]="'noNav'"></app-header>
     <section id="inner_cont">
         <div class="container form_cont">
             <div class="col-md-3 apointmnet-left">
                 <div class="row mt-20">
                     <div class="col-md-12 appointment-button-sidenav">
-                        <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/checkout/newticket']">
-                            <i class="fa fa-plus-circle" aria-hidden="true"></i> New Ticket</a>
-                        <br />
-                        <a class="btn btn-default mb-5 chkout-button" (click)="showMembershipsModal()">
-                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Memberships</a>
-                        <br />
-                        <a class="btn btn-default mb-5 chkout-button" (click)="showRefundsModal()">
-                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Refunds</a>
-                        <br />
-                        <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/checkout/refund/noclient']">
-                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Refunds NO CLIENT</a>
-                        <br />
-                        <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/cashinout']">
-                            <img width="12px" src="assets/images/plusminus.png"> Cash In / Out</a>
-                        <br />
-                        <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/checkout/cashcounting']">
-                            <img width="12px" src="assets/images/plusminus.png"> Cash Counting</a>
+                        <div *ngIf="decodedToken['Tickets'] && decodedToken['Tickets'][7]['allowAcces']">
+                            <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/checkout/newticket']">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i> New Ticket</a>
+                            <br />
+                        </div>
+                        <div *ngIf="decodedToken['Tickets'] && decodedToken['Tickets'][4]['allowAcces']">
+                            <a class="btn btn-default mb-5 chkout-button" (click)="showMembershipsModal()">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i> Memberships</a>
+                            <br />
+                        </div>
+                        <div *ngIf="decodedToken['Tickets'] && decodedToken['Tickets'][5]['allowAcces']">
+                            <a class="btn btn-default mb-5 chkout-button" (click)="showRefundsModal()">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i> Refunds</a>
+                            <br />
+                        </div>
+                        <div>
+                            <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/checkout/refund/noclient']">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i> Refunds NO CLIENT</a>
+                            <br />
+                        </div>
+                        <div *ngIf="decodedToken['Tickets'] && decodedToken['Tickets'][0]['allowAcces']">
+                            <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/cashinout']">
+                                <img width="12px" src="assets/images/plusminus.png"> Cash In / Out</a>
+                            <br />
+                        </div>
+                        <div *ngIf="decodedToken['Tickets'] && decodedToken['Tickets'][6]['allowAcces']">
+                            <a class="btn btn-default mb-5 chkout-button" [routerLink]="['/checkout/cashcounting']">
+                                <img width="12px" src="assets/images/plusminus.png"> Cash Counting</a>
+                        </div>
                     </div>
                 </div>
 
@@ -50,10 +61,10 @@
                                 </td>
                                 <td class="tbl-txt" [routerLink]="['/checkout/' + checkoutlist.appId]">{{checkoutlist.ticketNumber}}</td>
                                 <td *ngIf="checkoutlist.clientId==null">NO CLIENT</td>
-                                <td class="tbl-txt" *ngIf="checkoutlist.clientId!=null" [routerLink]="['/client/edit/' + checkoutlist.clientId]">{{checkoutlist.clientName}}</td>
+                                <td class="tbl-txt" *ngIf="checkoutlist.clientId!=null" [routerLink]="['/client/edit/' + checkoutlist.clientId]" [queryParams]="{ actionMethod: 'checkoutList' }">{{checkoutlist.clientName}}</td>
                                 <td>{{checkoutlist.serviceName}}</td>
                                 <td *ngIf='apptId'>{{checkoutlist.balancedue | number: '1.2-4'}}</td>
-                                <td>{{checkoutlist.Date | date:'MM/d/yyyy' }}</td>
+                                <td>{{checkoutlist.disaplayDate[0]}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -62,141 +73,115 @@
                 <div class="row" *ngIf="apptId">
                     <div class="text-center mt-40">
                         <button class="save-btn" (click)="addTickets()" type="button">Include Unpaid Tickets</button>
-                        <button class="cancel-btn" type="button" (click)='cancelMembershipsModal()'>{{'BUTTON.CANCEL' | translate}}</button>
+                        <button class="cancel-btn" type="button" (click)='cancelIncludeTicket()'>{{'BUTTON.CANCEL' | translate}}</button>
                         <div class="text-center">
                             *Once a ticket with an unpaid balance has been included, the ticket being included can no longer be edited.
                         </div>
                     </div>
                 </div>
                 <!-- memberships modal starts -->
-                <div bsModal #membershipsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                <div bsModal #membershipsModal="bs-modal" class="modal expressBooking bluemodal small-modal" role="dialog" aria-labelledby="myLargeModalLabel"
                     aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
+                    <div class="modal-content" style="margin: auto;">
+                        <span id="cancel1" (click)="cancelMembershipsModal()" class="close close-list">&times;</span>
+                        <div class="modal-dialog ">
+                            <div class="modal-body">
+                                <div class="clearfix">
+                                    <div class="row mt-20 clearfix">
 
-                                <button type="button" class="close" (click)="cancelMembershipsModal()" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body clearfix">
-                                <div class="col-md-6 col-md-offset-3">
-                                    <div class="input-group">
-                                        <input type="text" style="width:100%" class="form-control searchinput" [(ngModel)]="searchKey" (keyup.enter)="searchClients()"
-                                            placeholder="Search for...">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button" (click)="searchClients()">Search!</button>
-                                        </span>
-                                    </div>
-                                    <!-- /input-group -->
-                                </div>
-                                <div class="clearfix"></div>
-                                <div class="row mt-20 res-mt-15">
-                                    <div class="col-md-12">
-                                        <div class="table-responsive">
-                                            <p-dataTable [responsive]="true" [value]="DataObj" [rows]="rowsPerPage" expandableRows="true">
-                                                <p-column field="Active__c" header="{{ 'COMMON.ACTIVE' | translate }}">
-                                                    <ng-template let-user="rowData" pTemplate="body">
-                                                        <span *ngIf='user.Active__c == 1'>
-                                                            <input type="checkbox" checked />
-                                                        </span>
-                                                        <span *ngIf='user.Active__c == 0'>
-                                                            <input type="checkbox" />
-                                                        </span>
-                                                    </ng-template>
-                                                </p-column>
-                                                <p-column field="FullName" header="{{'CLIENTS.FULL_NAME'| translate }}">
-                                                    <ng-template let-user="rowData" pTemplate="body">
-
-                                                        <span class="tbl-txt" [routerLink]="['/membershipedit/' + user.Id]">
-                                                            {{user.FullName}}
-                                                        </span>
-                                                    </ng-template>
-                                                </p-column>
-
-                                                <p-column field="Phone" header="{{'CLIENTS.PRIMARY_PHONE'| translate }}"></p-column>
-                                                <p-column field="MobilePhone" header="{{'CLIENTS.MOBILE_PHONE'| translate }}"></p-column>
-                                                <p-column field="Email" header="{{'CLIENTS.PRIMARY_EMAIL'| translate }}"></p-column>
-                                            </p-dataTable>
-
-
+                                        <div class="col-md-12 col-sm-12 mb-10">
+                                            <div class="staff-search staff125">
+                                                <div class="input-group">
+                                                    <input type="text" placeholder="Name, Phone, Email" [formControl]="searchField" [(ngModel)]="searchKey" (input)="searchClients()"
+                                                        autofocus class="form-control" id="FindApptSearchKeys" style="background: none !important;">
+                                                    <p style="color:red;text-align: center;">{{noResult}}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="text-center mt-40">
-                                        <button class="cancel-btn" type="button" (click)='cancelMembershipsModal()'>{{'BUTTON.CANCEL' | translate}}</button>
-                                    </div>
+
+                                    <perfect-scrollbar style="max-height:300px;">
+                                        <div class="staff-search-details mt-20">
+                                            <div class="staff-search-details-in">
+                                                <div class="staff-search-list" *ngFor="let client of DataObj">
+                                                    <div class="staff-search-list-img" *ngIf="(client.image && client.image !== '')">
+                                                        <img src="{{apiEndPoints | translate}}/{{client.image}}" width="61" onerror="this.onerror=null;this.src='assets/images/user-icon.png';"
+                                                            height="61" alt="Profile">
+                                                    </div>
+                                                    <div class="staff-search-list-img" *ngIf="(client.image === null || client.image === '' || client.image === undefined)">
+                                                        <div class="appnt-pro-letter" style="width:61px;height:61px;line-height: 57px;">
+                                                            <strong> {{ client.FirstName[0].toUpperCase() }} </strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="staff-search-list-name" [routerLink]="['/membershipedit/' + client.Id]">
+                                                        <span id="findApptClear">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
+                                                        <span *ngIf="hideClientInfo === 0">
+                                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}}
+                                                                | {{client.MobilePhone}}</div>
+                                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </perfect-scrollbar>
                                 </div>
                             </div>
                         </div>
-                        <!-- /.modal-content -->
                     </div>
                 </div>
                 <!-- memberships modal ends -->
                 <!-- refunds modal starts -->
-                <div bsModal #refundsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                <div bsModal #refundsModal="bs-modal" class="modal expressBooking bluemodal small-modal" role="dialog" aria-labelledby="myLargeModalLabel"
                     aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
+                    <div class="modal-content" style="margin: auto;">
+                        <span id="cancel1" (click)="cancelModal()" class="close close-list">&times;</span>
+                        <div class="modal-dialog ">
+                            <div class="modal-body">
+                                <div class="clearfix">
+                                    <div class="row mt-20 clearfix">
 
-                                <button type="button" class="close" (click)="cancelModal()" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body clearfix">
-                                <div class="col-md-6 col-md-offset-3">
-                                    <div class="input-group">
-                                        <input type="text" style="width:100%" class="form-control searchinput" [(ngModel)]="searchKey" (keyup.enter)="searchClients()"
-                                            placeholder="Search for...">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button" (click)="searchClients()">Search!</button>
-                                        </span>
-                                    </div>
-                                    <!-- /input-group -->
-                                </div>
-                                <div class="clearfix"></div>
-                                <div class="row mt-20 res-mt-15">
-                                    <div class="col-md-12">
-                                        <div class="table-responsive">
-                                            <p-dataTable [responsive]="true" [value]="DataObj" [rows]="rowsPerPage" expandableRows="true">
-                                                <p-column field="Active__c" header="{{ 'COMMON.ACTIVE' | translate }}">
-                                                    <ng-template let-user="rowData" pTemplate="body">
-                                                        <span *ngIf='user.Active__c == 1'>
-                                                            <input type="checkbox" checked />
-                                                        </span>
-                                                        <span *ngIf='user.Active__c == 0'>
-                                                            <input type="checkbox" />
-                                                        </span>
-                                                    </ng-template>
-                                                </p-column>
-                                                <p-column field="FullName" header="{{'CLIENTS.FULL_NAME'| translate }}">
-                                                    <ng-template let-user="rowData" pTemplate="body">
-
-                                                        <span class="tbl-txt" [routerLink]="['/refunddetails/' + user.Id]">
-                                                            {{user.FullName}}
-                                                        </span>
-                                                    </ng-template>
-                                                </p-column>
-
-                                                <p-column field="Phone" header="{{'CLIENTS.PRIMARY_PHONE'| translate }}"></p-column>
-                                                <p-column field="MobilePhone" header="{{'CLIENTS.MOBILE_PHONE'| translate }}"></p-column>
-                                                <p-column field="Email" header="{{'CLIENTS.PRIMARY_EMAIL'| translate }}"></p-column>
-                                            </p-dataTable>
-
-
+                                        <div class="col-md-12 col-sm-12 mb-10">
+                                            <div class="staff-search staff125">
+                                                <div class="input-group">
+                                                    <input type="text" placeholder="Name, Phone, Email" [formControl]="searchField" [(ngModel)]="searchKey" (input)="searchClients()"
+                                                        autofocus class="form-control" id="FindApptSearchKeys" style="background: none !important;">
+                                                    <p style="color:red;text-align: center;">{{noResult}}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="text-center mt-40">
-                                        <button class="cancel-btn" type="button" (click)='cancelModal()'>{{'BUTTON.CANCEL' | translate}}</button>
-                                    </div>
+
+                                    <perfect-scrollbar style="max-height:300px;">
+                                        <div class="staff-search-details mt-20">
+                                            <div class="staff-search-details-in">
+                                                <div class="staff-search-list" *ngFor="let client of DataObj">
+                                                    <div class="staff-search-list-img" *ngIf="(client.image && client.image !== '')">
+                                                        <img src="{{apiEndPoints | translate}}/{{client.image}}" width="61" onerror="this.onerror=null;this.src='assets/images/user-icon.png';"
+                                                            height="61" alt="Profile">
+                                                    </div>
+                                                    <div class="staff-search-list-img" *ngIf="(client.image === null || client.image === '' || client.image === undefined)">
+                                                        <div class="appnt-pro-letter" style="width:61px;height:61px;line-height: 57px;">
+                                                            <strong> {{ client.FirstName[0].toUpperCase() }} </strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="staff-search-list-name" [routerLink]="['/refunddetails/' + client.Id]">
+                                                        <span id="findApptClear">{{client.FirstName}} &nbsp; {{client.LastName}}</span>
+                                                        <span *ngIf="hideClientInfo === 0">
+                                                            <div class="staff-search-list-mobile" *ngIf="!client.Phone || !client.MobilePhone">{{client.Phone}}
+                                                                | {{client.MobilePhone}}</div>
+                                                            <div class="staff-search-list-email">{{client.Email}}</div>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </perfect-scrollbar>
                                 </div>
                             </div>
                         </div>
-                        <!-- /.modal-content -->
                     </div>
                 </div>
                 <!-- refunds modal ends -->

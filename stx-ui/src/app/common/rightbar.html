@@ -1,42 +1,42 @@
 <div class="sidebar1-icons">
     <ul>
-        <li>
+        <li *ngIf="decodedToken['Appointments'] && decodedToken['Appointments'][1]['allowAcces']">
             <a [routerLink]="['/appointments']">
                 <img src="assets/images/side-icon1.png" alt="img">
                 <span>appt</span>
             </a>
         </li>
-        <li>
+        <li *ngIf="decodedToken['Tickets'] && decodedToken['Tickets'][1]['allowAcces']">
             <a [routerLink]="['/checkout/newticket']">
                 <img src="assets/images/side-icon2.png" alt="img">
                 <span>check out</span>
             </a>
         </li>
-        <li>
+        <li *ngIf="decodedToken['Clients'] && decodedToken['Clients'][3]['allowAcces']">
             <a [routerLink]="['/client']">
                 <img src="assets/images/side-icon3.png" alt="img">
                 <span>clients</span>
             </a>
         </li>
-        <li>
+        <li *ngIf="decodedToken['Inventory'] && decodedToken['Inventory'][3]['allowAcces']">
             <a [routerLink]="['/inventory']">
                 <img src="assets/images/side-icon4.png" alt="img">
                 <span>inventory</span>
             </a>
         </li>
-        <li>
+        <li *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][1]['allowAcces']">
             <a [routerLink]="['/marketing']">
                 <img src="assets/images/side-icon5.png" alt="img">
                 <span>marketing</span>
             </a>
         </li>
-        <li>
+        <li *ngIf="decodedToken['Reports'] && decodedToken['Reports'][17]['allowAcces']">
             <a [routerLink]="['/reports']">
                 <img src="assets/images/side-icon6.png" alt="img">
                 <span>reports</span>
             </a>
         </li>
-        <li>
+        <li *ngIf="decodedToken['Home'] && (decodedToken['Home'][2]['allowAcces'] || decodedToken['Home'][5]['allowAcces'])">
             <a [routerLink]="['/dashboard']">
                 <img src="assets/images/side-icon7.png" alt="img">
                 <span>dashboard</span>

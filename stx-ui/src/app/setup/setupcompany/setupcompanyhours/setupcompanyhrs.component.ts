@@ -10,6 +10,7 @@ import { componentFactoryName } from '@angular/compiler';
 // import { BsDatepickerComponent } from 'ngx-bootstrap/datepicker/bs-datepicker.component';
 import { validateConfig } from '@angular/router/src/config';
 import { CommonService } from '../../../common/common.service';
+import { JwtHelper } from 'angular2-jwt';
 
 @Component({
     selector: 'app-setupcompanyhours-popup',
@@ -81,6 +82,8 @@ export class SetupCompanyHoursComponent implements OnInit {
     customIds: any;
     datePickerConfig: any;
     paramsId: any;
+    isDisableDefault = false;
+    decodedToken: any;
     constructor(private SetupCompanyhrsServices: SetupCompanyhrsService,
         private cdRef: ChangeDetectorRef,
         @Inject('apiEndPoint') public apiEndPoint: string,
@@ -102,6 +105,18 @@ export class SetupCompanyHoursComponent implements OnInit {
         });
     }
     ngOnInit() {
+         // ---Start of code for Permissions Implementation--- //
+         try {
+            this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+        } catch (error) {
+            this.decodedToken = {};
+        }
+        if (this.decodedToken.data && this.decodedToken.data.permissions) {
+            this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+        } else {
+            this.decodedToken = {};
+        }
+        // ---End of code for permissions Implementation--- //
         this.getCustomList = false;
         this.customInsert = false;
         this.customTable = false;
@@ -317,6 +332,9 @@ export class SetupCompanyHoursComponent implements OnInit {
         this.companyId = Id.Id;
         this.description = Id.Name;
         this.timeZone = Id.TimeZoneSidKey__c;
+        if (Id.isActive__c === 1 && Id.isDefault__c === 1) {
+            this.isDisableDefault = true;
+        }
         this.active = Id.isActive__c === 1 ? true : false;
         this.companyHourse = Id.isDefault__c === 1 ? true : false;
 
@@ -531,6 +549,10 @@ export class SetupCompanyHoursComponent implements OnInit {
         this.ngOnInit();
         this.clearDescName();
     }
+    cancelCust() {
+        this.editCustomInsert = false;
+        this.customInsert = false;
+    }
     cancelList() {
         this.ngOnInit();
     }
@@ -594,9 +616,11 @@ export class SetupCompanyHoursComponent implements OnInit {
         let result = false;
         if (date.toString() !== new Date(this.customDate).toString()) {
             this.getCustomLists.forEach(element => {
-                if (element.Date__c === this.commonService.getDBDatTmStr(date).split(' ')[0]) {
-                    this.errorDate = 'Custom hour exist in same date';
-                    result = true;
+                if (this.bsValue !== date) {
+                    if (element.Date__c === this.commonService.getDBDatTmStr(new Date(date)).split(' ')[0]) {
+                        this.errorDate = 'Custom hour exist in same date';
+                        result = true;
+                    }
                 }
             });
         }
@@ -691,7 +715,7 @@ export class SetupCompanyHoursComponent implements OnInit {
         this.customIds = list.Id;
         this.customDescription = list.Name;
         this.customDate = list.Date__c;
-        this.bsValue = new Date(this.customDate);
+        this.bsValue = this.commonService.getDateFrmDBDateStr(this.customDate);
         if (list.All_Day_Off__c === 1) {
             this.customAllDay = true;
         } else {
@@ -700,6 +724,7 @@ export class SetupCompanyHoursComponent implements OnInit {
 
         this.customEnd = list.EndTime__c;
         this.customStart = list.StartTime__c;
+
     }
     /* edit custom   */
     customeEditRecord() {
@@ -707,7 +732,7 @@ export class SetupCompanyHoursComponent implements OnInit {
         if (this.customDescription === '' || this.customDescription === undefined) {
             this.errorDescriptions = 'SETUP_COMPANY_HOURSE.VALID_NOBLANK_DESCRIPTION_FIELD';
             window.scrollTo(0, 0);
-        } else if (this.bsValue === null || this.bsValue === '' || isNaN(this.bsValue)) {
+        } else if (this.bsValue === null || this.bsValue === '') {
             this.errorDate = 'SETUP_COMPANY_HOURSE.VALID_NOBLANK_DATE_FIELD';
             this.bsValue = '';
         } else if (this.EditduplicateDate(this.bsValue)) {

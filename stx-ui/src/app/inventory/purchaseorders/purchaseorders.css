@@ -4,11 +4,17 @@
 #wrapper_setup_new, a{
     color: white;
 }
-.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email]{
+.setsubcont input[type=text], .setsubcont input[type=number], .setsubcont input[type=email], .setsubcont select{
     color: white;
 }
 .setsubcont input[type=text]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=email]:focus{
     color: black;
+}
+.word-break {
+    word-break: break-all!important;
+}
+.setsubcont input[type=number]{
+    padding: 5px 1px 5px 6px;
 }
 @media (device-width: 768px){
     .table-bordered-light {

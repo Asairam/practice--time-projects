@@ -1,5 +1,12 @@
 #inner_cont {
     margin-right:10%;
+    color: white;
+}
+.form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select {
+    color: white;
+}
+.form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus {
+    color: black;
 }
 
  @media (min-width: 992px) {
@@ -10,7 +17,6 @@
         width: 58%;
     }
 }
-
 @media (device-width: 768px) {
     .col-sm-4 {
         width: 33.33333333%;

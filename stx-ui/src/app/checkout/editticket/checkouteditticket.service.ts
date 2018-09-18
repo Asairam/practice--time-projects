@@ -5,7 +5,7 @@
 */
 import { Injectable, Inject } from '@angular/core';
 import { Response } from '@angular/http';
-// import { Headers, RequestOptions, URLSearchParams } from '@angular/http';
+import { Headers } from '@angular/http';
 import { HttpClient } from '../../common/http-client';
 
 @Injectable()
@@ -34,10 +34,6 @@ export class CheckOutEditTicketService {
     return this.http.get(this.apiEndPoint + '/api/checkout/client/rewards/' + clientId)
       .map(this.extractData);
   }
-  // clientRewardDatabyApptId(apptid) {
-  //   return this.http.get(this.apiEndPoint + '/api/client/rewardsbyappt/' + apptid)
-  //     .map(this.extractData);
-  // }
   getRewardsData() {
     return this.http.get(this.apiEndPoint + '/api/marketing/rewards')
       .map(this.extractData);
@@ -160,8 +156,11 @@ export class CheckOutEditTicketService {
     return this.http.put(this.apiEndPoint + '/api/checkout/services/' + Id, updateServicesObj)
       .map(this.extractData);
   }
-  removeTicketSerices(ticketServiceId) {
-    return this.http.delete(this.apiEndPoint + '/api/checkout/services/' + ticketServiceId)
+
+  removeTicketSerices(ticketServiceId, amountDetails) {
+    const headers = new Headers();
+    headers.append('amountdetails', JSON.stringify(amountDetails));
+    return this.http.deleteHeader(this.apiEndPoint + '/api/checkout/services/' + ticketServiceId, headers)
       .map(this.extractData);
   }
 
@@ -197,8 +196,10 @@ export class CheckOutEditTicketService {
     return this.http.put(this.apiEndPoint + '/api/checkout/products/' + Id, updateTicketObj)
       .map(this.extractData);
   }
-  removeTicketProduct(ticketProductId) {
-    return this.http.delete(this.apiEndPoint + '/api/checkout/products/' + ticketProductId)
+  removeTicketProduct(ticketProductId, amountDetails) {
+    const headers = new Headers();
+    headers.append('amountdetails', JSON.stringify(amountDetails));
+    return this.http.deleteHeader(this.apiEndPoint + '/api/checkout/products/' + ticketProductId, headers)
       .map(this.extractData);
   }
   /**
@@ -213,16 +214,18 @@ export class CheckOutEditTicketService {
     return this.http.post(this.apiEndPoint + '/api/checkout/miscsale/' + action, calObj)
       .map(this.extractData);
   }
-  getCalList(miscSale, apptId) {
-    return this.http.get(this.apiEndPoint + '/api/checkout/ticketother/' + miscSale + '/' + apptId)
-      .map(this.extractData);
-  }
+  // getCalList(miscSale, apptId) {
+  //   return this.http.get(this.apiEndPoint + '/api/checkout/ticketother/' + miscSale + '/' + apptId)
+  //     .map(this.extractData);
+  // }
   updateMiscTicket(id, amount) {
     return this.http.put(this.apiEndPoint + '/api/checkout/miscsale/' + id, amount)
       .map(this.extractData);
   }
-  deleteMiscTicket(miscId) {
-    return this.http.delete(this.apiEndPoint + '/api/checkout/miscsale/' + miscId)
+  deleteMiscTicket(miscId, amountDetails) {
+    const headers = new Headers();
+    headers.append('amountdetails', JSON.stringify(amountDetails));
+    return this.http.deleteHeader(this.apiEndPoint + '/api/checkout/miscsale/' + miscId, headers)
       .map(this.extractData);
   }
   /**
@@ -249,15 +252,17 @@ export class CheckOutEditTicketService {
       .map(this.extractData);
   }
   getOthersTicketList(ticketId) {
-    return this.http.get(this.apiEndPoint + '/api/checkout/ticketother/' + 'other' + '/' + ticketId)
+    return this.http.get(this.apiEndPoint + '/api/checkout/ticketother/' + ticketId)
       .map(this.extractData);
   }
   updateOthersTicket(ticketId, ticketObj) {
     return this.http.put(this.apiEndPoint + '/api/checkout/ticketother/' + ticketId, ticketObj)
       .map(this.extractData);
   }
-  detleteOthersTicket(ticketId) {
-    return this.http.delete(this.apiEndPoint + '/api/checkout/ticketother/' + ticketId)
+  detleteOthersTicket(ticketId, amountDetails) {
+    const headers = new Headers();
+    headers.append('amountdetails', JSON.stringify(amountDetails));
+    return this.http.deleteHeader(this.apiEndPoint + '/api/checkout/ticketother/' + ticketId, headers)
       .map(this.extractData);
   }
   /**
@@ -278,8 +283,10 @@ export class CheckOutEditTicketService {
     return this.http.get(this.apiEndPoint + '/api/checkout/tips/' + apptId)
       .map(this.extractData);
   }
-  deleteWorkerTip(tipId) {
-    return this.http.delete(this.apiEndPoint + '/api/checkout/tips/' + tipId)
+  deleteWorkerTip(tipId, amountDetails) {
+    const headers = new Headers();
+    headers.append('amountdetails', JSON.stringify(amountDetails));
+    return this.http.deleteHeader(this.apiEndPoint + '/api/checkout/tips/' + tipId, headers)
       .map(this.extractData);
   }
   deleteClearSale(tipId) {
@@ -293,6 +300,18 @@ export class CheckOutEditTicketService {
     return this.http.put(this.apiEndPoint + '/api/checkout/ticketrating/' + apptId, dataObj)
       .map(this.extractData);
 
+  }
+  xmlPayment(reqObj) {
+    return this.http.post(this.apiEndPoint + '/api/payment', reqObj)
+      .map(this.extractData);
+  }
+  getCloverDevices() {
+    return this.http.get(this.apiEndPoint + '/api/clover/device/list')
+      .map(this.extractData);
+  }
+  insertCloverTip(reqObj) {
+    return this.http.post(this.apiEndPoint + '/api/clover/tip/insert', reqObj)
+      .map(this.extractData);
   }
   /**
    * Worker Tip Code Ends

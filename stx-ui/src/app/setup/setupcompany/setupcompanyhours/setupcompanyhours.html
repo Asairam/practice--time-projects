@@ -1,6 +1,5 @@
 <div id="wrapper_setup_new">
-    <!-- <app-header></app-header> -->
-    <app-header [newMenu]="'noNav'"></app-header>
+    <app-header [newMenu]="'nav'"></app-header>
     <section id="inner_cont">
         <div class="container form_cont">
             <div *ngIf='addData == true'>
@@ -204,10 +203,10 @@
                     <div class="col-md-5 col-sm-4 text-right res-tleft">
                         <label>{{'SETUP_COMPANY_HOURSE.USE_COMPANY_HOURS_DEFAULT' | translate }}</label>
                     </div>
-                    <div class="col-md-7 col-sm-8" *ngIf="companyHourse  == true">
-                        <input type="checkbox" [(ngModel)]="companyHourse" checked disabled>
+                    <div class="col-md-7 col-sm-8" *ngIf="isDisableDefault == true">
+                        <input type="checkbox" [(ngModel)]="companyHourse" disabled>
                     </div>
-                    <div class="col-md-7 col-sm-8" *ngIf="companyHourse  == false">
+                    <div class="col-md-7 col-sm-8"  *ngIf="isDisableDefault == false">
                         <input type="checkbox" [(ngModel)]="companyHourse">
                     </div>
                 </div>
@@ -358,7 +357,7 @@
                         <table class="table table-hover table-bordered table-border-color">
                             <thead>
                                 <tr>
-                                    <th class="thcss">{{'COMMON.ACTION' | translate }} </th>
+                                    <th class="thcss" *ngIf="decodedToken['Setup Company'] && decodedToken['Setup Company'][0]['allowAcces']">{{'COMMON.ACTION' | translate }} </th>
                                     <th class="thcss">{{'COMMON.NAME' | translate }}</th>
                                     <th class="thcss">{{'COMMON.ACTIVE' | translate }}</th>
                                     <th class="thcss">{{'SETUP_COMPANY_HOURSE.TIME_ZONE' | translate }}</th>
@@ -367,10 +366,10 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let getList of getCompanyList; let i = 'index'">
-                                    <td>
-                                        <a class="dark">
+                                    <td class="tbl-txt" (click)="editRecord(getList)" *ngIf="decodedToken['Setup Company'] && decodedToken['Setup Company'][0]['allowAcces']">
+                                        <a class="dark" >
                                             <span class="del">
-                                                <i class="fa fa-pencil-square-o" (click)="editRecord(getList)" aria-hidden="true"></i>
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                             </span> {{'BUTTON.EDIT' | translate }}</a>
                                     </td>
                                     <td> {{getList.Name}}</td>
@@ -531,7 +530,7 @@
                     </div>
                     <div class="col-md-7 col-sm-8">
                         <button type="button" class="save-btn" (click)="saveCustomhourse()">{{'BUTTON.SAVE' | translate}}</button>
-                        <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+                        <button type="button" class="cancel-btn" (click)="cancelCust()">{{'BUTTON.CANCEL' | translate}}</button>
                     </div>
                 </div>
             </div>
@@ -605,7 +604,7 @@
                     </div>
                     <div class="col-md-7 col-sm-8">
                         <button type="button" class="save-btn" (click)="customeEditRecord()">{{'BUTTON.SAVE' | translate}}</button>
-                        <button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
+                        <button type="button" class="cancel-btn" (click)="cancelCust()">{{'BUTTON.CANCEL' | translate}}</button>
                     </div>
                 </div>
             </div>

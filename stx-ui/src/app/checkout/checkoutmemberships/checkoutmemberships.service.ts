@@ -34,6 +34,10 @@ export class CheckOutMembershipsService {
     return this.http.get(this.apiEndPoint + '/api/checkout/clientmembership')
     .map(this.extractData);
   }
+  xmlPayment(reqObj) {
+    return this.http.post(this.apiEndPoint + '/api/payment', reqObj)
+      .map(this.extractData);
+  }
     /*To extract json data*/
     private extractData(res: Response) {
       if (res.headers && res.headers.get('token')) {

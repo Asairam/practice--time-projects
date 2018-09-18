@@ -89,7 +89,7 @@ export class ClientappointmentsComponent implements OnInit {
     showCliName: any;
     serviceDetailKeys = ['Duration_1__c', 'Duration_2__c', 'Duration_3__c',
         'Buffer_After__c', 'Guest_Charge__c', 'Net_Price__c'];
-
+    serviceTax: any;
     @ViewChild('serviceNotesModal') public serviceNotesModal: ModalDirective;
     constructor(private clientappointmentsService: ClientappointmentsService,
         private route: ActivatedRoute,
@@ -123,12 +123,34 @@ export class ClientappointmentsComponent implements OnInit {
         this.getClientData(this.clientId);
         this.listVisitTypes();
         // this.getServiceGroupsList();
-        this.getServiceGroups(this.appointmentId);
+
         // this.addServices(0);
         this.getAllActivePackages();
         if (this.appointmentId) {
             this.getApptServiceDetails(this.clientId, this.appointmentId);
+        } else {
+            this.getServiceGroups(this.appointmentId);
         }
+        this.getServRetTaxs();
+    }
+    /**
+* Method to get service tax  and retail tax calculation
+*/
+    getServRetTaxs() {
+        this.clientappointmentsService.getServProdTax().subscribe(
+            data => {
+                const taxData = JSON.parse(data['result'][3].JSON__c);
+                this.serviceTax = taxData.serviceTax;
+            },
+            error => {
+                const errStatus = JSON.parse(error['_body'])['status'];
+                if (errStatus === '2085' || errStatus === '2071') {
+                    if (this.router.url !== '/') {
+                        localStorage.setItem('page', this.router.url);
+                        this.router.navigate(['/']).then(() => { });
+                    }
+                }
+            });
     }
     /**
      * Common methods starts
@@ -164,12 +186,16 @@ export class ClientappointmentsComponent implements OnInit {
         }
     }
     getApptServiceDetails(clientId, apptId) {
-        this.clientappointmentsService.getApptServices(clientId, apptId).subscribe(data => {
+        const reqDate = this.commonService.getDBDatStr(new Date());
+        this.clientappointmentsService.getApptServices(clientId, apptId, reqDate).subscribe(data => {
             const resData = data['result'];
-
             this.rows = resData.srvcresult;
             const serviceList = [];
             const workerList = [];
+            // 30-7-2018
+            this.serviceGroupList = resData.srvgResult;
+            this.serviceGroupName = this.serviceGroupList.length > 0 ? this.serviceGroupList[0].serviceGroupName + '$' + this.serviceGroupList[0].serviceGroupColor : undefined;
+            // 30-7-2018
             this.updateBookedRecords();
             // for (let j = 0; j < serviceList.length; j++) {
             //     // this.serviceDetailsList[j] = serviceList[j];
@@ -274,7 +300,8 @@ export class ClientappointmentsComponent implements OnInit {
         this.serviceNotesModal.hide();
     }
     getServiceGroups(apptId) {
-        this.clientappointmentsService.getServiceGroups('Service').subscribe(data => {
+        const reqDate = this.commonService.getDBDatStr(this.bsValue);
+        this.clientappointmentsService.getServiceGroups('Service', reqDate).subscribe(data => {
             this.serviceGroupList = [];
             this.serviceGroupList = data['result']
                 .filter(filterList => filterList.active && !filterList.isSystem);
@@ -343,7 +370,7 @@ export class ClientappointmentsComponent implements OnInit {
                 }
                 const length = this.rows.length;
                 services.filter((service, index) => {
-                    this.rows.push({ Id: '', serviceGroup: DupserviceGroupName });
+                    this.rows.push({ Id: '', serviceGroup: DupserviceGroupName, Rebooked__c: 0, apptId: '' });
                     this.rows[length + 0] = updateRow ? updateRow : this.rows[length + 0];
                     this.serviceDetailsList[length + index] = services;
                     const workers = [];
@@ -370,6 +397,9 @@ export class ClientappointmentsComponent implements OnInit {
                     this.rows[length + index].serviceGroupColour = '';
                     this.calculateServiceDurations(length + index);
                 });
+                if (this.rows) {
+                    this.rows = this.rows.filter((obj) => obj.workerName !== '');
+                }
             } else {
                 this.serviceDetailsList[i] = data['result'];
                 this.rows[i]['IsPackage'] = 0;
@@ -460,6 +490,13 @@ export class ClientappointmentsComponent implements OnInit {
 
     }
     servicesListOnChange(serviceId, i) {
+        /*  below  description is used to show the service description for the service*/
+        let temp = [];
+        temp = this.serviceDetailsList[i].filter((obj) => obj.Id === serviceId);
+        if (temp && temp.length > 0) {
+            this.rows[i]['desc'] = temp[0]['Description__c'];
+        }
+        /* end of service description */
         this.finalTimes = [];
         this.workerList[i] = [];
         this.rows[i].workerName = '';
@@ -781,59 +818,72 @@ export class ClientappointmentsComponent implements OnInit {
                 });
     }
     bookAppointment() {
-        if (this.visitTypeValue === '' || this.visitTypeValue === undefined) {
-            this.error8 = 'Visit Type is required';
+        // if (this.visitTypeValue === '' || this.visitTypeValue === undefined) {
+        //     this.error8 = 'Visit Type is required';
+        // } else {
+        if (this.rows[0].apptId === undefined) {
+            this.apptmentId = '';
         } else {
-            if (this.rows[0].apptId === undefined) {
-                this.apptmentId = '';
-            } else {
-                this.apptmentId = this.rows[0].apptId;
-            }
-            const IsPackageLength = this.rows.filter((obj) => obj['IsPackage'] === 1).length;
-            this.rows = this.rows.filter((obj) => {
-                if (IsPackageLength > 0) {
-                    obj['IsPackage'] = 1;
-                }
-                return obj;
-            });
-            const appointmentDate = this.commonService.getDBDatTmStr2(this.apptDate, 'MM/DD/YYYY hh:mm:ss a');
-            // const clientdata = JSON.parse(localStorage.getItem('clientData'));
-            const appointBookingData = {
-                'Client_Type__c': this.visitTypeValue,
-                'Client__c': this.clientId,
-                // 'Worker__c': this.rows[0].workerName,
-                'Duration__c': this.sumOfServiceDurations,
-                'Appt_Date_Time__c': appointmentDate,
-                'servicesData': this.rows,
-                'apptId': this.isRebooking ? '' : this.apptmentId,
-                'Notes__c': this.apptNotes ? this.apptNotes : null,
-                'serviceGroupColour': this.serviceGroupColour,
-                'daleteArray': this.daleteArray,
-                //   'Rebooked__c': this.isRebooking,
-                'IsPackage': IsPackageLength > 0 ? 1 : 0
-            };
-            this.clientappointmentsService.appointmentBooking(appointBookingData).subscribe(data => {
-                const apptStatus = data['result'];
-                this.router.navigate(['/appointments'], { queryParams: { date: appointmentDate.split(' ')[0] } }).then(() => {
-                    const toastermessage: any = this.translateService.get('LOGIN.APPT_SUCESSFULLY_CREATED');
-                    this.toastr.success(toastermessage.value, null, { timeOut: 2000 });
-                });
-            },
-                error => {
-                    const status = JSON.parse(error['status']);
-                    const statuscode = JSON.parse(error['_body']).status;
-                    switch (JSON.parse(error['_body']).status) {
-                        case '2033':
-                            break;
-                    }
-                    if (statuscode === '2085' || statuscode === '2071') {
-                        if (this.router.url !== '/') {
-                            localStorage.setItem('page', this.router.url);
-                            this.router.navigate(['/']).then(() => { });
-                        }
-                    }
-                });
+            this.apptmentId = this.rows[0].apptId;
         }
+
+        const appointmentDate = this.commonService.getDBDatTmStr2(this.apptDate, 'MM/DD/YYYY hh:mm:ss a');
+        // const clientdata = JSON.parse(localStorage.getItem('clientData'));
+        const IsPackage = this.rows.filter((obj) => obj['IsPackage'] === 1).length > 0 ? true : false;
+        const serviceTaxResult = this.commonService.calculateServiceTax(+this.serviceTax, this.rows, IsPackage);
+        const servicesData = serviceTaxResult.bookingData;
+        for (let i = 0; i < servicesData.length; i++) {
+            for (let j = 0; j < this.serviceDetailsList[i].length; j++) {
+                if (this.serviceDetailsList[i][j]['Id'] === servicesData[i]['Id']) {
+                    servicesData[i]['Resources__c'] = this.serviceDetailsList[i][j]['Resources__c'];
+                }
+            }
+        }
+        const appointBookingData = {
+            'Client_Type__c': this.visitTypeValue,
+            'Client__c': this.clientId,
+            // 'Worker__c': this.rows[0].workerName,
+            'Duration__c': this.sumOfServiceDurations,
+            'Appt_Date_Time__c': appointmentDate,
+            'servicesData': serviceTaxResult.bookingData,
+            'apptId': this.isRebooking ? '' : this.apptmentId,
+            'Notes__c': this.apptNotes ? this.apptNotes : null,
+            'serviceGroupColour': this.serviceGroupColour,
+            'daleteArray': this.daleteArray,
+            //   'Rebooked__c': this.isRebooking,
+            'IsPackage': IsPackage ? 1 : 0,
+            'Service_Tax__c': serviceTaxResult.serviceTax,
+            'Service_Sales__c': serviceTaxResult.sales,
+            'apptCreatedDate': this.commonService.getDBDatTmStr(new Date()),
+            'bookingType': 'findappt'
+        };
+        this.clientappointmentsService.appointmentBooking(appointBookingData).subscribe(data => {
+            const apptId = data['result']['apptId'];
+            this.router.navigate(['/appointments'], { queryParams: { date: appointmentDate.split(' ')[0] } }).then(() => {
+                const toastermessage: any = this.translateService.get('LOGIN.APPT_SUCESSFULLY_CREATED');
+                this.toastr.success(toastermessage.value, null, { timeOut: 2000 });
+            });
+            this.clientappointmentsService.sendApptNotifs([apptId]).subscribe(data2 => { }, error => { });
+        },
+            error => {
+                const status = JSON.parse(error['status']);
+                const statuscode = JSON.parse(error['_body']).status;
+                switch (JSON.parse(error['_body']).status) {
+                    case '2033':
+                        break;
+                }
+                if (statuscode === '2085' || statuscode === '2071') {
+                    if (this.router.url !== '/') {
+                        localStorage.setItem('page', this.router.url);
+                        this.router.navigate(['/']).then(() => { });
+                    }
+                } else if (statuscode === '2091') {
+                    const bookingError = JSON.parse(error['_body']).message;
+                    // Warning Don't Delete This alert Code//
+                    alert(bookingError)
+                }
+            });
+        // }
     }
     addServices(i) {
         this.finalTimes = [];

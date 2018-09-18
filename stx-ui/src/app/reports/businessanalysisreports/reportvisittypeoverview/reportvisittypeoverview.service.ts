@@ -14,6 +14,10 @@ export class ReportVisitTypeOverviewService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+  getClientInfo(date) {
+    return this.http.post(this.apiEndPoint + '/api/reports/visittypesreport', date)
+      .map(this.extractData);
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

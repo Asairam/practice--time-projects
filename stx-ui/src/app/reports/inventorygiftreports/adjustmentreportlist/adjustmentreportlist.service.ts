@@ -14,6 +14,14 @@ export class AdjustmentReportListService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+  searchForReports(date) {
+    return this.http.post(this.apiEndPoint + '/api/reports/inventoryadjustmentlist', date)
+      .map(this.extractData);
+  }
+  deleteReports(date) {
+    return this.http.delete(this.apiEndPoint + '/api/reports/inventoryadjustmens/' +  date)
+      .map(this.extractData);
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

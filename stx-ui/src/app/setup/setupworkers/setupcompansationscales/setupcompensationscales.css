@@ -10,3 +10,6 @@
 .setsubcont input[type=text]:focus, .setsubcont input[type=number]:focus, .setsubcont input[type=email]:focus{
     color: black;
 }
+.word-break {
+    word-break: break-all!important;
+}

@@ -19,9 +19,12 @@ export class CreateTokenService {
   }
 
   saveClient(clientId, clientObj) {
-    const formData: any = new FormData();
-    formData.append('clientObj', JSON.stringify(clientObj));
-    return this.http.put(this.apiEndPoint + '/api/client/' + clientId, formData)
+    return this.http.put(this.apiEndPoint + '/api/client/tokenUpdate/' + clientId, clientObj)
+      .map(this.extractData);
+  }
+
+  xmlPayment(reqObj) {
+    return this.http.post(this.apiEndPoint + '/api/payment', reqObj)
       .map(this.extractData);
   }
 
@@ -29,7 +32,7 @@ export class CreateTokenService {
     if (res.headers && res.headers.get('token')) {
       localStorage.setItem('token', res.headers.get('token'));
     }
-    const body = res;
+    const body = res.json();
     return body || {};
   }
 }

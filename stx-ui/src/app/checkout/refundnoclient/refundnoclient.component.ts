@@ -48,7 +48,7 @@ export class RefundnoclientComponent implements OnInit {
   }
   ngOnInit() {
     this.endDate = new Date(this.date.getTime());
-    this.endDate.setDate(this.date.getDate() - 1);
+    this.endDate.setDate(this.date.getDate());
     this.startDate = new Date(this.date.setMonth(this.date.getMonth() - 1));
     const local = JSON.parse(localStorage.getItem('browserObject'));
     if (localStorage.getItem('browserObject') === '' || localStorage.getItem('browserObject') === null) {
@@ -68,12 +68,16 @@ export class RefundnoclientComponent implements OnInit {
     this.totalAmt = 0;
     this.taxvalue = 0;
     this.searchList = false;
+    const today = new Date();
+    const newdate = new Date();
     if (value === 'Payment Overcharge') {
       this.ElectronicPayment = 'Electronic payments may only be refunded within 90 days.';
       this.Electronicdisabled = true;
+      this.startDate = new Date(newdate.setDate(today.getDate() - 90));
     } else {
       this.ElectronicPayment = '';
       this.Electronicdisabled = false;
+      this.startDate = new Date(newdate.setDate(today.getDate() - 30));
     }
   }
   refundSearch() {
@@ -101,8 +105,18 @@ export class RefundnoclientComponent implements OnInit {
       this.refundsNoclientService.getRefund(refunddata)
         .subscribe(data => {
           this.refundData = data['result'];
+          for (let i = 0; i < this.refundData.length; i++) {
+            if (this.refundData[i].Service_Date_Time__c) {
+              this.refundData[i].disaplayDate = this.commonService.getUsrDtStrFrmDBStr(this.refundData[i].Service_Date_Time__c);
+            }
+            if (this.refundData[i].Appt_Date_Time__c) {
+              this.refundData[i].apptTime = this.commonService.getUsrDtStrFrmDBStr(this.refundData[i].Appt_Date_Time__c);
+            }
+          }
           this.refundData.forEach(element => {
+            element.Net_Price__c = element.Net_Price__c ? element.Net_Price__c.toFixed(2) : element.Net_Price__c;
             element.oldAmt = element.Net_Price__c;
+            element.newPrice = element.Net_Price__c * element.Qty_Sold__c;
           });
           this.searchList = true;
           if (this.refundtype === 'Service Refund') {
@@ -143,12 +157,29 @@ export class RefundnoclientComponent implements OnInit {
       this.totalAmt = 0;
       this.refundsNoclientService.getRefundTO(item)
         .subscribe(data => {
-          this.refund = data['result'];
+          this.refund = data['result'][0];
           this.refund.forEach(element => {
             element.OriginalPaymentAmount = element.Amount_Paid__c;
           });
+          const Cindex = this.refund.findIndex(el => el.Name === 'Cash');
+          const Aindex = this.refund.findIndex(el => el.Name === 'Account Charge');
+          if (Cindex === -1) {
+            this.refund.push({
+              'Id': 'a0M1H00000UeiV1UAJ',
+              'Name': 'Cash',
+              'Amount_Paid__c': '0.00',
+              'OriginalPaymentAmount': '0.00'
+            });
+          }
+          if (Aindex === -1) {
+            this.refund.push({
+              'Id': 'a0M1H00000UeiV2UAJ',
+              'Ineligible': 'Ineligible',
+              'Name': 'Account Charge'
+            });
+          }
           if (this.refund.length > 0) {
-            this.refundTOData = this.refund;
+            this.refundTOData = this.refund.filter(function (obj) { return obj.Id; });
             this.refundSaveBut = true;
           }
         }, error => {
@@ -202,23 +233,24 @@ export class RefundnoclientComponent implements OnInit {
             if (this.refundData[t].Taxable__c === 1) {
               ser_tax = this.refundData[t].Service_Tax__c;
             } else { ser_tax = 0; }
-            this.totalAmt += this.refundData[t].Net_Price__c + (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * ser_tax;
+            this.totalAmt += parseFloat(this.refundData[t].Net_Price__c) + (parseFloat(this.refundData[t].Net_Price__c) / parseFloat(this.refundData[t].oldAmt)) * ser_tax;
           }
         }
-      } else if (this.refundtype === 'Product Refund') {
+      }
+      if (this.refundtype === 'Product Refund') {
         for (let t = 0; t < this.refundData.length; t++) {
           if (this.refundData[t].Product_Tax__c === null) {
             this.refundData[t].Product_Tax__c = 0;
           }
           if (this.refundData[t].selectVal === true && this.refundData[t].Taxable__c === 1) {
-            this.taxvalue += (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * this.refundData[t].Product_Tax__c;
+            this.taxvalue += (this.refundData[t].newPrice / this.refundData[t].oldAmt) * this.refundData[t].Product_Tax__c;
           }
           if (this.refundData[t].selectVal === true && this.refundData[t].oldAmt !== 0) {
             let ser_tax = 0;
             if (this.refundData[t].Taxable__c === 1) {
               ser_tax = this.refundData[t].Product_Tax__c;
             } else { ser_tax = 0; }
-            this.totalAmt += this.refundData[t].Net_Price__c + (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * ser_tax;
+            this.totalAmt += (this.refundData[t].newPrice * this.refundData[t].Qty_Sold__c) + (this.refundData[t].newPrice / this.refundData[t].oldAmt) * ser_tax;
           }
         }
       }
@@ -235,7 +267,7 @@ export class RefundnoclientComponent implements OnInit {
               ser_tax = this.refundData[t].Service_Tax__c;
               this.taxvalue -= (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * this.refundData[t].Service_Tax__c;
             } else { ser_tax = 0; }
-            this.totalAmt -= this.refundData[t].Net_Price__c + (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * ser_tax;
+            this.totalAmt -= parseFloat(this.refundData[t].Net_Price__c) + (parseFloat(this.refundData[t].Net_Price__c) / parseFloat(this.refundData[t].oldAmt)) * ser_tax;
           }
         }
       } else if (this.refundtype === 'Product Refund') {
@@ -292,17 +324,18 @@ export class RefundnoclientComponent implements OnInit {
     this.refundSaveData = [];
     this.refundTOData.forEach((element, index) => {
       if (index === 0) {
-        toref = element.Amount_Paid__c;
+        toref = element.Amount_Paid__c ? Number(element.Amount_Paid__c) : 0;
       } else {
-        toref += element.Amount_Paid__c;
+        toref += element.Amount_Paid__c ? Number(element.Amount_Paid__c) : 0;
       }
       if (element.Amount_Paid__c !== 0 && element.Amount_Paid__c !== 0.00 && element.Amount_Paid__c !== null) {
         this.refundSaveData.push({
           'PaymentType': element.Name,
-          'AmountToRefund': element.Amount_Paid__c,
+          'AmountToRefund': element.Amount_Paid__c ? element.Amount_Paid__c : 0,
           'OriginalPaymentAmount': element.OriginalPaymentAmount,
           'MerchantAccountName': element.Merchant_Account_Name__c,
-          'ReferenceNumber': element.Reference_Number__c,
+          'ReferenceNumber': element.Reference_Number__c === null ? '' : element.Reference_Number__c,
+          'giftNumber': element.Gift_Number__c,
           'Id': element.Id
         });
       }
@@ -358,7 +391,7 @@ export class RefundnoclientComponent implements OnInit {
       totalAmt: this.totalfixAmt,
       selectList: this.checkedData,
       Drawer_Number__c: this.local !== 'N/A' ? this.local : '',
-      refundToList: this.refundSaveData,
+      refundToList: this.refundSaveData.filter(function (obj) { return obj.AmountToRefund && Number(obj.AmountToRefund) !== 0; }),
       Appt_Date_Time__c: this.commonService.getDBDatTmStr(new Date())
     };
     if (this.refundtype === 'Service Refund' || this.refundtype === 'Product Refund') {

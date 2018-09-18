@@ -121,6 +121,7 @@ export class TicketListComponent implements OnInit, AfterViewInit {
     .subscribe(data => {
       this.apptTicketData = data['result'];
       for (let i = 0; i < this.apptTicketData.length; i++) {
+        this.apptTicketData[i].apptTime = this.commonService.getUsrDtStrFrmDBStr(this.apptTicketData[i].Appt_Date_Time__c);
         this.totalService += this.apptTicketData[i].servicePrice;
         this.totalProduct += this.apptTicketData[i].productPrice;
         this.totalOther += this.apptTicketData[i].otherAmount;
@@ -147,6 +148,9 @@ export class TicketListComponent implements OnInit, AfterViewInit {
     this.ticketListService.searchcashinoutData(sendDate)
     .subscribe(data => {
       this.apptcashinoutData = data['result'];
+      for (let i = 0; i < this.apptcashinoutData.length; i++){
+        this.apptcashinoutData[i].disaplayDate = this.commonService.getUsrDtStrFrmDBStr(this.apptcashinoutData[i].CreatedDate);
+      }
     }, error => {
       const status = JSON.parse(error['status']);
       const statuscode = JSON.parse(error['_body']).status;

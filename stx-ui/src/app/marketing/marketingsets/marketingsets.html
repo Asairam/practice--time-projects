@@ -6,7 +6,7 @@
 			<p class="red mb-0"> {{ marketingError | translate }} </p>
 		</div>
 		<!--error messages end-->
-		<div class="container">
+		<div class="container" style=" color: white;">
 			<div class="row">
 				<div class="col-md-4 col-sm-10 mt-40 " *ngIf='hideTable == true'>
 					<div class="table-responsive">
@@ -14,7 +14,7 @@
 							<tbody>
 								<tr class="white">
 									<td colspan="4" valign="middle" height="60" style="padding-left: 10px;">
-										<input type="checkbox" id="c1" class="pull-left" (click)='showInActive()'>&nbsp;&nbsp;
+										<input type="checkbox" [checked]="showInactiveData" id="c1" class="pull-left" (click)='showInActive()'>&nbsp;&nbsp;
 										<label for="c1" class="c1 activelabel">
 											<span>{{ 'COMMON.SHOW' | translate }}</span>
 											<span>{{ 'COMMON.HIDE' | translate }}</span>{{'COMMON.SHOW_INACTIVE'| translate }} </label>
@@ -25,14 +25,14 @@
 									<td>{{'MARKETING_SETS.MARKETING_SET_NAME'| translate }}</td>
 									<td>{{'MARKETING_SETS.FREAQUENCY'| translate }}</td>
 								</tr>
-								<tr *ngFor='let marketingData of marketingUserList' [ngClass]="{ hideinactive: marketingData.Active__c == 0 }" [class.showinactive]="showInactiveData">
+								<tr *ngFor='let marketingData of marketingUserList' [ngClass]="{ hideinactive: !showInactiveData ? (marketingData.Active__c === 0 ):false}">
 									<td *ngIf='marketingData.Active__c == 1'>
-										<input type="checkbox" checked>
+										<input type="checkbox" checked disabled>
 									</td>
 									<td *ngIf='marketingData.Active__c == 0'>
-										<input type="checkbox">
+										<input type="checkbox" disabled>
 									</td>
-									<td class="td_active tbl-txt" (click)="showData(marketingData)">{{ marketingData.Name }}</td>
+									<td class="td_active tbl-txt word-break" (click)="showData(marketingData)">{{ marketingData.Name }}</td>
 									<td>{{ marketingData.Frequency__c }}</td>
 								</tr>
 								<tr>
@@ -52,7 +52,7 @@
 							<tbody>
 								<tr class="white">
 									<td colspan="4" valign="middle" height="60" style="padding-left: 10px;">
-										<input type="checkbox" id="c1" class="pull-left" (click)='showInActive()'>&nbsp;&nbsp;
+										<input type="checkbox" [checked]="showInactiveData" id="c1" class="pull-left" (click)='showInActive()'>&nbsp;&nbsp;
 										<label for="c1" class="c1 activelabel">
 											<span>{{ 'COMMON.SHOW' | translate }}</span>
 											<span>{{ 'COMMON.HIDE' | translate }}</span>Show Inactive</label>
@@ -70,7 +70,7 @@
 									<td *ngIf='marketingData.Active__c == 0'>
 										<input type="checkbox">
 									</td>
-									<td class="td_active tbl-txt">{{ marketingData.Name }}</td>
+									<td class="td_active tbl-txt word-break">{{ marketingData.Name }}</td>
 									<td>{{ marketingData.Frequency__c }}</td>
 								</tr>
 								<tr>
@@ -106,7 +106,7 @@
 							</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]='merketingSetName' (click)="clearErrorMsg()">
+							<input type="text" [(ngModel)]='merketingSetName' maxlength="80" (click)="clearErrorMsg()">
 						</div>
 					</div>
 
@@ -129,7 +129,7 @@
 							<label>{{'MARKETING_SETS.GENERATE_EVERY'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" style="width:25%" [(ngModel)]='marketingGenereteEvery' (click)="clearErrorMsg()"> {{marketingFrequency==='Daily'?'Days':''}} {{marketingFrequency==='Monthly'?'Months':''}} {{marketingFrequency==='Weekly'?'Weeks':''}}
+							<input type="text" style="width:25%" [(ngModel)]='marketingGenereteEvery'(keypress)="numOnly($event)" (click)="clearErrorMsg()"> {{marketingFrequency==='Daily'?'Days':''}} {{marketingFrequency==='Monthly'?'Months':''}} {{marketingFrequency==='Weekly'?'Weeks':''}}
 						</div>
 					</div>
 
@@ -187,7 +187,9 @@
 							<button type="button" class="save-btn" (click)="marketingSetsData()">{{'BUTTON.SAVE' | translate}}</button>
 							<button type="button" class="cancel-btn" (click)="cancel()">{{'BUTTON.CANCEL' | translate}}</button>
 							<button type="button" *ngIf="marketingSetId" class="cancel-btn" (click)="deleteMarketingSetsData()">{{'BUTTON.DELETE' | translate}}</button>
-							<button type="button" *ngIf="marketingSetId" class="btn add-filter-btn btn-default" (click)="goToSelectFilters()">{{'BUTTON.SELECT_FILTERS' | translate}}</button>
+							<span *ngIf="decodedToken['Marketing'] && decodedToken['Marketing'][9]['allowAcces']">
+								<button type="button" *ngIf="marketingSetId" class="btn add-filter-btn btn-default" (click)="goToSelectFilters()">{{'BUTTON.SELECT_FILTERS' | translate}}</button>
+							</span>
 						</div>
 					</div>
 				</div>
@@ -210,7 +212,7 @@
 							<label>{{'MARKETING_SETS.MARKETING_SET_NAME'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]='updateMerketingSetName' (click)="clearErrorMsg()">
+							<input type="text" [(ngModel)]='updateMerketingSetName' maxlength="80" (click)="clearErrorMsg()">
 						</div>
 					</div>
 
@@ -231,7 +233,7 @@
 							<label>{{'MARKETING_SETS.GENERATE_EVERY'| translate }}</label>
 						</div>
 						<div class="col-sm-7">
-							<input type="text" [(ngModel)]='updateMarketingGenereteEvery' (click)="clearErrorMsg()">
+							<input type="text" [(ngModel)]='updateMarketingGenereteEvery' (click)="clearErrorMsg()" (keypress)="numOnly($event)" >
 						</div>
 					</div>
 

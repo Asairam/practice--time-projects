@@ -24,8 +24,9 @@ import { CommonService } from '../../common/common.service';
 import { ApptDetailService } from '../appointmentdetail/appointmentdetail.service';
 import { element, utils } from 'protractor';
 import { isNullOrUndefined } from 'util';
-import { JwtHelper } from 'angular2-jwt';
 import { Alert } from 'selenium-webdriver';
+import { JwtHelper } from 'angular2-jwt';
+import { exists } from 'fs';
 
 declare let $: any;
 declare var swal: any;
@@ -40,8 +41,9 @@ declare var swal: any;
 export class AppointmentsComponent implements OnInit, OnDestroy {
   public searchField = new FormControl();
   public datePickerDate: any;
-  public getWorker: any;
+  public getWorker: any = [];
   Users: any;
+  View_Only_My_Appointments__c: any = 0;
   minDate: any;
   calendarPicker: any;
   customDate: any;
@@ -102,7 +104,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   finalArry1: any[];
   apptIds: any = [];
   dataObjects: any = [];
-
+  nonPckgSrvcs = [];
   visitTypes: any;
   serviceName: any;
   servicePrice: any;
@@ -120,6 +122,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   lastName: any;
   fullName: any;
   mobileNumber: any;
+  countrycode: any;
   mobileCarrier: any;
   primaryEmail: any;
   visitType: any;
@@ -128,7 +131,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   workername: any;
   startDateTime: any;
   bookingDate: any;
-
+  skipBookingDates: any;
   reminderSent: any = [];
   pendingDeposit: any = [];
   noShow: any = [];
@@ -146,6 +149,10 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   errorLastName: any;
   errormobilephone: any;
   errorEmail: any;
+  validationEmailError: any;
+  existingValidationError: any;
+  existingCountrycodeError: any;
+  countrycodeError: any;
   autoList = [];
   individualServiceColor: any = [];
   calendarUsersListing: any;
@@ -154,7 +161,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   serviceEndTime: any;
   selWorker = 'all';
   selWeek = 'One Day';
-  individualWorkerWeek: any;
+  individualWorkerWeek: any = [];
   expressBookinWorkerId: any;
   expressBookinWorkerName: any;
   expressBookingEnd: any;
@@ -190,11 +197,21 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   tokenFirstName: any;
   tokenLastName: any;
   Id: any;
+  NotificationReminderMobile: any;
+  NotificationReminderEmail: any;
+  errResources: any;
+  bookAnyWay: any;
+  bookRoomAnyWay: any;
+  weekdayDateDisplay: any;
   /* client fileds */
   allowQuickAddAccess: any;
   clientfieldMobilePhone: any;
   clientfieldPrimaryEmail: any;
+  cale: any;
   /* client fields end */
+  decodeUserToken: any;
+  hideClientInfo: any;
+  finaRes: any;
 
   callenderIcons = [
     { 'id': 'One Day', 'img': 'assets/images/calender-icon-1.png', 'name': 'day', 'opacity': '' },
@@ -208,7 +225,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   @ViewChild('bookApptModal') public bookApptModal: ModalDirective;
   @ViewChild('msgBoardModal') public msgBoardModal: ModalDirective;
   @ViewChild('calendar') public calendar;
-
+  @ViewChild('serviceNotesModal') public serviceNotesModal: ModalDirective;
   constructor(private appointmentsServices: AppointmentsService,
     @Inject('apiEndPoint') public apiEndPoint: string,
     @Inject('defaultCountry') public defaultCountry: string,
@@ -243,6 +260,20 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    // ---Start of code for Permissions Implementation--- //
+    try {
+      this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('rights'));
+      this.decodeUserToken = new JwtHelper().decodeToken(localStorage.getItem('token'));
+    } catch (error) {
+      this.decodedToken = {};
+      this.decodeUserToken = {};
+    }
+    if (this.decodedToken.data && this.decodedToken.data.permissions) {
+      this.decodedToken = JSON.parse(this.decodedToken.data.permissions);
+    } else {
+      this.decodedToken = {};
+    }
+    // ---End of code for permissions Implementation--- //
     this.searchField.valueChanges
       .debounceTime(400)
       // .distinctUntilChanged()
@@ -251,6 +282,9 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         data => {
           this.autoList = [];
           this.autoList = data['result'];
+          if (this.autoList.length === 0) {
+            this.toastr.warning('No record found. ', null, { timeOut: 3000 });
+          }
         },
         error => {
           const errStatus = JSON.parse(error['_body'])['status'];
@@ -273,56 +307,68 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
       }
       this.router.navigate(['/appointments']);
     });
-    this.appointmentsServices.getDftTmZn().subscribe(
-      data => {
-        const tmZnObj = data['result']
-          .filter((obj) => obj.isDefault__c)[0]['TimeZoneSidKey__c']
-          .split(')')[0]
-          .replace('(GMT', '')
-          .split(':');
-        const hrs = parseInt(tmZnObj[0], 10);
-        const min = parseInt(tmZnObj[1], 10);
-        let timDiff = 0;
-        if (tmZnObj[0][0] === '+') {
-          timDiff = (hrs * 60) + min;
-        } else {
-          timDiff = (hrs * 60) - min;
-        }
-        const curDate = apptDate;
-        // if (isNullOrUndefined(date)) {
-        // curDate.setMinutes(curDate.getMinutes() + curDate.getTimezoneOffset() + timDiff);
-        // curDate.setHours(0);
-        // curDate.setMinutes(0);
-        // curDate.setSeconds(0);
-        //  }
-        this.listDate = curDate;
-        this.getWorkerList();
-        this.getApptUserList();
-        this.updateHeaderDate(this.listDate);
-        this.updateDatepickerDate(this.listDate);
-        this.getCommonData();
-        this.onDateChanged(this.dateCatch);
-        this.allWorkers();
-        // this.getAppointments(this.listDate, this.workerId, this.selWeek);
-        this.mobileCarriersList();
-        this.getVisitTypes();
-        this.addInput();
-        this.fetchingBookingInterval();
-      },
-      error => {
-        const errStatus = JSON.parse(error['_body'])['status'];
-        if (errStatus === '2085' || errStatus === '2071') {
-          if (this.router.url !== '/') {
-            localStorage.setItem('page', this.router.url);
-            this.router.navigate(['/']).then(() => { });
-          }
-        }
-      }
-    );
+    // this.appointmentsServices.getDftTmZn().subscribe(
+    //   data => {
+    //     const tmZnObj = data['result']
+    //       .filter((obj) => obj.isDefault__c)[0]['TimeZoneSidKey__c']
+    //       .split(')')[0]
+    //       .replace('(GMT', '')
+    //       .split(':');
+    //     const hrs = parseInt(tmZnObj[0], 10);
+    //     const min = parseInt(tmZnObj[1], 10);
+    //     let timDiff = 0;
+    //     if (tmZnObj[0][0] === '+') {
+    //       timDiff = (hrs * 60) + min;
+    //     } else {
+    //       timDiff = (hrs * 60) - min;
+    //     }
+    //     const curDate = apptDate;
+    //     // if (isNullOrUndefined(date)) {
+    //     // curDate.setMinutes(curDate.getMinutes() + curDate.getTimezoneOffset() + timDiff);
+    //     // curDate.setHours(0);
+    //     // curDate.setMinutes(0);
+    //     // curDate.setSeconds(0);
+    //     //  }
+    //     this.listDate = curDate;
+    //     this.getWorkerList();
+    //     this.getApptUserList();
+    //     this.updateHeaderDate(this.listDate);
+    //     this.updateDatepickerDate(this.listDate);
+    //     this.getCommonData();
+    //     this.onDateChanged(this.dateCatch);
+    //     this.allWorkers();
+    //     // this.getAppointments(this.listDate, this.workerId, this.selWeek);
+    //     this.mobileCarriersList();
+    //     this.getVisitTypes();
+    //     this.addInput();
+    //     this.fetchingBookingInterval();
+    //   },
+    //   error => {
+    //     const errStatus = JSON.parse(error['_body'])['status'];
+    //     if (errStatus === '2085' || errStatus === '2071') {
+    //       if (this.router.url !== '/') {
+    //         localStorage.setItem('page', this.router.url);
+    //         this.router.navigate(['/']).then(() => { });
+    //       }
+    //     }
+    //   });
+    const curDate = apptDate;
+    this.listDate = curDate;
+    this.getWorkerList();
+    // this.getApptUserList();
+    this.updateHeaderDate(this.listDate);
+    this.updateDatepickerDate(this.listDate);
+    this.getCommonData();
+    this.onDateChanged(this.dateCatch);
+    this.fetchingBookingInterval();
+    this.allWorkers();
+    // this.getAppointments(this.listDate, this.workerId, this.selWeek);
+    this.getVisitTypes();
+    this.addInput();
+    this.getHideClientContactInfo();
     localStorage.setItem('wokersChkd', '');
     localStorage.setItem('apptDateSlot', '');
     localStorage.setItem('apptTimeSlot', '');
-    // this.decodedToken = new JwtHelper().decodeToken(localStorage.getItem('token'));
     this.getpackagesListing();
 
   }
@@ -345,10 +391,11 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     this.cldDate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);    // 5/21/2018 monday
     this.mainApptDate = this.apptDate.split(' ')[2] + ', '.concat(moment(this.cldDate, 'YYYY-MM-DD').format('LL'));            // Monday,May 21, 2018
     this.msgBoardDate = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' ' + weekday[date.getDay()]; // date is used in msg board pop up
-    this.allWorkers();
+    this.fetchingBookingInterval();
+    //   this.allWorkers();
     this.getAppointments(date, this.workerId, this.selWeek);
     this.fetchWeek(this.selWeek);
-    this.fetchingBookingInterval();
+
   }
   datepickerChange(event) {
     this.chooseDate = event.jsdate;
@@ -370,9 +417,10 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     this.updateHeaderDate(datPicDate);
     this.chooseDate = datPicDate;
     this.listDate = datPicDate;
-    this.allWorkers();
+    // this.allWorkers();
+    this.fetchingBookingInterval();
     this.getAppointments(this.listDate, this.workerId, this.selWeek);
-    this.fetchWeek(this.selWeek);
+    // this.fetchWeek(this.selWeek);
   }
   updateDatepickerDate(date) {
     this.datePickerDate = {
@@ -383,6 +431,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           day: date.getDate()
         }
     };
+    this.fetchingBookingInterval();
   }
   getCommonData() {
     this.appointmentsServices.getCommonData().subscribe(
@@ -441,22 +490,22 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
       });
   }
 
-  getApptUserList() {
-    this.appointmentsServices.getApptUserList().subscribe(
-      data => {
-        this.Users = data['result'];
-      },
-      error => {
-        const errStatus = JSON.parse(error['_body'])['status'];
-        if (errStatus === '2085' || errStatus === '2071') {
-          if (this.router.url !== '/') {
-            localStorage.setItem('page', this.router.url);
-            this.router.navigate(['/']).then(() => { });
-          }
-        }
-      }
-    );
-  }
+  // getApptUserList() {
+  //   this.appointmentsServices.getApptUserList().subscribe(
+  //     data => {
+  //       this.Users = data['result'];
+  //     },
+  //     error => {
+  //       const errStatus = JSON.parse(error['_body'])['status'];
+  //       if (errStatus === '2085' || errStatus === '2071') {
+  //         if (this.router.url !== '/') {
+  //           localStorage.setItem('page', this.router.url);
+  //           this.router.navigate(['/']).then(() => { });
+  //         }
+  //       }
+  //     }
+  //   );
+  // }
 
   isRebookingAllowed(apptData) {
     const apptDateandTime = new Date(apptData.apdate);
@@ -506,7 +555,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         const datepickerPreviosdate = moment(this.chooseDate.setDate(this.chooseDate.getDate() - 1)).format('YYYY-MM-DD');
         const yesterday = moment(currDate.setDate(currDate.getDate() - 1)).format('YYYY-MM-DD');
         for (let i = 0; i < this.appointmentsList.length; i++) {
-          this.appointmentsList[i].apdate = this.appointmentsList[i].apdate;
+          this.appointmentsList[i].displayAptdate = this.commonService.getUsrDtStrFrmDBStr(this.appointmentsList[i].apdate);
           this.apptIds.push(this.appointmentsList[i].apptid);                          // AptId
           this.workerIds.push(this.appointmentsList[i].workerId);                      // worker id
           this.srvcname.push(this.appointmentsList[i].srvcname);                       // service name
@@ -570,9 +619,19 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   }
 
   getWorkerList() {
+
     this.appointmentsServices.getWorkerLists().subscribe(
       data => {
         this.getWorker = data['result'];
+        const dat1 = this.getWorker[0];
+        if (dat1.hasOwnProperty('View_Only_My_Appointments__c')) {
+          this.View_Only_My_Appointments__c = 1;
+          this.selWorker = dat1.workerId + '$' + dat1.names;
+          this.fetchWorkerCalendar(dat1.workerId + '$' + dat1.names);
+          this.fetchWorkerCalendarPerDay(dat1.workerId + '$' + dat1.names);
+        } else {
+          this.View_Only_My_Appointments__c = 0;
+        }
       },
       error => {
         const errStatus = JSON.parse(error['_body'])['status'];
@@ -620,6 +679,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   showBookApptModal() {
     this.isKeyPressed = false;
     $('#bookApptModal').show();
+    this.getHideClientContactInfo();
   }
   closeBookApptModal() {
     const standingSearchKeys = $('#FindApptSearchKeys').val('');
@@ -632,7 +692,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     this.isKeyPressed = false;
     $('#bookStandingModal').show();
     // this.bookStandingModal.show();
-
+    this.getHideClientContactInfo();
   }
   closeBookingStanding() {
     const standingSearchKeys = $('#standingSearchKeys').val('');
@@ -648,13 +708,13 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     this.isKeyPressed = false;
     this.msgBoardModal.show();
   }
-  cancelModel() {
-    this.bookStandingModal.hide();
-    this.bookApptModal.hide();
-    this.msgBoardModal.hide();
-    this.searchKey = '';
-    this.DataObj = [];
-  }
+  // cancelModel() {
+  //   this.bookStandingModal.hide();
+  //   this.bookApptModal.hide();
+  //   this.msgBoardModal.hide();
+  //   this.searchKey = '';
+  //   this.DataObj = [];
+  // }
 
   onDateChanged(event: IMyDateModel) {
     if (event === undefined) {
@@ -680,25 +740,18 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   }
   loadCalender(calObj) {
     calObj.eventClick = function (event) {
-      if (event.clientID === '') {
+      if (!event.apptId) {
+        return false;
+      } else if (event.clientID === '') {
         window.open('#/appointment/bookoutdetail/' + event.apptId, '_self');
       } else {
         window.open('#/appointmentdetail/' + event.clientID + '/' + event.apptId, '_self');
       }
     };
 
-
+    const appointmentSlots: any = this.calendarUsersListing;
     calObj.eventAfterAllRender = function (view) {
-
       const assdd = $('.fc-event-container');
-      const color = document.getElementsByClassName('fc-time-grid-event fc-v-event fc-event fc-start fc-end fc-draggable fc-resizable');
-      // console.log(color);
-      // for (let l = 0; l < color.length; l++) {
-      //   console.log(color[l]);
-      // }
-
-
-
       const slotInterval = $('#bookingSlot').val();
       const sad = $('.fc-slats tr');
       const time = new Date();
@@ -745,10 +798,36 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
 
       const temp = document.getElementsByClassName('fc-title');
       for (let i = 0; i < temp.length; i++) {
-        const tempInnerHTMl = temp[i].innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        const tempInnerHTMl = temp[i].innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
         temp[i].innerHTML = tempInnerHTMl;
       }
       // $('.fc-slats').html($('.fc-widget-content').html().replace(/&lt;/g, '<').replace(/&gt;/g, '>'));
+      for (let i = 0; i < appointmentSlots.length; i++) {
+        const color: any = document.getElementsByClassName(appointmentSlots[i].tsid.toString());
+        if (!isNullOrUndefined(color) && color.length > 0) {
+
+          //  color[0].children[1].style.opacity = 1;
+          const aviable = ['Duration_1_Available_for_Other_Work__c', 'Duration_2_Available_for_other_Work__c', 'Duration_3_Available_for_other_Work__c'];
+          ['Duration_1__c', 'Duration_2__c', 'Duration_3__c'].map((key, j) => {
+            if (appointmentSlots[i][key] && appointmentSlots[i][key] > 0) {
+              const availabilityDiv = document.createElement('div');
+              availabilityDiv.setAttribute('style', `position: relative;
+                                          z-index: 2;
+                                          left: 0;
+                                          width: 100%;
+                                          height: ${(appointmentSlots[i][key] / appointmentSlots[i].Duration__c) * 100}%;
+                                          background-color:#fff;
+                                          opacity:  ${appointmentSlots[i][aviable[j]] === 1 ? 0.5 : 0};`);
+              color[0].children[1].append(availabilityDiv);
+            }
+          });
+        }
+      }
+      const tempas: any = document.getElementsByClassName('fc-time-grid-event fc-v-event fc-event fc-not-start fc-end');
+
+      for (let i = 0; i < tempas.length; i++) {
+        const asda = tempas[i].style.width = '100%';
+      }
     };
     $('#calendar').fullCalendar('destroy');
     $('#calendar').fullCalendar(calObj);
@@ -767,8 +846,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
       const target = event.target || event.srcElement || event.currentTarget;
       const idAttr = target.attributes.id;
       const classAttr = target.attributes.class;
-
-
       const parentClassAttr = target.parentElement.attributes.class;
       if ((isNullOrUndefined(classAttr) && !isNullOrUndefined(parentClassAttr))) {
         if (parentClassAttr.nodeValue === 'fc-axis fc-time fc-widget-content') {
@@ -781,7 +858,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
             $('#myModal').hide();
           });
         }
-
       } else if (!isNullOrUndefined(classAttr)) {
         if (classAttr.nodeValue === 'fc-axis fc-time fc-widget-content' || classAttr.nodeValue === 'fc-axis fc-time fc-widget-content active' || classAttr.nodeValue === 'changeTimeClass') {
           if (classAttr.nodeValue === 'changeTimeClass') {
@@ -804,7 +880,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               $('#myModal').hide();
             });
           }
-
         } else if (this.isClassExsists(prevClasses, classAttr.nodeValue)) {
           this.goToDate(this.listDate, -1);
         } else if (this.isClassExsists(nextClasses, classAttr.nodeValue)) {
@@ -818,7 +893,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           if (checkWorker === true) {
             localStorage.setItem('wokersChkd', 'checked');
             this.ShowAllworker();
-
           } else if (checkWorker === false) {
             localStorage.setItem('wokersChkd', '');
             this.allWorkers();
@@ -840,6 +914,9 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
 
   appointmentTimeslot(time) {
     if (time) {
+      // this.inputs = [];
+      // const workerId = this.getWorker.length > 0 ? this.getWorker[0]['workerId'] : '';
+      // this.expressService(workerId, 0);
       $('#myModal').show();
     } else {
       alert('select again');
@@ -858,7 +935,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           } else if (this.calendarUsersListing[i].status === 'Checked In') {
             this.borderColor[i] = this.checkedIn;
           } else if (this.calendarUsersListing[i].status === 'Booked') {
-            this.borderColor[i] = this.booking;
+            this.borderColor[i] = this.booked;
           } else if (this.calendarUsersListing[i].status === 'Complete') {
             this.borderColor[i] = this.complete;
           } else if (this.calendarUsersListing[i].status === 'Called') {
@@ -871,7 +948,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
             this.borderColor[i] = this.reminderSent;
           } else if (this.calendarUsersListing[i].status === 'No Show') {
             this.borderColor[i] = this.noShow;
-          } else if (this.calendarUsersListing[i].status === 'pending') {
+          } else if (this.calendarUsersListing[i].status === 'Pending Deposit') {
             this.borderColor[i] = this.pendingDeposit;
           }
 
@@ -879,10 +956,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           this.serviceStartTime = moment(this.calendarUsersListing[i].Service_Date_Time__c).format().split('+')[0];
           const durationInMinutes = this.calendarUsersListing[i].Duration__c;   // duration
           this.serviceEndTime = moment(this.serviceStartTime).add(durationInMinutes, 'minutes').format().split('+')[0];
-          // let symbol: any;
-          // if (this.calendarUsersListing[i].Notes__c != null && this.calendarUsersListing[i].Notes__c.length > 0) {
-          //   symbol = this.appt_note_symbol;
-          // }
           let booked: any;
           let userName: any;
           if (this.calendarUsersListing[i].Name === 'null' || this.calendarUsersListing[i].Name === null) {
@@ -890,19 +963,81 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           } else {
             userName = this.calendarUsersListing[i].Name;
           }
-          if (this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c !== '' && this.calendarUsersListing[i].Appt_Icon === 'asterix') {
-            booked = ' ♪ * ' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-          } else if (this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c !== '' && this.calendarUsersListing[i].Appt_Icon !== 'asterix') {
-            booked = ' ♪ ' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-          } else if (this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c === '' && this.calendarUsersListing[i].Appt_Icon === 'asterix') {
-            booked = ' * ' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-          } else {
-            booked = userName + ' / ' + this.calendarUsersListing[i].serviceName;
-          } if (this.calendarUsersListing[i].Is_Booked_Out__c === 1 && this.calendarUsersListing[i].Notes__c !== '') {
-            booked = ' ♪ ' + 'Book Out Time';
-          } else if (this.calendarUsersListing[i].Is_Booked_Out__c === 1 && this.calendarUsersListing[i].Notes__c === '') {
+          // '&#8727;' = *
+          // '&#8857;' = online booking
+          // '&#9839;' = #
+          // '&#9834;' = note
+
+          const bookOut = this.calendarUsersListing[i].Is_Booked_Out__c;
+          const notes = this.calendarUsersListing[i].Notes__c;
+          const newClient = this.calendarUsersListing[i].New_Client__c;
+          const asterix = this.calendarUsersListing[i].Appt_Icon;   // it mean more than one service is booked for that *
+          const serviceNames = this.calendarUsersListing[i].serviceName;
+          const onlineBooking = this.calendarUsersListing[i].Booked_Online__c;
+          const standing = this.calendarUsersListing[i].standing;
+
+          if (onlineBooking === 1) {
+            if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+              booked = '&#8857; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+              booked = '&#8857; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+              booked = '&#8857; ' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+              booked = '&#8857; ' + '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+              booked = '&#8857; ' + userName + '/' + serviceNames;
+            } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+              booked = '&#8857; ' + '&#8727; ' + userName + '/' + serviceNames;
+            } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+              booked = '&#8857; ' + '&#9834; ' + userName + '/' + serviceNames;
+            } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+              booked = '&#8857; ' + '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+            }
+          }
+
+          if (onlineBooking === 0) {
+            if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+              booked = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+              booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+              booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+              booked = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+              booked = userName + '/' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+              booked = '&#8727; ' + userName + '/' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+              booked = '&#9834; ' + userName + '/' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+              booked = '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+            }
+          }
+
+          if (standing === 1) {
+            if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+              booked = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+              booked = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+              booked = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+              booked = '&#9839;' + userName + '/' + serviceNames;
+            } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+              booked = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+            } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+              booked = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+            }
+
+          }
+          if (bookOut === 1 && notes !== '') {
+            booked = '&#9834; ' + 'Book Out Time';
+          } else if (bookOut === 1 && notes === '') {
             booked = 'Book Out Time';
           }
+
           let clientIDs: any;
           if (this.calendarUsersListing[i].clientID === '') {
             clientIDs = null;
@@ -921,7 +1056,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               'borderColor': this.borderColor[i],
               'color': this.calendarUsersListing[i].serviceGroupColor,
               'clientID': clientIDs,
-              'status': this.calendarUsersListing[i].status
+              'status': this.calendarUsersListing[i].status,
+              'className': this.calendarUsersListing[i].tsid
             },
           );
         }
@@ -989,12 +1125,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               if (finMax > this.finalMax || p === 0) {
                 this.finalMax = finMax;
               }
-              let calendarDate: any = [];
-              calendarDate = [];
-              if (this.apptdate !== '') {
-                const date1 = moment(this.apptdate).format('L');
-                calendarDate = date1;
-              }
               const ole = JSON.parse(this.booking);
               var select = function (start, end, jsEvent, view, selectresource) {
                 let datIndex = 0;
@@ -1007,7 +1137,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 const firstName = $('#firstName').val('');
                 const LastName = $('#lastName').val('');
                 const mobileNumber = $('#mobileNumber').val('');
-                const mobileCarrier = $('#mobileCarrier').val('');
+                // const mobileCarrier = $('#mobileCarrier').val('');
                 const primaryEmail = $('#primaryEmail').val('');
                 const listServices = $('#listServices').val('');
                 const sumDuration = $('#sumDuration').val('');
@@ -1041,8 +1171,21 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 this.startDateTime = start.format();
                 this.end = end.format();
                 $('#myModal').show();
-                const appoitmentdate = $('#CalendarDate').val(calendarDate);    // date of appointments
-                const dateAndTime = $('#startDateTime').val(this.startDateTime);  // in this date with time
+                let appoitmentdate: any;
+                let expressDate2: any;
+                let skipCalendarDate: any;
+                let calendarDate: any;
+                calendarDate = moment(this.startDateTime).format('MM/DD/YYYY');
+                if (this.timeSlot) {
+                  appoitmentdate = $('#CalendarDate').val(this.apptDate);
+                  expressDate2 = $('#CalendarDate2').val(this.apptDate);
+                  skipCalendarDate = $('#skipCalendarDate').val(this.apptDate);
+                } else if (this.timeSlot === '' || this.timeSlot === undefined) {
+                  appoitmentdate = $('#CalendarDate').val(calendarDate);    // date of appointments
+                  expressDate2 = $('#CalendarDate2').val(calendarDate);
+                  skipCalendarDate = $('#skipCalendarDate').val(calendarDate);
+                }
+                // const apptTimeSlot = $('#apptTimeSlot').val(calendarDate);
                 let selTimOpt = '';
                 const hrs = parseInt(start.format().split('T')[1].split(':')[0], 10);
                 const min = parseInt(start.format().split('T')[1].split(':')[1], 10);
@@ -1079,7 +1222,10 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   $('#myModal').hide();
                 });
               };
+
+
             }
+
             let MaxStartTime = '';
             let MaxEndTime = '';
             if (this.eventCalendar[0].min !== null && this.eventCalendar[0].max !== null) {
@@ -1091,6 +1237,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               MaxStartTime = moment(this.finalMin, 'h:mm:ss A').add(durationInMinutes1, 'minutes').format('HH:mm:ss');
               MaxEndTime = moment(this.finalMax, 'h:mm:ss A').add(durationInMinutes2, 'minutes').format('HH:mm:ss');
             }
+            this.weekdayDateDisplay = '';
             const calObj = {
               defaultView: 'agendaDay',
               defaultDate: this.cldDate,
@@ -1125,7 +1272,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 agendaDay: {
                   type: 'agendaDay',
                   groupByResource: true,
-                  titleFormat: 'dddd, MMMM D, YYYY',
+                  titleFormat: 'dddd MMMM D, YYYY',
                 },
               },
               resources: resources,
@@ -1255,6 +1402,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               selectConstraint: 'businessHours',
               schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source'
             };
+            $('#calendar').fullCalendar('destroy');
             this.loadCalender(calObj);
           },
           error => {
@@ -1277,7 +1425,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @param individual  works only
+   * @param personal Calendar
    */
   fetchWorkerCalendar(value) {   // value means worker id
     var apiEndPoint = this.apiEndPoint;
@@ -1294,47 +1442,137 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     } else if (value !== 'all' && this.selWeek === 'One Day') {
       this.finalArry1 = [];
       const CalendatDate = this.datePickerDate.date.year + '-' + 0 + this.datePickerDate.date.month + '-' + this.datePickerDate.date.day;
-      for (let p = 0; p < this.startbooking.length; p++) {
-        if (this.statusColor[p] === 'Checked In') {
-          this.borderColor[0] = this.checkedIn;
-        } else if (this.statusColor[p] === 'Booked') {
-          this.borderColor[0] = this.booked;
-        } else if (this.statusColor[p] === 'Confirmed') {
-          this.borderColor[0] = this.confirmed;
-        } else if (this.statusColor[p] === 'No Show') {
-          this.borderColor[0] = this.noShow;
-        } else if (this.statusColor[p] === 'Pending Deposit') {
-          this.borderColor[0] = this.pendingDeposit;
-        } else if (this.statusColor[p] === 'Reminder') {
-          this.borderColor[0] = this.reminderSent;
-        } else if (this.statusColor[p] === 'Sent') {
-          this.borderColor[0] = 'gray';
-        } else if (this.statusColor[p] === 'Complete') {
-          this.borderColor[0] = this.complete;
-        } else if (this.statusColor[p] === 'Canceled') {
-          this.borderColor[0] = this.canceled;
-        }
-      }
+      this.borderColor = [];
+
+      this.weekdayDateDisplay = '';
+      let borderColors: any;
       this.appointmentsServices.getAppontmentList(this.cldDate).subscribe(
         data => {
           this.individualcalendarUsersListing = data['result'];
           for (let i = 0; i < this.individualcalendarUsersListing.length; i++) {
+            this.borderColor = [];
+            if (this.individualcalendarUsersListing[i].status === 'Conflicting') {
+              borderColors = this.conflicting;
+            } else if (this.individualcalendarUsersListing[i].status === 'Checked In') {
+              borderColors = this.checkedIn;
+            } else if (this.individualcalendarUsersListing[i].status === 'Booked') {
+              borderColors = this.booked;
+            } else if (this.individualcalendarUsersListing[i].status === 'Complete') {
+              borderColors = this.complete;
+            } else if (this.individualcalendarUsersListing[i].status === 'Called') {
+              borderColors = this.called;
+            } else if (this.individualcalendarUsersListing[i].status === 'Canceled') {
+              borderColors = this.canceled;
+            } else if (this.individualcalendarUsersListing[i].status === 'Confirmed') {
+              borderColors = this.confirmed;
+            } else if (this.individualcalendarUsersListing[i].status === 'Reminder Sent') {
+              borderColors = this.reminderSent;
+            } else if (this.individualcalendarUsersListing[i].status === 'No Show') {
+              borderColors = this.noShow;
+            } else if (this.individualcalendarUsersListing[i].status === 'Pending Deposit') {
+              borderColors = this.pendingDeposit;
+            }
+            let booked: any;
+            let userName: any;
+            if (this.individualcalendarUsersListing[i].Name === 'null' || this.individualcalendarUsersListing[i].Name === null) {
+              userName = 'No Client';
+            } else {
+              userName = this.individualcalendarUsersListing[i].Name;
+            }
+            // '&#8727;' = *
+            // '&#8857;' = online booking
+            // '&#9839;' = #
+            // '&#9834;' = note
+
+            const bookOut = this.individualcalendarUsersListing[i].Is_Booked_Out__c;
+            const notes = this.individualcalendarUsersListing[i].Notes__c;
+            const newClient = this.individualcalendarUsersListing[i].New_Client__c;
+            const asterix = this.individualcalendarUsersListing[i].Appt_Icon;   // it mean more than one service is booked for that *
+            const serviceNames = this.individualcalendarUsersListing[i].serviceName;
+            const onlineBooking = this.individualcalendarUsersListing[i].Booked_Online__c;
+            const standing = this.individualcalendarUsersListing[i].standing;
+            if (onlineBooking === 1) {
+              if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                booked = '&#8857; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                booked = '&#8857; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                booked = '&#8857; ' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                booked = '&#8857; ' + '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                booked = '&#8857; ' + userName + '/' + serviceNames;
+              } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                booked = '&#8857; ' + '&#8727; ' + userName + '/' + serviceNames;
+              } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                booked = '&#8857; ' + '&#9834; ' + userName + '/' + serviceNames;
+              } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                booked = '&#8857; ' + '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+              }
+            }
+
+            if (onlineBooking === 0) {
+              if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                booked = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                booked = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                booked = userName + '/' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                booked = '&#8727; ' + userName + '/' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                booked = '&#9834; ' + userName + '/' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                booked = '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+              }
+            }
+
+            if (standing === 1) {
+              if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                booked = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                booked = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                booked = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                booked = '&#9839;' + userName + '/' + serviceNames;
+              } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                booked = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+              } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                booked = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+              }
+
+            }
+            if (bookOut === 1 && notes !== '') {
+              booked = '&#9834; ' + 'Book Out Time';
+            } else if (bookOut === 1 && notes === '') {
+              booked = 'Book Out Time';
+            }
+
             this.serviceStartTime = moment(this.individualcalendarUsersListing[i].Service_Date_Time__c).format().split(' ')[0];
             const durationInMinutes = this.individualcalendarUsersListing[i].Duration__c;   // duration
             this.serviceEndTime = moment(this.serviceStartTime).add(durationInMinutes, 'minutes').format().split('+')[0];
+
             this.finalArry1.push(
               {
                 'resourceId': this.individualcalendarUsersListing[i].Worker__c,
                 'apptId': this.individualcalendarUsersListing[i].Appt_Ticket__c,
                 'ticket_service_id': this.individualcalendarUsersListing[i].tsid,
-                'title': this.individualcalendarUsersListing[i].Name + ' / ' + this.individualcalendarUsersListing[i].serviceName,
+                'title': booked,
                 'start': this.serviceStartTime.split('+')[0],
                 'end': this.serviceEndTime,
                 'textColor': 'black',
-                'borderColor': this.borderColor,
+                'borderColor': borderColors,
                 'color': this.individualcalendarUsersListing[i].serviceGroupColor,
-                'clientID': this.individualcalendarUsersListing[i].clientID
-              });
+                'clientID': this.individualcalendarUsersListing[i].clientID,
+                'status': this.individualcalendarUsersListing[i].status,
+                'className': this.individualcalendarUsersListing[i].tsid
+              }
+            );
           }
           this.individualWorkerId = (value + '').split('$')[0];
           this.name = (value + '').split('$')[1];
@@ -1343,9 +1581,25 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
 
           }
           if (this.individualWorkerId !== '') {
-            this.appointmentsServices.postWorkerName(this.individualWorkerId, this.dateCatch, this.cldDate).subscribe(
+            this.appointmentsServices.postWorkerName(this.individualWorkerId, this.cldDate).subscribe(
               data1 => {
                 this.calendarList = data1['result'];
+
+                const durationInMinutes1 = '-60';
+                const durationInMinutes2 = '60';
+                let MinTime: any;
+                let MaxTime: any;
+                if (this.calendarList[0].min === '' || this.calendarList[0].max === '') {
+                  MinTime = '00:00';
+                  MaxTime = '23:59';
+                } else if (this.calendarList[0].min !== undefined && this.calendarList[0].max !== undefined) {
+                  MinTime = moment(this.calendarList[0].min, 'h:mm:ss A').add(durationInMinutes1, 'minutes').format('HH:mm');
+                  MaxTime = moment(this.calendarList[0].max, 'h:mm:ss A').add(durationInMinutes2, 'minutes').format('HH:mm');
+                } else {
+                  MinTime = '00:01';
+                  MaxTime = '23:59';
+                }
+
                 if (this.calendarList.length > 0) {
                   const resources = [];
                   const events = [];
@@ -1376,19 +1630,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     );
                   }
                   const ole = JSON.parse(this.booking);
-                  const durationInMinutes1 = '-60';
-                  const durationInMinutes2 = '60';
-                  let MinTime: any;
-                  let MaxTime: any;
 
-                  if (this.calendarList[0].min !== undefined && this.calendarList[0].max !== undefined) {
 
-                    MinTime = moment(this.calendarList[0].min, 'h:mm:ss A').add(durationInMinutes1, 'minutes').format('HH:mm:ss');
-                    MaxTime = moment(this.calendarList[0].max, 'h:mm:ss A').add(durationInMinutes2, 'minutes').format('HH:mm:ss');
-                  } else {
-                    MinTime = undefined;
-                    MaxTime = undefined;
-                  }
 
                   var select = function (start, end, jsEvent, view, selectresource) {
                     let datIndex = 0;
@@ -1401,7 +1644,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     const firstName = $('#firstName').val('');
                     const LastName = $('#lastName').val('');
                     const mobileNumber = $('#mobileNumber').val('');
-                    const mobileCarrier = $('#mobileCarrier').val('');
+                    // const mobileCarrier = $('#mobileCarrier').val('');
                     const primaryEmail = $('#primaryEmail').val('');
                     const listServices = $('#listServices').val('');
                     const sumDuration = $('#sumDuration').val('');
@@ -1500,6 +1743,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     eventLimit: true,
                     allDaySlot: false,
                     allDayDefault: false,
+                    slotEventOverlap: true,
                     minTime: MinTime,
                     maxTime: MaxTime,
                     // weekends: false,
@@ -1507,7 +1751,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     slotDuration: '00:' + (JSON.parse(this.booking)) + ':00',
                     header: {
                       left: '',
-                      center: '',
+                      center: 'prev,title,next',
                       right: ''
                     },
                     slotLabelFormat: [
@@ -1518,11 +1762,11 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                       element.find('.fc-axis:first').html(s);
                     },
                     views: {
-                      agendaWeek: {
+                      agendaDay: {
                         type: 'agendaDay',
                         groupByResource: true,
                         titleFormat: 'dddd, MMMM D, YYYY',
-                      }
+                      },
                     },
                     resources: resources,
                     events: this.finalArry1,
@@ -1664,6 +1908,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     resourceRender: resourceRender,
                     schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source'
                   };
+                  $('#calendar').fullCalendar('destroy');
                   this.loadCalender(calObj);
                 } else {
                   $('#calendar').fullCalendar('destroy');
@@ -1704,7 +1949,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               } else if (this.calendarUsersListing[i].status === 'Checked In') {
                 this.borderColor[i] = this.checkedIn;
               } else if (this.calendarUsersListing[i].status === 'Booked') {
-                this.borderColor[i] = this.booking;
+                this.borderColor[i] = this.booked;
               } else if (this.calendarUsersListing[i].status === 'Complete') {
                 this.borderColor[i] = this.complete;
               } else if (this.calendarUsersListing[i].status === 'Called') {
@@ -1717,7 +1962,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 this.borderColor[i] = this.reminderSent;
               } else if (this.calendarUsersListing[i].status === 'No Show') {
                 this.borderColor[i] = this.noShow;
-              } else if (this.calendarUsersListing[i].status === 'pending') {
+              } else if (this.calendarUsersListing[i].status === 'Pending Deposit') {
                 this.borderColor[i] = this.pendingDeposit;
               }
 
@@ -1736,39 +1981,78 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               } else {
                 userName = this.calendarUsersListing[i].Name;
               }
-              if (this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c !== 'null'
-                && this.calendarUsersListing[i].Notes__c !== '' && this.calendarUsersListing[i].Appt_Icon === 'asterix' && this.calendarUsersListing[i].standing !== 1) {
-                if (this.calendarUsersListing[i].New_Client__c === 1) {
-                  booked = ' ♪ * ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + this.calendarUsersListing[i].serviceName;
-                } else if (this.calendarUsersListing[i].New_Client__c === 0) {
-                  booked = ' ♪ * ' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
+              // '&#8727;' = *
+              // '&#8857;' = online booking
+              // '&#9839;' = #
+              // '&#9834;' = note
+
+              const bookOut = this.calendarUsersListing[i].Is_Booked_Out__c;
+              const notes = this.calendarUsersListing[i].Notes__c;
+              const newClient = this.calendarUsersListing[i].New_Client__c;
+              const asterix = this.calendarUsersListing[i].Appt_Icon;   // it mean more than one service is booked for that *
+              const serviceNames = this.calendarUsersListing[i].serviceName;
+              const onlineBooking = this.calendarUsersListing[i].Booked_Online__c;
+              const standing = this.calendarUsersListing[i].standing;
+
+              if (onlineBooking === 1) {
+                if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  booked = '&#8857; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  booked = '&#8857; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  booked = '&#8857; ' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  booked = '&#8857; ' + '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  booked = '&#8857; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  booked = '&#8857; ' + '&#8727; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  booked = '&#8857; ' + '&#9834; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  booked = '&#8857; ' + '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
                 }
-              } else if (this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c !== 'null'
-                && this.calendarUsersListing[i].Notes__c !== '' && this.calendarUsersListing[i].Appt_Icon !== 'asterix' && this.calendarUsersListing[i].standing !== 1) {
-                if (this.calendarUsersListing[i].New_Client__c === 1) {
-                  booked = ' ♪ ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + this.calendarUsersListing[i].serviceName;
-                } else if (this.calendarUsersListing[i].New_Client__c === 0) {
-                  booked = ' ♪ ' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-                }
-              } else if (this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c === '' && this.calendarUsersListing[i].Appt_Icon === 'asterix'
-                && this.calendarUsersListing[i].standing !== 1) {
-                booked = ' * ' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-              } else if (this.calendarUsersListing[i].standing === 1 && this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c === ''
-                || this.calendarUsersListing[i].Notes__c === null && this.calendarUsersListing[i].Appt_Icon !== 'asterix') {
-                booked = '♯' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-              } else if (this.calendarUsersListing[i].standing === 1 && this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c === ''
-                || this.calendarUsersListing[i].Notes__c === null && this.calendarUsersListing[i].Appt_Icon === 'asterix') {
-                booked = '* ♯' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-              } else if (this.calendarUsersListing[i].standing === 1 && this.calendarUsersListing[i].Is_Booked_Out__c === 0 && this.calendarUsersListing[i].Notes__c !== ''
-                || this.calendarUsersListing[i].Notes__c !== null && this.calendarUsersListing[i].Appt_Icon === 'asterix') {
-                booked = '♪ * ♯' + userName + ' / ' + this.calendarUsersListing[i].serviceName;
-              } else {
-                booked = userName + ' / ' + this.calendarUsersListing[i].serviceName;
               }
 
-              if (this.calendarUsersListing[i].Is_Booked_Out__c === 1 && this.calendarUsersListing[i].Notes__c !== '') {
-                booked = ' ♪ ' + 'Book Out Time';
-              } else if (this.calendarUsersListing[i].Is_Booked_Out__c === 1 && this.calendarUsersListing[i].Notes__c === '') {
+              if (onlineBooking === 0) {
+                if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  booked = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  booked = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  booked = userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  booked = '&#8727; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  booked = '&#9834; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  booked = '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+                }
+              }
+
+              if (standing === 1) {
+                if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  booked = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  booked = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  booked = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  booked = '&#9839;' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  booked = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  booked = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+                }
+
+              }
+              if (bookOut === 1 && notes !== '') {
+                booked = '&#9834; ' + 'Book Out Time';
+              } else if (bookOut === 1 && notes === '') {
                 booked = 'Book Out Time';
               }
               let clientIDs: any;
@@ -1789,7 +2073,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   'borderColor': this.borderColor[i],
                   'color': this.calendarUsersListing[i].serviceGroupColor,
                   'clientID': clientIDs,
-                  'status': this.calendarUsersListing[i].status
+                  'status': this.calendarUsersListing[i].status,
+                  'className': this.calendarUsersListing[i].tsid
                 },
               );
             }
@@ -1814,7 +2099,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           this.appointmentsServices.fetchingActiveMembers(this.apptDate.split(' ')[2], this.cldDate).subscribe(
             data1 => {
               if (data1['result'] === null || data1['result'].length === 0) {
-                this.toastr.warning('Present no worker in active ', null, { timeOut: 4000 });
+                this.toastr.warning('No works schedule.', null, { timeOut: 4000 });
+                $('#calendar').fullCalendar('destroy');
               }
               this.eventCalendar = data1['result'];
               const resources = [];
@@ -1863,12 +2149,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     this.finalMax = finMax;
                   }
 
-                  let calendarDate: any = [];
-                  calendarDate = [];
-                  if (this.apptdate !== '') {
-                    const date1 = moment(this.cldDate).format('L');
-                    calendarDate = date1;
-                  }
                   const ole = JSON.parse(this.booking);
                   var select = function (start, end, jsEvent, view, selectresource) {
                     let datIndex = 0;
@@ -1881,7 +2161,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     const firstName = $('#firstName').val('');
                     const LastName = $('#lastName').val('');
                     const mobileNumber = $('#mobileNumber').val('');
-                    const mobileCarrier = $('#mobileCarrier').val('');
+                    // const mobileCarrier = $('#mobileCarrier').val('');
                     const primaryEmail = $('#primaryEmail').val('');
                     const listServices = $('#listServices').val('');
                     const sumDuration = $('p sumDuration').val('');
@@ -1903,7 +2183,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                         }
                       }
                       this.TimeData.push(elem);
-
                       if (crDate.getHours() < startDate.getHours()) {
                         datIndex++;
                       }
@@ -1919,19 +2198,17 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     let appoitmentdate: any;
                     let expressDate2: any;
                     let skipCalendarDate: any;
+                    let calendarDates: any;
+                    calendarDates = moment(this.startDateTime).format('MM/DD/YYYY');
                     if (this.timeSlot) {
-                      appoitmentdate = $('#CalendarDate').val(this.apptDate);
-                      expressDate2 = $('#CalendarDate2').val(this.apptDate);
-                      skipCalendarDate = $('#skipCalendarDate').val(this.apptDate);
+                      appoitmentdate = $('#CalendarDate').val(calendarDates);
+                      expressDate2 = $('#CalendarDate2').val(calendarDates);
+                      skipCalendarDate = $('#skipCalendarDate').val(calendarDates);
                     } else if (this.timeSlot === '' || this.timeSlot === undefined) {
-                      appoitmentdate = $('#CalendarDate').val(calendarDate);    // date of appointments
-                      expressDate2 = $('#CalendarDate2').val(calendarDate);
-                      skipCalendarDate = $('#skipCalendarDate').val(calendarDate);
+                      appoitmentdate = $('#CalendarDate').val(calendarDates);    // date of appointments
+                      expressDate2 = $('#CalendarDate2').val(calendarDates);
+                      skipCalendarDate = $('#skipCalendarDate').val(calendarDates);
                     }
-
-
-                    // const apptTimeSlot = $('#apptTimeSlot').val(calendarDate);
-
                     const dateAndTime = $('#startDateTime').val(this.startDateTime);  // in this date with time
                     const dateAndTime2 = $('#expressstartDateTime').val(this.startDateTime);  // in this date with time
                     const skipdateAndTime = $('#skipdateAndTime').val(this.startDateTime);  // in this date with time
@@ -2012,12 +2289,19 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               const durationInMinutes1 = '-60';
               const durationInMinutes2 = '60';
               if (this.eventCalendar[0].min !== null && this.eventCalendar[0].max !== null) {
-                MaxStartTime = moment(this.eventCalendar[0].min, 'HH').add(durationInMinutes1, 'minutes').format('HH:mm');
-                MaxEndTime = moment(this.eventCalendar[0].max, 'HH').add(durationInMinutes2, 'minutes').format('HH:mm');
+                MaxStartTime = moment(this.eventCalendar[0].min + ':' + '00', 'HH:mm').add(durationInMinutes1, 'minutes').format('HH' + ':00');
+                MaxEndTime = moment(this.eventCalendar[0].max + ':' + '00', 'HH:mm').add(durationInMinutes2, 'minutes').format('HH' + ':00');
+                if (MaxEndTime === '00:00') {
+                  MaxEndTime = '23:59';
+                } else if (MaxStartTime === '23:00') {
+                  MaxStartTime = '00:00';
+                }
               } else {
                 MaxStartTime = moment(this.finalMin, 'h:mm:ss A').add(durationInMinutes1, 'minutes').format('HH:mm');
                 MaxEndTime = moment(this.finalMax, 'h:mm:ss A').add(durationInMinutes2, 'minutes').format('HH:mm');
               }
+              const hideShowAll = this.eventCalendar[0].View_Only_My_Appointments__c;
+              this.weekdayDateDisplay = '';
               const calObj = {
                 defaultView: 'agendaDay',
                 defaultDate: this.cldDate,
@@ -2040,11 +2324,19 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   right: ''
                 },
                 viewRender: function (view, element) {
-                  var title = this.dateCatch;
-                  const chked = localStorage.getItem('wokersChkd');
-                  const s = '<div  id="myId"><input id="workerCheckerd" ' + chked + ' type="checkbox"/> '
-                    + '<label for="workerCheckerd">Show All Workers</label></div><div class="appnt-pro-name"><h6>TIME</h6> </div>';
-                  element.find('.fc-axis:first').html(s);
+                  if (hideShowAll !== 1) {
+                    var title = this.dateCatch;
+                    const chked = localStorage.getItem('wokersChkd');
+                    const s = '<div  id="myId"><input id="workerCheckerd" ' + chked + ' type="checkbox"/> '
+                      + '<label for="workerCheckerd">Show All Workers</label></div><div class="appnt-pro-name"><h6>TIME</h6> </div>';
+                    element.find('.fc-axis:first').html(s);
+                    const u: any = document.getElementById('workerCheckerd');
+                    u.checked = false;
+                  } else if (hideShowAll === 1) {
+                    const chked = localStorage.getItem('wokersChkd');
+                    const s = '<div id="myId"></div><div class="appnt-pro-name"><h6>TIME</h6> </div>';
+                    element.find('.fc-axis:first').html(s);
+                  }
                 },
                 views: {
                   agendaDay: {
@@ -2133,8 +2425,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                       } else {
                         event.start._i[3] = event.start._i[3];
                       }
-                      const eventStartTime = moment(eventDate + event.start._i[3] + event.start._i[4], 'YYYY-MM-DD hh:mm').format('YYYY-MM-DD HH:mm');
-                      const eventEndTime = moment(eventDate + event.end._i[3] + event.end._i[4], 'YYYY-MM-DD hh:mm').format('YYYY-MM-DD HH:mm');
+                      const eventStartTime = moment(eventDate + ' ' + event.start._i[3] + event.start._i[4], 'YYYY-MM-DD hh:mm').format('YYYY-MM-DD HH:mm');
+                      const eventEndTime = moment(eventDate + ' ' + event.end._i[3] + ':' + event.end._i[4], 'YYYY-MM-DD hh:mm').format('YYYY-MM-DD HH:mm');
                       const startAndEnd = moment.duration(moment(eventStartTime).diff(eventEndTime));
                       const duration = startAndEnd.asMinutes();
                       if (eventStartTime === 'Invalid date') {
@@ -2169,15 +2461,15 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                             localStorage.setItem('token', request.getResponseHeader('token'));
                           }
                         });
+                      } else {
+                        swal({
+                          text: 'Unable to move Appt ,refresh page and try again',
+                          timer: 2000,
+                          buttons: false
+                        });
+                        revertFunc();
+                        return;
                       }
-                    } else {
-                      swal({
-                        text: 'Unable to move Appt ,refresh page and try again',
-                        timer: 2000,
-                        buttons: false
-                      });
-                      revertFunc();
-                      // return;
                     }
                   }
                 },
@@ -2190,7 +2482,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                     event.start._i[3] = event.start._i[3];
                   }
                   const eventStartTime = moment(eventDate + event.start._i[3] + event.start._i[4], 'YYYY-MM-DD hh:mm').format('YYYY-MM-DD HH:mm');
-                  const eventEndTime = moment(eventDate + event.end._i[3] + ':' + event.end._i[4], 'YYYY-MM-DD hh:mm').format('YYYY-MM-DD HH:mm');
+                  const eventEndTime = moment(eventDate + ' ' + event.end._i[3] + ':' + event.end._i[4], 'YYYY-MM-DD hh:mm').format('YYYY-MM-DD HH:mm');
                   const startAndEnd = moment.duration(moment(eventStartTime).diff(eventEndTime));
                   const duration = startAndEnd.asMinutes();
                   if (eventStartTime !== 'Invalid date' || duration.toString() !== 'Invalid date') {
@@ -2231,6 +2523,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 selectConstraint: 'businessHours',
                 schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source'
               };
+              $('#calendar').fullCalendar('destroy');
               this.loadCalender(calObj);
             },
             error => {
@@ -2250,7 +2543,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     } else if (this.selWorker !== 'all' && this.selWeek === 'One Weekday') {
       this.fetchWeek('');
     }
-
   }
 
   fetchWeek(event) {
@@ -2264,22 +2556,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     });
     if (event) {
       this.selWeek = event;
-      // if (value === 'weekday') {
-      //   this.selWeek = 'One Weekday';
-      // } else if (value === 'One Week') {
-      //   this.selWeek = 'One Week';
-      // } else if (value === 'day') {
-      //   this.selWeek = 'One Day';
-      // } else if (value === 'month') {
-      //   this.selWeek = 'month';
-      // }
       var apiEndPoint = this.apiEndPoint;
-      let calendarDate: any = [];
-      calendarDate = [];
-      if (this.apptdate !== '') {
-        const date1 = moment(this.apptdate).format('L');
-        calendarDate = date1;
-      }
+
       if ((this.selWorker === 'All' && this.selWeek === 'One Day') || (this.selWorker === 'all' && this.selWeek === 'One Day')) {
         this.allWorkers();
       } else if (this.selWorker !== 'all' && this.selWeek === 'One Week') {
@@ -2289,70 +2567,214 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         const endOfWeek = moment(CalendatDate).endOf('week');
         const startOfWeek1 = moment(startOfWeek).format('YYYY-MM-DD');
         const endOfWeek1 = moment(endOfWeek).format('YYYY-MM-DD');
+
         this.appointmentsServices.getWorkerWeek(this.selWorker.split('$')[0], this.cldDate, this.selWeek).subscribe(
           data => {
             this.individualWorkerWeek = data['result'];
+            let Min;
+            let Max;
+            const MinTimesInMinutes = '-60';
+            const MaxTimesInMinutes = '60';
+            Min = moment(this.individualWorkerWeek[0]['min'], 'H').add(MinTimesInMinutes, 'minutes').format('HH:mm');
+            Max = moment(this.individualWorkerWeek[0]['max'], 'H').add(MaxTimesInMinutes, 'minutes').format('HH:mm');
+            if (Min === '23:00') {
+              Min = '00:00';
+            }
+            if (Max === '00:00') {
+              Max = '23:59';
+            }
+            const worker_Id = this.individualWorkerWeek[0].Id;
+            const worker_Name = this.individualWorkerWeek[0].FirstName;
+            const index = this.individualWorkerWeek.findIndex((result) => isNullOrUndefined(result['tsid']));
+            const workerTimings = this.individualWorkerWeek.splice(index, 1)[0];
+            let calWeekDates = [];
+            calWeekDates = this.apptWeekCalculate(workerTimings);
             const events = [];
             const resources = [];
             const bussinessHrs = [];
+            this.borderColor = [];
+
             for (let i = 0; i < this.individualWorkerWeek.length; i++) {
+              if (this.individualWorkerWeek[i].status === 'Conflicting') {
+                this.borderColor = this.conflicting;
+              } else if (this.individualWorkerWeek[i].status === 'Checked In') {
+                this.borderColor = this.checkedIn;
+              } else if (this.individualWorkerWeek[i].status === 'Booked') {
+                this.borderColor = this.booked;
+              } else if (this.individualWorkerWeek[i].status === 'Complete') {
+                this.borderColor = this.complete;
+              } else if (this.individualWorkerWeek[i].status === 'Called') {
+                this.borderColor = this.called;
+              } else if (this.individualWorkerWeek[i].status === 'Canceled') {
+                this.borderColor = this.canceled;
+              } else if (this.individualWorkerWeek[i].status === 'Confirmed') {
+                this.borderColor = this.confirmed;
+              } else if (this.individualWorkerWeek[i].status === 'Reminder Sent') {
+                this.borderColor = this.reminderSent;
+              } else if (this.individualWorkerWeek[i].status === 'No Show') {
+                this.borderColor = this.noShow;
+              } else if (this.individualWorkerWeek[i].status === 'Pending Deposit') {
+                this.borderColor = this.pendingDeposit;
+              }
+
+
+
+              let oneWeekList: any;
+              let userName: any;
+              if (this.individualWorkerWeek[i].Name === 'null' || this.individualWorkerWeek[i].Name === null) {
+                userName = 'No Client';
+              } else {
+                userName = this.individualWorkerWeek[i].Name;
+              }
+              // '&#8727;' = *
+              // '&#8857;' = online booking
+              // '&#9839;' = #
+              // '&#9834;' = note
+              const bookOut = this.individualWorkerWeek[i].Is_Booked_Out__c;
+              const notes = this.individualWorkerWeek[i].Notes__c;
+              const newClient = this.individualWorkerWeek[i].New_Client__c;
+              const asterix = this.individualWorkerWeek[i].Appt_Icon;   // it mean more than one service is booked for that *
+              const serviceNames = this.individualWorkerWeek[i].serviceName;
+              const onlineBooking = this.individualWorkerWeek[i].Booked_Online__c;
+              const standing = this.individualWorkerWeek[i].standing;
+
+              if (onlineBooking === 1) {
+                if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  oneWeekList = '&#8857; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  oneWeekList = '&#8857; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  oneWeekList = '&#8857; ' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  oneWeekList = '&#8857; ' + '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  oneWeekList = '&#8857; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  oneWeekList = '&#8857; ' + '&#8727; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  oneWeekList = '&#8857; ' + '&#9834; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  oneWeekList = '&#8857; ' + '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+                }
+              }
+
+              if (onlineBooking === 0) {
+                if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  oneWeekList = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  oneWeekList = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  oneWeekList = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  oneWeekList = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  oneWeekList = userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  oneWeekList = '&#8727; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  oneWeekList = '&#9834; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  oneWeekList = '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+                }
+              }
+
+              if (standing === 1) {
+                if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  oneWeekList = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  oneWeekList = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  oneWeekList = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  oneWeekList = '&#9839;' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  oneWeekList = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  oneWeekList = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+                }
+
+              }
+              if (bookOut === 1 && notes !== '') {
+                oneWeekList = '&#9834; ' + 'Book Out Time';
+              } else if (bookOut === 1 && notes === '') {
+                oneWeekList = 'Book Out Time';
+              }
+              let clientIDs: any;
+              if (this.individualWorkerWeek[i].clientID === '') {
+                clientIDs = null;
+              } else {
+                clientIDs = this.individualWorkerWeek[i].clientID;
+              }
+
+
+
+
               this.serviceStartTime = moment(this.individualWorkerWeek[i].Service_Date_Time__c).format().split('+')[0];
               const durationInMinutes = this.individualWorkerWeek[i].Duration__c;   // duration
               this.serviceEndTime = moment(this.serviceStartTime).add(durationInMinutes, 'minutes').format().split('+')[0];
+              // let oneWeekList;
+              // let weekPerson;
+              // if (this.individualWorkerWeek[i].Name === null || this.individualWorkerWeek[i].Name === 'null') {
+              //   weekPerson = 'No Client';
+              // } else {
+              //   weekPerson = this.individualWorkerWeek[i].Name;
+              // }
+
+
+
+
+
+              // let serviceNames;
+              // if (this.individualWorkerWeek[i].serviceName === '' || this.individualWorkerWeek[i].serviceName === undefined) {
+              //   serviceNames = '';
+              // } else {
+              //   serviceNames = this.individualWorkerWeek[i].serviceName;
+              // }
+              // if (this.individualWorkerWeek[i].New_Client__c === 1) {
+              //   oneWeekList = '<span style="color:red;font-weight:bold;">' + weekPerson + '</span> / ' + serviceNames;
+              // } else {
+              //   oneWeekList = weekPerson + ' / ' + serviceNames;
+              // }
+
               events.push(
                 {
                   'resourceId': this.individualWorkerWeek[i].Worker__c,
                   'apptId': this.individualWorkerWeek[i].Appt_Ticket__c,
                   'ticket_service_id': this.individualWorkerWeek[i].tsid,
-                  'title': this.individualWorkerWeek[i].Name + ' / ' + this.individualWorkerWeek[i].serviceName,
+                  'title': oneWeekList,
                   'start': this.serviceStartTime,
                   'end': this.serviceEndTime,
                   'textColor': 'black',
                   'borderColor': this.borderColor,
                   'color': this.individualWorkerWeek[i].serviceGroupColor,
-                  'clientID': this.individualWorkerWeek[i].clientID
-                });
+                  'clientID': this.individualWorkerWeek[i].clientID,
+                  'status': this.individualWorkerWeek[i].status,
+                  'className': this.individualWorkerWeek[i].tsid,
+                }
+              );
             }
-            // var resourceRender = function (resourceObj, labelTds, bodyTds) {
-            //   const date = '<div class="appnt-pro-name"><h4>' + resourceObj.date + ' </h4></div>';
-            //   labelTds.prepend(date);
-            // };
-            const MaxStartTime = moment(this.finalMin, 'h:mm:ss', ).format('LTS').split(' ')[0];
-            const MaxEndTime = moment(this.finalMax, 'h:mm:ss A').format('HH:mm:ss').split(' ')[0];
-            if (this.individualWorkerWeek && this.individualWorkerWeek.length > 0) {
-              resources.push(
-                {
-                  id: this.individualWorkerWeek[0].Worker__c,
-                  //  title: this.individualWorkerWeek[0].Name,
-                  //    date: startOfWeek1,
-                  businessHours: {
-                    start: '07:00:00',
-                    end: '18:00:00',
-                    dow: [0, 1, 2, 3, 4, 5, 6],
-                  },
-                });
-            }
-
-            const ole = JSON.parse(this.booking);
-            const MinTimesInMinutes = '-60';
-            const MaxTimesInMinutes = '60';
-            const MinTimes = moment(this.serviceStartTime, 'h:mm:ss', ).add(MinTimesInMinutes, 'minutes').format('LTS').split(' ')[0];
-            const MaxTimes = moment(this.serviceEndTime, 'h:mm:ss A').add(MaxTimesInMinutes, 'minutes').format('HH:mm:ss').split(' ')[0];
             const startOfWeek12 = moment(startOfWeek1).startOf('week').format('LL');
             const endOfWeek12 = moment(startOfWeek1).endOf('week').format('LL');
             this.mainApptDate = '';
+            this.weekdayDateDisplay = '';
             this.mainApptDate = startOfWeek12 + ' - ' + endOfWeek12;
 
+            let MaxStartTime;
+            let MaxEndTime;
+            MaxStartTime = moment(this.finalMin, 'h:mm:ss', ).format('LTS').split(' ')[0];
+            MaxEndTime = moment(this.finalMax, 'h:mm:ss A').format('HH:mm:ss').split(' ')[0];
+            const ole = JSON.parse(this.booking);
             var select = function (start, end, jsEvent, view, selectresource) {
+
               let datIndex = 0;
               const crDate = new Date();
-              const startDate = new Date(0, 0, 0, parseInt(MinTimes.split(':')[0], 10), 0, 0, 0);
-              const endDate = new Date(0, 0, 0, parseInt(MaxTimes.split(':')[0], 10), 0, 0, 0);
+              const startDate = new Date(0, 0, 0, 0, 0, 0, 0);
+              const endDate = new Date(0, 0, 0, 23, 59, 0, 0);
               this.TimeData = [];
               const firstName = $('#firstName').val('');
               const LastName = $('#lastName').val('');
               const mobileNumber = $('#mobileNumber').val('');
-              const mobileCarrier = $('#mobileCarrier').val('');
+              // const mobileCarrier = $('#mobileCarrier').val('');
               const primaryEmail = $('#primaryEmail').val('');
               const listServices = $('#listServices').val('');
               const sumDuration = $('#sumDuration').val('');
@@ -2384,15 +2806,21 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               this.expressBookingStart = MaxStartTime;      // worker start
               this.expressBookingEnd = MaxEndTime;         // worker end
               this.startDateTime = start.format();
-              const date = this.startDateTime.split('T')[0];
-              const formatDate = moment(date, 'YYYY-MM-DD').format('MM/DD/YYYY');
+              let calendarDates: any;
+              calendarDates = moment(this.startDateTime).format('MM/DD/YYYY');
               this.end = end.format();
               $('#myModal').show();
-              const appoitmentdate = $('#CalendarDate').val(calendarDate);    // date of appointments
-              const dateAndTime = $('#startDateTime').val(this.startDateTime);  // in this date with time
 
-              const dateAndTime2 = $('#expressstartDateTime').val(this.startDateTime);
-              const appoitmentdate2 = $('#CalendarDate2').val(formatDate);
+
+              const appoitmentdate = $('#CalendarDate').val(calendarDates);    // date of appointments
+              const expressDate2 = $('#CalendarDate2').val(calendarDates);
+              const skipCalendarDate = $('#skipCalendarDate').val(calendarDates);
+
+
+              const dateAndTime = $('#startDateTime').val(this.startDateTime);  // in this date with time
+              const dateAndTime2 = $('#expressstartDateTime').val(this.startDateTime);  // in this date with time
+              const skipdateAndTime = $('#skipdateAndTime').val(this.startDateTime);  // in this date with time
+
 
               let selTimOpt = '';
               const hrs = parseInt(start.format().split('T')[1].split(':')[0], 10);
@@ -2411,33 +2839,54 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   selTimOpt = ('0' + (hrs - 12)).slice(-2) + ':' + ('0' + min).slice(-2) + ' PM';
                 }
               }
-              const selectBox = <HTMLSelectElement>document.getElementById('times');
+
+              let selectBox: any;
+              selectBox = <HTMLSelectElement>document.getElementById('times');
               selectBox.options.length = 0;
               for (let i = 0; i < this.TimeData.length; i++) {
-                const optionVals = this.TimeData[i];
-                const opt3 = new Option(optionVals, optionVals);
-                opt3.className = 'select-bg-option';
-                selectBox.options.add(opt3);
+                const optionVal = this.TimeData[i];
+                const opt = new Option(optionVal, optionVal);
+                opt.className = 'select-bg-option';
+                selectBox.options.add(opt);
               }
               selectBox.value = selTimOpt;
+              const selectBox2 = <HTMLSelectElement>document.getElementById('expresstimes');
+              selectBox2.options.length = 0;
+              for (let i = 0; i < this.TimeData.length; i++) {
+                const optionVal = this.TimeData[i];
+                const opt2 = new Option(optionVal, optionVal);
+                opt2.className = 'select-bg-option';
+                selectBox2.options.add(opt2);
+              }
+              selectBox2.value = selTimOpt;
 
-
-              const selectBox1 = <HTMLSelectElement>document.getElementById('expresstimes');
-              selectBox1.options.length = 0;
+              const selectBox3 = <HTMLSelectElement>document.getElementById('skiptimes');
+              selectBox3.options.length = 0;
               for (let i = 0; i < this.TimeData.length; i++) {
                 const optionVal = this.TimeData[i];
                 const opt3 = new Option(optionVal, optionVal);
                 opt3.className = 'select-bg-option';
-                selectBox1.options.add(opt3);
+                selectBox3.options.add(opt3);
               }
-              selectBox1.value = selTimOpt;
 
-              this.expressBookinWorkerName = $('#workername').val(selectresource.title);       //   worker name
-              this.expressBookinWorkerName = $('#expressworkerId').val(selectresource.title);
+              selectBox3.value = selTimOpt;
+              this.expressBookinWorkerName = $('#workername').val(selectresource.title);
+              const BookinWorkerName = $('#expressworkername').val(selectresource.title);
+              const skipworkername = $('#skipworkername').val(selectresource.title);
+
+              const workedrId = $('#workerId').val(selectresource.id);
+              const expressworkerId = $('#expressworkerId').val(selectresource.id);
+              const skipexpressworkerId = $('#skipexpressworkerId').val(selectresource.id);
+
               const worSel = <HTMLSelectElement>document.getElementById('workerIds');
               worSel.value = selectresource.id;
-              const worSel2 = <HTMLSelectElement>document.getElementById('expressworkerId');
+
+              const worSel2 = <HTMLSelectElement>document.getElementById('ExpworkerIds');
               worSel2.value = selectresource.id;
+
+              const worSel3 = <HTMLSelectElement>document.getElementById('skipworkerIds');
+              worSel3.value = selectresource.id;
+
 
               const modal = document.getElementById('myModal');
               const btn = document.getElementById('myBtn');
@@ -2448,6 +2897,14 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 $('#myModal').hide();
               });
             };
+
+
+            resources.push(
+              {
+                id: worker_Id,
+                title: worker_Name,
+
+              });
             const calObj = {
               defaultView: 'agendaWeek',
               defaultDate: startOfWeek1,
@@ -2455,24 +2912,25 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               selectable: true,
               eventLimit: true,
               allDaySlot: false,
+              slotEventOverlap: true,
               allDayDefault: false,
-              minTime: '05:00:00',
-              maxTime: '20:00:00',
+              minTime: Min,
+              maxTime: Max,
               slotLabelInterval: '00:' + (JSON.parse(this.booking)) + ':00',
               slotDuration: '00:' + (JSON.parse(this.booking)) + ':00',
               weekends: true,
               header: {
                 left: '',
-                center: '',
+                center: 'title',
                 right: ''
               },
               slotLabelFormat: [
                 'h(:mm) a'
               ],
-              // viewRender: function (view, element) {
-              //   const s = '<div class="appnt-pro-name"><h6>TIME</h6> </div>';
-              //   element.find('.fc-axis:first').html(s);
-              // },
+              viewRender: function (view, element) {
+                const s = '<div class="appnt-pro-name"><h6>TIME</h6> </div>';
+                element.find('.fc-axis:eq(1)').html(s);
+              },
               views: {
                 agendaWeek: {
                   type: 'agendaWeek',
@@ -2487,7 +2945,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               resources: resources,
               events: events,
               select: select,
-              //   resourceRender: resourceRender,
               eventDrop: function (event, delta, revertFunc) {
                 const todayMoment = moment();
                 const dayDelta = delta.days();
@@ -2513,13 +2970,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   return;
                 } else if (eventStartDate > todayDate) {
                   const times = (delta['_data'].days * 24 * 60) + (delta['_data'].hours * 60) + delta['_data'].minutes;
-                  //  const eventDate = moment(eventStartDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
-                  // const start_time = event.start._i[3] + ':' + event.start._i[4].toString();
-                  // const end_time = event.end._i[3] + ':' + event.end._i[4].toString();
-                  // const eventStartTime = moment(eventDate + ' ' + start_time, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm');
-                  // const eventEndTime = moment(eventDate + ' ' + end_time, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm');
-                  // const startAndEnd = moment.duration(moment(eventStartTime).diff(eventEndTime));
-                  // const duration = startAndEnd.asMinutes();
+
                   $.ajax({
                     type: 'POST',
                     url: (apiEndPoint + '/api/calendarEventsUpdatesWeek'),
@@ -2531,12 +2982,18 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                       'AppTtimes': times,
                     },
                     success: function (dataString, textStatus, request) {
-                      // $('#centerDiv').load(location.href + '#centerDiv');
                       swal({
                         text: 'Appointment Updated Successfully',
                         timer: 2000,
                         buttons: false
                       });
+
+                      var el = document.getElementById('ajaxRefreshweek');
+                      if (el) {
+                        const evObj = document.createEvent('Events');
+                        evObj.initEvent('click', true, false);
+                        el.dispatchEvent(evObj);
+                      }
                       localStorage.setItem('token', request.getResponseHeader('token'));
                     }
                   });
@@ -2615,12 +3072,22 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                       timer: 2000,
                       buttons: false
                     });
+                    var el = document.getElementById('ajaxRefreshweek');
+                    if (el) {
+                      const evObj = document.createEvent('Events');
+                      evObj.initEvent('click', true, false);
+                      el.dispatchEvent(evObj);
+                    }
+
                     localStorage.setItem('token', request.getResponseHeader('token'));
                   }
                 });
               },
+              selectConstraint: 'businessHours',
+              businessHours: calWeekDates,
               schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source'
             };
+            $('#calendar').fullCalendar('destroy');
             this.loadCalender(calObj);
             this.getAppointments(this.chooseDate, this.workerId, this.selWeek);
           },
@@ -2632,82 +3099,221 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 this.router.navigate(['/']).then(() => { });
               }
             }
+
           });
+
+
+
+
       } else if (this.selWorker !== 'all' && this.selWeek === 'One Weekday') {
-        this.individualWorkerWeek = [];
         this.appointmentsServices.getWorkerWeek(this.selWorker.split('$')[0], this.cldDate, this.selWeek).subscribe(
           data => {
-            this.individualWorkerWeek = data['result'];
+            this.individualWorkerWeek = [];
+            this.individualWorkerWeek = data['result']['finalResult'];
+            const worker_Id = data['result']['finaRes'][0].Worker__c;
+            // const worker_Name = this.individualWorkerWeek[0].FirstName ? this.individualWorkerWeek[0].FirstName : ;
+
+            // const index = this.individualWorkerWeek.findIndex((result) => isNullOrUndefined(result['tsid']));
+            // const workerTimings = this.individualWorkerWeek.splice(index, 1)[0];
+            // let calWeekDates = [];
+            // if (workerTimings !== undefined) {
+            //   calWeekDates = this.apptWeekCalculate(workerTimings);
+            // }
+
             const events = [];
             const resources = [];
+            this.borderColor = [];
             for (let i = 0; i < this.individualWorkerWeek.length; i++) {
+
+              if (this.individualWorkerWeek[i].status === 'Conflicting') {
+                this.borderColor = this.conflicting;
+              } else if (this.individualWorkerWeek[i].status === 'Checked In') {
+                this.borderColor = this.checkedIn;
+              } else if (this.individualWorkerWeek[i].status === 'Booked') {
+                this.borderColor = this.booked;
+              } else if (this.individualWorkerWeek[i].status === 'Complete') {
+                this.borderColor = this.complete;
+              } else if (this.individualWorkerWeek[i].status === 'Called') {
+                this.borderColor = this.called;
+              } else if (this.individualWorkerWeek[i].status === 'Canceled') {
+                this.borderColor = this.canceled;
+              } else if (this.individualWorkerWeek[i].status === 'Confirmed') {
+                this.borderColor = this.confirmed;
+              } else if (this.individualWorkerWeek[i].status === 'Reminder Sent') {
+                this.borderColor = this.reminderSent;
+              } else if (this.individualWorkerWeek[i].status === 'No Show') {
+                this.borderColor = this.noShow;
+              } else if (this.individualWorkerWeek[i].status === 'Pending Deposit') {
+                this.borderColor = this.pendingDeposit;
+              }
+
+
+
+              let WeekDayList: any;
+              let userName: any;
+              if (this.individualWorkerWeek[i].Name === 'null' || this.individualWorkerWeek[i].Name === null) {
+                userName = 'No Client';
+              } else {
+                userName = this.individualWorkerWeek[i].Name;
+              }
+              // '&#8727;' = *
+              // '&#8857;' = online booking
+              // '&#9839;' = #
+              // '&#9834;' = note
+              const bookOut = this.individualWorkerWeek[i].Is_Booked_Out__c;
+              const notes = this.individualWorkerWeek[i].Notes__c;
+              const newClient = this.individualWorkerWeek[i].New_Client__c;
+              const asterix = this.individualWorkerWeek[i].Appt_Icon;   // it mean more than one service is booked for that *
+              const serviceNames = this.individualWorkerWeek[i].serviceName;
+              const onlineBooking = this.individualWorkerWeek[i].Booked_Online__c;
+              const standing = this.individualWorkerWeek[i].standing;
+
+              if (onlineBooking === 1) {
+                if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  WeekDayList = '&#8857; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  WeekDayList = '&#8857; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  WeekDayList = '&#8857; ' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  WeekDayList = '&#8857; ' + '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  WeekDayList = '&#8857; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  WeekDayList = '&#8857; ' + '&#8727; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  WeekDayList = '&#8857; ' + '&#9834; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 1 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  WeekDayList = '&#8857; ' + '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+                }
+              }
+
+              if (onlineBooking === 0) {
+                if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  WeekDayList = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  WeekDayList = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  WeekDayList = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  WeekDayList = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  WeekDayList = userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  WeekDayList = '&#8727; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  WeekDayList = '&#9834; ' + userName + '/' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  WeekDayList = '&#9834; ' + '&#8727; ' + userName + '/' + serviceNames;
+                }
+              }
+
+              if (standing === 1) {
+                if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  WeekDayList = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  WeekDayList = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  WeekDayList = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  WeekDayList = '&#9839;' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  WeekDayList = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+                  WeekDayList = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+                }
+
+              }
+              if (bookOut === 1 && notes !== '') {
+                WeekDayList = '&#9834; ' + 'Book Out Time';
+              } else if (bookOut === 1 && notes === '') {
+                WeekDayList = 'Book Out Time';
+              }
+              let clientIDs: any;
+              if (this.individualWorkerWeek[i].clientID === '') {
+                clientIDs = null;
+              } else {
+                clientIDs = this.individualWorkerWeek[i].clientID;
+              }
+
+
               this.serviceStartTime = moment(this.individualWorkerWeek[i].Service_Date_Time__c).format().split('+')[0];
               const durationInMinutes = this.individualWorkerWeek[i].Duration__c;   // duration
               this.serviceEndTime = moment(this.serviceStartTime).add(durationInMinutes, 'minutes').format().split('+')[0];
-              events.push(
-                {
-                  'resourceId': this.individualWorkerWeek[i].Worker__c,
-                  'apptId': this.individualWorkerWeek[i].Appt_Ticket__c,
-                  'ticket_service_id': this.individualWorkerWeek[i].tsid,
-                  'title': this.individualWorkerWeek[i].Name + ' / ' + this.individualWorkerWeek[i].serviceName,
-                  'start': this.serviceStartTime,
-                  'end': this.serviceEndTime,
-                  'textColor': 'black',
-                  'borderColor': this.borderColor,
-                  'color': this.individualWorkerWeek[i].serviceGroupColor,
-                  'clientID': this.individualWorkerWeek[i].clientID
-                });
+              // let WeekDayList;
+              // let weekPerson;
+              // let serviceNames;
+              // if (this.individualWorkerWeek[i].Name === null || this.individualWorkerWeek[i].Name === '') {
+              //   weekPerson = 'No Client';
+              // } else {
+              //   weekPerson = this.individualWorkerWeek[i].Name;
+              // }
+
+
+              // if (this.individualWorkerWeek[i].serviceName === '' || this.individualWorkerWeek[i].serviceName === undefined) {
+              //   serviceNames = '';
+              // } else {
+              //   serviceNames = this.individualWorkerWeek[i].serviceName;
+              // }
+              // if (this.individualWorkerWeek[i].New_Client__c === 1) {
+              //   WeekDayList = '<span style="color:red;font-weight:bold;">' + weekPerson + '</span> / ' + serviceNames;
+              // } else {
+              //   WeekDayList = weekPerson + ' / ' + serviceNames;
+              // }
+
+              if (this.individualWorkerWeek[i].Appt_Ticket__c !== undefined || this.individualWorkerWeek[i].Appt_Ticket__c !== '') {
+                events.push(
+                  {
+                    'resourceId': this.individualWorkerWeek[i].Worker__c,
+                    'apptId': this.individualWorkerWeek[i].Appt_Ticket__c,
+                    'ticket_service_id': this.individualWorkerWeek[i].tsid,
+                    'title': WeekDayList,
+                    'start': this.serviceStartTime,
+                    'end': this.serviceEndTime,
+                    'textColor': 'black',
+                    'borderColor': this.borderColor,
+                    'color': this.individualWorkerWeek[i].serviceGroupColor,
+                    'clientID': this.individualWorkerWeek[i].clientID,
+                    'status': this.individualWorkerWeek[i].status,
+                    'className': this.individualWorkerWeek[i].tsid,
+                  }
+                );
+              }
+
             }
+            this.weekdayDateDisplay = '';
+            this.mainApptDate = moment(this.cldDate).format('MMMM YYYY dddd');
+            this.weekdayDateDisplay = moment(this.cldDate).format('MMMM YYYY dddd'); // weekday display date in view page
+            const MinTimesInMinutes = '-60';
+            const MaxTimesInMinutes1 = '60';
+            // const MinTimes = moment(this.individualWorkerWeek[0].min, 'HH:mm').add(MinTimesInMinutes, 'minutes').format('HH:mm');
+            // const MaxTimes = moment(this.individualWorkerWeek[0].max, 'HH:mm').add(MaxTimesInMinutes1, 'minutes').format('HH:mm');
+
+            const selDate = this.commonService.getDateFrmDBDateStr(this.cldDate);
             this.viewBy = value;
+
             const hiddenDaysObj = [0, 1, 2, 3, 4, 5, 6];
-            let wkIndex = 0;
-            switch (this.dateCatch) {
-              case 'Monday':
-                wkIndex = 1;
-                break;
-              case 'Tuesday':
-                wkIndex = 2;
-                break;
-              case 'Wednesday':
-                wkIndex = 3;
-                break;
-              case 'Thursday':
-                wkIndex = 4;
-                break;
-              case 'Friday':
-                wkIndex = 5;
-                break;
-              case 'Saturday':
-                wkIndex = 6;
-                break;
-            }
-            hiddenDaysObj.splice(wkIndex, 1);
+            hiddenDaysObj.splice(selDate.getDay(), 1);
             resources.push(
               {
-                id: this.individualWorkerWeek[0].Worker__c,
+                id: worker_Id,
                 businessHours: {
-                  start: '07:00:00',
-                  end: '18:00:00',
-                  dow: [0, 1, 2, 3, 4, 5, 6],
+                  start: '00:00',
+                  end: '24:00',
                 },
               });
-            this.mainApptDate = moment(this.cldDate).format('MMMM YYYY dddd');
-            const MinTimesInMinutes = '-60';
-            const MaxTimesInMinutes = '60';
-            const MinTimes = moment(this.individualWorkerWeek[0].min, 'h:mm:ss', ).add(MinTimesInMinutes, 'minutes').format('LTS').split(' ')[0];
-            const MaxTimes = moment(this.individualWorkerWeek[0].max, 'h:mm:ss A').add(MaxTimesInMinutes, 'minutes').format('HH:mm:ss').split(' ')[0];
 
             const ole = JSON.parse(this.booking);
             var select = function (start, end, jsEvent, view, selectresource) {
               let datIndex = 0;
               const crDate = new Date();
-              const startDate = new Date(0, 0, 0, parseInt(MinTimes.split(':')[0], 10), 0, 0, 0);
-              const endDate = new Date(0, 0, 0, parseInt(MaxTimes.split(':')[0], 10), 0, 0, 0);
+              const startDate = new Date(0, 0, 0, 0, 0, 0, 0);
+              const endDate = new Date(0, 0, 0, 23, 59, 0, 0);
               this.TimeData = [];
               const firstName = $('#firstName').val('');
               const LastName = $('#lastName').val('');
               const mobileNumber = $('#mobileNumber').val('');
-              const mobileCarrier = $('#mobileCarrier').val('');
+              // const mobileCarrier = $('#mobileCarrier').val('');
               const primaryEmail = $('#primaryEmail').val('');
               const listServices = $('#listServices').val('');
               const sumDuration = $('#sumDuration').val('');
@@ -2740,14 +3346,19 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               this.expressBookingEnd = this.serviceEndTime;
               this.startDateTime = start.format();
               const date = this.startDateTime.split('T')[0];
-              const formatDate = moment(date, 'YYYY-MM-DD').format('MM/DD/YYYY');
+              let WeekEndformatDates: any;
+              WeekEndformatDates = moment(date, 'YYYY-MM-DD').format('MM/DD/YYYY');
               this.end = end.format();
               $('#myModal').show();
-              const appoitmentdate = $('#CalendarDate').val(calendarDate);
-              const apptDate2 = $('#CalendarDate2').val(formatDate);
 
-              const dateAndTime = $('#startDateTime').val(this.startDateTime);
-              const dateAndTime2 = $('#expressstartDateTime').val(this.startDateTime);
+              const appoitmentdate = $('#CalendarDate').val(WeekEndformatDates);    // date of appointments
+              const expressDate2 = $('#CalendarDate2').val(WeekEndformatDates);
+              const skipCalendarDate = $('#skipCalendarDate').val(WeekEndformatDates);
+
+
+              const dateAndTime = $('#startDateTime').val(this.startDateTime);  // in this date with time
+              const dateAndTime2 = $('#expressstartDateTime').val(this.startDateTime);  // in this date with time
+              const skipdateAndTime = $('#skipdateAndTime').val(this.startDateTime);  // in this date with time
 
               let selTimOpt = '';
               const hrs = parseInt(start.format().split('T')[1].split(':')[0], 10);
@@ -2766,35 +3377,52 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   selTimOpt = ('0' + (hrs - 12)).slice(-2) + ':' + ('0' + min).slice(-2) + ' PM';
                 }
               }
-              const selectBox = <HTMLSelectElement>document.getElementById('times');
-              selectBox.options.length = 0;
-              for (let i = 0; i < this.TimeData.length; i++) {
-                const optionVal = this.TimeData[i];
-                const opt3 = new Option(optionVal, optionVal);
-                opt3.className = 'select-bg-option';
-                selectBox.options.add(opt3);
-              }
-              selectBox.value = selTimOpt;
 
-              const selectBox1 = <HTMLSelectElement>document.getElementById('expresstimes');
-              selectBox1.options.length = 0;
+              let selectBox: any;
+              selectBox = <HTMLSelectElement>document.getElementById('times');
+              selectBox.options.length = 0;
               for (let i = 0; i < this.TimeData.length; i++) {
                 const optionVal = this.TimeData[i];
                 const opt = new Option(optionVal, optionVal);
                 opt.className = 'select-bg-option';
-                selectBox1.options.add(opt);
+                selectBox.options.add(opt);
               }
-              selectBox1.value = selTimOpt;
+              selectBox.value = selTimOpt;
+              const selectBox2 = <HTMLSelectElement>document.getElementById('expresstimes');
+              selectBox2.options.length = 0;
+              for (let i = 0; i < this.TimeData.length; i++) {
+                const optionVal = this.TimeData[i];
+                const opt2 = new Option(optionVal, optionVal);
+                opt2.className = 'select-bg-option';
+                selectBox2.options.add(opt2);
+              }
+              selectBox2.value = selTimOpt;
 
+              const selectBox3 = <HTMLSelectElement>document.getElementById('skiptimes');
+              selectBox3.options.length = 0;
+              for (let i = 0; i < this.TimeData.length; i++) {
+                const optionVal = this.TimeData[i];
+                const opt3 = new Option(optionVal, optionVal);
+                opt3.className = 'select-bg-option';
+                selectBox3.options.add(opt3);
+              }
+              selectBox3.value = selTimOpt;                          // main time
+              this.expressBookinWorkerName = $('#workername').val(selectresource.title);       //   worker name
+              const BookinWorkerName = $('#expressworkername').val(selectresource.title);       //   worker name
+              const skipworkername = $('#skipworkername').val(selectresource.title);           // worker name
 
-              this.expressBookinWorkerName = $('#workername').val(selectresource.title);
-              this.expressBookinWorkerName = $('#expressworkername').val(selectresource.title);
+              const workedrId = $('#workerId').val(selectresource.id);
+              const expressworkerId = $('#expressworkerId').val(selectresource.id);
+              const skipexpressworkerId = $('#skipexpressworkerId').val(selectresource.id);
 
-              const worSel = <HTMLSelectElement>document.getElementById('workerIds');
+              const worSel = <HTMLSelectElement>document.getElementById('workerIds');           // here
               worSel.value = selectresource.id;
 
-              const worSel1 = <HTMLSelectElement>document.getElementById('expressworkerId');
-              worSel1.value = selectresource.id;
+              const worSel2 = <HTMLSelectElement>document.getElementById('ExpworkerIds');          // worker id
+              worSel2.value = selectresource.id;
+
+              const worSel3 = <HTMLSelectElement>document.getElementById('skipworkerIds');          // worker id
+              worSel3.value = selectresource.id;
 
               const modal = document.getElementById('myModal');
               const btn = document.getElementById('myBtn');
@@ -2806,19 +3434,32 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               });
             };
 
+            this.finaRes = data['result']['finaRes'];
+            for (let i = 0; i < this.finaRes.length; i++) {
+              events.push(
+                {
+                  id: 1,
+                  start: this.finaRes[i].date + 'T' + moment(this.finaRes[i].start, 'hh:mm A').format('HH:mm'),
+                  end: this.finaRes[i].date + 'T' + moment(this.finaRes[i].end, 'hh:mm A').format('HH:mm'),
+                  color: 'gray',
+                  rendering: 'inverse-background'
+                },
+              );
+            }
+
             const calObj = {
               defaultView: 'settimana',
-              // defaultDate: this.datePickerDate.date.year + '-' + this.datePickerDate.date.month + '-' + this.datePickerDate.date.day,
               defaultDate: this.cldDate,
               editable: true,
               selectable: true,
               eventLimit: true,
               allDaySlot: false,
-              minTime: '05:00:00',
-              maxTime: '22:00:00',
+              minTime: '07:00',
+              maxTime: '22:00',
+              weekends: true,
+              eventOverlap: true,
               slotDuration: '00:' + (JSON.parse(this.booking)) + ':00',
               slotLabelInterval: '00:' + (JSON.parse(this.booking)) + ':00',
-              weekends: true,
               header: {
                 left: '',
                 center: '',
@@ -2827,11 +3468,10 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               slotLabelFormat: [
                 'h(:mm) a'
               ],
-              // viewRender: function (view, element) {
-              //   var title = this.dateCatch;
-              //   const s = '<div class="appnt-pro-name"><h6>TIME</h6> </div>';
-              //   element.find('.fc-axis:first').html(s);
-              // },
+              viewRender: function (view, element) {
+                const s = '<div class="appnt-pro-name"><h6>TIME</h6> </div>';
+                element.find('.fc-axis:eq(1)').html(s);
+              },
               views: {
                 settimana: {
                   type: 'agendaWeek',
@@ -2888,6 +3528,13 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                         timer: 2000,
                         buttons: false
                       });
+                      var el = document.getElementById('ajaxRefreshweekday');
+                      if (el) {
+                        const evObj = document.createEvent('Events');
+                        evObj.initEvent('click', true, false);
+                        el.dispatchEvent(evObj);
+                      }
+
                       localStorage.setItem('token', request.getResponseHeader('token'));
                     }
                   });
@@ -2915,6 +3562,13 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                         timer: 2000,
                         buttons: false
                       });
+
+                      var el = document.getElementById('ajaxRefreshweekday');
+                      if (el) {
+                        const evObj = document.createEvent('Events');
+                        evObj.initEvent('click', true, false);
+                        el.dispatchEvent(evObj);
+                      }
                       localStorage.setItem('token', request.getResponseHeader('token'));
                     }
                   });
@@ -2962,6 +3616,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               hiddenDays: hiddenDaysObj,
               schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source'
             };
+            $('#calendar').fullCalendar('destroy');
             this.loadCalender(calObj);
             this.getAppointments(this.listDate, this.workerId, this.selWeek);
           },
@@ -2974,6 +3629,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               }
             }
           });
+
       } else if (this.selWorker !== 'all' && this.selWeek === 'One Day') {
         this.fetchWorkerCalendar([]);
         this.viewBy = value;
@@ -3017,15 +3673,15 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               columnFormat: 'ddd M/D',
             }
           },
-          //    resources: resources,
+          //  resources: resources,
           schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source'
         };
         this.loadCalender(calObj);
       } else if (this.selWorker === 'all' && this.selWeek === 'One Weekday') {
         const calObj = {
           defaultView: 'settimana',
-          // defaultDate: this.datePickerDate.date.year + '-' + this.datePickerDate.date.month + '-' + this.datePickerDate.date.day,
-          defaultDate: this.cldDate,
+          defaultDate: this.datePickerDate.date.year + '-' + this.datePickerDate.date.month + '-' + this.datePickerDate.date.day,
+          //  defaultDate: this.cldDate,
           editable: true,
           selectable: true,
           eventLimit: true,
@@ -3034,7 +3690,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           maxTime: '17:00',
           slotDuration: '00:15:00',
           slotLabelInterval: '00:15:00',
-          weekends: true,
+          // weekends: true,
           header: {
             left: '',
             center: '',
@@ -3084,65 +3740,24 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   }
 
   changeStatus(apptData) {
-    let pckData = [];
-    const pckArray = [];
-    let sumOfDiscountedPrice = 0;
-    let discountedPackageTotal = 0;
-    let discountedPackage = 0;
-    let rows = [];
-    let pckgObj = {};
-    let pckId = '';
-    const ticketServiceData = [];
-    if (apptData.Booked_Package__c && apptData.Booked_Package__c !== '' && apptData.Booked_Package__c !== ',' &&
+    const pckgObj = {};
+    if (!apptData.Booked_Package__c && apptData.Booked_Package__c === null) {
+      const tempServIds = apptData.serviceIds.split(',');
+      const tempTcktSerIds = apptData.ticketServiceIds.split(',');
+      this.nonPckgSrvcs = [];
+      for (let i = 0; i < tempServIds.length; i++) {
+        this.nonPckgSrvcs.push({
+          'serId': tempServIds[i], 'ticketServiceId': tempTcktSerIds[i], 'apptId': apptData.apptid, 'clientId': apptData.clientId, 'isclientPackage': 1
+        });
+      }
+    }
+    if (apptData.Booked_Package__c && apptData.Booked_Package__c !== '' && apptData.Booked_Package__c !== null &&
       apptData.Booked_Package__c !== 'undefined' && apptData.apstatus !== 'Checked In') {
-      this.apptDetailService.getApptServices(apptData.clientId, apptData.apptid).subscribe(data => {
+      const reqDate = this.commonService.getDBDatStr(new Date());
+      this.apptDetailService.getApptServices(apptData.clientId, apptData.apptid, reqDate).subscribe(data => {
         const resData = data['result'];
-        rows = resData.srvcresult;
-        const bookedPckgVal = apptData.Booked_Package__c.split(',');
-        for (let i = 0; i < bookedPckgVal.length; i++) {
-          pckData = pckData.concat(this.packagesList.filter((obj) => obj.Id === bookedPckgVal[i]));
-          if (pckData && pckData[i] && pckData[i].Discounted_Package__c) {
-            pckId = pckData[i].Id;
-            discountedPackage += parseFloat(pckData[i].Discounted_Package__c);
-            discountedPackageTotal += parseFloat(pckData[i].Discounted_Package__c);
-            for (let j = 0; j < JSON.parse(pckData[i].JSON__c).length; j++) {
-              sumOfDiscountedPrice += parseFloat(JSON.parse(pckData[i].JSON__c)[j].discountPriceEach);
-              if ((rows[i].Id === JSON.parse(pckData[i].JSON__c)[j].serviceId) && (bookedPckgVal[i] === pckData[i].Id)) {
-                ticketServiceData.push({
-                  'pckId': pckId,
-                  'serviceId': rows[i].Id,
-                  'netPrice': JSON.parse(pckData[i].JSON__c)[j].discountPriceEach
-                });
-              }
-            }
-
-          }
-          pckArray.push({
-            'pckId': pckId,
-            'sumOfDiscountedPrice': sumOfDiscountedPrice,
-            'discountedPackage': discountedPackage,
-            // 'discountPriceEach':
-          });
-          sumOfDiscountedPrice = 0;
-          discountedPackage = 0;
-        }
-        pckgObj = {
-          'pckArray': this.commonService.removeDuplicates(pckArray, 'pckId'),
-          'discountedPackageTotal': discountedPackageTotal,
-          // 'discountedPackage': discountedPackage
-          'ticketServiceData': ticketServiceData
-        };
-        if (this.isCheckedInStatus(apptData.apstatus)) {
-          apptData.apstatus = 'Checked In';
-          const apptDataObj = {
-            'apstatus': 'Checked In',
-            'clientCurBal': apptData.Current_Balance__c,
-            'apptId': apptData.apptid,
-            'netprice': apptData.netprice
-
-          };
-          this.checkIn(apptDataObj, pckgObj);
-        }
+        const result = this.commonService.getCheckInPrepaidPackage(this.packagesList, apptData, resData.srvcresult);
+        this.checkIn(result.apptDataResult, result.packageResult);
       },
         error => {
           const errStatus = JSON.parse(error['_body'])['status'];
@@ -3158,6 +3773,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
       const apptDataObj = {
         'apstatus': 'Checked In',
         'clientCurBal': apptData.Current_Balance__c,
+        'serviceSales': apptData.Service_Sales__c,
         'apptId': apptData.apptid,
         'netprice': apptData.netprice
 
@@ -3169,6 +3785,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     }
   }
   checkIn(apptDataObj, pckgObj) {
+    apptDataObj.nonPckgSrvcs = this.nonPckgSrvcs;
+    apptDataObj['Status_Date_Time_c'] = this.commonService.getDBDatTmStr(new Date());
     this.appointmentsServices.changeApptStatus(apptDataObj, pckgObj)
       .subscribe(data => {
         this.getAppointments(this.listDate, this.workerId, this.selWeek);
@@ -3269,27 +3887,27 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     });
   }
 
-  mobileCarriersList() {
-    this.appointmentsServices.mobileCarriers().subscribe(
-      data => {
-        this.mobileCarriers = data['result'];
-        this.mobileCarrierslist = [];
-        for (let j = 0; j < this.mobileCarriers.length; j++) {
-          if (this.mobileCarriers[j].active === true) {
-            this.mobileCarrierslist.push(this.mobileCarriers[j].mobileCarrierName);
-          }
-        }
-      },
-      error => {
-        const errStatus = JSON.parse(error['_body'])['status'];
-        if (errStatus === '2085' || errStatus === '2071') {
-          if (this.router.url !== '/') {
-            localStorage.setItem('page', this.router.url);
-            this.router.navigate(['/']).then(() => { });
-          }
-        }
-      });
-  }
+  // mobileCarriersList() {
+  //   this.appointmentsServices.mobileCarriers().subscribe(
+  //     data => {
+  //       this.mobileCarriers = data['result'];
+  //       this.mobileCarrierslist = [];
+  //       for (let j = 0; j < this.mobileCarriers.length; j++) {
+  //         if (this.mobileCarriers[j].active === true) {
+  //           this.mobileCarrierslist.push(this.mobileCarriers[j].mobileCarrierName);
+  //         }
+  //       }
+  //     },
+  //     error => {
+  //       const errStatus = JSON.parse(error['_body'])['status'];
+  //       if (errStatus === '2085' || errStatus === '2071') {
+  //         if (this.router.url !== '/') {
+  //           localStorage.setItem('page', this.router.url);
+  //           this.router.navigate(['/']).then(() => { });
+  //         }
+  //       }
+  //     });
+  // }
 
   expressService(value, i) {
     this.appointmentsServices.expressBookingServices(value).subscribe(
@@ -3312,9 +3930,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         }
       });
   }
-  selectExpBookService() {
 
-  }
+
   addInput() {
     this.inputs.push({});
   }
@@ -3325,14 +3942,9 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   }
 
   listServices(value, i) {
-    // this.servicePrice = value.split('$')[0];
-    // const duration = value.split('$')[1];
-    // const serviceGroupName = value.split('$')[4];
-    // this.calculateServiceDurations();
     const obj = this.bookingExpress[i].filter((data) => data.serviceId === value);
-
     this.inputs[i]['service'] = obj[0];
-    this.inputs[i]['serviceId'] = obj['serviceId'];
+    this.inputs[i]['serviceId'] = obj[0]['serviceId'];
     this.calculateServiceDurations();
   }
 
@@ -3342,12 +3954,12 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     if (this.inputs && this.inputs.length > 0) {
       for (let j = 0; j < this.inputs.length; j++) {
         const serviceVal = this.inputs[j].service;
-        if (serviceVal.Price__c) {
+        if (serviceVal.Price__c !== null) {
           this.servicePrice += parseInt(serviceVal.Price__c, 10);
         } else {
           this.servicePrice += parseInt(serviceVal.pcsergrp, 10);
         }
-        if (serviceVal.sumDurationBuffer !== '') {
+        if (serviceVal.sumDurationBuffer !== null) {
           this.serviceDurations += parseInt(serviceVal.sumDurationBuffer, 10);
         } else {
           this.serviceDurations += parseInt(serviceVal.dursergrp, 10);
@@ -3371,34 +3983,64 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         }
       });
   }
-
   saveExpressBooking() {
     const EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const bookingDate = $('#startDateTime').val().split('T')[0];
+    let bookAny;
+    let bookRoomAnyWay;
+    bookAny = $('#anyway').val();
+    bookRoomAnyWay = $('#bookRoomAnyWay').val();
+    let bookingDate;
+    bookingDate = $('#startDateTime').val().split('T')[0];
     const today = new Date();
     const dd = today.getDate();
     const mm = today.getMonth() + 1;
     const yyyy = today.getFullYear();
     const CalendarDate = $('#CalendarDate').val();
+
+    if (this.mobileNumber === undefined || this.mobileNumber === '') {
+      this.NotificationReminderMobile = 0;
+    } else {
+      this.NotificationReminderMobile = 1;
+    }
+
+    if (this.primaryEmail === undefined || this.primaryEmail === '') {
+      this.NotificationReminderEmail = 0;
+    } else {
+      this.NotificationReminderEmail = 1;
+    }
+
     if ((this.firstName === undefined || this.firstName === '') || (this.lastName === '' || this.lastName === undefined) ||
-      (CalendarDate < moment().format('MM/DD/YYYY')) || (this.clientfieldPrimaryEmail === true && this.primaryEmail === undefined) ||
-      (this.clientfieldMobilePhone === true && this.mobileNumber === undefined)) {
+      (CalendarDate < moment().format('MM/DD/YYYY')) || (this.clientfieldPrimaryEmail === true && this.primaryEmail === undefined || this.primaryEmail === '') ||
+      (this.clientfieldMobilePhone === true && (this.mobileNumber === undefined || this.mobileNumber === '')
+        || (this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail))
+      || (this.countrycode === undefined || this.countrycode === '')) {
       if (this.firstName === '' || this.firstName === undefined) {
         this.errorFirstName = 'APPOINTMENTS_MAIN_PAGE.ERROR_FIRST_NAME';
       }
       if (this.lastName === '' || this.lastName === undefined) {
         this.errorLastName = 'APPOINTMENTS_MAIN_PAGE.ERROR_LAST_NAME';
       }
-      if (this.clientfieldMobilePhone === true && this.mobileNumber === undefined) {
+      if (this.clientfieldMobilePhone === true && (this.mobileNumber === undefined || this.mobileNumber === '')) {
         this.errormobilephone = 'APPOINTMENTS_MAIN_PAGE.ERROR_MOBILEPHONE';
+        this.countrycodeError = '';
       }
-      if (this.clientfieldPrimaryEmail === true && (this.primaryEmail === undefined)) {
+      if (this.clientfieldPrimaryEmail === true && (this.primaryEmail === undefined || this.primaryEmail === '')) {
         this.errorEmail = 'APPOINTMENTS_MAIN_PAGE.ERROR_EMAIL';
+        this.validationEmailError = '';
       }
       if (CalendarDate < moment().format('MM/DD/YYYY')) {
         this.toastr.warning('Express Booking Appointment date / time can not be in the past', null, { timeOut: 2500 });
       }
+      if (this.countrycode === undefined || this.countrycode === '') {
+        this.countrycodeError = 'APPOINTMENTS_MAIN_PAGE.ERROR_COUNTRY_CODE';
+      }
+      if ((this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail)) {
+        this.validationEmailError = 'SETUPCOMPANY.INVALID_EMAIL_ID';
+        this.errorEmail = '';
+      }
+      window.scrollTo(0, 0);
     } else {
+
       const servicePrice = $('#servicePrice').val();
       const expressSumDuration = $('#expressSumDuration').val();
       this.bookingDate = $('#startDateTime').val();
@@ -3413,37 +4055,65 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         dbHrs = 0;
       }
       dbHrs = ('0' + dbHrs).slice(-2);
+      dbHrs = ('0' + dbHrs).slice(-2);
+      const modifyData = this.apptCalculateServiceTax(this.inputs);
+      let appDate;
+      if (this.bookingDate !== '') {
+        appDate = this.bookingDate.split('T')[0] + ' ' + dbHrs + ':' + dbTime2[1];
+      } else {
+        appDate = this.cldDate + ' ' + dbHrs + ':' + dbTime2[1];
+      }
+      let countryCode: any;
+      if (this.countrycode === undefined) {
+        countryCode = '';
+      } else {
+        countryCode = this.countrycode;
+      }
       this.dataObjects = {
-        'bookingDate': this.cldDate + ' ' + dbHrs + ':' + dbTime2[1],
+        'bookingDate': appDate,
         'workerId': this.workerId,
         'workername': this.workername,
         'firstName': this.firstName,
         'lastName': this.lastName,
-        'mobileNumber': this.mobileNumber,
-        'mobileCarrier': this.mobileCarrier,
+        'mobileNumber': countryCode + this.mobileNumber,
         'primaryEmail': this.primaryEmail,
         'textArea': this.textArea,
         'visitType': this.expressVisitType,
         'sumDuration': expressSumDuration,
         'service': this.inputs,
         'price': servicePrice,
-        // 'LastModifiedById': this.decodedToken.data.id
+        'totalServiceTax': modifyData.serviceTax,
+        'totalPrice': modifyData.sales,
+        'Reminder_Mobile_Phone__c': this.NotificationReminderMobile,
+        'Notification_Mobile_Phone__c': this.NotificationReminderMobile,
+        'Reminder_Primary_Email__c': this.NotificationReminderEmail,
+        'Notification_Primary_Email__c': this.NotificationReminderEmail,
+        'bookAny': bookAny,
+        'bookRoomAnyWay': bookRoomAnyWay
       };
       if (this.submitParam) {
         this.submitParam = false;
-        // console.log(JSON.stringify(this.dataObjects));
+        $('#loader1').show();
         this.appointmentsServices.saveExpressClient(this.dataObjects).subscribe(
           data => {
             this.submitParam = true;
-            const t = data['result'].affectedRows;
-            if (t > 0) {
+            // const t = data['result'].affectedRows;
+            if (data['result'].length > 0) {
+              this.appointmentsServices.sendApptNotifs([data['result']]).subscribe(data2 => { }, error => { });
               $('#expressModel').hide(500);
+              $('#loader1').hide();
               this.router.navigate(['/appointments']).then(() => {
                 this.toastr.success('Successfully created appointment', null, { timeOut: 1500 });
               });
-              const timesss = new Date(moment(this.bookingDate.split(' ')[0]).format('ddd MMMM DD YYYY h:mm:ss').toString());
-              this.goToDate(timesss, 0);
-              this.closePopup();
+              if (this.bookingDate === '') {
+                const timesss1 = new Date(moment(CalendarDate + ' ' + '00:00:00').format('ddd MMMM DD YYYY h:mm:ss').toString());
+                this.goToDate(timesss1, 0);
+                this.closePopup();
+              } else {
+                const timesss = new Date(moment(this.bookingDate.split('T')[0]).format('ddd MMMM DD YYYY h:mm:ss').toString());
+                this.goToDate(timesss, 0);
+                this.closePopup();
+              }
             }
           },
           error => {
@@ -3455,11 +4125,16 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 break;
               case 400:
                 if (statuscode === '2082') {
-                  swal({
-                    text: 'Duplicate record found',
-                    timer: 2000,
-                    buttons: false
-                  });
+                  this.errResources = 'COMMON_STATUS_CODES.' + JSON.parse(error['_body']).status;
+                  this.bookAnyWay = 'Book Anyway';
+                  window.scrollTo(0, 0);
+                } if (statuscode === '2090') {
+                  this.errResources = 'COMMON_STATUS_CODES.' + JSON.parse(error['_body']).status;
+                  this.bookRoomAnyWay = 'Book RoomAnyWay';
+                  window.scrollTo(0, 0);
+                } if (statuscode === '2033') {
+                  this.toastr.warning('Record with the same name already exists', null, { timeOut: 2500 });
+                  this.closePopup();
                   window.scrollTo(0, 0);
                 } if (statuscode === '2085' || statuscode === '2071') {
                   if (this.router.url !== '/') {
@@ -3534,6 +4209,10 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     this.errorLastName = '';
     this.errormobilephone = '';
     this.errorEmail = '';
+    this.validationEmailError = '';
+    this.existingValidationError = '';
+    this.existingCountrycodeError = '';
+    this.countrycodeError = '';
   }
   openNav() {
     document.getElementById('mySidenav').style.width = '350px';
@@ -3556,6 +4235,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     localStorage.clear();
     this.router.navigate(['/']);
   }
+
   expressBookingGetUserData(DataObj) {
     const wkId2 = <HTMLSelectElement>document.getElementById('ExpworkerIds');
     this.expressService(wkId2.value, 0);
@@ -3618,9 +4298,15 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         localStorage.removeItem('apptDateSlot');
       }, 300);
     }
+    if (DataObj.Booking_Restriction_Type__c === 'Do Not Book') {
+      this.fullName = DataObj.FirstName + ' ' + DataObj.LastName;
+      this.expressClientIds = DataObj.Id;
+      this.serviceNotesModal.show();
+    } else {
+      $('#existingExpressModel').show();
+    }
 
 
-    $('#existingExpressModel').show();
     $('#expressCancelExpress2').click(function () {
       $('#existingExpressModel').hide();
     });
@@ -3631,13 +4317,19 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     this.lastName = DataObj.LastName;
     this.fullName = DataObj.FirstName + ' ' + DataObj.LastName;
     this.mobileNumber = DataObj.MobilePhone;
-    this.mobileCarrier = DataObj.Mobile_Carrier__c;
+    // this.mobileCarrier = DataObj.Mobile_Carrier__c;
     this.primaryEmail = DataObj.Email;
     this.expressClientIds = DataObj.Id;
-
   }
+
   existingExpressBooking() {
-    const bookingDate = $('#expressstartDateTime').val().split('T')[0];
+    const EMAIL_REGEXP = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let bookAny;
+    let bookRoomAnyWay;
+    bookAny = $('#anyway').val();
+    bookRoomAnyWay = $('#bookRoomAnyWay').val();
+    let bookingDate;
+    bookingDate = $('#expressstartDateTime').val().split('T')[0];
     const today = new Date();
     const dd = today.getDate();
     const mm = today.getMonth() + 1;
@@ -3646,12 +4338,21 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     if ((this.firstName === undefined || this.firstName === '') || (this.lastName === '' || this.lastName === undefined)
       //  || (this.mobileNumber === '' || this.mobileNumber === undefined)
       // || (this.primaryEmail === undefined || this.primaryEmail === '')
-      || (CalendarDate2 < moment().format('MM/DD/YYYY'))) {
+      || (CalendarDate2 < moment().format('MM/DD/YYYY')) ||
+      (this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail)) {
+
       if (this.firstName === '' || this.firstName === undefined) {
         this.errorFirstName = 'APPOINTMENTS_MAIN_PAGE.ERROR_FIRST_NAME';
       }
       if (this.lastName === '' || this.lastName === undefined) {
         this.errorLastName = 'APPOINTMENTS_MAIN_PAGE.ERROR_LAST_NAME';
+      }
+      // if (this.countrycode === undefined || this.countrycode === '') {
+      //   this.existingCountrycodeError = 'APPOINTMENTS_MAIN_PAGE.ERROR_COUNTRY_CODE';
+      // }
+      if ((this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail)) {
+        this.existingValidationError = 'SETUPCOMPANY.INVALID_EMAIL_ID';
+        this.errorEmail = '';
       }
       // if ((this.mobileNumber === '' || this.mobileNumber === undefined) && this.clientfieldMobilePhone === true) {
       //   this.errormobilephone = 'APPOINTMENTS_MAIN_PAGE.ERROR_MOBILEPHONE';
@@ -3670,74 +4371,163 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
       this.workername = $('#expressworkername').val();
       const expressWorkerId = $('#expressworkerId').val();
       const dbTime = $('#expresstimes').val().split(' ');
-      const dbTime2 = dbTime[0].split(':');
-      let dbHrs: any = parseInt(dbTime2[0], 10);
-      if (dbTime[1] === 'PM' && dbHrs !== 12) {
-        dbHrs += 12;
-      } else if (dbTime[1] === 'AM' && dbHrs === 12) {
-        dbHrs = 0;
+
+      let edbHrs: any;
+      let edbTime2: any;
+      edbTime2 = dbTime[0].split(':');
+      edbHrs = parseInt(edbTime2[0], 10);
+      if (dbTime[1] === 'PM' && edbHrs !== 12) {
+        edbHrs += 12;
+      } else if (dbTime[1] === 'AM' && edbHrs === 12) {
+        edbHrs = 0;
       }
-      dbHrs = ('0' + dbHrs).slice(-2);
+      edbHrs = ('0' + edbHrs).slice(-2);
+
+      const modifyData = this.apptCalculateServiceTax(this.inputs);
+      let appDat;
+      if (this.bookingDate !== '') {
+        appDat = this.bookingDate.split('T')[0] + ' ' + edbHrs + ':' + edbTime2[1];
+      } else {
+        appDat = this.cldDate + ' ' + edbHrs + ':' + edbTime2[1];
+      }
+      let countryCode: any;
+      if (this.countrycode === undefined) {
+        countryCode = '';
+      } else {
+        countryCode = this.countrycode;
+      }
       this.dataObjects = {
-        'bookingDate': this.cldDate + ' ' + dbHrs + ':' + dbTime2[1],
+        'bookingDate': appDat,
         'workerId': expressWorkerId,
         'workername': this.workername,
         'client_person_id': this.expressClientIds,
         'firstName': this.firstName,
         'lastName': this.lastName,
         'mobileNumber': this.mobileNumber,
-        'mobileCarrier': this.mobileCarrier,
         'primaryEmail': this.primaryEmail,
         'textArea': this.textArea,
         'visitType': this.expressVisitType,
         'sumDuration': this.sumDuration,
-        'service': this.inputs,
-        'price': servicePrice2
+        'service': modifyData.bookingData,
+        'price': servicePrice2,
+        'totalServiceTax': modifyData.serviceTax,
+        'totalPrice': modifyData.sales,
+        'bookAny': bookAny,
+        'bookRoomAnyWay': bookRoomAnyWay
       };
       if (this.submitParam) {
         this.submitParam = false;
         this.appointmentsServices.existingExpressBooking(this.dataObjects).subscribe(
           data => {
             this.submitParam = true;
-            const t = data['result'].affectedRows;
-            if (t > 0) {
+            // const t = data['result'].affectedRows;
+            if (data['result'].length > 0) {
+              this.appointmentsServices.sendApptNotifs([data['result']]).subscribe(data2 => { }, error => { });
               $('#existingExpressModel').hide(500);
               this.router.navigate(['/appointments']).then(() => {
                 this.toastr.success('Successfully created appointment', null, { timeOut: 1500 });
               });
-              const timesss = new Date(moment(this.bookingDate.split(' ')[0]).format('ddd MMMM DD YYYY h:mm:ss').toString());
-              this.goToDate(timesss, 0);
-              this.closePopup();
+              if (this.bookingDate === '') {
+                const callBackTimes1 = new Date(moment(CalendarDate2 + ' ' + '00:00:00').format('ddd MMMM DD YYYY h:mm:ss').toString());
+                this.goToDate(callBackTimes1, 0);
+                this.closePopup();
+              } else {
+                const callBackTimes = new Date(moment(this.bookingDate.split('T')[0]).format('ddd MMMM DD YYYY h:mm:ss').toString());
+                this.goToDate(callBackTimes, 0);
+                this.closePopup();
+              }
             }
           },
           error => {
             this.submitParam = true;
-            const errStatus = JSON.parse(error['_body'])['status'];
-            if (errStatus === '2085' || errStatus === '2071') {
-              if (this.router.url !== '/') {
-                localStorage.setItem('page', this.router.url);
-                this.router.navigate(['/']).then(() => { });
-              }
+            const status = JSON.parse(error['status']);
+            const statuscode = JSON.parse(error['_body']).status;
+            switch (status) {
+              case 500:
+                break;
+              case 400:
+                if (statuscode === '2082') {
+                  this.errResources = 'COMMON_STATUS_CODES.' + JSON.parse(error['_body']).status;
+                  this.bookAnyWay = 'Book Anyway';
+                  window.scrollTo(0, 0);
+                } if (statuscode === '2090') {
+                  this.errResources = 'COMMON_STATUS_CODES.' + JSON.parse(error['_body']).status;
+                  this.bookRoomAnyWay = 'Book RoomAnyWay';
+                  window.scrollTo(0, 0);
+                } if (statuscode === '2085' || statuscode === '2071') {
+                  if (this.router.url !== '/') {
+                    localStorage.setItem('page', this.router.url);
+                    this.router.navigate(['/']).then(() => { });
+                  }
+                } break;
             }
           });
       }
     }
   }
+
   closePopup() {
     const dsfp = $('#searchKeys').val('');
+    $('#loader1').hide();
     const clearData = $('#firstLastClearData').val('');
-    const worSel = <HTMLSelectElement>document.getElementById('workerIds');          // worker id
-    worSel.value = '';
     this.autoList = [];
+    this.inputs = [];
+    this.bookingExpress = [];
+    this.addInput();
+    this.skipVisitType = [];
+    this.expressVisitType = [];
+    this.errorFirstName = '';
+    this.errorLastName = '';
+    this.errormobilephone = '';
+    this.errorEmail = '';
+    this.validationEmailError = '';
+    this.existingValidationError = '';
+    this.countrycodeError = '';
+    this.firstName = '';
+    this.lastName = '';
+    this.mobileNumber = '';
+    this.primaryEmail = '';
+    this.textArea = '';
+    this.expressVisitType = '';
+    this.expressVisitType = [];
+    this.textArea = '';
+    this.skiptextArea = '';
+    this.errResources = '';
+    this.bookAnyWay = '';
+    this.bookRoomAnyWay = '';
 
-    // this.searchField.reset();
     $('#myModal').hide();
+    $('#existingExpressModel').hide();
+    $('#expressModel').hide();
+    $('#skipModel').hide();
+    // console.clear();
   }
+
+  // calculate servcie tax for appointments
+  apptCalculateServiceTax(apptBookingData: Array<any>): { bookingData: Array<any>, serviceTax: number, sales: number } {
+    let totalTax = 0;
+    let totalPrice = 0;
+    const data = apptBookingData.map((bookedData) => {
+      bookedData.service['Service_Tax__c'] = 0;
+      if (!isNullOrUndefined(bookedData.service['serviceTax'])) {
+        const serviceTax = +JSON.parse(bookedData.service['serviceTax']).serviceTax;
+        bookedData.service['Service_Tax__c'] = this.commonService.calculatePercentage(serviceTax, bookedData.service['Price__c'], 1);
+      }
+      totalPrice += +bookedData.service['Price__c'];
+      totalTax += +bookedData.service['Service_Tax__c'];
+      return bookedData;
+    });
+    return {
+      bookingData: data,
+      serviceTax: totalTax,
+      sales: totalPrice
+    };
+  }
+
   skip() {
     const worSel3 = <HTMLSelectElement>document.getElementById('skipworkerIds');          // worker id
     this.expressService(worSel3.value, 0);
     $('#myModal').hide();
-
     const apptDateTime = localStorage.getItem('apptDateSlot');
     if (apptDateTime && apptDateTime !== '') {
       const calDateEle = <HTMLInputElement>document.getElementById('skipCalendarDate');
@@ -3764,7 +4554,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           }
         }
         this.TimeData.push(elem);
-
         if (crDate.getHours() < startDate.getHours()) {
           datIndex++;
         }
@@ -3793,7 +4582,6 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         localStorage.removeItem('apptDateSlot');
       }, 300);
     }
-
     $('#expressModel').hide();
     $('#skipModel').show();
     $('#skipcancel').click(function () {
@@ -3803,8 +4591,10 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
       $('#skipModel').hide();
     });
   }
+
   saveSkipExpBooking() {
-    const bookingDate = $('#skipCalendarDate').val().split('T')[0];
+    let bookingDate;
+    bookingDate = moment($('#skipCalendarDate').val().split('T')[0], 'YYYY-MM-DD').format('YYYY-MM-DD');
     const today = new Date();
     const dd = today.getDate();
     const mm = today.getMonth() + 1;
@@ -3827,31 +4617,47 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         dbHrs = 0;
       }
       dbHrs = ('0' + dbHrs).slice(-2);
-      dbHrs = ('0' + dbHrs).slice(-2);
+      const startHrs = dbHrs;
+      const endHrs = dbTime2[1];
+      const modifyData = this.apptCalculateServiceTax(this.inputs);
+      if (this.bookingDate !== '') {
+        this.skipBookingDates = this.bookingDate.split('T')[0] + ' ' + dbHrs + ':' + dbTime2[1];
+      } else {
+        this.skipBookingDates = this.cldDate + ' ' + dbHrs + ':' + dbTime2[1];
+      }
       this.dataObjects = {
-        'bookingDate': this.cldDate + ' ' + dbHrs + ':' + dbTime2[1],
+        'bookingDate': this.skipBookingDates,
         'workerId': this.workerId,
         'workername': this.workername,
         'price': servicePrice,
         'duration': expressSumDuration,
         'textArea': this.skiptextArea,
         'visitType': this.skipVisitType,
-        'service': this.inputs
+        'service': this.inputs,
+        'totalServiceTax': modifyData.serviceTax,
+        'totalPrice': modifyData.sales
       };
       if (this.submitParam) {
         this.submitParam = false;
         this.appointmentsServices.skipBooking(this.dataObjects).subscribe(
           data => {
             this.submitParam = true;
-            const t = data['result'].affectedRows;
-            if (t > 0) {
+            // const t = data['result'].affectedRows;
+            if (data['result'].length > 0) {
               $('#skipModel').hide(500);
               this.router.navigate(['/appointments']).then(() => {
                 this.toastr.success('Successfully created appointment', null, { timeOut: 1500 });
               });
-              const timesss = new Date(moment(this.bookingDate.split(' ')[0]).format('ddd MMMM DD YYYY h:mm:ss').toString());
-              this.goToDate(timesss, 0);
-              this.closePopup();
+              if (this.bookingDate === '') {
+                const callBack = new Date(moment(skipCalendarDate + ' ' + '00:00:00').format('ddd MMMM DD YYYY h:mm:ss').toString());
+                this.goToDate(callBack, 0);
+                this.closePopup();
+              } else {
+                const callBack1 = new Date(moment(this.bookingDate.split('T')[0]).format('ddd MMMM DD YYYY h:mm:ss').toString());
+                this.goToDate(callBack1, 0);
+                this.closePopup();
+              }
+
             }
           },
           error => {
@@ -3900,5 +4706,49 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+  apptWeekCalculate(workerTimings) {
+    const resultObj = [];
+    const weekDays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    weekDays.map((day, i) => {
+      const obj: any = {};
+      obj['dow'] = [i];
+      if (workerTimings[day + 'Start']) {
+        obj['start'] = moment(workerTimings[day + 'Start'], 'hh:mm A').format('HH:mm');
+        obj['end'] = moment(workerTimings[day + 'End'], 'hh:mm A').format('HH:mm');
+      } else {
+        obj['start'] = '23:59';
+        obj['end'] = '24:00';
+      }
+      resultObj.push(obj);
+    });
+    return resultObj;
+  }
+  // days[0] = moment(startOfWeek, 'YYYY-MM-DD').add('days', 0).format('YYYY-MM-DD');
+  // for (let i = 0; i < individualWorkerWeek.length; i++) {
+  //   MonStart = moment(day1 + ' ' + individualWorkerWeek[i].MonStart, 'YYYY-MM-DD hh:mm A').format('YYYY-MM-DDTHH:mm');
+  //   MonEnd = moment(day1 + ' ' + individualWorkerWeek[i].MonEnd, 'YYYY-MM-DD hh:mm A').format('YYYY-MM-DDTHH:mm');
+  // }
+  getHideClientContactInfo() {
+    this.appointmentsServices.getHideCliContactInfo(this.decodeUserToken.data.id).subscribe(data => {
+      if (data['result'] && data['result'].length > 0) {
+        this.hideClientInfo = data['result'][0].Hide_Client_Contact_Info__c;
+      }
+    }, error => {
+      const errStatus = JSON.parse(error['_body'])['status'];
+      if (errStatus === '2085' || errStatus === '2071') {
+        if (this.router.url !== '/') {
+          localStorage.setItem('page', this.router.url);
+          this.router.navigate(['/']).then(() => { });
+        }
+      }
+    });
+  }
+
+
+  // weekdaydatas() {
+  //   const events = [];
+
+  // }
 
 }

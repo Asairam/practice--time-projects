@@ -77,10 +77,10 @@ export class SetupServGroupsComponent implements OnInit {
             this.createServiceGroupsData = {
                 createServiceGroupsData: {
                     'active': this.serviceActive,
-                    'serviceGroupName': this.serviceName,
+                    'serviceGroupName': this.serviceName.trim().replace(/  +/g, ' '),
                     'serviceGroupColor': this.color,
                     'sortOrder': Number(this.sortOrder),
-                    'clientFacingServiceGroupName': this.onlineName,
+                    'clientFacingServiceGroupName': this.onlineName.trim().replace(/  +/g, ' '),
                     'isSystem': null
                 }
             };
@@ -154,10 +154,10 @@ export class SetupServGroupsComponent implements OnInit {
             this.editServiceGroupsData = {
                 updateServiceGroupsData: {
                     'active': this.updateActive,
-                    'serviceGroupName': this.updateSericeName,
+                    'serviceGroupName': this.updateSericeName.trim().replace(/  +/g, ' '),
                     'serviceGroupColor': this.updateServiceColor,
                     'sortOrder': this.updateSortOrder,
-                    'clientFacingServiceGroupName': this.updateOnlineName,
+                    'clientFacingServiceGroupName': this.updateOnlineName.trim().replace(/  +/g, ' '),
                     'isSystem': this.issystem
                 }
             };

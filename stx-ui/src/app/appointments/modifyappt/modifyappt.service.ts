@@ -29,13 +29,17 @@ export class ModifyApptService {
       .map(this.extractData);
   }
   /* Method to get appointment services */
-  getApptServices(clientId, apptId) {
-    return this.http.get(this.apiEndPoint + '/api/appointments/services/' + clientId + '/' + apptId)
+  getApptServices(clientId, apptId, reqDate) {
+    const headers = new Headers();
+    headers.append('bookingdate', reqDate);
+    return this.http.getHeader(this.apiEndPoint + '/api/appointments/services/' + clientId + '/' + apptId, headers)
       .map(this.extractData);
   }
   /* Method to get service groups */
-  getServiceGroups(type) {
-    return this.http.get(this.apiEndPoint + '/api/setupservices/servicegroups/' + type)
+  getServiceGroups(type, reqDate) {
+    const headers = new Headers();
+    headers.append('bookingdate', reqDate);
+    return this.http.getHeader(this.apiEndPoint + '/api/setupservices/servicegroups/active/forappts', headers)
       .map(this.extractData);
   }
   getServices(serviceName, type, bookingdate: string) {
@@ -73,12 +77,19 @@ export class ModifyApptService {
   /* Method to save modified appointment */
   modifyAppointment(modifyBookingData) {
     return this.http.post(this.apiEndPoint + '/api/clientSearch/appointmentbooking', modifyBookingData)
-    .map(this.extractData);
+      .map(this.extractData);
   }
   searchForAppts(dataObj) {
     const header = new Headers();
     header.append('params', JSON.stringify(dataObj));
     return this.http.getHeader(this.apiEndPoint + '/api/appointment/search', header)
+      .map(this.extractData);
+  }
+  /**
+ * Method to get preferences for service tax and retail tax calculation
+ */
+  getServProdTax() {
+    return this.http.get(this.apiEndPoint + '/api/setup/ticketpreferences/pos')
       .map(this.extractData);
   }
   /*To extract json data*/

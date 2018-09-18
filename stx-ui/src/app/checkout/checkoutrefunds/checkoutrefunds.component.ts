@@ -16,6 +16,7 @@ import { CommonService } from '../../common/common.service';
 })
 export class CheckOutRefundsComponent implements OnInit {
   clientId: any;
+  apptId: any;
   clientData: any;
   refundData: any;
   clientName: any;
@@ -69,7 +70,7 @@ export class CheckOutRefundsComponent implements OnInit {
   ngOnInit() {
     this.getClientData(this.clientId);
     this.endDate = new Date(this.date.getTime());
-    this.endDate.setDate(this.date.getDate() - 1);
+    this.endDate.setDate(this.date.getDate());
     this.startDate = new Date(this.date.setMonth(this.date.getMonth() - 1));
     const local = JSON.parse(localStorage.getItem('browserObject'));
     if (localStorage.getItem('browserObject') === '' || localStorage.getItem('browserObject') === null) {
@@ -117,12 +118,16 @@ export class CheckOutRefundsComponent implements OnInit {
     this.totalAmt = 0;
     this.taxvalue = 0;
     this.searchList = false;
+    const today = new Date();
+    const newdate = new Date();
     if (value === 'Payment Overcharge') {
       this.ElectronicPayment = 'Electronic payments may only be refunded within 90 days.';
       this.Electronicdisabled = true;
+      this.startDate = new Date(newdate.setDate(today.getDate() - 90));
     } else {
       this.ElectronicPayment = '';
       this.Electronicdisabled = false;
+      this.startDate = new Date(newdate.setDate(today.getDate() - 30));
     }
   }
   refundSearch() {
@@ -151,8 +156,16 @@ export class CheckOutRefundsComponent implements OnInit {
       this.checkOutRefundsService.getRefund(refunddata)
         .subscribe(data => {
           this.refundData = data['result'];
+          for (let i = 0; i < this.refundData.length; i++) {
+            this.refundData[i].disaplayDate = this.commonService.getUsrDtStrFrmDBStr(this.refundData[i].Service_Date_Time__c);
+            if (this.refundData[i].Appt_Date_Time__c) {
+              this.refundData[i].apptTime = this.commonService.getUsrDtStrFrmDBStr(this.refundData[i].Appt_Date_Time__c);
+            }
+          }
           this.refundData.forEach(element => {
+            element.Net_Price__c = element.Net_Price__c.toFixed(2);
             element.oldAmt = element.Net_Price__c;
+            element.newPrice = element.Net_Price__c * element.Qty_Sold__c;
           });
           this.searchList = true;
           if (this.refundtype === 'Service Refund') {
@@ -196,15 +209,33 @@ export class CheckOutRefundsComponent implements OnInit {
     if (value === true) {
       this.taxvalue = 0;
       this.totalAmt = 0;
+      this.apptId = item.Appt_Ticket__c;
       // start refund to list data
       this.checkOutRefundsService.getRefundTO(item)
         .subscribe(data => {
-          this.refund = data['result'];
+          this.refund = data['result'][0];
           this.refund.forEach(element => {
             element.OriginalPaymentAmount = element.Amount_Paid__c;
           });
+          const Cindex = this.refund.findIndex(el => el.Name === 'Cash');
+          const Aindex = this.refund.findIndex(el => el.Name === 'Account Charge');
+          if (Cindex === -1) {
+            this.refund.push({
+              'Id': 'a0M1H00000UeiV1UAJ',
+              'Name': 'Cash',
+              'Amount_Paid__c': '0.00',
+              'OriginalPaymentAmount': '0.00'
+            });
+          }
+          if (Aindex === -1) {
+            this.refund.push({
+              'Id': 'a0M1H00000UeiV2UAJ',
+              'Ineligible': 'Ineligible',
+              'Name': 'Account Charge'
+            });
+          }
           if (this.refund.length > 0) {
-            this.refundTOData = this.refund;
+            this.refundTOData = this.refund.filter(function (obj) { return obj.Id; });
             this.refundSaveBut = true;
           }
         }, error => {
@@ -259,7 +290,7 @@ export class CheckOutRefundsComponent implements OnInit {
             if (this.refundData[t].Taxable__c === 1) {
               ser_tax = this.refundData[t].Service_Tax__c;
             } else { ser_tax = 0; }
-            this.totalAmt += this.refundData[t].Net_Price__c + (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * ser_tax;
+            this.totalAmt += Number(this.refundData[t].Net_Price__c) + (Number(this.refundData[t].Net_Price__c) / Number(this.refundData[t].oldAmt)) * ser_tax;
           }
         }
       } else if (this.refundtype === 'Product Refund') {
@@ -268,14 +299,14 @@ export class CheckOutRefundsComponent implements OnInit {
             this.refundData[t].Product_Tax__c = 0;
           }
           if (this.refundData[t].selectVal === true && this.refundData[t].Taxable__c === 1) {
-            this.taxvalue += (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * this.refundData[t].Product_Tax__c;
+            this.taxvalue += (this.refundData[t].newPrice / this.refundData[t].oldAmt) * this.refundData[t].Product_Tax__c;
           }
           if (this.refundData[t].selectVal === true && this.refundData[t].oldAmt !== 0) {
             let ser_tax = 0;
             if (this.refundData[t].Taxable__c === 1) {
               ser_tax = this.refundData[t].Product_Tax__c;
             } else { ser_tax = 0; }
-            this.totalAmt += this.refundData[t].Net_Price__c + (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * ser_tax;
+            this.totalAmt += (this.refundData[t].newPrice * this.refundData[t].Qty_Sold__c) + (this.refundData[t].newPrice / this.refundData[t].oldAmt) * ser_tax;
           }
         }
       }
@@ -348,9 +379,9 @@ export class CheckOutRefundsComponent implements OnInit {
     this.refundSaveData = [];
     this.refundTOData.forEach((element, index) => {
       if (index === 0) {
-        toref = element.Amount_Paid__c;
+        toref = element.Amount_Paid__c ? Number(element.Amount_Paid__c) : 0;
       } else {
-        toref += element.Amount_Paid__c;
+        toref += element.Amount_Paid__c ? Number(element.Amount_Paid__c) : 0;
       }
       if (element.Amount_Paid__c !== 0 && element.Amount_Paid__c !== 0.00 && element.Amount_Paid__c !== null) {
         this.refundSaveData.push({
@@ -416,8 +447,9 @@ export class CheckOutRefundsComponent implements OnInit {
       totalAmt: this.totalfixAmt,
       selectList: this.checkedData,
       Drawer_Number__c: this.local !== 'N/A' ? this.local : '',
-      refundToList: this.refundSaveData,
-      Appt_Date_Time__c: this.commonService.getDBDatTmStr(new Date())
+      refundToList: this.refundSaveData.filter(function (obj) { return obj.AmountToRefund && Number(obj.AmountToRefund) !== 0 ; }),
+      Appt_Date_Time__c: this.commonService.getDBDatTmStr(new Date()),
+      apptId: this.apptId
     };
     if (this.refundtype === 'Service Refund' || this.refundtype === 'Product Refund') {
       if (this.totalfixAmt === toref.toFixed(2).toString()) {

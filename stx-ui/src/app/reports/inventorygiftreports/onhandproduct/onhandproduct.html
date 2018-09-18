@@ -3,14 +3,15 @@
     <section id="inner_cont">
         <div class="container form_cont">
             <div class="row mt-20">
-                <div class="col-md-4 col-sm-4 text-right res-tleft">
-                    <label>{{'SETUP_INVENTORY_PRODUCTS.PRODUCT_LINE'| translate }}</label>
-                </div>
-                <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option selected>American Crew</option>
-                        <option>Bio Elements</option>
-                    </select>
+                <div class="row mt-20">
+                    <div class="col-md-4 col-sm-4 text-right res-tleft">
+                        <label>{{'SETUP_INVENTORY_PRODUCTS.PRODUCT_LINE' | translate }}</label>
+                    </div>
+                    <div class="col-md-7 col-sm-8">
+                        <select [(ngModel)]="pdLineId" (ngModelChange)='isGenerate = false' (change)="pdLineListOnChange($event.target.value)">
+                            <option *ngFor="let pdline of productLineList; let i='index'" value="{{pdline.Id}}">{{pdline.Name}}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -24,10 +25,9 @@
                 </div>
             </div>
             <!-- <hr> -->
-            <div class="row mt-20 mr-10" *ngIf='showProdList == true'>
+            <div class="row mt-20 mr-10" *ngIf="isGenerate">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered">
-
                         <thead>
                             <tr>
                                 <th class="thcss">{{'MANAGE_INVENTORY.PRODUCT_NAME'| translate }}</th>
@@ -39,22 +39,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Daily Conditioner</td>
-                                <td>12.00</td>
-                                <td>7</td>
-                                <td>2</td>
-                                <td>$10.00</td>
-                                <td>$15.00</td>
-                            </tr>
+                            <ng-container *ngFor="let list1 of productSalesObj">
+                                <tr *ngFor="let list of list1">
+                                    <td>{{list.Name}}</td>
+                                    <td>{{list.Size__c}}</td>
+                                    <td>{{list.Quantity_On_Hand__c}}</td>
+                                    <td>{{list.Minimum_Quantity__c}}</td>
+                                    <td>{{list.Average_Cost__c}}</td>
+                                    <td>{{list.On_Hand_Cost__c}}</td>
+                                </tr>
+                                <tr>
+                                    <td>**{{list1.inventoryGroupName}}</td>
+                                    <td>{{list1.size}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </ng-container>
+
                         </tbody>
                     </table>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="thcss">TOTAL</th>
+                                <th class="thcss">{{totalSize}}</th>
+                                <th class="thcss"></th>
+                                <th class="thcss"></th>
+                                <th class="thcss"></th>
+                                <th class="thcss"></th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
-                <!-- <div class="mb-20 clearfix brdgrey">
-                            <div class="col-md-12  pdgt5">
-                                Class Summery: 1 Classes / Total Amount $10.00
-                            </div>
-                        </div> -->
             </div>
         </div>
     </section>

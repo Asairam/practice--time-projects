@@ -1,155 +1,357 @@
 <div id="wrapper_setup_new">
-	<!-- <app-header></app-header> -->
 	<app-header [newMenu]="'noNav'"></app-header>
-		<section id="inner_cont" class="setsubcont">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4 mt-40">
-						<div class="table-responsive">
-							<table class="table table-bordered-white">
-								<tbody>
-									<tr class="white">
-										<td>Client</td>
-										<td>Earliest Date</td>
-										<td>Latest Date</td>
-									</tr>
-									<tr>
-										<td>Ramona Piggy</td>
-										<td>7/4/2017</td>
-										<td>7/31/2017</td>
-									</tr>
-									<tr>
-										<td>Cheyenne Pigea</td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>Sally Smith</td>
-										<td>7/10/2017</td>
-										<td>7/17/2017</td>
-									</tr>
-									<tr>
-										<td>Miles Guinea</td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td>Jack Moran</td>
-										<td></td>
-										<td></td>
-									</tr>
-									<tr>
-										<td align="center" colspan="3">
-											<a href="javascript:;" class="white">
-												<i class="fa fa-plus"></i> New</a>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+	<section id="inner_cont" class="setsubcont">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 mt-40 {{disabledClass}}">
+					<div class="table-responsive">
+						<table class="table table-bordered-white">
+							<tbody>
+								<tr class="white">
+									<td>Client</td>
+									<td>Earliest Date</td>
+									<td>Latest Date</td>
+								</tr>
+								<tr>
+									<td class="word-break tbl-txt"(click)="showdata()">Ramona Piggy</td>
+									<td>7/4/2017</td>
+									<td>7/31/2017</td>
+								</tr>
+								<tr>
+									<td class="word-break tbl-txt"(click)="showdata()">Cheyenne deeePigea</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td class="word-break tbl-txt"(click)="showdata()">Sally Smith</td>
+									<td>7/10/2017</td>
+									<td>7/17/2017</td>
+								</tr>
+								<tr>
+									<td class="word-break tbl-txt"(click)="showdata()">Miles Guinea</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td class="word-break tbl-txt"(click)="showdata()">Jack Moran</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td align="center" colspan="3" (click)="addNew()">
+										<a href="javascript:;" class="white">
+											<i class="fa fa-plus"></i> New</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!---------- add Div Starts-------------------->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf='addDiv == true'>
+					<h1>Waiting List Detail</h1>
+					<!-- <h2 class="mt-25">Name</h2> -->
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Primary Phone</label>
+						</div>
+						<div class="col-sm-7">
+							<label></label>
 						</div>
 					</div>
-					<div class="col-md-8 pdgl30 mt-40">
-						<h1>Waiting List Detail</h1>
-						<h2 class="mt-25">Jack Moran</h2>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Primary Phone</label>
-							</div>
-							<div class="col-sm-7">
-								<label>(304) 794-6599</label>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Mobile Phone</label>
+						</div>
+						<div class="col-sm-7">
+							<label></label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>Service</td>
+											<td>Worker</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td></td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Mobile Phone</label>
-							</div>
-							<div class="col-sm-7">
-								<label>(304) 794-6599</label>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Request Note</label>
+						</div>
+						<div class="col-sm-7">
+							<textarea></textarea>
+						</div>
+					</div>
+					<div class="row mt-30 res-mt-15">
+						<div class="col-md-12">
+							<h2>Appointment Time Requested</h2>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Earliest Time</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Latest Time</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Earliest Date</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Latest Date</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Added:</label>
+						</div>
+						<div class="col-sm-7">
+							<label></label>
+						</div>
+					</div>
+					<div class="row mt-30 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn">Save</button>
+							<button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+							<a href="book-appointment.php" class="btn btn-primary">
+								<i class="fa fa-calendar"></i> Book Appt</a>
+							<button type="button" class="cancel-btn">Delete Request</button>
+						</div>
+					</div>
+				</div>
+				<!---------- Edit Div Starts-------------------->
+				<div class="col-md-8 pdgl30 mt-40" *ngIf='editDiv == true'>
+					<h1>Waiting List Detail</h1>
+					<h2 class="mt-25">Sally Smith</h2>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Primary Phone</label>
+						</div>
+						<div class="col-sm-7">
+							<label>(304) 794-6599</label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Mobile Phone</label>
+						</div>
+						<div class="col-sm-7">
+							<label>(304) 794-6599</label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>Service</td>
+											<td>Worker</td>
+										</tr>
+										<tr>
+											<td>Mens Hair Cut</td>
+											<td>Ava Moran</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-md-12">
-								<div class="table-responsive">
-									<table class="table table-bordered-light">
-										<tbody>
-											<tr class="grey_th">
-												<td>Service</td>
-												<td>Worker</td>
-											</tr>
-											<tr>
-												<td>Mens Hair Cut</td>
-												<td>Ava Moran</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Request Note</label>
+						</div>
+						<div class="col-sm-7">
+							<textarea></textarea>
+						</div>
+					</div>
+					<div class="row mt-30 res-mt-15">
+						<div class="col-md-12">
+							<h2>Appointment Time Requested</h2>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Earliest Time</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Latest Time</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Earliest Date</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Latest Date</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Added:</label>
+						</div>
+						<div class="col-sm-7">
+							<label>6/9/2017 7:43 AM Tonya Moran</label>
+						</div>
+					</div>
+					<div class="row mt-30 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn">Save</button>
+							<button type="button" class="cancel-btn"(click)="cancel()">Cancel</button><!--[routerLink]="['/appointments']"-->
+							<a href="book-appointment.php" class="btn btn-primary">
+								<i class="fa fa-calendar"></i> Book Appt</a>
+							<button type="button" class="cancel-btn">Delete Request</button>
+						</div>
+					</div>
+				</div>
+				<!---------- disable  Div Starts-------------------->
+				<div class="col-md-8 pdgl30 mt-40 disable" *ngIf='disableDiv == true'>
+					<h1>Waiting List Detail</h1>
+					<h2 class="mt-25"></h2>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Primary Phone</label>
+						</div>
+						<div class="col-sm-7">
+							<label></label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Mobile Phone</label>
+						</div>
+						<div class="col-sm-7">
+							<label></label>
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered-light">
+									<tbody>
+										<tr class="grey_th">
+											<td>Service</td>
+											<td>Worker</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td></td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Request Note</label>
-							</div>
-							<div class="col-sm-7">
-								<textarea></textarea>
-							</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Request Note</label>
 						</div>
-						<div class="row mt-30 res-mt-15">
-							<div class="col-md-12">
-								<h2>Appointment Time Requested</h2>
-							</div>
+						<div class="col-sm-7">
+							<textarea></textarea>
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Earliest Time</label>
-							</div>
-							<div class="col-sm-7">
-								<input type="text">
-							</div>
+					</div>
+					<div class="row mt-30 res-mt-15">
+						<div class="col-md-12">
+							<h2>Appointment Time Requested</h2>
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Latest Time</label>
-							</div>
-							<div class="col-sm-7">
-								<input type="text">
-							</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Earliest Time</label>
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Earliest Date</label>
-							</div>
-							<div class="col-sm-7">
-								<input type="text">
-							</div>
+						<div class="col-sm-7">
+							<input type="text">
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Latest Date</label>
-							</div>
-							<div class="col-sm-7">
-								<input type="text">
-							</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Latest Time</label>
 						</div>
-						<div class="row mt-20 res-mt-15">
-							<div class="col-sm-3 text-right res-tleft">
-								<label>Added:</label>
-							</div>
-							<div class="col-sm-7">
-								<label>6/9/2017 7:43 AM Tonya Moran</label>
-							</div>
+						<div class="col-sm-7">
+							<input type="text">
 						</div>
-						<div class="row mt-30 res-mt-15 text-center res-tleft">
-							<div class="col-sm-10">
-								<button type="button" class="save-btn">Save</button>
-								<button type="button" class="cancel-btn" [routerLink]="['/appointments']">Cancel</button>
-								<a href="book-appointment.php" class="btn btn-primary">
-									<i class="fa fa-calendar"></i> Book Appt</a>
-								<button type="button" class="cancel-btn">Delete Request</button>
-							</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Earliest Date</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Latest Date</label>
+						</div>
+						<div class="col-sm-7">
+							<input type="text">
+						</div>
+					</div>
+					<div class="row mt-20 res-mt-15">
+						<div class="col-sm-3 text-right res-tleft">
+							<label>Added:</label>
+						</div>
+						<div class="col-sm-7">
+							<label></label>
+						</div>
+					</div>
+					<div class="row mt-30 res-mt-15 text-center res-tleft">
+						<div class="col-sm-10">
+							<button type="button" class="save-btn">Save</button>
+							<button type="button" class="cancel-btn"(click)="cancel()">Cancel</button>
+							<a href="book-appointment.php" class="btn btn-primary">
+								<i class="fa fa-calendar"></i> Book Appt</a>
+							<button type="button" class="cancel-btn">Delete Request</button>
 						</div>
 					</div>
 				</div>
 			</div>
-		</section>
-		<app-rightbar></app-rightbar>
+		</div>
+	</section>
+	<app-rightbar></app-rightbar>
 </div>

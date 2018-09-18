@@ -15,6 +15,7 @@ import { CommonService } from '../../common/common.service';
 @Component({
     selector: 'app-appointments-popup',
     templateUrl: './bookoutdetail.html',
+    styleUrls: ['./bookoutdetail.css'],
     providers: [BookOutDetailService, CommonService]
 })
 export class BookOutDetailComponent implements OnInit {
@@ -32,9 +33,9 @@ export class BookOutDetailComponent implements OnInit {
     endTime: any;
     statusColor = { 'background-color': '' };
     error: any = '';
-    createdDate: any;
-    modifiedDate: any;
-    appointmentDate: any;
+    createdDate = ['', ''];
+    modifiedDate = ['', ''];
+    appointmentDate = ['', ''];
     datePickerConfig: any;
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -97,15 +98,13 @@ export class BookOutDetailComponent implements OnInit {
     getApptDetails(apptid) {
         this.bookOutDetailService.getApptDetails(apptid).subscribe(data => {
             this.apptData = data['result'][0];
-            this.appointmentDate = this.apptData.apdate;
-            this.createdDate = this.commonService.UTCStrToUsrTmzStr(this.apptData.creadate);
-            this.modifiedDate = this.commonService.UTCStrToUsrTmzStr(this.apptData.lastmofdate);
+            this.appointmentDate = this.commonService.getUsrDtStrFrmDBStr(this.apptData.apdate);
+            this.createdDate = this.commonService.getUsrDtStrFrmDBStr(this.apptData.creadate);
+            this.modifiedDate = this.commonService.getUsrDtStrFrmDBStr(this.apptData.lastmofdate);
             const crtDate = new Date();
             const timeDiff = crtDate.getTimezoneOffset();
             const apptDate = new Date(data.result[0].apdate);
             this.getBookingData();
-            const displayName = document.getElementById('displayNameId');
-            displayName.innerHTML = 'Book Out Time Detail - ' + data.result[0].workerName;
             this.workerName = this.apptData.workerId;
             this.bsValue = apptDate;
             this.getStartTime(apptDate);
@@ -187,8 +186,7 @@ export class BookOutDetailComponent implements OnInit {
     getWorkerList() {
         this.bookOutDetailService.getWorkerList().subscribe(data => {
             this.workerList = [];
-            this.workerList = data['result']
-                .filter(filterList => filterList.IsActive);
+            this.workerList = data['result'].filter(filterList => filterList.IsActive);
         },
             error => {
                 const status = JSON.parse(error['status']);

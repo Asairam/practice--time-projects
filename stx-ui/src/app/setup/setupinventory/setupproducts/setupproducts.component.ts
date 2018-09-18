@@ -98,6 +98,7 @@ export class SetupProductsComponent implements OnInit {
     deleteSuppliers = [];
     statuscode: any;
     type = '';
+    activeFalse: any;
     constructor(private setupProductsService: SetupProductsService,
         private toastr: ToastrService,
         private translateService: TranslateService,
@@ -111,7 +112,7 @@ export class SetupProductsComponent implements OnInit {
         this.addDiv = true;
         this.editDiv = false;
         this.disableDiv = false;
-        this.getProductLineDetails();
+        this.getProductLineDetails(1);
         this.getSuppliersData();
     }
     averageVal() {
@@ -174,7 +175,7 @@ export class SetupProductsComponent implements OnInit {
                 this.inventoryGroup = this.groupName[0].inventoryGroups;
             }
             if (this.productUnitOfMeasure === undefined) {
-                this.productUnitOfMeasure = this.unitOfMeasureValue[0].unitOfMeasures;
+                this.productUnitOfMeasure = '';
             }
             if (this.productLine === undefined) {
                 this.productLine = this.productLineDataListing[0].Id;
@@ -204,7 +205,8 @@ export class SetupProductsComponent implements OnInit {
                 .subscribe(
                     data => {
                         this.productDetails = data['data'];
-                        this.toastr.success('Setup Products Saved Successfully', null, { timeOut: 1500 });
+                        const toastermessage: any = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_PRODUCT_SUCCESS');
+                        this.toastr.success(toastermessage.value, null, { timeOut: 1500 });
                         this.productLineId = this.storeProdLineId;
                         this.inventoryGroupName = this.storeInventoryGroupName;
                         this.getProductDetails();
@@ -258,8 +260,8 @@ export class SetupProductsComponent implements OnInit {
                 });
     }
     /*--- Method used to get product line details ---*/
-    getProductLineDetails() {
-        this.setupProductsService.getProductlines(this.inActive)
+    getProductLineDetails(type) {
+        this.setupProductsService.getProductlines(type)
             .subscribe(data => {
                 this.productLineDataListing = data['result'];
                 if (!this.productLineId) {
@@ -270,6 +272,7 @@ export class SetupProductsComponent implements OnInit {
                         this.inventoryGroups = data2['result'];
                         this.unitOfMeasure = this.inventoryGroups[0].Units_of_Measure__c;
                         this.unitOfMeasureValue = JSON.parse(this.unitOfMeasure);
+                        this.productUnitOfMeasure = this.unitOfMeasureValue[0]['unitOfMeasures'];
                         this.groupValue = this.inventoryGroups[0].Groups__c;
                         this.groupName = JSON.parse(this.groupValue);
                         if (!this.inventoryGroupName) {
@@ -434,6 +437,7 @@ export class SetupProductsComponent implements OnInit {
     }
     /*--- Method to save and get add new record ---*/
     saveAndNew() {
+        this.activeFalse = this.productActive;
         if (this.productName === '' || this.productName === undefined || this.productName === 'undefined') {
             this.error = 'SETUP_INVENTORY_PRODUCTS.VALID_NOBLANK_PRODUCT_NAME';
         } else if (this.productSKU === '' || this.productSKU === undefined || this.productSKU === 'undefined') {
@@ -478,7 +482,7 @@ export class SetupProductsComponent implements OnInit {
                 this.inventoryGroup = this.groupName[0].inventoryGroups;
             }
             if (this.productUnitOfMeasure === undefined) {
-                this.productUnitOfMeasure = this.unitOfMeasureValue[0].unitOfMeasures;
+                this.productUnitOfMeasure = '';
             }
             if (this.productLine === undefined) {
                 this.productLine = this.productLineDataListing[0].Id;
@@ -507,7 +511,8 @@ export class SetupProductsComponent implements OnInit {
                 .subscribe(
                     data => {
                         this.productDetails = data['data'];
-                        this.toastr.success('Setup Products Saved Successfully', null, { timeOut: 1500 });
+                        const toastermessage: any = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_PRODUCT_SUCCESS');
+                        this.toastr.success(toastermessage.value, null, { timeOut: 1500 });
                         this.productLineId = this.storeProdLineId;
                         this.inventoryGroupName = this.storeInventoryGroupName;
                         this.getProductDetails();
@@ -517,6 +522,9 @@ export class SetupProductsComponent implements OnInit {
                         this.addDiv = true;
                         this.errorMinimum = '';
                         this.clear();
+                        this.productActive = this.activeFalse;
+                        this.supplierMinimum = 1;
+                        this.suppliers = [];
                     },
                     error => {
                         const status = JSON.parse(error['status']);
@@ -542,7 +550,6 @@ export class SetupProductsComponent implements OnInit {
     }
     /*--- Method to show data ---*/
     showData(productListvalues) {
-
         this.setupProductsService.getProductlines(this.inActive)
             .subscribe(data => {
                 this.productLineDataListing = data['result'];
@@ -552,6 +559,7 @@ export class SetupProductsComponent implements OnInit {
                         this.inventoryGroups = data2['result'];
                         this.unitOfMeasure = this.inventoryGroups[0].Units_of_Measure__c;
                         this.unitOfMeasureValue = JSON.parse(this.unitOfMeasure);
+                        this.updatedProductUnitOfMeasure =  this.unitOfMeasureValue[0]['unitOfMeasures'];
                         this.groupValue = this.inventoryGroups[0].Groups__c;
                         this.groupName = JSON.parse(this.groupValue);
                         // this.inventoryGroupName = this.groupName[0].inventoryGroups;
@@ -744,7 +752,7 @@ export class SetupProductsComponent implements OnInit {
             this.productEditData.size = this.updatedSize;
             this.productEditData.productUnitOfMeasure = this.updatedProductUnitOfMeasure;
             this.productEditData.productLine = this.updatedProductLine;
-            this.productEditData.inventoryGroup = this.updatedInventoryGroup;
+            this.productEditData.inventoryGroup = this.inventoryGroupName;
             this.productEditData.taxable = this.updatedTaxable;
             this.productEditData.professional = this.updatedProfessional;
             this.productEditData.price = this.updatedPrice;
@@ -764,7 +772,8 @@ export class SetupProductsComponent implements OnInit {
                 .subscribe(
                     data => {
                         this.productDetails = data['data'];
-                        this.toastr.success('Setup Products Updated Successfully', null, { timeOut: 1500 });
+                        const toastermessage: any = this.translateService.get('COMMON_TOAST_MESSAGES.TOAST_PRODUCT_UPDATE_SUCCESS');
+                        this.toastr.success(toastermessage.value, null, { timeOut: 1500 });
                         this.disableDiv = true;
                         this.hideTable = true;
                         this.addDiv = false;
@@ -777,7 +786,7 @@ export class SetupProductsComponent implements OnInit {
                         this.clear();
                         this.productLineId = this.editStoreprodlineId;
                         this.inventoryGroupName = this.editStoreInventoryGrpName;
-                        this.getProductLineDetails();
+                        this.getProductLineDetails(this.inActive);
                     },
                     error => {
                         const status = JSON.parse(error['status']);
@@ -831,8 +840,12 @@ export class SetupProductsComponent implements OnInit {
     getInactiveRecords(value) {
         if (value.target.checked === true) {
             this.inActive = 0;
+            this.getProductLineDetails(this.inActive);
+            this.getProductLineForListing(this.productLineDataListing[0].Id);
         } else {
             this.inActive = 1;
+            this.getProductLineDetails(this.inActive);
+            this.getProductLineForListing(this.productLineDataListing[0].Id);
         }
         this.setupProductsService.getProducts(this.inActive, this.productLineId,
             this.inventoryGroupName)
@@ -853,6 +866,7 @@ export class SetupProductsComponent implements OnInit {
     addNew() {
         this.productActive = true;
         this.suppliers = [];
+        this.supplierMinimum = 1;
         // this.productLineValue = this.productLineDataListing[0].Id;
         /**
          * Commented for Temporarly by ramesh, i think it is not required here
@@ -882,6 +896,9 @@ export class SetupProductsComponent implements OnInit {
         this.suppliers = [];
         this.averageCost = '';
         this.standardCost = '';
+        this.updatedPrice = '';
+        this.updatedStandardCost = '';
+        this.fileName = 'No File Choosen';
     }
     /*--- Method to clear fields ---*/
     clear() {
@@ -905,6 +922,8 @@ export class SetupProductsComponent implements OnInit {
         this.fileName = 'No File Choosen';
         this.productPicToShow = '';
         this.minimumQuantity = '';
+        this.updatedPrice = '';
+        this.updatedStandardCost = '';
     }
     /*--- Method to clear error message ---*/
     clearErrMsg() {

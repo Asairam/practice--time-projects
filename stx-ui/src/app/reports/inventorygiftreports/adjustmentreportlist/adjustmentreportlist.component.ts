@@ -30,8 +30,12 @@ export class AdjustmentReportListComponent implements OnInit {
   res2 = [];
   totalListQuantity = [];
   totalListAmount = [];
+  totalNetAmount = [];
+  titalNetListAmount = [];
   costSum = 0;
   onDiffSum = 0;
+  grandListTotal = 0;
+  grandNetTotal = 0;
   constructor(private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
@@ -84,24 +88,12 @@ export class AdjustmentReportListComponent implements OnInit {
         });
   }
   showData(date) {
-    this.showDate = date;
+    this.showDate = date; /* this is used to dispaly at adjustment date at company info */
     this.viewData = this.searchResult[date];
-    // for (let i = 0; i < this.viewData.length; i++) {
-    //   if (i !== (this.viewData.length - 1)) {
-    //     if (this.viewData[i]['Inventory_Group__c'] === this.viewData[i + 1]['Inventory_Group__c']
-    //       && this.viewData[i]['plName'] === this.viewData[i + 1]['plName']
-    //       && this.viewData[i]['Product_Code__c'] === this.viewData[i + 1]['Product_Code__c']) {
-    //       this.costSum += JSON.parse(this.viewData[i].JSON__c)['cost'];
-    //       this.onDiffSum += JSON.parse(this.viewData[i].JSON__c)['onHandDiff'];
-    //       // this.viewData[i].cost = JSON.parse(this.viewData[i].JSON__c)['cost']
-    //     }
-    //   }
-    //   // console.log(i, i + 1, this.costSum, this.onDiffSum)
-    // }
     const res = new Map();
     for (let i = 0; i < this.viewData.length; i++) {
       const l = this.viewData[i];
-      l['p'] = JSON.parse(l.JSON__c);
+      l['values'] = JSON.parse(l.JSON__c);
 
       const name = l.Inventory_Group__c + '&' + l.plName;
       if (res.has(name)) {
@@ -116,23 +108,35 @@ export class AdjustmentReportListComponent implements OnInit {
       const temp = [];
       let totalQuantity = 0;
       let totalAmount = 0;
+      let netTotal = 0;
+      let netListTotal = 0;
       element.forEach((obj, i) => {
-        totalQuantity += obj.p.onHandDiff;
-        totalAmount += (obj.p.onHandDiff * obj.p.cost);
+        totalQuantity += obj.values.onHandDiff;
+        totalAmount += (obj.values.onHandDiff * obj.values.cost);
+        netTotal += (obj.values.onHandDiff * obj.values.cost); /*used for total in loop */
+        netListTotal += obj.values.onHandDiff; /*used for total in loop  */
         const index = element.findIndex((obj1) => obj.Product_Code__c === obj1.Product_Code__c);
         if (index === i) {
           temp.push(obj);
         } else {
-          temp[index].p.onHandDiff += obj.p.onHandDiff;
+          temp[index].values.onHandDiff += obj.values.onHandDiff;
         }
       });
-
       this.res2.push(temp);
       this.totalListQuantity.push(totalQuantity);
       this.totalListAmount.push(totalAmount);
-    });
-    // console.log(this.res2[0])
+      this.titalNetListAmount.push(netListTotal);
+      this.totalNetAmount.push(netTotal);
 
+    });
+    const quantArray = this.titalNetListAmount;
+    const amountArray = this.totalNetAmount;
+    for (let i = 0; i < this.titalNetListAmount.length; i++) {
+      this.grandListTotal += quantArray[i];
+    }
+    for (let i = 0; i < this.totalNetAmount.length; i++) {
+      this.grandNetTotal += amountArray[i];
+    }
     this.showDiv = false;
     this.ShowResultDiv = true;
     this.showDeleteDiv = false;
@@ -149,9 +153,12 @@ export class AdjustmentReportListComponent implements OnInit {
     this.adjustmentReportListService.deleteReports(date1)
       .subscribe(data => {
         const result = data['result'];
-        this.ngOnInit();
-        this.showDeleteDiv = false;
-        this.showDiv = true;
+        if (result) {
+          this.ngOnInit();
+          this.showDeleteDiv = false;
+          this.ShowResultDiv = false;
+          this.showDiv = true;
+        }
       },
         error => {
           const status = JSON.parse(error['status']);
@@ -165,8 +172,19 @@ export class AdjustmentReportListComponent implements OnInit {
         });
   }
   cancel() {
-    this.showDiv = true;
     this.showDeleteDiv = false;
     this.ShowResultDiv = false;
+    this.showDiv = true;
+  }
+  printDiv() {
+    window.print();
+    // const efgh = document.getElementById('inner_cont').innerHTML;
+    // const printWindow = window.open('', '');
+    // printWindow.document.write('<html><head><title>Inventory Adjustment Report</title>');
+    // printWindow.document.write('</head><body style="color: black">');
+    // printWindow.document.write(efgh);
+    // printWindow.document.write('</body></html>');
+    // printWindow.document.close();
+    // printWindow.print();
   }
 }

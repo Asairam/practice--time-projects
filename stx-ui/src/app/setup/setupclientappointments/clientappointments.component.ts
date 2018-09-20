@@ -708,6 +708,8 @@ export class ClientAppointmentsComponent implements OnInit {
 
   /* Method to save all tabs at one time */
   commonSave() {
+    this.windowStartTime = parseInt(this.windowStartTime, 10);
+    this.windowEndTime = parseInt(this.windowEndTime, 10);
     this.rows = [];
     this.rows.push(
       { 'Col1': this.reminderSentStatusColor },

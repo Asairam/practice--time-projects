@@ -10,6 +10,7 @@ import { TranslateService } from 'ng2-translate';
   selector: 'app-setuprewards-app',
   templateUrl: './dashboard.html',
   providers: [DashBoardService],
+  styleUrls: ['./dashboard.css']
 })
 export class DashBoardComponent implements OnInit {
   constructor(private route: ActivatedRoute,

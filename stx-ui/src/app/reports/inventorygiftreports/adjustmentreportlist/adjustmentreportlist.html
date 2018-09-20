@@ -30,6 +30,12 @@
                         </table>
                     </div>
                     <div class="table-responsive" *ngIf="ShowResultDiv">
+                        <div class="col-md-12 col-sm-12 ml-bottom">
+                            <button class="btn btn-gradient-txt align-right" type="button" (click)="printDiv()">
+                                <span style="font-size: 14px">
+                                    <i class="fa fa-print"></i> Print</span>
+                            </button>
+                        </div>
                         <table class="table table-hover table-bordered form_cont_one style-align" border="0"
                             cellspacing="0" cellpadding="0">
                             <thead>
@@ -41,7 +47,8 @@
                             </thead>
                         </table>
                         <ng-container *ngFor="let data of res2;let i = index">
-                            Product Line/Inventory Group: {{data[0].plName}} / {{data[0].Inventory_Group__c}}
+                            <p>Product Line/Inventory Group: <span class="font-weight">{{data[0].plName}} /
+                                    {{data[0].Inventory_Group__c}}</span></p>
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
@@ -59,38 +66,39 @@
                                             <td>{{data1.Product_Code__c}}</td>
                                             <td>{{data1.prdName}}</td>
                                             <td>{{data1.Size__c}}</td>
-                                            <td>{{data1.p.onHandDiff}}</td>
-                                            <td>{{data1.p.cost}}</td>
-                                            <td>{{data1.p.onHandDiff * data1.p.cost | number:'1.2-4'}}</td>
+                                            <td>{{data1.values.onHandDiff}}</td>
+                                            <td>{{data1.values.cost | currency:"USD":true}}</td>
+                                            <td [ngStyle]="{'color': data1.values.onHandDiff * data1.values.cost < 0 ? 'red':'white'}">{{data1.values.onHandDiff * data1.values.cost | currency:"USD":true}}</td>
                                         </tr>
                                     </ng-container>
                                     <tr>
-                                        <td> Subtotal</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>{{totalListQuantity[i] | number:'1.2-4'}}</td>
-                                        <td></td>
-                                        <td>{{totalListAmount[i] | | number:'1.2-4'}}</td>
+                                        <td class="font-weight">{{data[0].plName}} / {{data[0].Inventory_Group__c}}
+                                            Subtotal</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td class="font-weight">{{totalListQuantity[i]}}</td>
+                                        <td>&nbsp;</td>
+                                        <td class="font-weight" [ngStyle]="{'color': totalListAmount[i] < 0 ? 'red':'white'}">{{totalListAmount[i] | currency:"USD":true}}</td>
                                     </tr>
                                     <tr>
-                                        <td>Total</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>0.00</td>
-                                        <td></td>
-                                        <td>000</td>
+                                        <td class="font-weight">Total</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td class="font-weight">{{titalNetListAmount[i]}}</td>
+                                        <td>&nbsp;</td>
+                                        <td class="font-weight" [ngStyle]="{'color': totalNetAmount[i] < 0 ? 'red':'white'}">{{totalNetAmount[i] | currency:"USD":true}}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </ng-container>
                         <table class="table table-hover table-bordered">
                             <tr>
-                                <td> Grand Totals</td>
+                                <td class="font-weight"> Grand Totals</td>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
-                                <td>0.00</td>
+                                <td class="font-weight">{{grandListTotal}}</td>
                                 <td>&nbsp;</td>
-                                <td>0.00</td>
+                                <td class="font-weight" [ngStyle]="{'color': grandNetTotal < 0 ? 'red':'white'}">{{grandNetTotal | currency:"USD":true}}</td>
                             </tr>
                         </table>
                     </div>
@@ -99,10 +107,10 @@
                         <p>Are you sure you want to delete this?</p>
                         <div class="row mt-40 mb-30 res-mt-15 text-center res-tleft">
                             <div class="col-sm-10">
-                                <button type="button" class="cancel-btn" (click)="deleteRecord();">{{'BUTTON.DELETE'|
-                                    translate }}</button>
-                                <button type="button" class="cancel-btn" (click)='cancel()'>{{ 'BUTTON.CANCEL'
-                                    |translate }}</button>
+                                <button type="button" class="cancel-btn" (click)="deleteRecord();">{{'BUTTON.DELETE'|translate
+                                    }}</button>
+                                <button type="button" class="cancel-btn" (click)='cancel()'>{{
+                                    'BUTTON.CANCEL'|translate }}</button>
 
                             </div>
                         </div>

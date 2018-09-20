@@ -82,6 +82,7 @@ export class SetupProductsComponent implements OnInit {
     inventoryGroups: any;
     groupValue: any;
     groupName: any;
+    changeGrpTax: any = [];
     supplierData: any;
     unitOfMeasure: any;
     unitOfMeasureValue: any;
@@ -120,7 +121,8 @@ export class SetupProductsComponent implements OnInit {
         if (this.updatedStandardCost && this.updatedStandardCost !== '') {
             this.averageCost = parseInt(this.updatedStandardCost, 10);
         } else {
-            this.averageCost = parseInt(this.standardCost, 10);
+            this.averageCost = parseFloat(this.standardCost);
+            // this.averageCost = parseInt(this.standardCost, 10);
         }
     }
     selectFile(fileEvent) {
@@ -281,6 +283,7 @@ export class SetupProductsComponent implements OnInit {
                         this.setupProductsService.getTaxableByInventoryGroups(this.inventoryGroupName)
                             .subscribe(taxableData => {
                                 const taxable = taxableData['result'];
+                                this.changeGrpTax = taxableData['result'];
                                 const temp = taxable.filter(
                                     filterList => filterList.inventoryGroupName === this.inventoryGroupName);
                                 if (temp && temp.length > 0) {
@@ -308,6 +311,15 @@ export class SetupProductsComponent implements OnInit {
                             }
                         });
             });
+    }
+    /* below method is used to change inventory group from left table and to get taxable of that grp */
+    onChangeGrpTax() {
+        const temp = this.changeGrpTax;
+        for (let i = 0; i < temp.length; i++) {
+            if (this.inventoryGroupName === temp[i]['inventoryGroupName']) {
+                this.groupTaxable = temp[i]['taxable'];
+            }
+        }
     }
     /*--- Method used to get suppliers data ---*/
     getSuppliersData() {
@@ -898,6 +910,7 @@ export class SetupProductsComponent implements OnInit {
         this.standardCost = '';
         this.updatedPrice = '';
         this.updatedStandardCost = '';
+        this.groupTaxable = 0;
         this.fileName = 'No File Choosen';
     }
     /*--- Method to clear fields ---*/

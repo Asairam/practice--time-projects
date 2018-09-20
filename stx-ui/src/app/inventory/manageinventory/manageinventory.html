@@ -132,10 +132,10 @@
 										<input type="text" [(ngModel)]="productData.Supplier_Minimum__c" (keypress)="clearErrorMsgs();keyPress1($event)" (keyup)="clearErrorMsgs()"/>
 									</td>
 									<td>
-										<input type="text" [(ngModel)]="productData.Standard_Cost__c" (keypress)="clearErrorMsgs();keyPress1($event)" (keyup)="clearErrorMsgs()"/>
+										<input type="text" [(ngModel)]="productData.Standard_Cost__c" (keypress)="clearErrorMsgs();numDecimal($event)" (keyup)="clearErrorMsgs()"/>
 									</td>
 									<td>
-										<input type="number" step="0.01" min="0" [(ngModel)]="productData.Price__c" (keypress)="clearErrorMsgs();keyPress1($event)" (keyup)="clearErrorMsgs()"/>
+										<input type="number" step="0.01" min="0" [(ngModel)]="productData.Price__c" (keypress)="clearErrorMsgs();numDecimal($event)" (keyup)="clearErrorMsgs()"/>
 									</td>
 									<td *ngIf='productData.Active__c == 1'>
 										<input type="checkbox" checked disabled />

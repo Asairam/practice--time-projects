@@ -39,8 +39,10 @@ export class ProcessCompensationService {
     return this.http.post(this.apiEndPoint + '/api/reports/processcompensation/reset', archive)
       .map(this.extractData);
   }
-  generateData(date) {
-    return this.http.get(this.apiEndPoint + '/api/reports/processcompensation/generate/' + date.stdate + '/' + date.eddate)
+  generateData(date, workerids) {
+    const headers = new Headers();
+    headers.append('workerIds', workerids);
+    return this.http.getHeader(this.apiEndPoint + '/api/reports/processcompensation/generate/' + date.stdate + '/' + date.eddate, headers)
       .map(this.extractData);
   }
   fullview(id, workerId, startDate, endDate) {

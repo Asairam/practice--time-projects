@@ -276,9 +276,9 @@ export class RefundnoclientComponent implements OnInit {
             let ser_tax = 0;
             if (this.refundData[t].Taxable__c === 1) {
               ser_tax = this.refundData[t].Product_Tax__c;
-              this.taxvalue -= (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * this.refundData[t].Product_Tax__c;
+              this.taxvalue -= (this.refundData[t].newPrice / this.refundData[t].oldAmt) * this.refundData[t].Product_Tax__c;
             } else { ser_tax = 0; }
-            this.totalAmt -= this.refundData[t].Net_Price__c + (this.refundData[t].Net_Price__c / this.refundData[t].oldAmt) * ser_tax;
+            this.totalAmt -= (this.refundData[t].newPrice * this.refundData[t].Qty_Sold__c) + (this.refundData[t].newPrice / this.refundData[t].oldAmt) * ser_tax;
           }
         }
       }

@@ -14,6 +14,16 @@ export class ClientRetentionService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+
+  getUserList() {
+    return this.http.get(this.apiEndPoint + '/api/setupworkers/setupworkerdetail')
+      .map(this.extractData);
+  }
+
+  getClientRetentionReport(data) {
+    return this.http.post(this.apiEndPoint + '/api/reports/clientretentionreport', data)
+      .map(this.extractData);
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

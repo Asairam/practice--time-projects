@@ -14,6 +14,11 @@ export class TicketSalesChartService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+  getTicketSalesData() {
+    return this.http.get(this.apiEndPoint + '/api/reports/ticketsaleschart')
+      .map(this.extractData);
+
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

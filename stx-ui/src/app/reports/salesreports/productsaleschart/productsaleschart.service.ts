@@ -14,6 +14,11 @@ export class ProductSalesChartService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+  getSalesData() {
+    return this.http.get(this.apiEndPoint + '/api/reports/productchart')
+      .map(this.extractData);
+
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

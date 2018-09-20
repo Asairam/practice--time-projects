@@ -14,6 +14,11 @@ export class TbpReportReportService {
     @Inject('apiEndPoint') private apiEndPoint: string,
     @Inject('staticJsonFilesEndPoint') private staticJsonFilesEndPoint: string
   ) { }
+  getTbpReport(startTime, endTime) {
+    return this.http.get(this.apiEndPoint + '/api/reports/tbp/' + startTime + '/' + endTime)
+      .map(this.extractData);
+
+  }
   /*To extract json data*/
   private extractData(res: Response) {
     if (res.headers && res.headers.get('token')) {

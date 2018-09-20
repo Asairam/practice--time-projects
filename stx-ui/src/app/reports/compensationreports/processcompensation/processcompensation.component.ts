@@ -39,8 +39,11 @@ export class ProcessCompensationComponent implements OnInit {
   generatProductSalesByProductLine = [];
   totalGrossServiceAmo = 0;
   scalesData = [];
+  generateSteps = [];
   generatServiceSalesByServiceGroup = [];
   generatproductSalesByInventoryGroup = [];
+  generateFeeAmount = [];
+  genOperandvalue: any = 0;
   constructor(private route: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
@@ -215,7 +218,7 @@ export class ProcessCompensationComponent implements OnInit {
         if (data['result'][0].length > 0) {
           this.viewList = data['result'][0].filter(function (obj) { return obj.workerId === item.workerId; })[0];
         }
-        this.generateFun(this.viewList);
+        this.generateFun(this.viewList, "'" + this.viewList + "'");
       },
       error => {
         const status = JSON.parse(error['status']);
@@ -236,21 +239,26 @@ export class ProcessCompensationComponent implements OnInit {
     );
   }
   generateButt() {
+    let workerIds = '';
     this.topBarButt = true;
     const notEmpty = this.processCompObj.filter(function (obj) {
+      if (obj.include === 1 || obj.include === true) {
+        workerIds += "'" + obj.workerId + "',"
+      }
       return obj.id !== '';
     });
     if (notEmpty.length === 0) {
       this.arcButt = true;
     }
-    this.generateFun('');
+    workerIds = workerIds.slice(0, -1);
+    this.generateFun('', workerIds);
   }
-  generateFun(item) {
+  generateFun(item, workerIds) {
     const dateObj = {
       'stdate': this.startDate.getFullYear() + '-' + (this.startDate.getMonth() + 1) + '-' + this.startDate.getDate(),
       'eddate': this.endDate.getFullYear() + '-' + (this.endDate.getMonth() + 1) + '-' + this.endDate.getDate(),
     };
-    this.processCompensationService.generateData(dateObj).subscribe(
+    this.processCompensationService.generateData(dateObj, workerIds).subscribe(
       data => {
         this.generateData = data['result']['serviceSalesByClientFlags'];
         this.generatRebookedServices = data['result']['RebookedServicesByDateRange'];
@@ -258,44 +266,50 @@ export class ProcessCompensationComponent implements OnInit {
         this.generatProductSalesByProductLine = data['result']['productSalesByProductLine'];
         this.generatServiceSalesByServiceGroup = data['result']['serviceSalesByServiceGroup'];
         this.generatproductSalesByInventoryGroup = data['result']['productSalesByInventoryGroup'];
-        for (let p = 0; p < this.processCompObj.length; p++) {
-          let guestChargeTotal = 0;
-          let serviceAmountTotal = 0;
-          let nbrOfServices = 0;
-          let rebookedserviceamount = 0;
-          let rebookedguestcharge = 0;
-          let rebookedservicenumber = 0;
-          // serviceSalesByClientFlags loop
-          for (let g = 0; g < this.generateData.length; g++) {
-            if (this.generateData[g].workerId === this.processCompObj[p].workerId) {
-              guestChargeTotal += this.generateData[g].guestCharge ? Number(this.generateData[g].guestCharge) : 0;
-              serviceAmountTotal += this.generateData[g].serviceAmount ? Number(this.generateData[g].serviceAmount) : 0;
-              nbrOfServices += this.generateData[g].numberOfServices ? Number(this.generateData[g].numberOfServices) : 0;
-              this.processCompObj[p]['grossService'] = serviceAmountTotal - guestChargeTotal;
-              this.processCompObj[p]['numberOfServices'] = nbrOfServices;
-            }
-          }
-
-          // RebookedServicesByDateRange loop
-          for (let g = 0; g < this.generatRebookedServices.length; g++) {
-            if (this.generatRebookedServices[g].workerId === this.processCompObj[p].workerId) {
-              if (this.generatRebookedServices[g].rebookedGuestCharge) {
-                rebookedserviceamount += this.generatRebookedServices[g].rebookedServiceAmount;
-                rebookedguestcharge += this.generatRebookedServices[g].rebookedGuestCharge;
-                this.processCompObj[p]['rebookedServiceAmount'] = rebookedserviceamount - rebookedguestcharge;
-              } else {
-                this.processCompObj[p]['rebookedServiceAmount'] = this.generatRebookedServices[g].rebookedServiceAmount;
-              }
-              rebookedservicenumber += this.generatRebookedServices[g].rebookedServiceCount;
-              this.processCompObj[p]['rebookedServiceNumber'] = rebookedservicenumber;
-            }
-          }
-
+        this.generateSteps = data['result']['steps'];
+        this.generateFeeAmount = data['result']['Fee_Amount__c'];
+        if (this.arcButt) {
+          this.getTotalAmountOfworker(this.generateSteps); // this function used for get total amount
         }
         if (item) {
           this.fullviewRes(item);
         }
-        // this.generateListRecored = this.commonservice.removeDuplicates(this.processCompObj, 'workerId');
+
+        // for (let p = 0; p < this.processCompObj.length; p++) {
+        //   let guestChargeTotal = 0;
+        //   let serviceAmountTotal = 0;
+        //   let nbrOfServices = 0;
+        //   let rebookedserviceamount = 0;
+        //   let rebookedguestcharge = 0;
+        //   let rebookedservicenumber = 0;
+        //   // serviceSalesByClientFlags loop
+        //   for (let g = 0; g < this.generateData.length; g++) {
+        //     if (this.generateData[g].workerId === this.processCompObj[p].workerId) {
+        //       guestChargeTotal += this.generateData[g].guestCharge ? Number(this.generateData[g].guestCharge) : 0;
+        //       serviceAmountTotal += this.generateData[g].serviceAmount ? Number(this.generateData[g].serviceAmount) : 0;
+        //       nbrOfServices += this.generateData[g].numberOfServices ? Number(this.generateData[g].numberOfServices) : 0;
+        //       this.processCompObj[p]['grossService'] = serviceAmountTotal - guestChargeTotal;
+        //       this.processCompObj[p]['numberOfServices'] = nbrOfServices;
+        //     }
+        //   }
+
+        //   // RebookedServicesByDateRange loop
+        //   for (let g = 0; g < this.generatRebookedServices.length; g++) {
+        //     if (this.generatRebookedServices[g].workerId === this.processCompObj[p].workerId) {
+        //       if (this.generatRebookedServices[g].rebookedGuestCharge) {
+        //         rebookedserviceamount += this.generatRebookedServices[g].rebookedServiceAmount;
+        //         rebookedguestcharge += this.generatRebookedServices[g].rebookedGuestCharge;
+        //         this.processCompObj[p]['rebookedServiceAmount'] = rebookedserviceamount - rebookedguestcharge;
+        //       } else {
+        //         this.processCompObj[p]['rebookedServiceAmount'] = this.generatRebookedServices[g].rebookedServiceAmount;
+        //       }
+        //       rebookedservicenumber += this.generatRebookedServices[g].rebookedServiceCount;
+        //       this.processCompObj[p]['rebookedServiceNumber'] = rebookedservicenumber;
+        //     }
+        //   }
+
+        // }
+
       },
       error => {
         const status = JSON.parse(error['status']);
@@ -370,47 +384,6 @@ export class ProcessCompensationComponent implements OnInit {
         }
         this.viewResdata = JSON.parse(data['result']['result'][0][0].Steps__c);
 
-        // for (let i = 0; i < this.viewResdata.length; i++) {
-        //   if (this.viewResdata[i]['operand'] === 'Hourly Wage') {
-        //     this.viewResdata[i]['result'] = data['result']['result'][0][0]['Hourly_Wage__c'];
-        //   } else if (this.viewResdata[i]['operand'] === 'Hours Worked') {
-        //     this.viewResdata[i]['result'] = !data['result']['result'][0][0]['Regular_Hours__c'] ? 0 : Number(data['result']['result'][0][0]['Regular_Hours__c']) +
-        //       (!data['result']['result'][0][0]['Overtime_Hours__c'] ? 0 : Number(data['result']['result'][0][0]['Overtime_Hours__c']) * 1.5);
-        //   } else if (this.viewResdata[i]['operand'] === 'Days Worked') {
-        //     this.viewResdata[i]['result'] = data['result']['result'][0][0]['Days_Worked__c'];
-        //   } else if (this.viewResdata[i]['operand'] === 'Salary') {
-        //     this.viewResdata[i]['result'] = data['result']['result'][0][0]['Salary__c'];
-        //   } else if (this.viewResdata[i]['operand'] === 'Gross Service' && this.viewResdata[i]['operandSubOption'] === 'All') {
-        //     this.viewResdata[i]['result'] = item.grossService;
-        //   } else if (this.viewResdata[i]['operand'] === 'Gross Service' && this.viewResdata[i]['operandSubOption'] === 'New Clients') {
-        //     this.viewResdata[i]['result'] = item.grossService;
-        //   } else if (this.viewResdata[i]['operand'] === 'Gross Service' && this.viewResdata[i]['operandSubOption'] === 'Recurring Clients') {
-        //     this.viewResdata[i]['result'] = item.grossService;
-        //   } else if (this.viewResdata[i]['operand'] === 'Gross Service' && this.viewResdata[i]['operandSubOption'] === 'Booked in-house') {
-        //     this.viewResdata[i]['result'] = item.grossService;
-        //   } else if (this.viewResdata[i]['operand'] === 'Gross Service' && this.viewResdata[i]['operandSubOption'] === 'Booked Online') {
-        //     this.viewResdata[i]['result'] = item.grossService;
-        //   } else if (this.viewResdata[i]['operand'] === 'Gross Service' && this.viewResdata[i]['operandSubOption'] === 'Service Rebooked') {
-        //     this.viewResdata[i]['result'] = item.rebookedServiceAmount;
-        //   } else if (this.viewResdata[i]['operand'] === 'Gross Service' && this.viewResdata[i]['operandSubOption'] === 'Standing Appointments') {
-        //     this.viewResdata[i]['result'] = item.grossService;
-        //   } else if (this.viewResdata[i]['operand'] === 'Services Performed' && this.viewResdata[i]['operandSubOption'] === 'All') {
-        //     this.viewResdata[i]['result'] = item.numberOfServices;
-        //   } else if (this.viewResdata[i]['operand'] === 'Services Performed' && this.viewResdata[i]['operandSubOption'] === 'New Clients') {
-        //     this.viewResdata[i]['result'] = item.numberOfServices;
-        //   } else if (this.viewResdata[i]['operand'] === 'Services Performed' && this.viewResdata[i]['operandSubOption'] === 'Recurring Clients') {
-        //     this.viewResdata[i]['result'] = item.numberOfServices;
-        //   } else if (this.viewResdata[i]['operand'] === 'Services Performed' && this.viewResdata[i]['operandSubOption'] === 'Booked in-house') {
-        //     this.viewResdata[i]['result'] = item.numberOfServices;
-        //   } else if (this.viewResdata[i]['operand'] === 'Services Performed' && this.viewResdata[i]['operandSubOption'] === 'Booked Online') {
-        //     this.viewResdata[i]['result'] = item.numberOfServices;
-        //   } else if (this.viewResdata[i]['operand'] === 'Services Performed' && this.viewResdata[i]['operandSubOption'] === 'Service Rebooked') {
-        //     this.viewResdata[i]['result'] = item.rebookedServiceNumber;
-        //   } else if (this.viewResdata[i]['operand'] === 'Services Performed' && this.viewResdata[i]['operandSubOption'] === 'Standing Appointments') {
-        //     this.viewResdata[i]['result'] = item.numberOfServices;
-        //   }
-        // }
-
         //  calculation
         for (let v = 0; v < this.viewResdata.length; v++) {
 
@@ -475,7 +448,7 @@ export class ProcessCompensationComponent implements OnInit {
           } else if (this.viewResdata[v].operand === 'Hours Worked') { // Hours Worked
             this.viewResdata[v].ticketNum = item.regularHours;
             if (item.overtimeHours) {
-              this.viewResdata[v].ticketNum = item.regularHours + (Number(item.overtimeHours) * 1.5);
+              this.viewResdata[v].ticketNum = (Number(item.overtimeHours) * 1.5) + item.regularHours;
             }
           } else if (this.viewResdata[v].operand === 'Days Worked') { // Days Worked
             this.viewResdata[v].ticketNum = item.daysWorked;
@@ -529,14 +502,14 @@ export class ProcessCompensationComponent implements OnInit {
             }
           } else if (this.viewResdata[v].operand === 'Cost of Service Fee') {  // Cost of Service Fee
             let costOfService = 0;
-            let nbrOfServices = 0;
-            let serviceAmount = 0;
-            this.generatServiceSalesByServiceGroup.forEach(element => {
-              if (element.workerId === item.workerId) {
-                serviceAmount = element.serviceAmount;
-                nbrOfServices += element.numberOfServices;
-              }
-            });
+            // let nbrOfServices = 0;
+            // let serviceAmount = 0;
+            // this.generatServiceSalesByServiceGroup.forEach(element => {
+            //   if (element.workerId === item.workerId) {
+            //     serviceAmount = element.serviceAmount;
+            //     nbrOfServices += element.numberOfServices;
+            //   }
+            // });
             temp4.forEach(element => {
               if (element.Worker__c === item.workerId) {
                 if (element.Service_Fee_Percent__c != null && element.Service_Fee_Percent__c > 0) {
@@ -577,11 +550,11 @@ export class ProcessCompensationComponent implements OnInit {
               }
               break;
             case ('Multiply By'):
-              this.viewResdata[v]['result'] = (parseInt(this.viewResdata[v - 1].result, 10) * this.viewResdata[v].ticketNum);
+              this.viewResdata[v]['result'] = Number(this.viewResdata[v - 1].result) * Number(this.viewResdata[v].ticketNum);
               if (this.viewResdata[v].operand === 'Result of Step') {
-                this.viewResdata[v]['result'] = (parseInt(this.viewResdata[v - 1].result, 10) * operandvalue);
+                this.viewResdata[v]['result'] = Number(this.viewResdata[v - 1].result) * Number(operandvalue);
               } else if (this.viewResdata[v].operand === 'Percent') {
-                this.viewResdata[v]['result'] = (parseInt(this.viewResdata[v - 1].result, 10) * Number(this.viewResdata[v].ticketNum) / 100);
+                this.viewResdata[v]['result'] = (Number(this.viewResdata[v - 1].result) * Number(this.viewResdata[v].ticketNum) / 100);
               }
               break;
             case ('Subtract'):
@@ -662,6 +635,201 @@ export class ProcessCompensationComponent implements OnInit {
           }
         }
       });
+  }
+
+  getTotalAmountOfworker(workerData) {
+    workerData.forEach(element => {
+      element.Steps__c = JSON.parse(element.Steps__c); // 'Steps__c' string convert to json
+    });
+    for (let i = 0; i < this.processCompObj.length; i++) {
+      if (this.processCompObj[i].include === 1 || this.processCompObj[i].include === true) {
+        for (let w = 0; w < workerData.length; w++) {
+          if (this.processCompObj[i].workerId === workerData[w].Id) {
+            workerData[w].Steps__c.forEach((workerObj, index) => {
+
+              if (workerObj.operand === 'Hourly Wage') {                    // Hourly Wage
+                this.genOperandvalue = this.processCompObj[i].hourlyWage;
+              } else if (workerObj.operand === 'Salary') {                  // Salary
+                this.genOperandvalue = this.processCompObj[i].salary;
+              } else if (workerObj.operand === 'Hours Worked') {            // Hours Worked
+                this.genOperandvalue = this.processCompObj[i].regularHours;
+                // if overtimeHours is there
+                if (this.processCompObj[i].overtimeHours) {
+                  this.genOperandvalue = (Number(this.processCompObj[i].overtimeHours) * 1.5) + this.processCompObj[i].regularHours;
+                }
+              } else if (workerObj.operand === 'Days Worked') {                   // Days Worked
+                this.genOperandvalue = this.processCompObj[i].daysWorked;
+              } else if (workerObj.operand === 'Services Performed') {           // Services Performed
+                let nbrOfServices = 0;
+                this.generatServiceSalesByServiceGroup.forEach(element => {
+                  if (element.workerId === workerData[w].Id) {
+                    nbrOfServices += element.numberOfServices ? Number(element.numberOfServices) : 0;
+                    this.genOperandvalue = nbrOfServices;
+                  }
+                });
+              } else if (workerObj.operand === 'Products Sold') {                 // Products Sold
+                if (workerObj.operand === 'Products Sold' && workerObj.operandSubOption === 'All') {
+                  // get Retail amount/numbers by product line
+                  let grossRetail = 0;
+                  this.generatProductSalesByProductLine.forEach(element => {
+                    if (element.workerId === workerData[w].Id) {
+                      grossRetail += element.numberOfProducts ? Number(element.numberOfProducts) : 0;
+                      this.genOperandvalue = grossRetail;
+                    }
+                  });
+                } else {
+                  // get Retail amount/numbers by inventory group
+                  let grossRetail = 0;
+                  this.generatproductSalesByInventoryGroup.forEach(element => {
+                    if (element.workerId === workerData[w].Id) {
+                      grossRetail += element.numberOfProducts ? Number(element.numberOfProducts) : 0;
+                      this.genOperandvalue = grossRetail;
+                    }
+                  });
+                }
+              } else if (workerObj.operand === 'Tickets') {    // Tickets
+                this.generateTicketCounts.forEach(ticCou => {
+                  if (ticCou.workerId === workerData[w].Id) {
+                    this.genOperandvalue = ticCou.ticketCount;
+                  }
+                });
+              } else if (workerObj.operand === 'Gross Service') {
+                let serviceamount = 0;
+                let guestCharge = 0;
+                this.generatServiceSalesByServiceGroup.forEach(element => {
+                  if (element.workerId === workerData[w].Id) {
+                    guestCharge += element.guestCharge;
+                    serviceamount += element.serviceAmount;
+                    this.genOperandvalue = serviceamount - guestCharge;
+                  }
+                });
+              } else if (workerObj.operand === 'Gross Retail') {             // Gross Retail
+                if (workerObj.operand === 'Gross Retail' && workerObj.operandSubOption === 'All') {
+                  // get Retail amount/numbers by product line
+                  let grossRetail = 0;
+                  this.generatProductSalesByProductLine.forEach(obj => {
+                    if (obj.workerId === workerData[w].Id) {
+                      grossRetail += obj.productAmount ? Number(obj.productAmount) : 0;
+                      this.genOperandvalue = grossRetail;
+                    }
+                  });
+                } else {
+                  // get Retail amount/numbers by inventory group
+                  let grossRetail = 0;
+                  this.generatproductSalesByInventoryGroup.forEach(element => {
+                    if (element.workerId === workerData[w].Id) {
+                      grossRetail += element.productAmount ? Number(element.productAmount) : 0;
+                      this.genOperandvalue = grossRetail;
+                    }
+                  });
+                }
+              } else if (workerObj.operand === 'Number') {     // Number
+                if (workerObj.numeral) {
+                  this.genOperandvalue = workerObj.numeral;
+                } else {
+                  this.genOperandvalue = 0;
+                }
+              } else if (workerObj.operand === 'Cost of Service Fee') {  // Cost of Service Fee
+                let costOfService = 0;
+                this.generateFeeAmount.forEach(element => {
+                  if (element.Worker__c === workerData[w].Id) {
+                    if (element.Service_Fee_Percent__c != null && element.Service_Fee_Percent__c > 0) {
+                      costOfService += element.Price__c * element.Service_Fee_Percent__c / 100;
+                    } else if (element.Service_Fee_Amount__c != null && element.Service_Fee_Amount__c > 0) {
+                      costOfService += element.Service_Fee_Amount__c;
+                    }
+                  }
+                });
+                this.genOperandvalue = costOfService;
+              } else if (workerObj.operand === 'Result of Step') {        // Result of Step
+                const stepVal = parseInt(workerObj.numeral, 10);
+                this.genOperandvalue = workerData[w].Steps__c[(stepVal - 1)].genTotal;
+              } else if (workerObj.operand === 'Percent') {                // Percent
+                this.genOperandvalue = workerObj.numeral;
+              }
+
+
+              switch (workerObj.operator) {
+                case ('Start With'):
+                  workerObj['genTotal'] = this.genOperandvalue;
+                  if (workerObj.operand === 'Result of Step') {
+                    workerObj['genTotal'] = this.genOperandvalue;
+                  }
+                  break;
+                case ('Multiply By'):
+                  workerObj['genTotal'] = Number(workerData[w].Steps__c[index - 1].genTotal) * Number(this.genOperandvalue);
+
+                  if (workerObj.operand === 'Result of Step') { // Result of Step
+                    workerObj['genTotal'] = Number(workerData[w].Steps__c[index - 1].genTotal) * Number(this.genOperandvalue);
+                  } else if (workerObj.operand === 'Percent') { // Percent
+                    workerObj['genTotal'] = (Number(workerData[w].Steps__c[index - 1].genTotal) * Number(this.genOperandvalue) / 100);
+                  }
+                  break;
+                case ('Add'):
+                  workerObj['genTotal'] = (parseInt(workerData[w].Steps__c[index - 1].genTotal, 10) + Number(this.genOperandvalue));
+                  if (workerObj.operand === 'Result of Step') {
+                    workerObj['genTotal'] = (parseInt(workerData[w].Steps__c[index - 1].genTotal, 10) + this.genOperandvalue);
+                  } else if (workerObj.operand === 'Percent') {
+                    workerObj['genTotal'] = workerData[w].Steps__c[index - 1].genTotal + this.genOperandvalue / 100;
+                  }
+                  break;
+                case ('Subtract'):
+                  workerObj['genTotal'] = workerData[w].Steps__c[index - 1].genTotal - this.genOperandvalue;
+                  if (workerObj.operand === 'Result of Step') {
+                    workerObj['genTotal'] = (parseInt(workerData[w].Steps__c[index - 1].genTotal, 10) - this.genOperandvalue);
+                  }
+                  break;
+                case ('Divide By'):
+                  if (workerObj.ticketNum) {
+                    workerObj['genTotal'] = (parseInt(workerData[w].Steps__c[index - 1].genTotal, 10) / this.genOperandvalue);
+                    if (workerObj.operand === 'Result of Step') {
+                      workerObj['genTotal'] = (parseInt(workerData[w].Steps__c[index - 1].genTotal, 10) / this.genOperandvalue);
+                    } else if (workerObj.operand === 'Percent') {
+                      workerObj['genTotal'] = (parseInt(workerData[w].Steps__c[index - 1].genTotal, 10) / Number(this.genOperandvalue) / 100);
+                    }
+                  } else {
+                    workerObj['genTotal'] = 0;
+                  }
+                  break;
+                case ('If Less Than'):
+                  if (workerObj.ticketNum < workerData[w].Steps__c[index - 1].genTotal) {
+                    workerObj['genTotal'] = parseInt(this.genOperandvalue, 10);
+                    if (workerObj.operand === 'Result of Step') {
+                      workerObj['genTotal'] = this.genOperandvalue;
+                    }
+                  } else {
+                    workerObj['genTotal'] = workerData[w].Steps__c[index - 1].genTotal;
+                  }
+                  break;
+                case ('If More Than'):
+                  if (workerObj.ticketNum > workerData[w].Steps__c[index - 1].genTotal) {
+                    workerObj['genTotal'] = parseInt(this.genOperandvalue, 10);
+                    if (workerObj.operand === 'Result of Step') {
+                      workerObj['genTotal'] = this.genOperandvalue;
+                    }
+                  } else {
+                    workerObj['genTotal'] = workerData[w].Steps__c[index - 1].genTotal;
+                  }
+                  break;
+                default:
+                  workerObj['genTotal'] = 0.00;
+              }
+
+            });
+            if (this.processCompObj[i].extraPay) {          // If Extra Pay
+              this.processCompObj[i].compensationAmount = (Number(workerData[w].Steps__c[workerData[w].Steps__c.length - 1]['genTotal']) + Number(this.processCompObj[i].extraPay));
+            }
+            if (this.processCompObj[i].deduction) {          // If Deduction
+              this.processCompObj[i].compensationAmount = (this.processCompObj[i].compensationAmount ? Number(this.processCompObj[i].compensationAmount) :
+                Number(workerData[w].Steps__c[workerData[w].Steps__c.length - 1]['genTotal'])) - Number(this.processCompObj[i].deduction);
+            }
+            if (!this.processCompObj[i].extraPay && !this.processCompObj[i].deduction) {
+              this.processCompObj[i].compensationAmount = workerData[w].Steps__c[workerData[w].Steps__c.length - 1]['genTotal'];
+            }
+          }
+        }
+      }
+    }
   }
 
 }

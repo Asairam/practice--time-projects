@@ -72,7 +72,7 @@ export class ReportDailyCashDrawerComponent implements OnInit {
         // this.totalAmt = tt1 - tt2;
         const cashDrawerMap = new Map();
         this.cashDrawerData = data['result']['cashDrawerData'];
-
+        const paymentMap = new Map();
         this.cashDrawerData.forEach((drawerData) => {
           const name = drawerData.Cash_Drawer_Number__c.toString();
           const obj = {
@@ -86,7 +86,6 @@ export class ReportDailyCashDrawerComponent implements OnInit {
             if (!this.AmountData.hasOwnProperty(name)) {
               this.AmountData[name] = 0;
             }
-
           } else {
             cashDrawerMap.set(name, obj);
           }
@@ -124,13 +123,17 @@ export class ReportDailyCashDrawerComponent implements OnInit {
             'cashDrawer': undefined,
             'cashInOut': [],
             'paymentsMade': [payment],
-            'cashDrawerNumber': payment.drawerNumber
+            'cashDrawerNumber': name
           };
           if (!this.AmountData.hasOwnProperty(name)) {
             this.AmountData[name] = 0;
           }
           if (this.AmountData.hasOwnProperty(name)) {
-            this.AmountData[name] += payment.paymentAmount;
+            this.AmountData[name] += +payment.paymentAmount;
+          }
+          if (!paymentMap.has(name.toString())) {
+
+            paymentMap.set(name, +payment.balanceDue.toFixed(2));
           }
           if (!cashDrawerMap.has(name)) {
             cashDrawerMap.set(name, obj);
@@ -146,14 +149,27 @@ export class ReportDailyCashDrawerComponent implements OnInit {
             'cashDrawer': undefined,
             'cashInOut': [],
             'paymentsMade': [tip],
-            'cashDrawerNumber': tip.drawerNumber
+            'cashDrawerNumber': name
           };
+          if (!paymentMap.has(name)) {
+            paymentMap.set(name, +tip.balanceDue.toFixed(2));
+          }
+          // if (tipsMap.has(tip.drawerNumber)) {
+          //   const tipsTotal = tipsMap.get(tip.drawerNumber);
+          //   if (tip.paymentType !== 'Tip Left in Drawer') {
+          //     tipsMap.set(tip.drawerNumber, tipsTotal + tip.paymentAmount);
+          //   }
+          // } else {
+          //   if (tip.paymentType !== 'Tip Left in Drawer') {
+          //     tipsMap.set(tip.drawerNumber, tip.paymentAmount);
+          //   }
+          // }
           if (!this.AmountData.hasOwnProperty(name)) {
             this.AmountData[name] = 0;
           }
           if (this.AmountData.hasOwnProperty(name)) {
             if (tip.paymentType !== 'Tip Left in Drawer') {
-              this.AmountData[name] -= tip.paymentAmount;
+              this.AmountData[name] -= +tip.paymentAmount;
             }
           }
           if (!cashDrawerMap.has(name)) {
@@ -172,6 +188,11 @@ export class ReportDailyCashDrawerComponent implements OnInit {
         this.reportData = [];
         let i = 0;
         cashDrawerMap.forEach((elment, index) => {
+          const name = elment.cashDrawerNumber.toString();
+          if (paymentMap.has(name)) {
+            this.AmountData[name] += paymentMap.get(name);
+            this.AmountData[name] = +this.AmountData[name].toFixed(2);
+          }
           const dat12 = elment;
           dat12['paymentsMade'] = this.getPaymentsByTicketNumber(elment['paymentsMade'], +index);
           i++;

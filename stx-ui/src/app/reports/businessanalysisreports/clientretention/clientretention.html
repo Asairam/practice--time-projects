@@ -7,14 +7,14 @@
                     <label>{{'CLIENT_RETENTION.RETENTION_TYPE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <select>
-                        <option>New Clients</option>
-                        <option>Recurring Clients</option>
+                    <select [(ngModel)]="reportAnalysis.retentionType">
+                        <option [value]="'New'">New Clients</option>
+                        <option [value]="'Recurring'">Recurring Clients</option>
                     </select>
                     <br> {{'CLIENT_RETENTION.RETENTION_DETAIL' | translate }}
                 </div>
             </div>
-            <div class="row mt-20">
+            <!-- <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
                     <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
                 </div>
@@ -31,6 +31,27 @@
                     <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
                         class="datefield">
                 </div>
+            </div> -->
+            <div class="row mt-20">
+                <div class="col-md-12">
+                    <p class="red mb-0"> {{error}} </p>
+                </div>
+                <div class="col-md-4 col-sm-4 text-right res-tleft mt-top">
+                    <label>{{'COMMON.BEGIN_DATE' | translate}}</label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <input class="datefield" type="text" [maxDate]="reportAnalysis.endDate" [(ngModel)]="reportAnalysis.startDate" bsDatepicker
+                        (ngModelChange)="clear()" [(bsValue)]="reportAnalysis.startDate" [bsConfig]="datePickerConfig">
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft mt-top">
+                    <label>{{'COMMON.END_DATE' | translate}}</label>
+                </div>
+                <div class="col-md-7 col-sm-8" [ngClass]="{'disabled':!reportAnalysis.startDate}">
+                    <input class="datefield" type="text" [minDate]="reportAnalysis.startDate" [disabled]="!reportAnalysis.startDate" (ngModelChange)="clear()"
+                        [(ngModel)]="reportAnalysis.endDate" bsDatepicker [(bsValue)]="reportAnalysis.endDate" [bsConfig]="datePickerConfig">
+                </div>
             </div>
             <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
@@ -40,7 +61,7 @@
                     <input type="text">
                 </div>
             </div>
-            <div class="row mt-20">
+            <!-- <div class="row mt-20">
                 <div class="col-md-4 col-sm-4 text-right res-tleft">
                     <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }}</label>
                 </div>
@@ -59,6 +80,28 @@
                     <select disabled>
                         <option>select worker</option>
                         <option></option>
+                    </select>
+                </div>
+            </div> -->
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft mt-top">
+                    <label>{{'SERVICE_SALES_REPORT.REPORT_TYPE' | translate }} </label>
+                </div>
+                <div class="col-md-7 col-sm-8">
+                    <select [(ngModel)]="reportAnalysis.type" (change)="selectReportsType($event.target.value);clear()">
+                        <option [value]="'Comapny Analysis'">Comapny Analysis</option>
+                        <option [value]="'Worker Analysis'">Worker Analysis</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-4 col-sm-4 text-right res-tleft mt-top">
+                    <label>{{'COMMON.WORKER' | translate }} </label>
+                </div>
+                <div class="col-md-7 col-sm-8" [ngClass]="{'disabled':reportAnalysis.type === 'Comapny Analysis'}">
+                    <select [disabled]="reportAnalysis.type === 'Comapny Analysis'" (change)="clear();selectWorker();" [(ngModel)]="reportAnalysis.worker">
+                        <option [value]="''">--Select Worker--</option>
+                        <option *ngFor="let worker of workerList" [value]='worker.Id'>{{worker.FirstName+' '+ worker.LastName}}</option>
                     </select>
                 </div>
             </div>
@@ -81,7 +124,7 @@
                                     <tr>
                                         <th class="thcss">{{'COMMON.STX_BEACON_UAT_2018' | translate }}</th>
                                         <th class="thcss">Gift List Report: Issued</th>
-                                        <th class="thcss"> 03/21/2018 - 03/29/2018</th>
+                                        <th class="thcss"> {{reportAnalysis.startDate|date:'MM/dd/yyyy'}} - {{reportAnalysis.endDate|date:'MM/dd/yyyy'}}</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -101,15 +144,15 @@
                                 <tbody>
                                     <tr>
                                         <td>Total New Visits</td>
-                                        <td>13</td>
+                                        <td>{{this.clientRetentionData['Total_Recurring_Visits']}}</td>
                                     </tr>
                                     <tr>
                                         <td>Total Retained</td>
-                                        <td>1</td>
+                                        <td>{{clientRetentionData['Total_Retained']}}</td>
                                     </tr>
                                     <tr>
                                         <td>Percentage Retained</td>
-                                        <td>8%</td>
+                                        <td>{{clientRetentionData['Percent_Retained']}}%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -133,40 +176,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Jack Moran trrr</td>
-                                        <td>1/23/2018</td>
-                                        <td>1/30/2018</td>
-                                        <td>2</td>
-                                        <td>1 </td>
-                                        <td>8</td>
-                                        <td>3</td>
+                                    <tr *ngFor="let client of clientsList">
+                                        <td>{{client.clientName}}</td>
+                                        <td>{{client.firstVisitDate|date:'MM/dd/yyyy'}}</td>
+                                        <td>{{client.lastVisitDate|date:'MM/dd/yyyy'}}</td>
+                                        <td>{{client.numVisitsAfterStartDate}}</td>
+                                        <td>{{client.numWorkersSeen}} </td>
+                                        <td>{{client.averageDaysBetweenVisits}}</td>
+                                        <td>{{client.numDaysSinceLastVisit}}</td>
                                         <td>
-                                            <input type="checkbox" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>tonya</td>
-                                        <td>1/23/2018</td>
-                                        <td>2/28/2018</td>
-                                        <td>5 </td>
-                                        <td>2 </td>
-                                        <td>15</td>
-                                        <td>5</td>
-                                        <td>
-                                            <input type="checkbox" checked/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tom</td>
-                                        <td>1/23/2018</td>
-                                        <td>2/28/2018</td>
-                                        <td> 6</td>
-                                        <td>3 </td>
-                                        <td>20</td>
-                                        <td>7</td>
-                                        <td>
-                                            <input type="checkbox" />
+                                            <input type="checkbox" [checked]="client.isRetained" disabled />
                                         </td>
                                     </tr>
                                 </tbody>

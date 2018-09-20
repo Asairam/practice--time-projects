@@ -100,6 +100,18 @@
                                             <td>{{data.Abbreviation__c}}</td>
                                         </tr>
                                     </ng-container>
+                                    <tr *ngIf = "apptValuesTotals__c == 1">
+                                        <td>Total</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>{{serviceTotal | currency:"USD":true}}</td>
+                                        <td>{{productTotal | currency:"USD":true}}</td>
+                                        <td>{{otherTotal | currency:"USD":true}}</td>
+                                        <td>{{totalInclude | currency:"USD":true}}</td>
+                                        <td>{{totalTotal | currency:"USD":true}}</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
                                 </thead>
                             </table>
                         </div>

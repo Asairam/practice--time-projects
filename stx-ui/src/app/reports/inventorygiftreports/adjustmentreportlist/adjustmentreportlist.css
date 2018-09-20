@@ -2,6 +2,31 @@
     margin-right: 8%;
     color: white;
 }
+.font-weight{
+    font-weight: bold;
+}
+.align-right{
+    float: right;
+}
+.ml-bottom {
+    margin-bottom: 5px;
+}
+
+.btn-gradient-txt .fa-file-archive-o, .fa-cog, .fa-print {
+    background: -webkit-gradient(linear,left top,right top,color-stop(0,#16337d),to(#05c9d0));
+    background: linear-gradient(90deg,#16337d 0,#05c9d0 100%);
+    background-position: 50% 50%;
+    background-origin: padding-box;
+    background-size: auto auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+    -ms-background-clip: text;
+    -ms-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 300;
+}
 @media (device-width: 768px){
 	#inner_cont{
         margin-right: 10%;

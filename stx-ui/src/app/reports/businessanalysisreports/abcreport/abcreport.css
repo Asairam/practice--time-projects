@@ -1,16 +1,16 @@
-.background-color {
+/* .background-color {
     width:100%;
     background-color: black;
     padding: 5px 5px 5px ;
     margin-bottom: 5px;
-    
-}
+    padding: 5px 5px 5px ;
+    margin-bottom: 5px;
+} */
 .bg-color{
-    background-color:#808080;
     font-weight: bold;
 }
 #inner_cont {
-    margin-right: 8%;
+    margin-right: 7%;
     color: white;
 }
 .form_cont input[type=text], .form-control, .form_cont input[type=email], .form_cont input[type=number], .form_cont input[type=password], .form_cont select{
@@ -19,13 +19,51 @@
 .form_cont input[type=text]:focus, .form-control, .form_cont input[type=email]:focus, .form_cont input[type=number]:focus, .form_cont input[type=password]:focus{
 	color: black;
 }
+.table-responsive {
+    margin-right: 4%;
+    margin-left: 2%;
+}
+.style-align {
+    width:95%;
+    border-collapse:collapse;
+}
+.table-heading-detail{
+    width:95%;
+    background-color: black; 
+    color: white; 
+    margin-top:10px;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 5px 5px 5px ;
+    margin-bottom: 5px;
+}
+.table-style{
+    width:95%;
+    border: 1px solid #ddd;
+}
+.form_cont{
+    padding-bottom: 35px;
+}
+.mt-top{
+    margin-top: 6px;
+}
+@media (max-width: 768px){
+	.table-responsive {
+        margin-right: 10%;
+    }
+}
+@media (device-width: 1024px){
+	.table-responsive {
+        margin-right: 6%;
+    }
+}
 @media (device-width: 768px){
-    hr {
+    /* hr {
         display: none;
-    }
-    .thcss {
+    } */
+    /* .thcss {
         font-size: 7px;
-    }
+    } */
     .form_cont table {
         font-size: 10px;
     }

@@ -28,11 +28,13 @@ export class TicketListComponent implements OnInit, AfterViewInit {
   totalOther = 0;
   alltotal = 0;
   cashInOutdata = [];
+  apptValuesTotals__c: any;
   apptData = [];
   serviceTotal = 0;
   productTotal = 0;
   otherTotal = 0;
   totalTotal = 0;
+  totalInclude = 0;
   SdateEdateError: any;
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -196,16 +198,20 @@ export class TicketListComponent implements OnInit, AfterViewInit {
           this.productTotal = 0;
           this.otherTotal = 0;
           this.totalTotal = 0;
-          this.cashInOutdata = data['result']['cashInOutdata'];
+          this.totalInclude = 0;
+          this.cashInOutdata = data['result']['cashInOutdata'][0];
+          this.apptValuesTotals__c = data['result']['cashInOutdata'][1][0].Can_View_Appt_Values_Totals__c;/* it used to display total of ticketlist */
           this.apptData = data['result']['apptData'];
           this.apptData = this.apptData.filter(filterList => filterList.appId);
 
           for (let i = 0; i < this.apptData.length; i++) {
             this.apptData[i].disaplayDate = this.commonService.getUsrDtStrFrmDBStr(this.apptData[i].Appt_Date_Time__c);
-            this.serviceTotal = this.apptData[i].Service_Sales__c;
-            this.productTotal = this.apptData[i].Product_Sales__c;
-            this.otherTotal = this.apptData[i].Other_Sales__c;
-            this.totalTotal = this.apptData[i].Ticket_Total__c;
+            this.serviceTotal += this.apptData[i].Service_Sales__c;
+            this.productTotal += this.apptData[i].Product_Sales__c;
+            this.otherTotal += this.apptData[i].Other_Sales__c;
+            this.totalInclude += this.apptData[i].Included_Ticket_Amount__c;
+            this.totalTotal += this.apptData[i].Ticket_Total__c;
+
           }
         }, error => {
           const status = JSON.parse(error['status']);

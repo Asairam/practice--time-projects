@@ -4079,7 +4079,7 @@ export class CheckOutEditTicketComponent implements OnInit, OnDestroy {
       toastEle.dispatchEvent(evObj);
       window.localStorage.setItem('lastTransactionRequestAmount', document.getElementById('totalAmountId').innerHTML.replace(/\./g, '').replace(/,/g, ''));
       const saleRequest = new clover.remotepay.SaleRequest();
-      saleRequest.setCardEntryMethods(clover.CardEntryMethods.CARD_ENTRY_METHOD_MANUAL);
+      // saleRequest.setCardEntryMethods(clover.CardEntryMethods.CARD_ENTRY_METHOD_MANUAL); // To set card enter manually
       saleRequest.setAmount(parseInt(document.getElementById('totalAmountId').innerHTML.replace(/\./g, '').replace(/,/g, ''), 10));
       saleRequest.setExternalId(clover.CloverID.getNewId());
       cloverConnector.sale(saleRequest);

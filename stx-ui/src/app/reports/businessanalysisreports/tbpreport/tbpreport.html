@@ -7,8 +7,8 @@
                     <label>{{'COMMON.BEGIN_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue" [bsConfig]="datePickerConfig"
-                        class="datefield">
+                    <input type="text" value="{{ bsValue | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue"
+                        [bsConfig]="datePickerConfig" class="datefield">
                 </div>
             </div>
             <div class="row mt-20">
@@ -16,8 +16,8 @@
                     <label>{{'COMMON.END_DATE' | translate }}</label>
                 </div>
                 <div class="col-md-7 col-sm-8">
-                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1" [bsConfig]="datePickerConfig"
-                        class="datefield">
+                    <input type="text" value="{{ bsValue1 | date:'MM/d/y'}}" bsDatepicker [(bsValue)]="bsValue1"
+                        [bsConfig]="datePickerConfig" class="datefield">
                 </div>
             </div>
             <div class="row mt-20">
@@ -63,36 +63,37 @@
                                 </tr>
                                 <tr>
                                     <td>Rebook %</td>
-                                    <td>$15.00</td>
+                                    <td>{{tbpList?.numOfRebookAppts}}%</td>
                                 </tr>
                                 <tr>
-                                    <td>Rebook %</td>
-                                    <td>26</td>
+                                    <td># of New Clients</td>
+                                    <td>{{tbpList?.numOfClients}}</td>
                                 </tr>
                                 <tr>
                                     <td>% of Good Ticket Ratings</td>
-                                    <td>$4.00</td>
+                                    <td>{{tbpList?.percntOfGoodAppts}}%</td>
                                 </tr>
                                 <tr>
                                     <td>Service Sales</td>
-                                    <td>6496.00</td>
+                                    <td>{{tbpList?.serSales | number : '2.2-2'}}</td>
                                 </tr>
                                 <tr>
                                     <td>Product Sales</td>
-                                    <td>416.00</td>
+                                    <td>{{tbpList?.prodSales| number : '2.2-2' }}</td>
                                 </tr>
                                 <tr>
                                     <td>Product % of Total Sales</td>
-                                    <td>6%</td>
+                                    <td>{{tbpList?.percntOfProd}}%</td>
                                 </tr>
                                 <tr>
                                     <td>Average Revenue per Ticket</td>
-                                    <td>58.55%</td>
+                                    <td>{{tbpList?.avgRevenuePerTckt | number : '2.2-2'}}</td>
                                 </tr>
 
                             </tbody>
                         </table>
-                        {{'MONTHLY_BUSINESS_ANALYSIS.PRODUCTIVITY_RATE_NOT_INCLUDES_WORKER_SCHEDULE_CHANGES' | translate }}
+                        {{'MONTHLY_BUSINESS_ANALYSIS.PRODUCTIVITY_RATE_NOT_INCLUDES_WORKER_SCHEDULE_CHANGES' |
+                        translate }}
                     </div>
                 </div>
             </div>

@@ -15,6 +15,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { ManageInventoryService } from './manageinventory.service';
+import { DecimalPipe } from '@angular/common';
 @Component({
     selector: 'app-home-popup',
     templateUrl: './manageinventory.html',
@@ -156,7 +157,6 @@ export class ManageInventoryComponent implements OnInit {
             }
         );
     }/*Method to update product data */
-
     qntyChangdValues() {
         const lists = JSON.parse(localStorage.getItem('list'));
         for (let j = 0; j < this.productsList.length; j++) {
@@ -270,7 +270,7 @@ export class ManageInventoryComponent implements OnInit {
     }
     /* method to restrict charecters  */
     keyPress(event: any) {
-        const pattern = /^[a-zA_Z0-9]*$/;
+        const pattern = /^[a-zA-Z0-9]*$/;
         const inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             // invalid character, prevent input
@@ -279,6 +279,14 @@ export class ManageInventoryComponent implements OnInit {
     }
     keyPress1(event: any) {
         const pattern = /^[0-9-]*$/;
+        const inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            // invalid character, prevent input
+            event.preventDefault();
+        }
+    }
+    numDecimal(event: any) {
+        const pattern = /^[0-9.]*$/;
         const inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             // invalid character, prevent input

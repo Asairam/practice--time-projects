@@ -20,7 +20,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select [(ngModel)] = "inventoryGroupName" (change)="getGroupNameForListing($event.target.value);" style="width: 100%">
+                                        <select [(ngModel)] = "inventoryGroupName" (change)="getGroupNameForListing($event.target.value);onChangeGrpTax();" style="width: 100%">
                                             <option *ngFor="let groupname of groupName; let i='index'" value="{{groupname.inventoryGroups}}" id="groupname{{i}}">{{groupname.inventoryGroups | slice:0:20}}{{groupname.inventoryGroups.length > 20 ? '...' : ''}}</option>
                                         </select>
                                     </td>

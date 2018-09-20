@@ -763,7 +763,7 @@
 
                             <input type="text" class="form-control" style="width:calc(100% - 80px) !important; float:right;" maxlength="13" onkeypress="var key = window.event ? event.keyCode : event.which;if (event.keyCode == 8 || event.keyCode == 127) return true; else if ( key < 48 || key > 57 ) return false; else return true;"
                                 id="mobileNumber" (keypress)='hyphen_generate_mobile(mobileNumber);clearErrorMsg();' name="mobileNumber"
-                                [(ngModel)]="mobileNumber">
+                                [(ngModel)]="mobileNumber" (paste)="pasteNumPhone($event.clipboardData.getData('text/plain'))">
                         </div>
                     </div>
                     <div class="red text-center">

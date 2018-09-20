@@ -1001,8 +1001,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               booked = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
             } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
               booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
-            } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
-              booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+              booked = '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
             } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
               booked = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
             } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
@@ -1019,19 +1019,23 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
           if (standing === 1) {
             if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
               booked = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+            } else if (newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+              booked = '&#9839;' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
             } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
               booked = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
             } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-              booked = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              booked = '&#9839;' + '&#9834' + '&#8727' + + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
             } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
               booked = '&#9839;' + userName + '/' + serviceNames;
+            } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+              booked = '&#9839;' + '&#8727;' + userName + '/' + serviceNames;
             } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
-              booked = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+              booked = '&#9839;' + '&#9834;' + userName + '/' + serviceNames;
             } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-              booked = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+              booked = '&#9839;' + '&#9834;' + '&#8727;' + userName + '/' + serviceNames;
             }
-
           }
+
           if (bookOut === 1 && notes !== '') {
             booked = '&#9834; ' + 'Book Out Time';
           } else if (bookOut === 1 && notes === '') {
@@ -1474,7 +1478,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
             }
             let booked: any;
             let userName: any;
-            if (this.individualcalendarUsersListing[i].Name === 'null' || this.individualcalendarUsersListing[i].Name === null) {
+            if (this.individualcalendarUsersListing[i].Name === '' || this.individualcalendarUsersListing[i].Name === null) {
               userName = 'No Client';
             } else {
               userName = this.individualcalendarUsersListing[i].Name;
@@ -1498,7 +1502,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 booked = '&#8857; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
                 booked = '&#8857; ' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
-              } else if (onlineBooking === 1 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
+              } else if (onlineBooking === 1 && newClient === 1 && (notes == 'null' || notes !== '') && asterix === 'asterix') {
                 booked = '&#8857; ' + '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (onlineBooking === 1 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                 booked = '&#8857; ' + userName + '/' + serviceNames;
@@ -1516,10 +1520,10 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                 booked = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
                 booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
-              } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
-                booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                booked = '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-                booked = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                booked = '&#9834; ' + '&#8727;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                 booked = userName + '/' + serviceNames;
               } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
@@ -1534,16 +1538,20 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
             if (standing === 1) {
               if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                 booked = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+              } else if (newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                booked = '&#9839;' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
                 booked = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
                 booked = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
               } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                 booked = '&#9839;' + userName + '/' + serviceNames;
+              } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                booked = '&#9839;' + '&#8727; ' + userName + '/' + serviceNames;
               } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
-                booked = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+                booked = '&#9839;' + '&#9834' + userName + '/' + serviceNames;
               } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-                booked = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+                booked = '&#9839;' + '&#9834' + '&#8727' + userName + '/' + serviceNames;
               }
 
             }
@@ -1983,7 +1991,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               }
               // '&#8727;' = *
               // '&#8857;' = online booking
-              // '&#9839;' = #
+              // '&#9839;' = # bookout
               // '&#9834;' = note
 
               const bookOut = this.calendarUsersListing[i].Is_Booked_Out__c;
@@ -2015,13 +2023,14 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               }
 
               if (onlineBooking === 0) {
+
                 if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                   booked = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
                   booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  booked = '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
-                  booked = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
-                } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
                   booked = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                   booked = userName + '/' + serviceNames;
@@ -2037,16 +2046,20 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
               if (standing === 1) {
                 if (newClient === 1 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                   booked = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  booked = '&#9839;' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
                   booked = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-                  booked = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                  booked = '&#9839;' + '&#9834' + '&#8727' + + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                   booked = '&#9839;' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  booked = '&#9839;' + '&#8727;' + userName + '/' + serviceNames;
                 } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
-                  booked = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+                  booked = '&#9839;' + '&#9834;' + userName + '/' + serviceNames;
                 } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-                  booked = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+                  booked = '&#9839;' + '&#9834;' + '&#8727;' + userName + '/' + serviceNames;
                 }
 
               }
@@ -2621,7 +2634,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
 
               let oneWeekList: any;
               let userName: any;
-              if (this.individualWorkerWeek[i].Name === 'null' || this.individualWorkerWeek[i].Name === null) {
+              if (this.individualWorkerWeek[i].Name === '' || this.individualWorkerWeek[i].Name === null) {
                 userName = 'No Client';
               } else {
                 userName = this.individualWorkerWeek[i].Name;
@@ -2683,14 +2696,16 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   oneWeekList = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
                   oneWeekList = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
-                } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-                  oneWeekList = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  oneWeekList = '&#9839;' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                   oneWeekList = '&#9839;' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
+                  oneWeekList = '&#9839;' + '&#8727; ' + userName + '/' + serviceNames;
                 } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
-                  oneWeekList = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+                  oneWeekList = '&#9839;' + '&#9834;' + userName + '/' + serviceNames;
                 } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-                  oneWeekList = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
+                  oneWeekList = '&#9839;' + '&#9834;' + '&#8727' + userName + '/' + serviceNames;
                 }
 
               }
@@ -3151,7 +3166,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
 
               let WeekDayList: any;
               let userName: any;
-              if (this.individualWorkerWeek[i].Name === 'null' || this.individualWorkerWeek[i].Name === null) {
+              if (this.individualWorkerWeek[i].Name === '' || this.individualWorkerWeek[i].Name === null) {
                 userName = 'No Client';
               } else {
                 userName = this.individualWorkerWeek[i].Name;
@@ -3193,8 +3208,8 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   WeekDayList = '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
                   WeekDayList = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
-                } else if (onlineBooking === 0 && newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
-                  WeekDayList = '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
+                  WeekDayList = '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (onlineBooking === 0 && newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
                   WeekDayList = '&#9834; ' + '&#8727; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (onlineBooking === 0 && newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
@@ -3213,12 +3228,16 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
                   WeekDayList = '&#9839;' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
                   WeekDayList = '&#9839;' + '&#9834; ' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                } else if (newClient === 1 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  WeekDayList = '&#9839;' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 1 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
-                  WeekDayList = '&#9839;' + '&#9834; ' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
+                  WeekDayList = '&#9839;' + '&#9834' + '&#8727' + '<span style="color:red;font-weight:bold;">' + userName + ' </span> / ' + serviceNames;
                 } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix !== 'asterix') {
                   WeekDayList = '&#9839;' + userName + '/' + serviceNames;
                 } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix !== 'asterix') {
                   WeekDayList = '&#9839;' + '&#9834; ' + userName + '/' + serviceNames;
+                } else if (newClient === 0 && (notes === 'null' || notes === '') && asterix === 'asterix') {
+                  WeekDayList = '&#9839;' + '&#8727' + userName + '/' + serviceNames;
                 } else if (newClient === 0 && (notes !== 'null' || notes !== '') && asterix === 'asterix') {
                   WeekDayList = '&#9839;' + '&#9834; ' + '&#8727' + userName + '/' + serviceNames;
                 }
@@ -4008,36 +4027,59 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     } else {
       this.NotificationReminderEmail = 1;
     }
+    const currDate = moment().format('MM/DD/YYYY');
+    const clickDate = moment(CalendarDate, 'MM/DD/YYYY').format('MM/DD/YYYY');
+    const isoU = moment(currDate).isSameOrBefore(clickDate);
 
-    if ((this.firstName === undefined || this.firstName === '') || (this.lastName === '' || this.lastName === undefined) ||
-      (CalendarDate < moment().format('MM/DD/YYYY')) || (this.clientfieldPrimaryEmail === true && this.primaryEmail === undefined || this.primaryEmail === '') ||
-      (this.clientfieldMobilePhone === true && (this.mobileNumber === undefined || this.mobileNumber === '')
-        || (this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail))
-      || (this.countrycode === undefined || this.countrycode === '')) {
+    if ((this.firstName === undefined || this.firstName === '') ||
+      (this.lastName === '' || this.lastName === undefined) ||
+      (isoU === false) ||
+      (this.clientfieldPrimaryEmail === true && this.primaryEmail === undefined || this.primaryEmail === '') ||
+      (this.clientfieldMobilePhone === true && (this.mobileNumber === undefined || this.mobileNumber === '') ||
+        (this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail)) ||
+      ((this.countrycode === undefined || this.countrycode === '') && (this.mobileNumber !== undefined || this.mobileNumber !== '')) ||
+      ((this.mobileNumber === undefined || this.mobileNumber === '') && (this.countrycode !== undefined || this.countrycode !== ''))) {
+
       if (this.firstName === '' || this.firstName === undefined) {
         this.errorFirstName = 'APPOINTMENTS_MAIN_PAGE.ERROR_FIRST_NAME';
       }
       if (this.lastName === '' || this.lastName === undefined) {
         this.errorLastName = 'APPOINTMENTS_MAIN_PAGE.ERROR_LAST_NAME';
       }
+
       if (this.clientfieldMobilePhone === true && (this.mobileNumber === undefined || this.mobileNumber === '')) {
         this.errormobilephone = 'APPOINTMENTS_MAIN_PAGE.ERROR_MOBILEPHONE';
         this.countrycodeError = '';
       }
+
+      if (this.clientfieldMobilePhone === true && (this.countrycode === undefined || this.countrycode === '')) {
+        this.countrycodeError = 'APPOINTMENTS_MAIN_PAGE.ERROR_COUNTRY_CODE';
+        this.errormobilephone = '';
+      }
+
+
       if (this.clientfieldPrimaryEmail === true && (this.primaryEmail === undefined || this.primaryEmail === '')) {
         this.errorEmail = 'APPOINTMENTS_MAIN_PAGE.ERROR_EMAIL';
         this.validationEmailError = '';
       }
-      if (CalendarDate < moment().format('MM/DD/YYYY')) {
+
+      if (isoU === false) {
         this.toastr.warning('Express Booking Appointment date / time can not be in the past', null, { timeOut: 2500 });
       }
-      if (this.countrycode === undefined || this.countrycode === '') {
-        this.countrycodeError = 'APPOINTMENTS_MAIN_PAGE.ERROR_COUNTRY_CODE';
+
+
+      if (this.mobileNumber || this.countrycode) {
+        if (this.mobileNumber && (!this.countrycode)) {
+          this.countrycodeError = 'APPOINTMENTS_MAIN_PAGE.ERROR_COUNTRY_CODE';
+        } else {
+          this.errormobilephone = 'APPOINTMENTS_MAIN_PAGE.ERROR_MOBILEPHONE';
+        }
       }
-      if ((this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail)) {
+
+      if (this.primaryEmail && !EMAIL_REGEXP.test(this.primaryEmail)) {
         this.validationEmailError = 'SETUPCOMPANY.INVALID_EMAIL_ID';
-        this.errorEmail = '';
       }
+
       window.scrollTo(0, 0);
     } else {
 
@@ -4075,7 +4117,7 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         'workername': this.workername,
         'firstName': this.firstName,
         'lastName': this.lastName,
-        'mobileNumber': countryCode + this.mobileNumber,
+        'mobileNumber': countryCode + '-' + this.mobileNumber,
         'primaryEmail': this.primaryEmail,
         'textArea': this.textArea,
         'visitType': this.expressVisitType,
@@ -4335,10 +4377,14 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     const mm = today.getMonth() + 1;
     const yyyy = today.getFullYear();
     const CalendarDate2 = $('#CalendarDate2').val();
+    const currDate = moment().format('MM/DD/YYYY');
+    const clickDate = moment(CalendarDate2, 'MM/DD/YYYY').format('MM/DD/YYYY');
+    const isoU = moment(currDate).isSameOrBefore(clickDate);
+
     if ((this.firstName === undefined || this.firstName === '') || (this.lastName === '' || this.lastName === undefined)
       //  || (this.mobileNumber === '' || this.mobileNumber === undefined)
       // || (this.primaryEmail === undefined || this.primaryEmail === '')
-      || (CalendarDate2 < moment().format('MM/DD/YYYY')) ||
+      || (isoU === false) ||
       (this.primaryEmail !== undefined || this.primaryEmail !== '') && !EMAIL_REGEXP.test(this.primaryEmail)) {
 
       if (this.firstName === '' || this.firstName === undefined) {
@@ -4354,15 +4400,17 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
         this.existingValidationError = 'SETUPCOMPANY.INVALID_EMAIL_ID';
         this.errorEmail = '';
       }
+      if (isoU === false) {
+        this.toastr.warning('Express Booking Appointment date / time can not be in the past', null, { timeOut: 2500 });
+      }
       // if ((this.mobileNumber === '' || this.mobileNumber === undefined) && this.clientfieldMobilePhone === true) {
       //   this.errormobilephone = 'APPOINTMENTS_MAIN_PAGE.ERROR_MOBILEPHONE';
       // }
       // if ((this.primaryEmail === '' || this.primaryEmail === undefined) && this.clientfieldPrimaryEmail === true) {
       //   this.errorEmail = 'APPOINTMENTS_MAIN_PAGE.ERROR_EMAIL';
       // }
-      if (CalendarDate2 < moment().format('MM/DD/YYYY')) {
-        this.toastr.warning('Express Booking Appointment date / time can not be in the past', null, { timeOut: 2500 });
-      }
+
+
     } else {
       const servicePrice2 = $('#servicePrice2').val();
       this.sumDuration = $('#sumDuration2').val();
@@ -4599,8 +4647,14 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
     const dd = today.getDate();
     const mm = today.getMonth() + 1;
     const yyyy = today.getFullYear();
+
     const skipCalendarDate = $('#skipCalendarDate').val();
-    if (skipCalendarDate < moment().format('MM/DD/YYYY')) {
+    const currDate = moment().format('MM/DD/YYYY');
+
+    const clickDate = moment(skipCalendarDate, 'MM/DD/YYYY').format('MM/DD/YYYY');
+    const isoU = moment(currDate).isSameOrBefore(clickDate);
+
+    if (isoU === false) {
       this.toastr.warning('Express Booking Appointment date / time can not be in the past', null, { timeOut: 2500 });
     } else {
       this.bookingDate = $('#skipdateAndTime').val();
@@ -4746,9 +4800,22 @@ export class AppointmentsComponent implements OnInit, OnDestroy {
   }
 
 
-  // weekdaydatas() {
-  //   const events = [];
-
-  // }
+  pasteNumPhone(value) {
+    let temp = '';
+    if (value.indexOf('(') !== 0) {
+      for (let i = 0; i < value.length; i++) {
+        if (i === 0) {
+          temp += '(' + value[i];
+        } else if (i === 2) {
+          temp += value[i] + ')';
+        } else if (i === 5) {
+          temp += value[i] + '-';
+        } else {
+          temp += value[i];
+        }
+        this.mobileNumber = temp.substr(0, 13);
+      }
+    }
+  }
 
 }

@@ -1,0 +1,170 @@
+<div [@routeAnimations]="'Reports'" class="container-fluid whitebg py-3 border-bottom">
+  <form [formGroup]="basicForm" autocomplete="off" (ngSubmit)="getAdminReports()">
+    <div class="row font14">
+      <div class="col-md-2">
+        <h5 style="margin: .8rem auto;">Admin Report</h5>
+        <div style="position: absolute;top: 0;right: 0; height: 100%;"
+          class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field>
+          <mat-label>Organization Unit:</mat-label>
+          <mat-select formControlName="subOrgObj">
+            <mat-option *ngFor="let subOrg of subOrgList; let i = index;" [value]="subOrg">
+              <span *ngFor="let i of Arr(subOrg.padding).fill(1)"> &nbsp;&nbsp;&nbsp; </span> {{ subOrg.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field>
+          <mat-label>Pre Auction Total Savings:</mat-label>
+          <mat-select formControlName="preAucSaving">
+            <mat-option *ngFor="let savings of preAucTotalSavingList" [value]="savings">
+              {{savings.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-2">
+        <mat-form-field class="full-width">
+          <input matInput readonly [matDatepicker]="dtStart" placeholder="From Date" [max]="maxDate"
+            formControlName="openDate" (dateChange)="fromDateChanged($event)">
+          <mat-datepicker-toggle matSuffix [for]="dtStart"></mat-datepicker-toggle>
+          <mat-datepicker #dtStart></mat-datepicker>
+          <mat-hint *ngIf="error.startDateError" style="color:red;">Open date must be a future date</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field class="full-width">
+          <input matInput readonly [matDatepicker]="dtEnd" placeholder="To Date" [min]="minDate"
+            formControlName="endDate" (dateChange)="toDateChanged($event)">
+          <mat-datepicker-toggle matSuffix [for]="dtEnd"></mat-datepicker-toggle>
+          <mat-datepicker #dtEnd></mat-datepicker>
+          <mat-hint *ngIf="error.endDateError" style="color:red;">Close date must be a future date from open date
+          </mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-xs-2">
+        <button style="margin-top: .7em;" type="submit" class="btn btn-sm btn-primary ml-2">
+          GO
+        </button>
+      </div>
+
+      <!-- Generate Report -->
+      <div class="col-xs-2" style="margin-left: 10px;">
+        <div style="float: left; height: 100%;" class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+        <div class="text-right"  style="width: 95px;">
+          <button style="margin-top: .65em;margin-bottom: 1.05em;" type="button" class="btn btn-sm btn-primary ml-2"
+            matTooltip="Generate Report" (click)="getAdminReportExcel()" [disabled]="downButt">
+            <i class="fas fa-chart-line"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Report Geneartion Status-->
+      <div class="col-xs-2" style="margin-left: 10px;">
+        <div class="text-right" style="width: 40px;margin-top: 3px;">
+          <button style="margin-top: .5em;margin-bottom: 1.05em;" type="button" class="btn btn-sm btn-primary ml-2"
+            matTooltip="Report Generation Status" (click)="checkReportStatus()">
+            <i class="fa fa-file"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="auctionDetails" [@routeAnimations]="auctionDetails?'afterTableLoad':''"
+  class="container-fluid whitebg pt-3">
+
+  <div class="row font14">
+    <div class="col-md-2">
+      <div class="printViewBox">
+        <strong>Total Auctions: </strong>
+        <span>{{auctionDetails.totalAuction}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="printViewBox">
+        <strong>Total Auction Value: </strong>
+        <span>{{auctionDetails.totalAuctionValue.toLocaleString('en-IN')}}</span>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="printViewBox">
+        <strong>Total Unique Vendors: </strong>
+        <span>{{auctionDetails.totalUniqueVendors}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="printViewBox">
+        <strong>Auction Saving Range: </strong>
+        <span>{{auctionDetails.auctionSavingRange}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="auctionDetails" [@routeAnimations]="auctionDetails?'afterTableLoad':''"
+  class="container-fluid whitebg py-3 mb-5">
+  <div class="">
+    <div class="table-ofh table-responsive fixtable-height">
+      <table class="table table-bordered table-striped font14">
+        <thead>
+          <tr class="blue-header">
+            <th>Sr. no</th>
+            <th> Auction Id</th>
+            <th> Auction Name</th>
+            <th style="min-width: 100px;"> Auction Start Date</th>
+            <th style="min-width: 100px;"> Auction End Date</th>
+            <th> No. of Vendors</th>
+            <th> Created By</th>
+            <th> Business Unit</th>
+            <th>Pre-Auction Total Value</th>
+            <th>Post-Auction Total Value</th>
+            <th>Savings</th>
+            <th>Savings (%)</th>
+            <th>Auction Type</th>
+            <th> Buyer Org Unit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr [@routeAnimations]="{value: auc?'afterTableLoad' : '', params:{ index: '2000ms'} }"
+            *ngFor="let auc of auctionDetails.auctionData; let i=index">
+            <td>{{i+1}}</td>
+            <td>{{auc.auctionID}}</td>
+            <td>{{auc.auctionName}}</td>
+            <td>{{auc.startDate}}</td>
+            <td>{{auc.endDate}}</td>
+            <td>{{auc.vendorCount}}</td>
+            <td>{{auc.createdBy}}</td>
+            <td>{{auc.businessUnit}}</td>
+            <td>{{auc.preAuctionTotalValue.toLocaleString('en-IN')}}</td>
+            <td>{{auc.postAuctionTotalValue.toLocaleString('en-IN')}}</td>
+            <td>{{auc.savingsValue.toLocaleString('en-IN')}}</td>
+            <td>{{auc.savings}}</td>
+            <!-- <td>
+							<savings
+								[auctionType_Obj]="auctionTypeSelected"
+								[savingSelected_Obj]="savingSelected"
+								[compType]="'savings'"
+								></savings>
+						</td> -->
+            <!-- <td>
+							<savings
+								[auctionType_Obj]="auctionTypeSelected"
+								[savingSelected_Obj]="savingSelected"
+								[compType]="'savingspercentage'"
+								></savings>
+						</td> -->
+            <td>{{auc.type}}</td>
+            <td>{{auc.buyerOrg}}</td>
+            <!-- <td>{{auc.pncCategory}}</td>
+						<td>{{auc.itemType}}</td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

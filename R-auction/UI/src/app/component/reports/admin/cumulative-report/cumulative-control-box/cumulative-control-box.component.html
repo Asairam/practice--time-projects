@@ -1,0 +1,105 @@
+<div class="container-fluid whitebg border-bottom">
+    <div class="py-3">
+        <form [formGroup]="crService.queryForm" autocomplete="off"  (ngSubmit)="crService.go()">
+            <div class="row font14">
+                <!-- Popup Menu -->
+                <div class="col-xs-1" style="position: relative; padding-right: 15px;">
+                    <button style="margin-top: .59em;margin-bottom: 1.05em;" type="button"
+                        class="btn btn-sm btn-primary ml-2" matTooltip="Column Menu"
+                        (click)="reportService.openCumulativeMenuPopup();"> 
+                            <i class="fas fa-bars item-btn"></i>
+                    </button>
+                    <div  style="position: absolute;top: 0;right: 0; height: 100%;" class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+                </div>
+                <!-- Organization Unit -->
+                <div class="col-sm-2">
+                    <mat-form-field class="full-width">
+                        <mat-label>Organization Unit:</mat-label>
+                        <mat-select  formControlName="subOrgObj" (selectionChange)="orgChanged($event)">
+                            <mat-option *ngFor="let subOrg of subOrgList; let i = index;" [value]="subOrg">
+                                <span *ngFor="let i of Arr(subOrg.padding).fill(1)"> &nbsp;&nbsp;&nbsp; </span> {{ subOrg.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!-- Users In the Organization -->
+                <div class="col-sm-2">
+                    <mat-form-field>
+                        <mat-label>Users:</mat-label>
+                        <mat-select  formControlName="orgUser" (selectionChange)="userChanged($event)">
+                            <mat-option *ngFor="let userObj of orgUserList; let i = index;" [value]="userObj">
+                                {{ userObj.email }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- From date -->
+                <div class="col-sm-2">
+                    <mat-form-field class="full-width">
+                        <input matInput readonly [matDatepicker]="dtStart" placeholder="From Date"  [max]="maxDate" formControlName="openDate"
+                        (dateChange)="fromDateChanged($event)">
+                        <mat-datepicker-toggle matSuffix [for]="dtStart"></mat-datepicker-toggle>
+                        <mat-datepicker #dtStart></mat-datepicker>
+                        <span *ngIf="crService.queryForm.controls.openDate.value" style="cursor:pointer; position: absolute;top: 5px;right: 3px;font-size: 18px;color: red;" (click)="clearFromDate()"> x </span>
+                        <mat-hint *ngIf="crService.error.startDateError" style="color:red;">Open date must be a future date</mat-hint>
+                    </mat-form-field>
+                </div>
+                <!-- To Date -->
+                <div class="col-sm-2">
+                    <mat-form-field class="full-width">
+                        <input matInput readonly [matDatepicker]="dtEnd" placeholder="To Date" [min]="minDate" formControlName="endDate"
+                        (dateChange)="toDateChanged($event)">
+                        <mat-datepicker-toggle matSuffix [for]="dtEnd"></mat-datepicker-toggle>
+                        <mat-datepicker #dtEnd></mat-datepicker>
+                        <span  *ngIf="crService.queryForm.controls.endDate.value"  style="cursor:pointer; position: absolute;top: 5px;right: 3px;font-size: 18px;color: red;" (click)="clearToDate()"> x </span>
+                        <mat-hint *ngIf="crService.error.endDateError" style="color:red;">Close date must be a future date from open date</mat-hint>
+                    </mat-form-field>
+                </div>
+                <!-- Submit Form-->
+                <div class="col-xs-1">
+                    <button style="margin-top: .7em;" type="submit" class="btn btn-sm btn-primary ml-2" >
+                        GO
+                    </button>
+                </div>
+                <!-- Excel Type-->
+                <div class="col-xs-2" style="position: relative;">
+                    <div  style="float: left; height: 100%;" class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+                    <mat-form-field >
+                        <mat-label>Excel Type :</mat-label>
+                        <mat-select  formControlName="excelType">
+                            <mat-option *ngFor="let etype of crService.excelTypeList; let i = index;" [value]="etype">
+                                {{ etype.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!-- Generate Report -->
+                <div class="col-sm-1" style="padding-left: 19px;">
+                  <div  style="float: left; height: 100%;" class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+
+                    <div class="text-right">
+                        <button style="margin-top: .5em;margin-bottom: 1.05em;" type="button"
+                                class="btn btn-sm btn-primary ml-2" matTooltip="Generate Report"
+                                (click)="download()"
+                            [disabled]="downButt">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Report Geneartion Status-->
+                <div class="col-xs-1">
+                  <div class="text-right">
+                      <button style="margin-top: .5em;margin-bottom: 1.05em;" type="button"
+                              class="btn btn-sm btn-primary ml-2" matTooltip="Report Generation Status"
+                              (click)="checkReportStatus()"
+                          >
+                          <i class="fa fa-file"></i>
+                      </button>
+                  </div>
+              </div>
+            </div>
+
+        </form>
+    </div>
+</div>

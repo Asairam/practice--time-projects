@@ -1,0 +1,37 @@
+{
+  "flag": "staging",
+  "production": true,
+  "baseUrlCore": "/pnc/",
+  "rauction": "/rauction/",
+  "baseUrlAuction": "/pnc/",
+  "baseUrlMachineLearning": "/pnc/",
+  "userProfile": "/pnc/",
+  "commonUrlDocument": "/commons/",
+  "applicationUrl": "https://rauctionqa.ril.com/rauction/",
+  "loginUrl": "https://rauctionqa.ril.com/security/login",
+  "baseUrlBid": "/pnc/",
+  "baseUrlMaterial": "https://rauctionqa.ril.com/pnc/",
+  "appID": "5cf8b396e6f83a0013ad1a65",
+  "socketURL": {
+    "auction": "https://rauctionqa.ril.com",
+    "auctionURL": "/pnc/auction/scheduler",
+    "bid": "https://rauctionqa.ril.com",
+    "bidURL": "/pnc/auction/bid",
+    "query": "https://rauctionqa.ril.com",
+    "queryURL": "/pnc/auction/query"
+  },
+  "IIMS": "https://rsevaqa.ril.com",
+  "apmUrl": "https://rauctionqa.ril.com/apmrum/",
+  "geoApiUrl": "https://locationapi.ril.com/geolocation/loc-by-ip/",
+  "serviceName": "RA_AJ_PnCAuctionMobileUI",
+  "initialPageLoadName": "rauction",
+  "application": "RAuctions",
+  "component_name": "AuctionUI",
+  "platform": "PNC",
+  "sub_platform": "Intelligent Esourcing",
+  "featureFlags": {
+    "iims_feature": true
+  },
+  "digitalplatform": "https://digitalplatformsqa.ril.com/",
+  "GUID": "beb67278-2e3e-11eb-9cb2-000d3a3e22ff"
+}

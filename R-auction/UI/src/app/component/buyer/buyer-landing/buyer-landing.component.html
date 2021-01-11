@@ -1,0 +1,267 @@
+<div>
+    <div class="container-body">
+        <!-- to be used in future -->
+        <!-- <div class="container-fluid " style="background: #e6e6e6;">
+            <div class="home-search py-4">
+                <div class="input-group ">
+                    <select class="form-control select-filter">
+                        <option> All </option>
+                        <option> Forward Auction </option>
+                        <option> Reverse Auction </option>
+                    </select>
+                    <input type="text" class="form-control" placeholder="Search">
+                    <div class="input-group-append">
+                        <button class="btn search-btn" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="whitebg pt-4">
+            <div class="cust-container">
+                <div class="row cust-row-margin">
+
+
+                    <!-- LANDING REPORT START-->
+                    <!-- Live Auction -->
+                    <!-- <div *ngIf="adminAccess" class="col-md-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".35s">
+                        <div class="flat-tile" [ngClass]="{'greenbg': buyerData?.liveDetails?.percentage > 50, 'redbg': buyerData?.liveDetails?.percentage < 50}">
+                            <div class="flat-tile-header ">
+                                {{translateSer?.LIVE_AUC}} -->
+                                <!-- <div class="pos-left fAuc">
+                                    <div class="dropdown" ngbDropdown title="Select Auction Type">
+                                        <button type="button" class="flat-tile-dd  dropdown-toggle no-dropdown-icon" ngbDropdownToggle>
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-left font13">
+                                            <a class="dropdown-item" href="javascript:void(0)" *ngFor="let type of aucType"
+                                                (click)="selectAucType(type)" [ngClass]="{'active' : type.value === aucTypeValue.value}">{{type.name}}</a>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            <!-- </div>
+                            <div class="flat-tile-content d-flex justify-content-between">
+                                <div class="text-center blockA">
+                                    <div class=" "> {{translateSer?.SAVINGS}} </div>
+                                    <div class="flat-tile-content-big">
+                                        <span *ngIf="buyerData?.liveDetails?.percentage">
+                                            + {{buyerData?.liveDetails.percentage|number:'1.0-0'}}%
+                                        </span>
+                                        <span *ngIf="!buyerData?.liveDetails?.percentage">
+                                            + 0%
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class=" d-flex justify-content-center align-items-center blockB">
+                                    <div class="">
+                                        <div class="mt-2"> {{translateSer?.BASELINE}} </div>
+                                        <div class="flat-tile-content-med"> {{translateSer?.INR}}
+                                            {{buyerData?.liveDetails?.totalhistoricalCost |number:decimalplace}} Cr</div>
+                                    </div>
+                                    <div class="vertical-line align-self-stretch mx-3 my-2"></div>
+                                    <div class=" ">
+                                        <div class="mt-2"> {{translateSer?.CURRENT}} </div>
+                                        <div class="flat-tile-content-med"> {{translateSer?.INR}}
+                                            {{buyerData?.liveDetails?.baselineTotal |number:decimalplace}} Cr</div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div> -->
+                    <!-- Total Income -->
+                    <div *ngIf="adminAccess"  [routerLink]="['/reports/summary']" [ngClass]='{"col-md-3":userType == "buyer", "col-md-4":userType != "buyer"}' class="cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".45s">
+                        <div class="flat-tile d-flex align-items-center" style="min-height: 120px;" [ngClass]="{'greenbg': buyerData?.pastDetails?.percentage > 50, 'redbg': buyerData?.pastDetails?.percentage < 50}">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"><i class="fas fa-user"></i></div>
+                                <div class="">Auction Admin Report</div>
+                            </div>
+                            <!-- <div class="flat-tile-header ">
+                                {{"Total Auctions"}} -->
+                                <!-- <div class="pos-right">
+                                    <div class="dropdown" ngbDropdown>
+                                        <button type="button" class="flat-tile-dd dropdown-toggle" ngbDropdownToggle>
+                                            {{totalIncome.name}}
+                                        </button>
+                                        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right font13">
+                                            <a class="dropdown-item" href="javascript:void(0)" *ngFor="let sortOrder of daysInThisWeek"
+                                                (click)="ChangeSortOrder(sortOrder)" [ngClass]="{'active' : sortOrder.value === totalIncome.value}">{{sortOrder.name}}</a>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            <!-- </div>
+                            <div class="flat-tile-content d-flex justify-content-between">
+                                <div class="text-center" style="min-width:40%; ">
+                                    <div class=" "> {{translateSer?.SAVINGS}} </div>
+                                    <div class="flat-tile-content-big"> {{buyerData?.pastDetails?.percentage
+                                        | number:'1.0-0'}}%</div>
+                                </div>
+                                <div class=" d-flex justify-content-center align-items-center" style="min-width:55%">
+                                    <div class="">
+                                        <div class="mt-2"> {{translateSer?.BASELINE}} </div>
+                                        <div class="flat-tile-content-med"> {{translateSer?.INR}}
+                                            {{buyerData?.pastDetails?.totalhistoricalCost
+                                            |number:decimalplace}} Cr</div>
+                                    </div>
+                                    <div class="vertical-line align-self-stretch mx-3 my-2" style="width:0px"></div>
+                                    <div class=" " style="min-width:46%">
+                                        <div class="mt-2"> {{translateSer?.ACTUAL}} </div>
+                                        <div class="flat-tile-content-med"> {{translateSer?.INR}}
+                                            {{buyerData?.pastDetails?.baselineTotal
+                                            |number:decimalplace}} Cr</div>
+                                    </div>
+                                </div>
+
+                            </div>-->
+                        </div> 
+                    </div>
+                    <div *ngIf="adminAccess" [ngClass]='{"col-md-3":userType == "buyer", "col-md-4":userType != "buyer"}' class=" cust-col-pad wow bounceInUp animationdelay" (click)="onClickBox('calendar')" data-wow-delay=".55s">
+                        <div class="flat-tile d-flex align-items-center greenbg" style="min-height: 120px;">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"><i class="fas fa-calendar-alt"></i></div>
+                                <div class="">Calendar View</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="adminAccess" [ngClass]='{"col-md-3":userType == "buyer", "col-md-4":userType != "buyer"}' class="cust-col-pad wow bounceInUp animationdelay" (click)="onSettingClick('admin')" data-wow-delay=".55s">
+                        <div class="flat-tile d-flex align-items-center redbg" style="min-height: 120px;">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"><i class="fa fa-cogs" ></i></div>
+                                <div class="">Configuration Settings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div  [routerLink]="['/reports/summary']" [queryParams]='{type:"misreport"}' *ngIf="userType == 'buyer'" class="col-md-3 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".55s">
+                        <div class="flat-tile d-flex align-items-center greenbg" style="min-height: 120px;">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"><i class="far fa-envelope-open"></i></div>
+                                <div class="">Auction MIS Report</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- LANDING REPORT END-->
+
+
+
+                    <div class="col-md-3  col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".55s">
+                        <div class="flat-tile d-flex align-items-center orangebg" style="min-height: 120px;" (click)="onType('Draft')">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> {{buyerData?.pendingCount}} </div>
+                                <div class="">{{translateSer?.PENDING_WORK}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".65s">
+                        <div class="flat-tile d-flex align-items-center bluebg" style="min-height: 120px;" (click)="onType('Today')">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> {{buyerData?.allLiveAuction}} </div>
+                                <div class="">{{translateSer?.TODAYS_AUC}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".75s">
+                        <!-- <div class="pos-right">
+                            <div class="dropdown" ngbDropdown>
+                                <button type="button" class="flat-tile-dd dropdown-toggle" ngbDropdownToggle>
+                                    {{comingSoonValue.name}}
+                                </button>
+                                <div ngbDropdownMenu class="dropdown-menu-right font13">
+                                    <a class="dropdown-item" href="javascript:void(0)" *ngFor="let sortOr of comingSoon"
+                                        (click)="ChangeComingSoon(sortOr)" [ngClass]="{'active' : sortOr.value === comingSoonValue.value}">{{sortOr.name}}</a>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="flat-tile d-flex align-items-center bluebg" style="min-height: 120px;" (click)="onType('Published')">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> {{buyerData?.futureAuctionCount}} </div>
+                                <div class="">{{translateSer?.PUBLISHED_AUC}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".75s">
+                        <!-- <div class="pos-right">
+                            <div class="dropdown" ngbDropdown>
+                                <button type="button" class="flat-tile-dd dropdown-toggle" ngbDropdownToggle>
+                                    {{comingSoonValue.name}}
+                                </button>
+                                <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right font13">
+                                    <a class="dropdown-item" href="javascript:void(0)" *ngFor="let sortOr of comingSoon"
+                                        (click)="ChangeComingSoon(sortOr)" [ngClass]="{'active' : sortOr.value === comingSoonValue.value}">{{sortOr.name}}</a>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="flat-tile d-flex align-items-center bluebg" style="min-height: 120px;" (click)="onClickBox('live')" >
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> {{buyerData?.openAuction}} </div>
+                                <div class="">{{translateSer?.LIVE_AUC}}</div>  
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".65s">
+                        <div class="flat-tile d-flex align-items-center redbg" style="min-height: 120px;" (click)="onType('Closed')">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> {{buyerData?.closedAllAuction}} </div>
+                                <div class="">{{translateSer?.CLOSE_AUC}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".65s">
+                        <div class="flat-tile d-flex align-items-center bluebg" style="min-height: 120px;" (click)="onType('All')">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> {{buyerData?.allAuctionCount}} </div>
+                                <div class="">{{translateSer?.ALL_AUC}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".75s">
+                        <div class="flat-tile d-flex align-items-center bluebg" style="min-height: 120px;" (click)="onTemplateClick()">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> {{buyerData?.allTemplateCount}} </div>
+                                <div class="">{{translateSer?.ALL_Temp}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-3 col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".65s">
+                        <div class="flat-tile d-flex align-items-center bluebg" style="min-height: 120px;">
+                            <div class=" text-center full-width ">
+                                <div class="">{{translateSer?.ANALYTIC}}</div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-md-3  col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".85s">
+                        <div (click)="onAuctionDocument()" class="flat-tile d-flex align-items-center yellowbg" style="min-height: 120px;">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> <i class="fas fa-plus"> </i> </div>
+                                <div class="">{{translateSer?.CREATE_AUC}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-3  col-6 cust-col-pad wow bounceInUp animationdelay" data-wow-delay="1.05s">
+                        <div (click)="onAuctionDocument()" class="flat-tile d-flex align-items-center yellowbg" style="min-height: 120px;">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> <i class="fa fa-envelope"> </i> </div>
+                                <div class="">{{translateSer?.MAIL_TEMPLATE}}</div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- <div class="col-md-3  col-6 cust-col-pad">
+                        <div class="flat-tile d-flex align-items-center greenbg" style="min-height: 120px;">
+                            <div class=" text-center full-width ">
+                                <div class="flat-tile-content-big1"> 20 </div>
+                                <div class=""> Pending</div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                </div>
+            </div>
+        </div>
+        <!-- <button class="dashboard-btn"> </button> -->
+
+
+    </div>
+</div>

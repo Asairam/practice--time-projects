@@ -1,0 +1,37 @@
+<div class="col-md-12" *ngIf="showRemark">
+  <mat-form-field class="full-width mt-2 font15">
+    <input matInput [(ngModel)]="remark" placeholder="Enter Remark" >
+    <!-- <mat-label>Enter Remark</mat-label> -->
+    <!-- for already accepted suppliers -->
+    <!-- <textarea matInput  [(ngModel)]="remark" required></textarea> -->
+  </mat-form-field>
+</div>
+
+<div class="col-md-12 acti-parti-height border" *ngIf="allRemarks.length>0">
+  <div *ngIf="allRemarks.length>0" class="timeline-main">
+    <div class="mt-2 pb-2 border-bottom">
+      <span class="font15 bold ">All Remarks</span>
+      <span class="custom-chip red-chip ml-2"> {{allRemarks.length}} </span>
+    </div>
+    <ul class="timeline-block clearfix">
+      <li *ngFor="let remark of allRemarks;let i=index;" class="timeline-container make-relative clearfix" [ngClass]="{'timeline-green':(allRemarks.length-1!=i)}">
+        <!-- timeline-green -->
+        <div class="timeline-date float-left">
+          <div class="font14 bold">{{remark.updatedAt | date:'hh:mm:ss a'}}</div>
+          <div class="font12 grayfont">{{remark.updatedAt | date:'dd-MM-yyyy'}} </div>
+        </div>
+        <div class="timeline-circle float-left">
+          <i class="fas fa-circle"></i>
+        </div>
+        <div class="timeline-information make-relative float-left">
+          <h2> {{remark.remark}}</h2>
+          <h4> {{remark.updatedUser}}</h4>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+  <div *ngIf="allRemarks.length==0">
+    No remark found
+  </div>
+</div>

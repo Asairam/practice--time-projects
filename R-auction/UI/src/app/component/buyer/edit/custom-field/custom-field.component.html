@@ -1,0 +1,63 @@
+<div class="border-card border-blue p-3 mb-3 wow bounceInUp animationdelay " data-wow-delay=".30s">
+	<div class="border-card-header mb-2 d-flex justify-content-between align-items-center">
+		<div class="bold"> Custom Fields ({{customFieldList.length}}) </div>
+		<div *ngIf="(aucStatus === 'draft' || aucStatus === 'suspended') && !common.auctionLeader.host">
+			<button class="header-sm-btn " (click)="auctionReadOnly? return : createCustom()">
+				<i class="fas fa-plus"> </i> New Field
+			</button>
+			<!-- <button class="header-sm-btn pause-disabled" *ngIf="aucStatus == 'Paused'">
+				<i class="fas fa-plus"> </i> New Field
+			</button> -->
+		</div>
+	</div>
+	<div class=" border-card-header d-flex justify-content-between align-items-center mb-3" *ngIf="customFieldList.length>0">
+		<div>
+			<span class="custom-sort mr-2">
+				<select class="custom-sort-input" [(ngModel)]="selectFilter" (change)="customSorting(2)">
+					<option *ngFor="let filter of customFilter"> {{filter.value}} </option>
+				</select>
+				<button class="ascending" [ngClass]="{'disabled':sorting}" matTooltip="Ascending Sort" (click)="customSorting(0)">
+					<i class="fas fa-long-arrow-alt-up"></i> </button>
+				<button class="descending" [ngClass]="{'disabled':!sorting}" matTooltip="Descending Sort" (click)="customSorting(1)">
+					<i class="fas fa-long-arrow-alt-down"></i> </button>
+			</span>
+		</div>
+	</div>
+	<div class="card-content font14">
+		<div class="row">
+			<div class="col-md-3 col-sm-6 mb-3" *ngFor="let field of customFieldList; let i = index">
+				<div class="flat-tile tealbg p-2">
+					<div class="d-flex justify-content-between align-items-center mb-1">
+						<div class="bold"> {{field.fieldName}}</div>
+						<div>
+							<div class="dropdown " ngbDropdown>
+								<button type="button" class="flat-tile-dd dropdown-toggle no-dropdown-icon" ngbDropdownToggle>
+									<i class="fas fa-ellipsis-v"></i>
+								</button>
+								<div ngbDropdownMenu class="dropdown-menu dropdown-menu-right font13">
+									<span>
+										<span *ngIf="(aucStatus === 'draft' || aucStatus === 'suspended') && !common.auctionLeader.host">
+											<a class="dropdown-item"  *ngIf="!auctionReadOnly" (click)="createCustom(field)">
+												Edit
+											</a>
+											<a class="dropdown-item" *ngIf="!auctionReadOnly" (click)="deleteCustom(field)">
+												Delete
+											</a>
+										</span>
+										<a class="dropdown-item" (click)="createCustom(field, true)">
+											View
+										</a>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<div> {{field.dataType}} </div>
+						<div> {{i +1}} </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,268 @@
+<div>
+  <div class="container-body">
+    <!-- Page Alt Header -->
+    <div class="container-fluid alt-header-fix">
+      <div class="alt-header pad-block font14">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item" aria-current="page" (click)="oncli()"> Home </li>
+            <!-- <li class="breadcrumb-item" (click)="goBack()">Auctions List</li> -->
+            <li class="breadcrumb-item active">Live Auctions </li>
+            <!-- <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus === 'Draft'"> Draft </span>
+            <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus === 'Today'"> Todays Auctions </span>
+            <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus === 'Coming Soon'"> Coming Soon</span> -->
+          </ol>
+        </nav>
+        <!-- <div class="header-buttons mobile-scroll" *ngIf="auctionList && auctionList.length > 0">
+          <button class="header-sm-btn-ico no-mobile" matTooltip="List" (click)="viewType('list')" [ngClass]="{'active' : view === 'list'}"
+            style="border-radius: 50% 0 0 50%;">
+            <i class="fas fa-list-ul "></i>
+          </button>
+          <button class="header-sm-btn-ico darkgraybg no-mobile" matTooltip="Card" (click)="viewType('card')" [ngClass]="{'active' : view === 'card'}"
+            style="border-radius: 0 50% 50% 0;">
+            <i class="fas fa-th-large"></i>
+          </button> -->
+        <!-- <button class="header-sm-btn-alt">
+            <i class="fas fa-caret-right font16"></i> Live
+          </button> -->
+        <!-- </div> -->
+
+      </div>
+    </div>
+    <div class="alt-header-filler"></div>
+
+    <div class="container-fluid">
+      <div infinite-scroll [infiniteScrollDistance]="scrollDistancedetail" [infiniteScrollUpDistance]="scrollUpDistancedetail"
+        [infiniteScrollThrottle]="throttledetail" (scrolled)="onScrollDown()">
+        <ngx-masonry>
+          <div class="row" *ngIf="view === 'card'">
+            <div class=" col-lg-4 col-md-4 col-sm-6" ngxMasonryItem *ngFor="let list of auctionList1;let i = index;">
+              <div class="border-card mb-3 darkfont border-green" [@flipState]="list.flip">
+                <div class="card-front">
+                  <div class="card-content font14 ">
+                    <div class="flex-ends p-4 graybg">
+                      <div class="pr-3">
+                        <span *ngIf="list.auctionName.length>40">
+                          {{list.auctionName | slice:0:40}} <span matTooltip="{{list.auctionName}}">...</span>
+                        </span>
+                        <span *ngIf="list.auctionName.length<=40">
+                          {{list.auctionName}}
+                        </span>
+                      </div>
+                      <div class="bold font16"> {{list.auctionID}} / {{list.type | aucType}}</div>
+                      <!-- <div class="vertical-line align-self-stretch darkgraybg"></div> -->
+                      <!-- <div class="bluefont">
+                        <countdown [config]="{leftTime: list.seconds}" *ngIf="(list.seconds > 86400)">$!d!d:$!h!h:$!m!m:$!s!s</countdown>
+                        <countdown [config]="{leftTime: list.seconds}" *ngIf="(list.seconds <= 86400)">$!h!h:$!m!m:$!s!s</countdown>
+                        <div class="font12 grayfont"> Time Remaining</div>
+                      </div> -->
+                    </div>
+                    <div class="text-center px-3 py-2 text-dotdot">
+                      <span class="font14 grayfont "> Auction Leader: </span>
+                      <span class="font14 bold capitalize"> {{list.auctionLeader.name}} </span>
+                    </div>
+                    <div class="line darkgraybg "></div>
+                    <div class="text-center px-3 py-2 text-dotdot">
+                      <span class="font14 bluefont ml-2"> Top Bidder: <span class=" bold capitalize">
+                        {{list.topSupplier ? list.topSupplier.supplierName1 : ''}} </span></span>
+                    </div>
+                    <div class="text-center bold px-3 py-1 yellowbg whitefont text-dotdot">
+                      <countdown class="font16" [config]="{leftTime: list.seconds}" *ngIf="(list.seconds > 86400)">
+                        $!d!d:$!h!h:$!m!m:$!s!s</countdown>
+                      <countdown class="font16" [config]="{leftTime: list.seconds}" *ngIf="(list.seconds <= 86400)">
+                        $!h!h:$!m!m:$!s!s</countdown>
+                    </div>
+                    <!-- <div class="bluefont px-3 py-2">
+                      <countdown [config]="{leftTime: list.seconds}" *ngIf="(list.seconds > 86400)">$!d!d:$!h!h:$!m!m:$!s!s</countdown>
+                      <countdown [config]="{leftTime: list.seconds}" *ngIf="(list.seconds <= 86400)">$!h!h:$!m!m:$!s!s</countdown> -->
+                    <!-- <div class="font12 grayfont"> Time Remaining</div> -->
+                    <!-- </div> -->
+                    <div class="flex-ends p-3">
+                      <div>
+                        <div class="font13 grayfont"> Start Date & Time</div>
+                        <div class="font16 bold date-height">{{list.startDate | date:'dd MMM yyyy HH:mm'}} </div>
+                      </div>
+                      <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                      <div>
+                        <div class="font13 grayfont"> Close Date & Time</div>
+                        <div class="font16 bold date-height">{{list.endDate | date:'dd MMM yyyy HH:mm'}} </div>
+                      </div>
+                    </div>
+                    <!-- <div class="line darkgraybg "></div> -->
+                    <div class="px-3">
+                      <div class="text-center darkgrayfont font16 mt-1 "> {{translateSer1?.SUPPLIERS}} </div>
+                      <div class="flex-between grayfont pt-1 pb-2 font15">
+                        <div> Invited <span class="bold font15 darkfont"> {{list.supplierInvited +
+                            list.supplierAccepted
+                            +
+                            list.supplierBidded}} </span></div>
+                        <div> Accepted <span class="bold font15 darkfont"> {{list.supplierAccepted +
+                            list.supplierBidded}}</span></div>
+                        <div> Bidded <span class="bold font15 darkfont"> {{list.supplierBidded}} </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="line darkgraybg "></div>
+                    <div class="mt-2 px-3">
+                      <div class="text-center darkgrayfont font16 "> Price </div>
+                      <div class="flex-ends grayfont py-2 font14">
+                        <div class="flex-grow">
+                          <div> Planned Value ({{list.primaryCurrency}}) </div>
+                          <div class="bold font15 darkfont">
+                            {{list.baseLine|filter:[]:0:null:null:null:null:null:list.currencyDecimalPlace}} </div>
+                        </div>
+                        <div class="vertical-line align-self-stretch darkgraybg mx-3"></div>
+                        <div class="flex-grow">
+                          <div> Current Bid Value ({{list.primaryCurrency}}) </div>
+                          <div class="bold font15 darkfont">
+                            {{list.currentBid|filter:[]:0:null:null:null:null:null:list.currencyDecimalPlace}} </div>
+                        </div>
+                      </div>
+                      <div class="flex-ends grayfont py-2 font14">
+                        <div class="flex-grow">
+                          <div>Savings </div>
+                          <div class="bold font15 darkfont">
+                            {{list.saving|filter:[]:0:null:null:null:null:null:list.currencyDecimalPlace}} </div>
+                        </div>
+                        <div class="vertical-line align-self-stretch darkgraybg mx-3"></div>
+                        <div class="flex-grow">
+                          <div>Savings % </div>
+                          <div class="bold font15 darkfont">
+                            {{list.percentSaving|filter:[]:0:null:null:null:null:null:list.currencyDecimalPlace}} </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+                  <div class="text-right p-2 graybg font12"  style="position: relative;">
+                    <span class="sealedbid-img" matTooltip="{{translateSerCommon?.SEALED_BID}}" *ngIf="list.isSealedBidAuction">
+                      <img [src]="imageURLLive+'assets/images/sealed-bid-icon.png'">
+                    </span>
+                    <button class="header-sm-btn-ico orangebg mr-2" *ngIf="list.status === 'Open' && !list.isCoHost"
+                      (click)="confirmPopup('pauseButt',list,i)" matTooltip="Pause">
+                      <i class="fas fa-pause font12"></i>
+                    </button>
+                    <button class="header-sm-btn-ico redbg mr-2" *ngIf="list.status === 'Open' && !list.isCoHost"
+                      (click)="confirmPopup('stopButt',list,i)" matTooltip="Close">
+                      <i class="fas fa-stop font12"></i>
+                    </button>
+                    <button class="header-sm-btn-ico bluebg mr-2" (click)="toggleFlip(i)" matTooltip="Flip">
+                      <i class="fab fa-flickr font13"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-back">
+                  <app-live-auction-card-flip [aucDetails]="list" *ngIf="list.flip == 'active'">
+                  </app-live-auction-card-flip>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ngx-masonry>
+      </div>
+      <!-- <div class="row" *ngIf="view === 'list'">
+        <div class="col-md-12">
+          <div class="border-card-list border-green mb-4 darkfont" *ngFor="let list of auctionList;let i = index;">
+            <div class="flex-ends px-2 py-1 font14">
+              <div class="flex-ends make35">
+                <div>
+                  <div class="font16 bold"> {{list.auctionID}} / {{list.type | aucType}}
+                  </div>
+                  <div class="font13" (click)="openLiveBidding(list.auctionID)" style="cursor:pointer;">
+                    <span *ngIf="list.auctionName.length>80">
+                      {{list.auctionName | slice:0:80}} <span matTooltip="{{list.auctionName}}">...</span>
+                    </span>
+                    <span *ngIf="list.auctionName.length<80">
+                      {{list.auctionName}}
+                    </span>
+                  </div>
+                  <div class="flex-between">
+                    <div class="text-center">
+                      <span class="font13 grayfont "> Auction Leader: </span>
+                      <span class="font13 bold capitalize"> {{list.auctionLeader.name}} </span>
+                    </div>
+                    <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                    <div class="bluefont">
+                      <countdown [config]="{leftTime: list.seconds}" *ngIf="(list.seconds > 86400)">$!d!d:$!h!h:$!m!m:$!s!s</countdown>
+                      <countdown [config]="{leftTime: list.seconds}" *ngIf="(list.seconds <= 86400)">$!h!h:$!m!m:$!s!s</countdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+              <div class="flex-ends">
+                <div class="flex-ends">
+                  <div class="mx-2">
+                    <div class="font14 "> Suppliers </div>
+                    <div class="flex-ends">
+                      <div class="mr-2">
+                        <div class="font13 grayfont"> Invited </div>
+                        <div class="font16 bold "> {{list.supplierInvited + list.supplierAccepted +
+                          list.supplierBidded}} </div>
+                      </div>
+                      <div class="mx-2">
+                        <div class="font13 grayfont"> Accepted </div>
+                        <div class="font16 bold "> {{list.supplierAccepted + list.supplierBidded}} </div>
+                      </div>
+                      <div class="ml-2">
+                        <div class="font13 grayfont"> Bidded </div>
+                        <div class="font16 bold "> {{list.supplierBidded}} </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+              </div>
+              <div class="flex-between make35">
+
+                <div class="mr-2">
+                  <div class="font13 grayfont "> Savings </div>
+                  <div class="font16 bold "> 0 </div>
+                </div>
+                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                <div class="mr-2">
+                  <div class="font13 grayfont "> Savings % </div>
+                  <div class="font16 bold "> {{list.percentSaving}}% </div>
+                </div>
+                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                <div class="mx-2">
+                  <div class="font13 grayfont "> Baseline </div>
+                  <div class="font16 bold "> {{list.primaryCurrency}} {{list.baseLine}} </div>
+                </div>
+                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                <div class="mx-2">
+                  <div class="font13 grayfont "> Current Bid </div>
+                  <div class="font16 bold "> {{list.primaryCurrency}} {{list.currentBid |number:decimalplace}} </div>
+                </div>
+
+              </div>
+              <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+              <div class="flex-right make25">
+                <div class="mx-2">
+                  <button class="header-sm-btn mr-2" *ngIf="!list.isCoHost" (click)="confirmPopup('pauseButt',list,i)">
+                    <i class="fas fa-pause"></i> Pause
+                  </button>
+                  <button class="header-sm-btn redfont mr-2" *ngIf="!list.isCoHost" (click)="confirmPopup('stopButt',list,i)">
+                    <i class="fas fa-times"></i> Force Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <div [hidden]="auctionList1 && auctionList1.length > 0" style="text-align: center;">
+        {{translateSerCommon?.NO_REC_FOU}}
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<div class="open-button" *ngIf="pauseAucName">
+  <h5 class="font13 yellowfont">Auction Paused</h5>
+  <i class="fas fa-times close-button" (click)="this.pauseAucName = ''"> </i>
+  <h6 class="font12">{{pauseAucName}}</h6>
+</div>

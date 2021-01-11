@@ -1,0 +1,61 @@
+<div>
+  <div class="dialog-header">
+    <span class="dialog-header-txt">{{supplier_details?.seleType}} {{translateSer?.SUPPLIERS}}</span>
+    <div class="float-right">
+      <i class="fas fa-times dialog-closex" (click)="onClose();"></i>
+    </div>
+  </div>
+  <div>
+    <div class="border-card-left border-blue m-3 py-2 font15">
+      <div class="row m-0 darkfont">
+          <div class="col-md-12 mb-2">
+            <div>
+              <span class="font-b">Auction Name: </span>
+              <span> {{supplier_details?.auctionData?.auctionName}}</span>
+            </div>
+          </div>
+    
+          <div class="col-md-4 ">
+            <div>
+              <span class="font-b">Auction Id: </span>
+              <span> {{supplier_details?.auctionData?.auctionID}}</span>
+            </div>
+          </div>
+    
+          <div class="col-md-8 ">
+            <div>
+              <span class="font-b">Auction Leader: </span>
+              <span style="text-transform: capitalize;"> {{supplier_details?.auctionData?.auctionLeader.name}}</span>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="m-3" style="max-height: calc(100vh - 170px); overflow: auto;"> 
+    <table class="table cust-table ">
+      <thead class="border-left border-right">
+        <th>Sr.</th>
+        <th>Participant Name</th>
+        <th>Contact Person Name</th>
+        <th>Email</th>
+        <th>Mobile Number</th>
+      </thead>
+      <tbody *ngFor="let supplierData of supplierList;let i=index;">
+        <tr>
+          <td>{{i+1}}</td>
+          <td class="font-b">{{supplierData.supplierName1}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr *ngFor="let tree of supplierData.contactperson;">
+          <td></td>
+          <td></td>
+          <td>{{ tree.firstname +( tree.lastname ? ' '+tree.lastname :'')}}</td>
+          <td>{{ tree.useremail1 }}</td>
+          <td>{{ tree.mobileno}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

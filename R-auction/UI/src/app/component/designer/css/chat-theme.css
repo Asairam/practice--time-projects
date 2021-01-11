@@ -1,0 +1,440 @@
+* {
+    box-sizing: border-box;
+}
+
+.clear {
+    clear: both;
+}
+.chatText {
+    padding: 0px 0px 44px;
+    bottom: 0px;
+    height: calc(100% - 0px);
+}
+
+.chatTextArea {
+    position: absolute;
+    bottom: 0;
+    /*     max-width: 500px; */
+    width: 100%;
+    max-height: calc(100% - 85px);
+    margin-bottom: 85px;
+    overflow: auto;
+}
+
+.botReply {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.botImg {
+    width: 35px;
+    height: 45px;
+    float: left;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 2px;
+}
+
+.botImg span {
+    background: url(../img/bot.png) no-repeat top left;
+    height: 35px;
+    width: 35px;
+    display: inline-block;
+    background-size: 35px;
+    border-radius: 50%;
+}
+
+.botImg span img {
+    width: 30px;
+    display: none;
+}
+
+.botImg:after {
+    content: "\A";
+    border-style: solid;
+    border-width: 0px 20px 15px 0px;
+    border-color: transparent #ffffff transparent transparent;
+    position: absolute;
+    left: 49px;
+    top: 2px;
+}
+
+.reply {
+    padding: 5px 0px 5px 15px;
+    min-width: 100px;
+    background: #ffffff;
+    margin-top: -45px;
+    max-width: calc(100% - 40px);
+    margin-left: 50px;
+    border-left: 2px solid #ffffff;
+}
+
+.botReplyText {
+    margin: 0px 15px 0px 0;
+    color: #000;
+    font-size: 14px;
+    text-align: left;
+    line-height: 20px;
+}
+
+.botReplyText a {
+    margin: 3px 0;
+    display: inline-block;
+    color: #0071c5;
+}
+
+.perAskText a {
+    margin: 3px 0;
+    display: inline-block;
+    color: #0044c5 !important;
+}
+
+.botReplyTime {
+    float: right;
+    padding-right: 10px;
+    font-size: 80%;
+}
+
+.perReply {
+    padding-right: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.perImg span img {
+    width: 30px;
+}
+
+.perImg:after {
+    content: "\A";
+    border-style: solid;
+    border-width: 0px 0px 15px 17px;
+    border-color: rgba(255, 0, 0, 0) rgba(248, 239, 224, 0) transparent #2962BE;
+    position: absolute;
+    right: 50px;
+    top: 2px;
+}
+
+.perImg {
+    width: 35px;
+    height: 45px;
+    float: right;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 2px;
+}
+
+.perImg span {
+    font-size: 110%;
+    font-weight: bold;
+    color: #fff;
+    display: inline-block;
+    margin: 0;
+    background: url('../img/person.png') no-repeat top left;
+    width: 35px;
+    height: 35px;
+    color: transparent;
+    background-size: 35px;
+}
+
+.ask {
+    padding: 5px 15px 5px 0px;
+    display: inline-block;
+    float: right;
+    min-width: 100px;
+    background: #2962BE;
+    margin-right: 50px;
+    margin-top: -45px;
+    border-right: 2px solid #2962BE;
+}
+
+.perAskText {
+    margin: 0px 0px 5px 15px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.perReplyTime {
+    float: right;
+    padding-right: 5px;
+    font-size: 80%;
+    text-align: right;
+    color: #fff;
+}
+
+/* .perReplyTime:before {
+    content: "You ~ ";
+}
+ */
+.MsgArea {
+    height: 24px;
+    margin: 0 auto;
+    bottom: 18px;
+}
+
+.msgTestArea {
+    width: 100%;
+    float: left;
+    display: inline-block;
+    position: relative;
+}
+
+.msgMail {
+    width: 50px;
+    height: 40px;
+    float: right;
+    display: none;
+}
+
+.enterText {
+    height: 40px;
+    color: #000000;
+    box-sizing: border-box;
+    border: none;
+    border-top: 1px solid #c4e9fd;
+    padding: 5px 48px 5px 15px;
+    width: 100%;
+    margin: 0;
+    border-radius: 0px;
+    font-size: 14px;
+}
+
+.send button, .speaker button {
+    width: 40px;
+    height: 40px;
+    background: transparent !important;
+    border: none;
+    border-radius: 0px;
+    background-size: 35px;
+}
+
+.speaker {
+    display: none;
+}
+
+.send {
+    position: absolute;
+    top: 1px;
+    right: 0;
+}
+
+.speaker button {
+    cursor: pointer;
+}
+
+.send button {
+    cursor: pointer;
+    font-size: 18px;
+    color: #2962be;
+}
+
+.sendMail {
+    width: 36px;
+    height: 36px;
+    border-radius: 20px;
+    margin-left: 5px;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.navbar-toggle {
+    float: left;
+    border: none;
+    margin-right: 5px;
+}
+
+.botOptionsContainer {
+    padding: 10px 50px;
+}
+
+.botOptions {
+    display: inline-block;
+    font-size: 110%;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #bdbdbd;
+    margin-right: 5px;
+    color: #0080c1;
+    border-radius: 0px;
+    background: #fff;
+}
+
+.botOptions:hover {
+    background-color: #012c61;
+    color: white;
+}
+
+.overlayA {
+    z-index: 999;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background: rgba(1, 37, 53, 0.80);
+    /*     max-width: 500px; */
+}
+
+.overlayheader {
+    background: white;
+    width: 260px;
+    margin: 25% 120px 0;
+    margin-left: calc(50% - 130px);
+}
+
+.overlayheader h2 {
+    padding: 12px 0 10px 0;
+    line-height: 30px;
+    margin: 0;
+    text-align: center;
+    font-size: 17px;
+}
+
+.overlayheader p {
+    margin: 0;
+    padding: 2px 10px 15px;
+    font-size: 15px;
+}
+
+.overlayheader button {
+    width: 90%;
+    cursor: pointer;
+    padding: 5px;
+    background: #028c13;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    margin: 8px 5% 15px;
+}
+
+.botRating {
+    position: absolute;
+    bottom: 0;
+    height: 25px;
+    width: 100%;
+    /*     max-width: 500px; */
+    margin: 0;
+    background: #012c61;
+    border-top: 1px solid #afafaf;
+}
+
+/*      Code for Rating tab */
+.chatTextArea {
+    max-height: calc(100% - 45px);
+    margin-bottom: 45px;
+}
+
+.ratingTxt {
+    font-size: 12px;
+    padding: 5px 15px;
+    color: #fff;
+    font-weight: normal;
+    background: #012c61;
+    margin: 0;
+}
+
+/*  more less code */
+.reply, .ask {
+    position: relative;
+    /* max-height: 198px; */
+    overflow: hidden;
+    box-shadow: none;
+    min-height: 35px;
+    border-radius: 8px;
+    min-width: 160px;
+}
+
+.showButton .perAskText, .showButton .botReplyText {
+    max-height: 162px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.reply.expanded,.ask.expanded {
+    max-height: none;
+}
+
+ul {
+    margin: 0 0 0 -25px;
+}
+
+ul.botResponse li:before {
+    margin-top: 0;
+}
+
+.botReplyText li a, .perAskText li a {
+    display: block;
+}
+
+.read-more {
+    position: absolute;
+    right: 20px;
+    bottom: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    display: none ;
+    font-size: 12px;
+}
+
+.askExpand {
+    color: #000;
+    left: 15px;
+    width: 50px;
+    padding: 3px 10px;
+    background: #fff;
+    border-radius: 3px;
+}
+
+.botExpand {
+    color: #fff;
+    text-align: right;
+    background: #0a4da0;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.showButton .read-more {
+    display: block !important;
+}
+
+.showButton .expanded .perAskText, .showButton .expanded .botReplyText {
+    max-height: none !important;
+}
+
+.theMenu, .chatText, .chatTextArea, .MsgArea, .botRating, .busyInput, .dummyInput[disabled], .overlayA, .busy2 {
+    max-width: 650px;
+}
+
+ul.botResponse li:before {
+    margin-top: 0;
+}
+
+.botReplyText > img {
+    max-width: 100%;
+}
+
+.chatText {
+    background: #e2e0e0 !important;
+}
+
+/* .busyBot1 {
+    background: url(../images/bot-header.png) top left no-repeat;
+    width: 60px;
+    height: 60px;
+    background-size: 60px;
+    position: absolute;
+} */
+
+
+.hideSpeaker {
+    display: none;
+}
+

@@ -1,0 +1,47 @@
+<div *ngIf="supplier_currency">
+  <div class="dialog-header">
+    <span class="dialog-header-txt">Participant Currency Details</span>
+    <div class="float-right">
+      <i class="fas fa-times dialog-closex" (click)="closeClick();"></i>
+    </div>
+  </div>
+  <mat-tab-group>
+    <mat-tab label="PARTICIPANT CURRENCY">
+      <table class="table cust-table spacer-table">
+        <thead>
+          <th>Sr.No.</th>
+          <th>Participant Name</th>
+          <th>Currency Name</th>
+          <th>Currency Code</th>
+          <th>Rate</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let supplier of supplier_currency.supplierData;let i=index;">
+            <td>{{i+1}}</td>
+            <td>{{supplier.supplierName}}</td>
+            <td>{{supplier.supplierCurrency.currencyName}}</td>
+            <td>{{supplier.supplierCurrency.currencyCode}}</td>
+            <td>{{supplier.supplierCurrency.exchangeRate|filter:[]:0:null:null:null:null:null:supplier_currency.decimalValue}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-tab>
+    <mat-tab label="CURRENCY">
+      <div class="container-fluid pt-3">
+        <div class="row font14">
+          <div class="col-md-4 col-sm-6 mb-3" *ngFor="let currency of supplier_currency.currency">
+            <div class="currency-block">
+              <div class="foreign-currency"> 1 {{currency.currencyName}} ({{currency.currencyCode}}) </div>
+              <div class="inr">
+                {{(currency.exchangeRate|filter:[]:0:null:null:null:null:null:supplier_currency.decimalValue)+'
+                '+supplier_currency.primaryCurrency.currencyName}} ({{supplier_currency.primaryCurrency.currencyCode}})
+              </div>
+              <div class="inr">Exchange Date: {{((currency.exchangeRateDate)?currency.exchangeRateDate:currentDate) | date:'dd-MM-yyyy'}} </div>       
+   
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

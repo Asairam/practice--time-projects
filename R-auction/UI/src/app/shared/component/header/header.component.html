@@ -1,0 +1,137 @@
+<header class="text-center fixed-top appheader">
+    <div class="pos-left logoImg" (click)="logoCli()">
+        <img [src]="imageURL + 'assets/images/rauction_logo.png'">
+    </div>
+    <!-- desktop view start -->
+    <div class="home-search-D pad-hide" *ngIf="!CommonService.isMobile && searchHide">
+        <div class="input-group ">
+            <select style="max-width: 200px;" class="form-control select-filter font14"
+                [(ngModel)]="CommonService.usersearch.searchType">
+                <option *ngFor="let name of authService.GLOBAL_SEARCH_SELECTOR" value="{{name.value}}"
+                    [hidden]="!name.show">
+                    {{name.key}} </option>
+            </select>
+            <input type="text" class="form-control font14" placeholder="Search Text Here"
+                [(ngModel)]="CommonService.usersearch.headersearch" (keyup.enter)="globalsearch($event)">
+            <div class="input-group-append">
+                <button style="color:#fff !important" class="btn search-btn font14" type="button"
+                    (click)="globalsearch('')" [disabled]="!CommonService.usersearch.headersearch">
+                    <i class="fas fa-search font14"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- desktop view end -->
+    <!-- <h1 class="header-title"> Customer Enquiry Form </h1> -->
+    <div class="pos-right text-right">
+
+
+        <div class="header-search inline-block" *ngIf="CommonService.isMobile && searchHide">
+            <button type="button" class="header-search-btn mr-2">
+                <i class="fas fa-search"> </i>
+            </button>
+        </div>
+
+
+
+        <div class="inline-block" ngbDropdown (click)='notication.getNotificationH()' [matMenuTriggerFor]="menu1"  >
+            <span class="mr-3"  >
+                <!-- <i class="far fa-bell mat-badge bellIcon" aria-hidden="true"></i> -->
+                <mat-icon _ngcontent-c1="" aria-label="" class="far fa-bell mat-badge mat-icon material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-medium" role="img" style="color:#254298;" aria-hidden="true">
+                    <span id="mat-badge-content-0" class="mat-badge-content mat-badge-active" style="background: #e34646;right: -16px;">{{notificationCount}}</span>
+                </mat-icon>
+            </span> 
+
+               
+        </div>
+
+        <mat-menu #menu1="matMenu" style="max-width:367px !important;min-width: 300px;">                        
+            <app-notification #notication (notificationCount)='countChange($event)'></app-notification>
+          </mat-menu>
+
+
+        <div class="dropdown inline-block" ngbDropdown *ngIf="userInfo">
+            <!-- <i class="far fa-question-circle help-me" matTooltip="How may I help you"></i> -->
+            <button type="button" class="user-dd-btn " ngbDropdownToggle>
+                <span class="user-dd-name no-mobile" *ngIf="!CommonService.isMobile"> Welcome {{userInfo?.name.firstname + ' ' +
+                    userInfo?.name.lastname}}
+                    <br>
+                    <span style="font-size: 12px;"
+                        *ngIf="userInfo && userInfo.settings && userInfo.settings.ril && userInfo.settings.ril.vendorcodeSelected">({{userInfo.settings.ril.vendorcodeSelected}})</span></span>
+
+                <span class="user-dd-img add-height">
+                    <img [src]="imageURL +'assets/images/profile-2.svg'" *ngIf="!userInfo?.profilePic">
+                    <img src="{{userInfo?.profilePic}}" (error)="errorHandler($event);" *ngIf="userInfo?.profilePic">
+                </span>
+            </button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+                <div class="header-dropdown-content px-3 py-2">
+                    <div class="">
+                        <div class="text-center font13">
+                            <img class="header-profile-img" [src]="imageURL +'assets/images/profile-2.svg'"
+                                *ngIf="!userInfo?.profilePic">
+                            <img class="header-profile-img" src="{{userInfo?.profilePic}}"
+                                (error)="errorHandler($event);" *ngIf="userInfo?.profilePic" style="height: 65px;">
+                            <div class="bold mt-2" *ngIf="userInfo">
+                                {{userInfo?.name.firstname + ' ' + userInfo?.name.lastname}}
+                            </div>
+                            <div class="">
+                                <a class="mailto" href="mailto:{{userInfo?.email}} "> {{userInfo?.email}} </a>
+                            </div>
+                        </div>
+                        <div class="line darkgraybg my-3"></div>
+                        <div class="mx-2" >
+                            <button class="header-sm-btn make-block mb-2 full-width text-left" (click)="editProfile()">
+                                <i class="fas fa-pen"> </i> Edit Profile
+                            </button>
+
+                            <span *ngIf='featureFlags?.iims_feature && authService.roleName.toLowerCase() === "buyer"'>
+                                <button class="header-sm-btn make-block mb-2 full-width text-left"
+                                    (click)="openRsevaAndStatus('rseva')">
+                                    <img [src]="imageURL +'assets/images/r-seva.svg'" style="width: 15px;">
+                                    <!-- <i class="fas fa-praying-hands"> </i> -->
+                                     Report a Problem
+                                </button>
+                                <!-- <button class="header-sm-btn make-block mb-2 full-width text-left"
+                                    (click)="openRsevaAndStatus('status')">
+                                    <img [src]="imageURL + 'assets/images/myreq1.png'" style="width: 15px;">
+                                    My Request
+                                </button> -->
+                            </span>
+
+                            <!-- <button class="header-sm-btn make-block mb-2 full-width text-left">
+                                <i class="fas fa-cog"> </i> Settings
+                            </button> -->
+                            <button class="redfont header-sm-btn make-block mb-2 full-width text-left"
+                                (click)="logout()">
+                                <i class="fas fa-power-off"> </i> Logout
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- mobile,tab view start -->
+    <div class="search-slide" style="width:0%">
+        <!-- <button class="search-slide-icon">
+            <i class="fas fa-search "></i>
+        </button> -->
+        <select class="search-filter" [(ngModel)]="CommonService.usersearch.searchType">
+            <option *ngFor="let name of authService.GLOBAL_SEARCH_SELECTOR" value="{{name.value}}"
+                [hidden]="!name.show">
+                {{name.key}} </option>
+        </select>
+        <input type="text" class="header-search-input" placeholder="Search Text Here"
+            [(ngModel)]="CommonService.usersearch.headersearch" (keyup.enter)="globalsearch($event)">
+        <button class="search-slide-search" (click)="globalsearch('')">
+            <i class="fas fa-search "> </i>
+        </button>
+        <button class="search-slide-close" (click)="CommonService.usersearch.searchType = 'all'">
+            <i class="fas fa-times "> </i>
+        </button>
+
+    </div>
+    <!-- mobile,tab view end -->
+</header>

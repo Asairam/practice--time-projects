@@ -1,0 +1,78 @@
+<div class="border-card border-blue mb-3 darkfont" [ngClass]="{'border-red': item.error}">
+    <div class="flex-ends p-2 font14 ">
+        <div class="flex-ends make25">
+            <div>
+                <div class="font16 bold">
+                    <mat-checkbox [disabled]="auctionReadOnly3" [checked]="item.checked" (change)="selectCard($event.checked)"
+                        *ngIf="(aucStatus === 'draft' || aucStatus === 'published' || !aucStatus) && !common.auctionLeader.host">
+                    </mat-checkbox>
+                    {{index+1}}. {{item.lotID | lotName:buyerService.lotList}}
+                </div>
+                <div class="font13">
+                    <span *ngIf="item.itemName && item.itemName.length>80">
+                        {{item.itemName | slice:0:35}} <span matTooltip="{{item.itemName}}">...</span>
+                    </span>
+                    <span *ngIf="item.itemName && item.itemName.length<80">
+                        {{item.itemName}}
+                    </span>
+                </div>
+            </div>
+            <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+        </div>
+        <div class="flex-ends make45">
+            <div class="mr-3">
+                <div class="font13 grayfont "> {{itemcoloum.ITEM_CODE}} </div>
+                <div class="font10" *ngIf="item.itemCode && item.itemCode.length>30"> {{item.itemCode | slice:0:15}}
+                    <span title="{{item.itemCode}}">...</span></div>
+                <div class="font10" *ngIf="item.itemCode && item.itemCode.length<30"> {{item.itemCode}} </div>
+                <div class="font10" *ngIf="!item.itemCode"> NA </div>
+            </div>
+            <div class="mr-3">
+                <div class="font13 grayfont "> {{itemcoloum.MINIMUM_BID_CHANGE}} </div>
+                <div class="font16 bold ">
+                    <!-- {{item.minimumChangeValue ? item.minimumChangeValue : 0}} -->
+                    <span *ngIf="item.minimumChangeValue">
+                        {{item.minimumChangeValue}}{{(item.minChangeType === 'percentage') ? '%' : ''}}
+                    </span>
+                    <span *ngIf="!item.minimumChangeValue">
+                        {{buyerService.auctionData.minimumChangeValue}}{{(buyerService.auctionData.minimumChangeType ===
+                        'percentage') ? '%' : ''}}
+                    </span>
+                </div>
+            </div>
+            <div class="mr-3">
+                <div class="font13 grayfont "> {{itemcoloum.QUANTITY}} </div>
+                <div class="font16 bold "> {{item.minimumDesiredQuantity}} </div>
+            </div>
+            <div class="mr-3">
+                <div class="font13 grayfont "> {{itemcoloum.START_PRICE}} </div>
+                <div class="font16 bold "> {{formatDigits(item.startPrice)}} </div>
+            </div>
+            <div class="mr-3">
+                <div class="font13 grayfont "> Historical Price </div>
+                <div class="font16 bold "> {{formatDigits(item.historicalCost)}} </div>
+            </div>
+            <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+        </div>
+
+        <div class="flex-between justify-content-end make25">
+
+            <div class="mr-2">
+                <button class="header-sm-btn  mr-2" (click)="seleDrop('attachmentlist',item,index)">
+                    <i class="fas fa-paperclip font13"> </i> ({{item.attachmentList.length}})
+                </button>
+                <span *ngFor="let butt of crud">
+                    <button class="header-sm-btn mr-2" (click)="seleDrop(butt.name,item,index)"
+                        *ngIf="butt.name === 'Edit' && butt.bol">
+                        <i class="fas fa-pen font13"> </i> Edit
+                    </button>
+                    <button class="header-sm-btn  redfont" (click)="seleDrop(butt.name,item,index)"
+                        *ngIf="butt.name === 'Delete' && butt.bol && !common.auctionLeader.host">
+                        <i class="far fa-trash-alt font13"></i> Trash
+                    </button>
+                </span>
+            </div>
+
+        </div>
+    </div>
+</div>

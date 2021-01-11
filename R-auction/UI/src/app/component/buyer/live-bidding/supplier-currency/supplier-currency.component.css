@@ -1,0 +1,13 @@
+.currency-block{
+    border: 1px solid #01b2b2;
+    border-radius: 5px;
+}
+.foreign-currency{
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    background: #01B2B2;
+    color: #fff;
+}
+.inr{
+    padding: 0.25rem 0.5rem 0.5rem;
+    color:#01B2B2; 
+}

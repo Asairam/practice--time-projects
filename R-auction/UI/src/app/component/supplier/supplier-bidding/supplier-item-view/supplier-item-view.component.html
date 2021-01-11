@@ -1,0 +1,370 @@
+<div class="table-responsive item-table-height" style="margin-top:-5px;" *ngIf="view === 'list'">
+  <table class="table cust-table spacer-table">
+    <thead>
+      <tr>
+        <th scope="col">
+          <img [src]="imageURL+'assets/images/switch-lot-item.svg'" class="breadcrumb-item no-mobile"
+            (click)="switchView()" />
+          Lot/Item
+        </th>
+        <th scope="col"><i class="fas fa-eye breadcrumb-item" (click)="aucView('aucView','')"></i></th>
+        <ng-container *ngFor="let suppfil of supplierservice.suppFilCol;let i = index;">
+          <th scope="col" *ngIf="suppfil.selected && !suppfil.disable && suppfil.ind <= 3">{{ suppfil.item_text }}</th>
+          <th scope="col" *ngIf="suppfil.selected && !suppfil.disable && acceptFlag && suppfil.ind > 3">{{ suppfil.item_text }}</th>
+        </ng-container>
+        <th scope="col" *ngIf="showBut && acceptFlag">
+          <!-- <div>
+            <input autocomplete="off" [decimalValue]="decimalValue" placeholder="Percentage" [(ngModel)]="aucAmount"
+            (keyup)="textValidationAuc($event.target.value);" [disabled]="!acceptFlag" numberDecimal>
+            <span >%</span>
+          </div> -->
+        </th>
+        <th scope="col" *ngIf="showBut && acceptFlag">
+          <!-- <button (click)="openModalRow('bidAll')" [disabled]="!(aucAmount.length>0)" type="button">BID ALL</button> -->
+        </th>
+        <th *ngIf="showTakeLead" scope="col">
+          <!-- Take Lead -->
+        </th>
+        <th scope="col" *ngIf="errorFlag">
+        </th>
+
+      </tr>
+
+    </thead>
+
+    <!-- list view start -->
+    <tbody [hidden]="!typeView" *ngFor="let lot of supplierBiddingSource;">
+      <tr *ngFor="let Item of lot.items;">
+        <td>{{lot.lotName}}/{{Item.itemName}} </td>
+        <td><i class="fas fa-eye" (click)="onclickItem(Item, lot)" style="cursor: pointer; color: #3f51b5;"></i></td>
+        <ng-container *ngFor="let lotfil of supplierservice.suppFilCol">
+          <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: lotfil, control: Item }">
+          </ng-container>
+        </ng-container>
+        <td *ngIf="showBut && acceptFlag">
+          <div>
+            <!-- <input autocomplete="off" placeholder="Unit Rate" [decimalValue]="decimalValue" [(ngModel)]="Item.amount" [disabled]="!acceptFlag"
+              numberDecimal (keyup)="onTextChange($event.target.value,Item)"> -->
+            <input autocomplete="off" placeholder="Unit Rate" [decimalValue]="decimalValue"
+              [formControl]="supplierBiddingControlList.get(Item.itemID)" [disabled]="!acceptFlag" numberDecimal
+              (keyup)="onTextChange($event,Item)" (click)="bidBoxClick('click')" (blur)="onTextChange($event,Item)">
+          </div>
+        </td>
+        <td *ngIf="showBut && acceptFlag">
+          <button (click)="openModalRow('itemBid',Item);" class="btn btn-green-bg btn-sm mr-2"
+            [disabled]="!supplierBiddingControlList.get(Item.itemID).value || bidFlag" type="button">Bid</button>
+        </td>
+        <td  *ngIf="showTakeLead" >
+          <i matTooltip="Take Lead" style="cursor:pointer; color:red; font-size: 18px;margin-top: 5px;" (click)="openTakeLeadPopup(Item)" class='far fa-hand-paper' aria-hidden="true"></i>
+        
+        </td>
+        <td *ngIf="errorFlag"> <i *ngIf="supplierBiddingAllErrorControlList.get(Item.itemID).value"
+            style="color:red;display: block; padding-top: 2px;cursor: pointer;"
+            [matTooltip]="supplierBiddingAllErrorControlList.get(Item.itemID).value" class="fas fa-info-circle"></i>
+        </td>
+      </tr>
+    </tbody>
+    <!-- list view end -->
+
+    <!-- tree view start -->
+    <tbody [hidden]="typeView" *ngFor="let lot of supplierBiddingSource;let i = index;">
+      <!-- LOT TR -->
+      <tr>
+        <td class="pointer bold" (click)="lotclick(i)">{{lot.lotName}}</td>
+        <td><i class="fas fa-eye pointer" style="color: #3f51b5;" (click)="onclickLot(lot)"></i></td>
+        <ng-container *ngFor="let fil of supplierservice.suppFilCol">
+          <td *ngIf="fil.selected && !fil.disable && fil.ind <= 3">
+          </td>
+          <td *ngIf="fil.selected && !fil.disable && fil.ind > 3 && acceptFlag">
+            <span *ngIf="lot.bestBidSHLotLevel && fil.ind == 6 && fil.selected">
+              <ng-container *ngIf="auctionData.bestBidInfoShownBy.toLowerCase() == bestBidInfo[0].value.toLowerCase(); else single">
+                {{lot.bestBidLotCost|number:decimalplace}}
+              </ng-container>
+              <ng-template  #single>
+                  {{getBidTotalValConverted(lot) |number:decimalplace}}
+              </ng-template>
+            </span>
+            <span *ngIf="fil.ind == 8 && fil.selected">
+              {{lot.totalLotCost | number:decimalplace | filter:lot.bids:11:'lot'}}
+            </span>
+            <span *ngIf="fil.ind == 10 && fil.selected">
+              {{lot.totalLandedLotCost|filter:lot.bids:9:'lot':null:null:null:null:decimalValue:null:biddingCurrency.exchangeRate}}
+            </span>
+            <span class="bolder" *ngIf="fil.ind == 11 && fil.selected && auctionData.bestBidInfoShownBy.toLowerCase() == bestBidInfo[1].value.toLowerCase()">
+              <ng-container *ngIf="((auctionData.infoShownToSupplier == 'top rank only' || auctionData.infoShownToSupplier == 'top rank') && ['Open','Paused'].indexOf(socketData.status) !== -1); else notTopRank">
+                <ng-container *ngIf="(lot.rank| filter:lot.bids:2:'lot') <=1; else notOne">
+                  <ng-container *ngTemplateOutlet="infoShown"></ng-container>
+                </ng-container>
+                <ng-template #notOne>NON L1</ng-template>
+              </ng-container>
+              <ng-template  #notTopRank>
+                <ng-container *ngTemplateOutlet="infoShown"></ng-container>
+              </ng-template>
+              <ng-template #infoShown>{{lot.rank| filter:lot.bids:2:'lot'}}</ng-template>
+            </span>
+          </td>
+        </ng-container>
+        <td *ngIf="acceptFlag && showBut"></td>
+        <td *ngIf="acceptFlag && showBut"></td>
+        
+        <td  *ngIf="showTakeLead" >
+          <!-- Take lead col empty space-->
+        </td>
+        <td *ngIf="errorFlag"> </td>
+      </tr>
+
+      <!-- ITEM TR -->
+      <tr [hidden]="lot.dis" *ngFor="let Item of lot.items">
+        <!-- Item Name -->
+        <td style="padding-left: 20px;">
+          <div title="{{Item.itemName}}">
+            {{Item.itemName}}
+          </div>
+        </td>
+
+        <!-- Eye Icon -->
+        <td><i class="fas fa-eye pointer" style="color: #3f51b5;" (click)="onclickItem(Item, lot)"></i></td>
+
+        <!-- Random Column-->
+        <ng-container *ngFor="let lotfil of supplierservice.suppFilCol">
+          <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: lotfil, control: Item }">
+          </ng-container>
+        </ng-container>
+
+        <!-- Input Field -->
+        <td *ngIf="acceptFlag && showBut">
+          <div>
+            <!-- <input autocomplete="off" [decimalValue]="decimalValue" placeholder="Unit Rate" [(ngModel)]="Item.amount"
+              [disabled]="!acceptFlag" numberDecimal (keyup)="onTextChange($event.target.value,Item)"> -->
+            <input autocomplete="off" placeholder="Unit Rate" [decimalValue]="decimalValue"
+              [formControl]="supplierBiddingControlList.get(Item.itemID)" [disabled]="!acceptFlag" numberDecimal
+              (keyup)="onTextChange($event,Item)" (click)="bidBoxClick('click')" (blur)="onTextChange($event,Item)">
+          </div>
+        </td>
+
+        <!-- Bid Button -->
+        <td *ngIf="acceptFlag && showBut">
+          <button (click)="openModalRow('itemBid',Item)" class="btn btn-green-bg btn-sm mr-2"
+            [disabled]="!supplierBiddingControlList.get(Item.itemID).value || bidFlag" type="button">Bid</button>
+        </td>
+
+        <!-- Take Lead Button -->
+        <td  *ngIf="showTakeLead" >
+          <i matTooltip="Take Lead" style="cursor:pointer; color:red; font-size: 18px;margin-top: 5px;" (click)="openTakeLeadPopup(Item)" class='far fa-hand-paper' aria-hidden="true"></i>
+        </td>
+
+        <td *ngIf="errorFlag"> <i *ngIf="supplierBiddingAllErrorControlList.get(Item.itemID).value"
+            style="color:red;display: block; padding-top: 2px;cursor: pointer;"
+            [matTooltip]="supplierBiddingAllErrorControlList.get(Item.itemID).value" class="fas fa-info-circle"></i>
+        </td>
+      </tr>
+    </tbody>
+    <!-- tree view end -->
+  </table>
+</div>
+
+<div class="row mt-3" [hidden]="view !== 'card'">
+  <ng-container *ngFor="let lot of supplierBiddingSource;">
+    <div class=" col-lg-4 col-md-4 col-sm-6" *ngFor="let item of lot.items">
+      <div class="border-card border-green mb-3 darkfont">
+        <div class="card-content font14">
+          <div class="flex-ends p-3 graybg">
+            <div class="pr-3 bold font16"> {{lot.lotName+' / '+item.itemName}} <i class="fas fa-eye"
+                (click)="onclickItem(item, lot)" style="cursor: pointer; color: #3f51b5;"></i></div>
+          </div>
+
+          <div class="flex-between pb-2 font13">
+            <div class="mx-2" *ngIf="cardViewDisCol('minimumDesiredQuantity')?.selected">
+              <div class="font13 grayfont ">{{cardViewDisCol('minimumDesiredQuantity').item_text}}</div>
+              <div class="font15 bold ">
+                <ng-container
+                  *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('minimumDesiredQuantity'), control: item }">
+                </ng-container>
+              </div>
+            </div>
+            <div class="mx-2" *ngIf="acceptFlag && cardViewDisCol('itemsBestBid')?.selected">
+              <div class="font13 grayfont "> {{cardViewDisCol('itemsBestBid').item_text}}</div>
+              <div class="font15 bluefont bold">
+                <ng-container
+                  *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('itemsBestBid'), control: item }">
+                </ng-container>
+              </div>
+            </div>
+            <div class="mx-2" *ngIf="acceptFlag && cardViewDisCol('itemsBestBidUnitCost')?.selected">
+              <div class="font13 grayfont ">{{cardViewDisCol('itemsBestBidUnitCost').item_text}}</div>
+              <div class="font15 bold ">
+                <ng-container
+                  *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('itemsBestBidUnitCost'), control: item }">
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="line darkgraybg" *ngIf="acceptFlag"></div>
+          <div class="flex-between pb-2 font13" *ngIf="acceptFlag">
+            <div class="mx-2" *ngIf="acceptFlag && cardViewDisCol('baseCost')?.selected">
+              <div class="font13 grayfont ">{{cardViewDisCol('baseCost').item_text}}</div>
+              <div class="font16 greenfont bold">
+                <ng-container
+                  *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('baseCost'), control: item }">
+                </ng-container>
+              </div>
+            </div>
+            <div class="mx-2" *ngIf="acceptFlag && cardViewDisCol('variableCost')?.selected">
+              <div class="font13 grayfont "> {{cardViewDisCol('variableCost').item_text}}</div>
+              <div class="font15 bold ">
+                <ng-container
+                  *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('variableCost'), control: item }">
+                </ng-container>
+              </div>
+            </div>
+            <div class="mx-2" *ngIf="acceptFlag && cardViewDisCol('rank')?.selected">
+              <div class="font13 grayfont "> {{cardViewDisCol('rank').item_text}}</div>
+              <div class="font16 redfont bolder ">
+                <ng-container
+                  *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('rank'), control: item }">
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="line darkgraybg" *ngIf="acceptFlag"></div>
+          <div class="flex-between pb-2 font13" *ngIf="showBut && acceptFlag">
+            <td></td>
+            <div class="mx-2">
+              <div>
+                <!-- <input autocomplete="off" placeholder="Unit Rate" [(ngModel)]="item.amount" [disabled]="!acceptFlag"
+                  numberDecimal (keyup)="onTextChange($event.target.value,item)"> -->
+                <input autocomplete="off" placeholder="Unit Rate" [decimalValue]="decimalValue"
+                  [formControl]="supplierBiddingControlList.get(item.itemID)" [disabled]="!acceptFlag" numberDecimal
+                  (keyup)="onTextChange($event,item)" (click)="bidBoxClick('click')" (blur)="onTextChange($event,item)">
+              </div>
+            </div>
+            <div class="mx-2">
+              <button (click)="openModalRow('itemBid',item)" class="btn btn-green-bg btn-sm mr-2"
+                [disabled]="!supplierBiddingControlList.get(item.itemID).value || bidFlag" type="button">Bid</button>
+              <i *ngIf="errorFlag && supplierBiddingAllErrorControlList.get(item.itemID).value"
+                style="color:red;display: block; padding-top: 2px;cursor: pointer;"
+                [matTooltip]="supplierBiddingAllErrorControlList.get(item.itemID).value" class="fas fa-info-circle"></i>
+                <!-- Take Lead Card -->
+              <i *ngIf="showTakeLead"  
+                  matTooltip="Take Lead" 
+                  style="cursor:pointer; color:red; font-size: 18px;margin-top: 5px;" 
+                  (click)="openTakeLeadPopup(item)" 
+                  class='far fa-hand-paper' aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<ng-template #stringTemplateRequired let-field="field" let-control="control"> 
+  <ng-container [ngSwitch]="field.item_id" *ngIf="field.selected && !field.disable">
+    <td *ngSwitchCase="'minimumDesiredQuantity'">
+      <!-- {{field.item_id}} <br>
+      {{field.ind}} <br> -->
+      {{control.minimumDesiredQuantity}}
+    </td>
+    <td *ngSwitchCase="'unitOfMeasure'">
+      <!-- {{field.item_id}} <br>
+      {{field.ind}} <br> -->
+      {{control.unitOfMeasure === "m" ? "Meter":(control.unitOfMeasure === "kg" ?
+      "KiloGram" : (control.unitOfMeasure === "EA" ? "Each" :
+      control.unitOfMeasure))}}</td>
+    <td *ngSwitchCase="'minimumChangeValue'">
+      <!-- {{field.item_id}} <br>
+      {{field.ind}} <br> -->
+      <span
+        *ngIf="!control.minimumChangeValue">{{((auctionData.minBidChangeValue/((auctionData.minBidChangeType=='amount')?this.biddingCurrency.exchangeRate:1))|filter:[]:0:null:null:null:null:null:decimalValue)+((auctionData?.minBidChangeType=='amount')?'':'%')}}</span>
+      <span
+        *ngIf="control.minimumChangeValue">{{((control.minimumChangeValue/((control.minChangeType=='amount')?this.biddingCurrency.exchangeRate:1))|filter:[]:0:null:null:null:null:null:decimalValue)+((control.minChangeType=='amount')?'':'%')}}</span>
+    </td>
+    <td *ngSwitchCase="'cost-weightage'">
+      <!-- {{field.item_id}} <br>
+      {{field.ind}} <br> -->
+      {{((control.itemWeight)?control.itemWeight:'0.00')+' %'}}
+    </td>
+    <ng-container *ngIf="acceptFlag">
+      <!-- Currency Code-->
+      <td *ngSwitchCase="'currencyCode'">
+        <!-- {{field.item_id}} <br>
+        {{field.ind}} <br> -->
+        {{supplierData.supplierCurrency.currencyCode}}</td>
+
+      <!-- Best Bid Unit Rate -->
+      <td *ngSwitchCase="'itemsBestBid'" class="bluefont bold"><span
+          *ngIf="control.bestBidSH && bidDataFlag"> 
+          <!-- {{field.item_id}} <br>
+          {{field.ind}} <br> -->
+          {{control.itemsBestBid|filter:[]:0:null:null:null:null:null:decimalValue}}</span>
+      </td>
+
+      <!-- Best Bid Total Value-->
+      <td *ngSwitchCase="'itemsBestBidUnitCost'"><span
+          *ngIf="control.bestBidSH && bidDataFlag">
+          <!-- {{field.item_id}} <br>
+          {{field.ind}} <br> -->
+          {{control.itemsBestBidUnitCost|filter:[]:0:null:null:null:null:null:decimalValue}}</span>
+      </td>
+
+      <!-- My Unit Rate -->
+      <td *ngSwitchCase="'baseCost'" [ngClass]="{'greenfont bold' : control.baseCost}">        
+      <!-- {{field.item_id}} <br>
+      {{field.ind}} <br> -->
+        {{(control.bestBidSH && bidDataFlag)?(control.baseCost | filter:
+        control.bids:0:null:null:null:null:null:decimalValue:null:1):'Not Quoted'}}
+      </td>
+
+      <!-- My Total Value -->
+      <td *ngSwitchCase="'variableCost'">
+        <!-- {{field.item_id}} <br>
+        {{field.ind}} <br> -->
+        {{(control.bestBidSH && bidDataFlag)?(control.variableCost | filter:
+        control.bids:1:null:null:null:null:null:decimalValue:null:1):'Not Quoted'}}
+      </td>
+
+      <!-- Landed Cost -->
+      <td *ngSwitchCase="'landedCost'">
+        <!-- {{field.item_id}} <br>
+        {{field.ind}} <br> -->
+        {{control.landedCost|
+          filter:control.bids:8:null:null:null:null:null:decimalValue}}
+      </td>
+
+      <!-- Total Landed Cost -->
+      <td *ngSwitchCase="'totalLandedCost'">
+        <!-- {{field.item_id}} <br>
+        {{field.ind}} <br> -->
+        {{control.totalLandedCost|filter:control.bids:9:'item':null:null:null:null:decimalValue}}
+      </td>
+
+       <!-- Start Price -->
+       <td *ngSwitchCase="'startPrice'">
+        <!-- {{field.item_id}} <br>
+        {{field.ind}} <br> -->
+         {{control.startPrice | number:decimalplace }}
+      </td>
+
+      <!-- Rank -->
+      <td *ngSwitchCase="'rank'" class="bolder">
+        <!-- {{field.item_id}} <br>
+        {{field.ind}} <br> -->
+        <ng-container *ngIf="((auctionData.infoShownToSupplier == 'top rank only' || auctionData.infoShownToSupplier == 'top rank') && ['Open','Paused'].indexOf(socketData.status) !== -1); else notItemTopRank">
+          <ng-container *ngIf="(control.rank|filter:control.bids:2) <=1; else notItemOne">
+            <ng-container *ngTemplateOutlet="infoShown1"></ng-container>
+          </ng-container>
+          <ng-template #notItemOne>NON L1</ng-template>
+        </ng-container>
+        <ng-template  #notItemTopRank>
+          <ng-container *ngTemplateOutlet="infoShown1"></ng-container>
+        </ng-template>
+        <ng-template #infoShown1><b class="redfont">{{control.rank|filter:control.bids:2}}</b></ng-template>
+      </td>
+      <ng-container *ngIf="field.customField">
+        <td>
+          <!-- {{field.item_id}} <br>
+          {{field.ind}} <br> -->
+          {{control[field.item_id]}}</td>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>

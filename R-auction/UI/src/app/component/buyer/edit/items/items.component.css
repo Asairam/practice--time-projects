@@ -1,0 +1,7 @@
+:host >>> .flat-tile .mat-checkbox-checkmark-path{
+    stroke: #293790!important;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}

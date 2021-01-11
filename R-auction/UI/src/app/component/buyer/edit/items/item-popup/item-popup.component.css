@@ -1,0 +1,52 @@
+.item-detail-height{
+    height: calc(100vh - 142px);
+    overflow: auto;
+}
+.mat-expansion-panel-header:not([aria-disabled=true]) {
+    height: 45px !important;
+    background: #254399 !important;
+}
+:host >>> .mat-expansion-indicator::after{
+    color: #fff !important;
+}
+.more-table .border:nth-child(n + 2){
+    border-top: none !important;
+}
+.items-img{
+    max-width: 100%;
+    max-height: 130px;
+}
+.item-detail-height .mat-input-element:disabled {
+    color: #333;
+}
+
+.poDialog {
+    height:100%;
+    width:100%;
+    position:fixed;
+    background:rgba(0, 0, 0, 0.1);
+    top:0;
+}
+.potable {
+    top:30%;
+    height:auto;
+    width:80%;
+    margin:0 auto;
+    left:0;
+    right:0;
+    position:absolute;
+    background-color: #fff;
+}
+.potable .poheader {
+    background:lightblue;
+}
+
+.eyeBtn {
+    height: 35px;
+    min-width: 10px;
+    background:#254399;
+    border-radius: 100%;
+    margin-left: -23px;
+    margin-right: 8px;
+    color: #fff;
+}

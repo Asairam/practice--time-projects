@@ -1,0 +1,614 @@
+<div class="container-fluid" style=" margin-top: -3.5rem;">
+  <div class="text-right">
+    <mat-form-field class="font14 report-width">
+      <mat-label>Select report type</mat-label>
+      <mat-select [(ngModel)]="reportType" (selectionChange)="reportTypeChanged()">
+        <mat-option *ngFor="let item of report" [value]="item.value">
+          {{item.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Generate Report -->
+    <button style="margin-top: .5em;margin-bottom: 1.05em;" type="button" class="btn btn-sm btn-primary ml-2"
+      matTooltip="Generate Report" (click)="getReportExcel()" [disabled]="downButt">
+      <i class="fas fa-chart-line"></i>
+    </button>
+  </div>
+</div>
+
+<div class="mb-5">
+  <div class="container-fluid page-scroll my-report">
+    <div class="row font14">
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Run By: </strong>
+          <span>{{auctionDetails.runBy}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Report Date: </strong>
+          <span>{{auctionDetails.reportDate | date:'dd-MM-yyyy hh:mm'}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Auction Name: </strong>
+          <span>{{auctionDetails.auctionName}}</span>
+        </div>
+      </div>
+    </div>
+    <hr> <!--  HR -->
+    <div class="row font14">
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Auction Id: </strong>
+          <span>{{auctionIdData}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Auction Type: </strong>
+          <span>{{auctionDetails.auctionType}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Auction Status: </strong>
+          <span>{{auctionDetails.auctionStatus}}</span>
+        </div>
+      </div>
+    </div>
+    <hr> <!--  HR -->
+    <div class="row font14">
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Primary Currency: </strong>
+          <span>{{auctionDetails.primaryCurrency}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Auction Open Date: </strong>
+          <span>{{auctionDetails.auctionOpen | date:'dd-MM-yyyy HH:mm'}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Auction Close Date: </strong>
+          <span>{{auctionDetails.auctionClose | date:'dd-MM-yyyy HH:mm'}}</span>
+        </div>
+      </div>
+    </div>
+    <hr> <!--  HR -->
+    <div class="row font14">
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Suppliers Invited for the Auction: </strong>
+          <span>{{supplierStatusData?.invited}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Supliers Accepted Auction Invitation: </strong>
+          <span>{{supplierStatusData?.accepted}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Suppliers Bidded for the Auction: </strong>
+          <span>{{supplierStatusData?.bidded}}</span>
+        </div>
+      </div>
+    </div>
+    <hr> <!--  HR -->
+    <div class="row font14">
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Suppliers Suspended for the Auction: </strong>
+          <span>{{supplierStatusData?.suspended}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Preliminary Bids for the Auction: </strong>
+          <span>{{auctionDetails.preBidCount}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Live Bids During the Auction: </strong>
+          <span>{{auctionDetails.liveBidCount}}</span>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!--  HR -->
+    <div class="row font14">
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Forcefully Closed: </strong>
+          <span>{{auctionDetails.forceClosed}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Extension Period: </strong>
+          <span>{{auctionDetails.extensionPeriod}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Grace Period: </strong>
+          <span>{{auctionDetails.gracePeriod}}</span>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!--  HR -->
+    <div class="row font14">
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>No. of Extension: </strong>
+          <span>{{auctionDetails.noOfExtension}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong>Minimum Bid Change: </strong>
+          <span>{{auctionDetails.minBidChangeValue ? auctionDetails.minBidChangeValue : 0}}</span>
+          <span *ngIf="auctionDetails.minBidChangeType !== 'amount'">%</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="printViewBox">
+          <strong></strong>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPLIER INFORMATION -->
+  <div class="container-fluid page-scroll my-report">
+    <div class="mt-3">
+      <h4 class=""> Supplier Information</h4>
+      <div class="analyze-sb table-ofh table-responsive fix-header">
+        <table [@routeAnimations]="{value: supplierDetails.length>0?'afterTableLoad' : '', params:{ index: '2000ms'} }"
+          class="table table-bordered table-striped font14">
+          <thead>
+            <th>Supplier</th>
+            <th>Supplier Contact</th>
+            <th>Contact Phone</th>
+            <th>Status</th>
+            <th>No. of Preliminary Bids</th>
+            <th>No. of Live Bids</th>
+            <th>Currency</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let supplier of suppliersDtls">
+              <td>{{supplier.supplierName1}}</td>
+              <td>
+                <span *ngFor="let contact of supplier.contactperson;let i=index">
+                  {{supplier.supplierID+'-'+contact.useremail1+'-'+contact.firstname}}
+                  <br *ngIf="!(i==(contact.length-1))" />
+                </span>
+              </td>
+              <td>
+                <span *ngFor="let contact of supplier.contactperson">
+                  {{contact.mobileno}}
+                  <br *ngIf="!(i==(contact.length-1))" />
+                </span>
+              </td>
+              <td>{{supplier.status}}</td>
+              <td>{{supplier.preBidCount}}</td>
+              <td>{{supplier.liveBidCount}}</td>
+              <td> {{supplier.supplierCurrency.currencyCode}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Participant Changes during Live Auction -->
+  <div class="container-fluid page-scroll my-report">
+    <div class="mt-3">
+      <h4 class=""> Participant Changes during Live Auction</h4>
+      <div class="analyze-sb table-ofh table-responsive fix-header">
+        <table [@routeAnimations]="{value: supplierDetails.length>0?'afterTableLoad' : '', params:{ index: '2000ms'} }"
+          class="table table-bordered table-striped font14">
+          <thead>
+            <th>Sr.no</th>
+            <th>User</th>
+            <th>Changes</th>
+            <th>Participant</th>
+            <th>Date/Time</th>
+            <th>Remarks</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let liveParticipant of liveParticipantAdded; let i = index">
+              <td>{{ i+1 }}</td>
+              <td>{{auctionDetails.runBy}}</td>
+              <td *ngIf="liveParticipant.status !== 'Suspended'">Participant Added</td>
+              <td *ngIf="liveParticipant.status == 'Suspended'">Participant Suspended</td>
+              <td>{{liveParticipant.supplierName1}}</td>
+              <td *ngIf="liveParticipant.status !== 'Suspended'">
+                {{liveParticipant?.supplierLiveRemark?.updatedAt | date:'dd-MM-yyyy HH:mm'}}</td>
+              <td *ngIf="liveParticipant.status !== 'Suspended'">{{liveParticipant?.supplierLiveRemark?.remark}}</td>
+              <td *ngIf="liveParticipant.status == 'Suspended'">
+                {{liveParticipant?.supplierSuspendRemark?.updatedAt | date:'dd-MM-yyyy HH:mm'}}</td>
+              <td *ngIf="liveParticipant.status == 'Suspended'">{{liveParticipant?.supplierSuspendRemark?.remark}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--  BASIC BID SUMMARY & BID WINNER DETAILS -->
+  <div class="container-fluid page-scroll my-report">
+    <div class="mt-3">
+      <h4>Basic Bid Summary & Bid Winner Details</h4>
+      <div class="table-ofh table-responsive table-scroll fix-header">
+        <table [@routeAnimations]="{value: lotsAndItem.length>0?'afterTableLoad' : '', params:{ index: '2000ms'} }"
+          [ngClass]="{'table2':displayType.type=='p','table3':displayType.type!='p'}"
+          class="table table-bordered font14">
+          <thead>
+            <tr *ngIf="supplierDetails.length>0 && displayType.type=='p'">
+              <!-- left section-->
+              <th class="removeBorder"></th>
+              <th class="removeBorder"></th>
+              <th class="removeBorder"></th>
+              <th class="removeBorder"></th>
+              <th class="removeBorder"></th>
+              <th class="removeBorder"></th>
+              <th class="removeBorder" style="border-right: 1px solid #fff"></th>
+
+              <!-- middle section-->
+              <th colspan="2" *ngFor="let supplier of supplierDetails"
+                style="border-right: 1px solid #fff;min-width:180px;">{{supplier.supplierName1}}</th>
+
+              <!-- right section-->
+              <th></th>
+            </tr>
+            <tr>
+              <!-- left section-->
+              <th>Sr. No.</th>
+              <th>Lot Name</th>
+              <th>Item Name</th>
+              <th>Start Price</th>
+              <th>Reliance Quantity</th>
+              <th>Minimum Bid Change</th>
+              <th style="border-right: 1px solid #fff">UOM</th>
+
+              <!-- middle section-->
+              <ng-container *ngIf="displayType.type=='p' ">
+                <ng-container *ngIf="supplierDetails.length>0">
+                  <ng-container *ngFor="let supplier of supplierDetails">
+                    <ng-container *ngTemplateOutlet="thTelmpate;context:supplier"></ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="displayType.type!='p' ">
+                <ng-container *ngIf="supplierDetails.length>0">
+                  <ng-container *ngTemplateOutlet="thTelmpateLandScape"></ng-container>
+                </ng-container>
+              </ng-container>
+
+              <!-- right section-->
+
+              <th>Bid Winner</th>
+            </tr>
+          </thead>
+          <!-- tbody 1-->
+          <ng-container *ngIf="displayType.type=='p'">
+            <tbody *ngFor="let lotInstance of lotsAndItem">
+              <tr *ngFor="let item of lotInstance.items;let i=index">
+                <!-- left section-->
+                <td>{{i+1}}</td>
+                <td>{{lotInstance.lotName}}</td>
+                <td>{{item.itemName}}</td>
+                <td>{{item.startPrice}}</td>
+                <td>{{item.minimumDesiredQuantity}}</td>
+                <td>{{item.minimumChangeValue ? item.minimumChangeValue : 0 }}</td>
+                <td style="border-right: 1px solid #a5abb1">{{item.unitOfMeasure}}</td>
+
+                <!-- middle section-->
+
+                <ng-container *ngIf="supplierDetails.length>0 ">
+                  <ng-container *ngFor="let supplier of supplierDetails">
+                    <ng-container *ngTemplateOutlet="tdTelmpate1;context:{item: item, supplier: supplier}">
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+
+                <!-- right section-->
+                <td>{{item.winner?item.winner:'No Winner'}}</td>
+              </tr>
+              <tr class="row-bg1">
+                <!-- left section-->
+                <td colspan="7" class="text-center" style="border-right: 1px solid #a5abb1">
+                  Total Lot Value
+                </td>
+
+                <!-- middle section-->
+                <ng-container *ngIf="supplierDetails.length>0 ">
+                  <ng-container *ngFor="let supplier of supplierDetails">
+                    <ng-container
+                      *ngTemplateOutlet="tdTelmpate2;context:{item: item, supplier: supplier, lotInstance: lotInstance}">
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+
+                <!-- right section-->
+                <td>{{lotInstance.winner?lotInstance.winner:'No Winner'}}</td>
+              </tr>
+            </tbody>
+          </ng-container>
+          <!-- tbody 2-->
+          <ng-container *ngIf="displayType.type=='p'">
+            <tbody *ngIf="displayType.type=='p'">
+              <tr *ngFor="let auc of buyerData" class="row-bg2">
+
+                <!-- left section-->
+                <td colspan="7" class="text-center" style="border-right: 1px solid #a5abb1">
+                  Total Bid Value
+                </td>
+
+                <!-- middle section-->
+                <ng-container *ngIf="supplierDetails.length>0 ">
+                  <ng-container *ngFor="let supplier of supplierDetails">
+                    <ng-container *ngTemplateOutlet="tdTelmpate3;context:{supplier: supplier, auc:auc}"></ng-container>
+                  </ng-container>
+                </ng-container>
+
+                <!-- right section-->
+                <td>{{auc.bidWinner?auc.winner:'No Winner'}}</td>
+              </tr>
+            </tbody>
+          </ng-container>
+          <!-- tbody 1 for landscape mode-->
+          <ng-container *ngIf="displayType.type!='p'">
+            <tbody *ngFor="let item of landscapeData;let i=index">
+              <tr>
+                <!-- left section-->
+                <td [attr.rowspan]="supplierDetails.length+2">{{i+1}}</td>
+                <td [attr.rowspan]="supplierDetails.length+2">{{item.lot.lotName}}</td>
+                <td [attr.rowspan]="supplierDetails.length+2">{{item.itemName}}</td>
+                <td [attr.rowspan]="supplierDetails.length+2">{{item.startPrice}}</td>
+                <td [attr.rowspan]="supplierDetails.length+2">{{item.minimumDesiredQuantity}}</td>
+                <td [attr.rowspan]="supplierDetails.length+2">{{item.minimumChangeValue ? item.minimumChangeValue : 0 }}
+                </td>
+                <td [attr.rowspan]="supplierDetails.length+2" style="border-right: 1px solid #a5abb1">
+                  {{item.unitOfMeasure}}</td>
+              </tr>
+              <ng-container *ngIf="supplierDetails.length>0">
+                <tr *ngFor="let supplier of supplierDetails;let supindex=index">
+                  <ng-container
+                    *ngTemplateOutlet="tdTelmpateLandscape;context:{item: item, supplier: supplier,lot:item.lot,auction:buyerData[0],supplierIndex:supindex}">
+                  </ng-container>
+                </tr>
+              </ng-container>
+
+            </tbody>
+          </ng-container>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADVANCED BID SUMMARY -->
+  <div class="container-fluid page-scroll my-report">
+    <div class="mt-3">
+      <h4>Advanced Bid Summary({{auctionDetails.primaryCurrency}})</h4>
+      <div class="analyze-sb table-responsive table-scroll fix-header">
+        <table
+          [@routeAnimations]="{value: advanceSummaryData.length>0?'afterTableLoad' : '', params:{ index: '2000ms'} }"
+          class="table table-bordered table3 font14 ">
+          <thead>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Lot Name</th>
+              <th>Item Name</th>
+              <th>Reliance Quantity</th>
+              <th>Minimum Bid Change</th>
+              <th>Unit of Measure</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Price Per Unit</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Historical Cost</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:170px">Total Historical Cost</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:170px">Total Purchase Cost</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Projected Savings(%)</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Bid Time</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">No. of Bids</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of advanceSummaryData;let i=index;">
+            <tr style="border-bottom: 1px solid #a5abb1">
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{i+1}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.lotName}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.itemName}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.minimumDesiredQuantity}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">
+                {{item.minimumChangeValue ? item.minimumChangeValue : 0 }}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.unitOfMeasure}}</td>
+            </tr>
+            <ng-container *ngIf="supplierDetails.length>0">
+              <tr class="table3-row" style="border-bottom: 1px solid #a5abb1"
+                *ngFor="let supplier of item.supplierAdvanceData">
+                <td *ngIf="!(supplier.data)" colspan="7" style="text-align: center;">{{supplier.supplierName}}
+                </td>
+                <td *ngIf="(supplier.data)">
+                  <report1-column [colName]="'Price Per Unit Advance Summary'" [auctionDetails]="auctionDetails"
+                    [itemData]="item" [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+                </td>
+                <td *ngIf="(supplier.data)">
+                  {{(item.historicalCost)?item.historicalCost:0}}
+                </td>
+                <td *ngIf="(supplier.data)">
+                  {{item.totalHistoricalCost}}
+                </td>
+                <td *ngIf="(supplier.data)">
+                  <report1-column [colName]="'Total Purchase Cost Advance Summary'" [auctionDetails]="auctionDetails"
+                    [itemData]="item" [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+                </td>
+                <td *ngIf="(supplier.data)">
+                  {{(supplier.bidLength!=0)?(supplier.baseline_saving_per|
+									filter:supplier.data.bidData:4:'variable':supplier.supplierID:item.totalHistoricalCost:auctionDetails.auctionType:'projectP':decimalplace):'0%'}}
+                </td>
+                <td *ngIf="(supplier.data)">
+                  {{(supplier.bidLength!=0)?(supplier.totalBidTime | filter: supplier.data.bidData:4:'time':supplier.supplierID
+									|date:'dd-MM-yyyy hh:mm'):''}}
+                </td>
+                <td *ngIf="(supplier.data)">
+                  {{supplier.bidLength}}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUCTION SAVINGS/REVENUE SUMMARY -->
+  <div class="container-fluid page-scroll my-report">
+    <div class="mt-3">
+      <h4>Auction Savings/Revenue Summary</h4>
+      <div class="analyze-sb table-responsive table-scroll fix-header">
+        <table
+          [@routeAnimations]="{value: advanceSummaryData.length>0?'afterTableLoad' : '', params:{ index: '2000ms'} }"
+          class="table table3 table-bordered font14">
+          <thead>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Lot Name</th>
+              <th>Item Name</th>
+              <th>Reliance Quantity</th>
+              <th>Minimum Bid Change</th>
+              <th>Unit of Measure</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Best Bid({{auctionDetails.primaryCurrency}})
+              </th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Initial
+                Bid({{auctionDetails.primaryCurrency}})</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:170px">Total Best
+                Bid({{auctionDetails.primaryCurrency}})</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:170px">Total Initial
+                Bid({{auctionDetails.primaryCurrency}})</th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Savings({{auctionDetails.primaryCurrency}})
+              </th>
+              <th *ngIf="supplierDetails.length>0" style="min-width:130px">Savings(%)</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of advanceSummaryData;let i=index;">
+            <tr>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{i+1}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.lotName}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.itemName}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.minimumDesiredQuantity}}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">
+                {{item.minimumChangeValue ? item.minimumChangeValue : 0 }}</td>
+              <td [attr.rowspan]="item.supplierAdvanceData.length+2">{{item.unitOfMeasure}}</td>
+            </tr>
+            <ng-container *ngIf="supplierDetails.length>0">
+              <tr class="table3-row" *ngFor="let supplier of item.supplierAdvanceData">
+                <td *ngIf="!(supplier.data)" colspan="6" style="text-align: center;">{{supplier.supplierName}}
+                </td>
+                <td *ngIf="(supplier.data)">
+                  <report1-column [colName]="'Best Bid Savings Revenue'" [auctionDetails]="auctionDetails"
+                    [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+                </td>
+                <td *ngIf="(supplier.data)">
+                  <report1-column [colName]="'Initial Bid Savings Revenue'" [auctionDetails]="auctionDetails"
+                    [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+                </td>
+                <td *ngIf="(supplier.data)">
+                  <report1-column [colName]="'Total Best Bid Savings Revenue'" [auctionDetails]="auctionDetails"
+                    [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+                </td>
+                <td *ngIf="(supplier.data)">
+                  <report1-column [colName]="'Total Initial Bid Savings Revenue'" [auctionDetails]="auctionDetails"
+                    [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+                </td>
+                <td *ngIf="(supplier.data)">
+                  <report1-column [colName]="'Savings Amount Savings Revenue'" [auctionDetails]="auctionDetails"
+                    [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+                </td>
+                <td *ngIf="(supplier.data)">
+                  {{(supplier.bidLength!=0)?(supplier.baseline_saving_per|filter:supplier.data.bidData:4:'initialVariable':supplier.supplierID:item.totalHistoricalCost:auctionDetails.auctionType:'savingP':decimalplace):'0%'}}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<ng-template #thTelmpate>
+  <th style="min-width:180px;">Price Per Unit</th>
+  <th style="border-right: 1px solid #fff;min-width:180px;">Total Purchase Cost</th>
+</ng-template>
+
+<ng-template #thTelmpateLandScape>
+  <th style="min-width:180px;">Supplier</th>
+  <th style="min-width:180px;">Price Per Unit</th>
+  <th style="min-width:180px;">Total Purchase Cost</th>
+  <th style="min-width:180px;">Total Lot Value</th>
+  <th style="min-width:180px;">Total Bid Value</th>
+</ng-template>
+
+<ng-template #tdTelmpate1 let-item="item" let-supplier="supplier">
+  <td class="table2-row" style="min-width:180px;">
+    <report1-column [colName]="'Price Per Unit'" [auctionDetails]="auctionDetails" [itemData]="item"
+      [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+  </td>
+  <td class="table2-row" style="border-right: 1px solid #a5abb1;min-width:180px;">
+    <report1-column [colName]="'Total Purchase Cost'" [auctionDetails]="auctionDetails" [itemData]="item"
+      [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+  </td>
+</ng-template>
+
+<ng-template #tdTelmpateLandscape let-supIndex="supplierIndex" let-lot="lot" let-auction="auction" let-item="item"
+  let-supplier="supplier">
+  <td style="min-width:180px;">
+    {{supplier.supplierName1}}
+  </td>
+  <td style="min-width:180px;">
+    <report1-column [colName]="'Price Per Unit'" [auctionDetails]="auctionDetails" [itemData]="item"
+      [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+  </td>
+  <td style="border-right: 1px solid #a5abb1;min-width:180px;">
+    <report1-column [colName]="'Total Purchase Cost'" [auctionDetails]="auctionDetails" [itemData]="item"
+      [supplier]="supplier" [decimalplace]="decimalplace"></report1-column>
+  </td>
+  <td style="border-right: 1px solid #a5abb1;min-width:180px;">
+    {{ (lot.bids.length>0)?(lot.totalLotCost |
+		filter:lot.bids:1:'lot':supplier.supplierID:null:null:null:decimalplace):0}} </td>
+  <td style="min-width:180px;">
+    {{(auction.bids.length>0)?(auction.totalEventCost |
+		filter:auction.bids:1:'event':supplier.supplierID:null:null:null:decimalplace):0}}
+  </td>
+  <td *ngIf="supIndex==0" [attr.rowspan]="supplierDetails.length +2">{{item.winner?item.winner:'No Winner'}}</td>
+
+</ng-template>
+
+<ng-template #tdTelmpate2 let-item="item" let-supplier="supplier" let-lotInstance="lotInstance">
+  <td style="min-width:180px;"></td>
+  <td style="border-right: 1px solid #a5abb1;min-width:180px;">
+    {{ (lotInstance.bids.length>0)?(lotInstance.totalLotCost |
+		filter:lotInstance.bids:1:'lot':supplier.supplierID:null:null:null:decimalplace):0}}
+  </td>
+</ng-template>
+
+<ng-template #tdTelmpate3 let-supplier="supplier" let-auc="auc">
+  <td style="min-width:180px;">
+  <td style="border-right: 1px solid #a5abb1;min-width:180px;">
+    {{(auc.bids.length>0)?(auc.totalEventCost |
+		filter:auc.bids:1:'event':supplier.supplierID:null:null:null:decimalplace):0}}
+  </td>
+</ng-template>

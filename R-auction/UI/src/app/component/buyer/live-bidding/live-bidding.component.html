@@ -1,0 +1,352 @@
+<div class="container-body" (click)="ClickedOut($event)">
+    <!-- Page Alt Header -->
+    <div class="container-fluid alt-header-fix" style="z-index: 101;">
+        <div class="alt-header pad-block font14">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" (click)="onRo()"> Home </li>
+                    <li class="breadcrumb-item" (click)="goBack()"> Auctions List</li>
+                    <li class="breadcrumb-item active" aria-current="page">Auction</li>
+                    <span class="custom-chip red-chip ml-2" *ngIf="aucStatus === 'closed'">
+                        {{translateSer?.CLOSED}}
+                    </span>
+                    <span class="custom-chip green-chip ml-2" *ngIf="aucStatus === 'open'">
+                        {{translateSer?.OPEN}}
+                    </span>
+                    <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus === 'paused'">
+                        {{translateSer?.PAUSED}}
+                    </span>
+                    <span class="custom-chip blue-chip ml-2" *ngIf="aucStatus === 'published'">
+                        {{translateSer?.PUBLISHED}}
+                    </span>
+                    <span class="custom-chip red-chip ml-2" *ngIf="aucStatus === 'suspended'">
+                        Under Amendment
+                    </span>
+                </ol>
+            </nav>
+            <div class="header-buttons mobile-scroll">
+
+                <span class="custom-sort mr-2">
+                    <select class="custom-sort-input" [(ngModel)]="viewFlag" (change)="onSelectedTab();isSealedbidShufflePar();viewTyp='list'">
+                        <option value="item"> Summary View </option>
+                        <option value="supplier"> Matrix View </option>
+                        <option value="bid"> Bid History </option>
+                        <option value="auditLog"> Audit Log </option>
+                    </select>
+                </span>
+                <span *ngIf="viewFlag === 'item'">
+                    <button class="header-sm-btn-ico darkgraybg" matTooltip="List"
+                        [ngClass]="{'active':viewTyp=='list'}" (click)="viewType('list')"
+                        style="border-radius: 50% 0 0 50%;">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button class="header-sm-btn-ico darkgraybg mr-2 active" matTooltip="Card"
+                        [ngClass]="{'active':viewTyp=='card'}" (click)="viewType('card')"
+                        style="border-radius:0 50% 50% 0;">
+                        <i class="fas fa-th-large "></i>
+                    </button>
+                </span>
+                <button class="header-sm-btn-ico greenbg mr-2" matTooltip="Refresh" (click)="refreshButt(true)"
+                    *ngIf="socketData?.status == auctionStatusList.OP">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+
+                <div ngbDropdown class="d-inline-block" *ngIf="sealedBidDis && viewFlag === 'item' ? true : !sealedBidDis">
+                    <button class="header-sm-btn-ico mr-2" matTooltip="Filter" id="dropdownBasic1" ngbDropdownToggle>
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1"
+                        class="dropdown-menu dropdown-menu-right font13">
+                        <div class="mx-2">
+                            <mat-form-field class="full-width">
+                                <mat-label>Savings</mat-label>
+                                <mat-select [(ngModel)]="buyer_savings"
+                                    (selectionChange)="selectBuyerSavType(buyer_savings);savingsFiter()">
+                                    <mat-option *ngFor="let sav of buyer_savings_drop" [value]="sav">
+                                        {{sav.value}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="mx-2" *ngIf="!sealedBidDis">
+                            <mat-form-field class="full-width">
+                                <mat-label>Best Bid Information Shown Based On</mat-label>
+                                <mat-select [(ngModel)]="bidService.BestBidInformationShownBasedOn"
+                                    (selectionChange)="selectBidType(bidService.BestBidInformationShownBasedOn)">
+                                    <mat-option *ngFor="let bid of bestBidInfo" [value]="bid">
+                                        {{bid.value}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-dropdown" *ngIf="viewFlag === 'item' || viewFlag === 'supplier'">
+                    <app-custom-dis-columns [auctionID]="auctionID" [columnNames]="bidService.columnNames" [viewPageFlag]="viewFlag"></app-custom-dis-columns>
+                </div>
+                <!-- Add Participant Live -->
+                <button class="header-sm-btn-ico" 
+                    style="margin-right: 7px;" matTooltip="Add Participants" 
+                    *ngIf="participantAdditionApplicable && participantAdditionEnabled" (click)="redirectToEdit2(auctionData, socketData.status, true)">
+                    <i class="fa fa-user-plus"></i>
+                </button>
+                <!-- Analyse Report -->
+                <div class="d-inline-block mr-2">
+                    <a class="d-inline-block"
+                        [routerLink]="['/reports/reportset', {auctionID: auctionID, breadCrumbStatus: socketData.status}]"
+                        matTooltip="Analyse">
+                        <button class="header-sm-btn-ico greenbg">
+                            <i class="far fa-chart-bar font18"></i>
+                        </button>
+                    </a>
+                </div>
+                <button class="header-sm-btn-ico yellowbg mr-2" matTooltip="Back To Live Auctions" (click)="onRoCli()"
+                    *ngIf="route.snapshot.params.navigation == 'liveauctions'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                
+                <!-- More Options -->
+                <button class=" header-sm-btn-ico" matTooltip="More" [matMenuTriggerFor]="menu">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <mat-menu class="cust-menuList" #menu="matMenu">
+                    <button class="dropdown-item" mat-menu-item (click)="openSupplierCurrency();"> Participant Currency
+                    </button>
+                    <button class="dropdown-item" mat-menu-item (click)="queryDialog();"> Query History </button>
+                    <button class="dropdown-item" mat-menu-item (click)="getBidHistoryReport()" [disabled]="downButt"
+                        *ngIf="viewFlag === 'bid' && socketData.status === 'Closed'">
+                        Download Report </button>
+                </mat-menu>
+
+            </div>
+        </div>
+    </div>
+    <div class="alt-header-filler pad-header-filler"></div>
+    <!-- Page Alt Header END -->
+
+
+
+
+
+    <!-- Auction Page blocking  -->
+    <div class="container-fluid">
+
+        <!-- List portion -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="border-card border-blue darkfont" style="box-shadow:none;"
+                    [class.border-yellow]="socketData.status.toLowerCase() == 'paused'"
+                    [class.border-green]="socketData.status.toLowerCase() == 'open'"
+                    [class.border-red]="socketData.status.toLowerCase() == 'closed'">
+                    <div class="flex-ends p-2 font14 pad-block">
+                        <div class="flex-ends ">
+                            <div>
+                                <div class="font16 bold"> {{auctionID}} / {{auctionData?.type | aucType}}
+                                    <span  *ngIf="auctionData?.isSealedBidAuction" class="uppercase"> / {{commonheader?.SEALED_BID}} </span>
+                                    <span  *ngIf="auctionData?.roundData" class="uppercase"> / {{auctionData?.roundData}} </span>
+                                </div>
+                                <div class="font13 pointer greenfont bold aucName"
+                                    (click)="redirectToEdit2(auctionData, socketData.status,'')">
+                                    <span *ngIf="auctionData?.auctionName && auctionData?.auctionName.length>40">
+                                        {{auctionData?.auctionName | slice:0:30}} <span
+                                            matTooltip="{{auctionData?.auctionName}}">...</span>
+                                    </span>
+                                    <span *ngIf="auctionData?.auctionName && auctionData?.auctionName.length<=40">
+                                        {{auctionData?.auctionName}}
+                                    </span>
+                                </div>
+                                <div class="font13 bluefont" *ngIf="auctionData?.topSupplier && !sealedBidDis && bidService.BestBidInformationShownBasedOn.key">
+                                    Top Bidder: <span *ngIf="auctionData.topSupplier!=='Tie'; else seTie"
+                                        [ngClass]="{'live-animate-monitor': socketData.status == auctionStatusList.OP}"
+                                        style="color: red;">{{auctionData?.topSupplier |
+                                        supplierName:bidService.supplierDetails:'bidHis'}}</span>
+                                        <ng-template #seTie><span style="color: red;">{{auctionData?.topSupplier}}</span></ng-template>
+                                </div>
+                            </div>
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+                        </div>
+                        <div *ngIf="!sealedBidDis">
+                            <div class="text-center bold bluefont"> {{bidService.BestBidInformationShownBasedOn.value}} ({{ auctionData? auctionData.primaryCurrency: ''}}) </div>
+                            <div class="flex-ends mobile-scroll">
+                                <!-- Initial / Hisotical / Preliminary Bid Total Value-->
+                                <div class="mr-2">
+                                    <div class="font13 grayfont "> {{buyer_savings?.value}} Total Value</div>
+                                    <div class="font16 bold ">
+                                        {{buyer_savings?.totalValue |number:decimalplace}}
+                                    </div>
+                                </div>
+                                <!-- Vertical Line-->
+                                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                                <!-- Best Bid Value -->
+                                <div class="mr-2">
+                                    <div class="font13 grayfont "> {{commonheader?.BEST_BID_VAL}} </div>
+                                    <div class="font16 bold ">
+                                        <span *ngIf="bidService.BestBidInformationShownBasedOn.key">
+                                            {{auctionData?.currentBidSingleSource|number:decimalplace}}
+                                        </span>
+                                        <span *ngIf="!bidService.BestBidInformationShownBasedOn.key">
+                                            {{auctionData?.currentBidBestCost |number:decimalplace}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- Savings -->
+                                <ng-container *ngIf="bidService.BestBidInformationShownBasedOn.key">
+                                    <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                                    <div class="mr-2">
+                                        <div class="font13 grayfont "> Savings % </div>
+                                        <div class="font16 bold ">{{auctionData?.savingsPercentageDisplay}}</div>
+                                    </div>
+                                    <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                                    <div class="mr-2">
+                                        <div class="font13 grayfont "> Savings </div>
+                                        <div class="font16 bold ">{{auctionData?.savingsDisplay}}</div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="flex-ends mobile-scroll" *ngIf="(socketData.status!='')">
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"> </div>
+                            <div class="mr-2">
+
+                                <div class="font13 grayfont ">
+                                    <table>
+                                        <tr>
+                                            <td>Open Time:</td>
+                                            <td class="bold blackfont">{{socketData.startDate | date:'dd-MM-yyyy
+                                                HH:mm'}} IST</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Close Time:</td>
+                                            <td class="bold blackfont">{{socketData.endDate | date:'dd-MM-yyyy HH:mm'}}
+                                                IST</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Live Time:</td>
+                                            <td class="bold blackfont">
+                                                <app-clock></app-clock>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                            <div class="mr-2 p-1 whitefont auc-clock"
+                                *ngIf="socketData.status == auctionStatusList.OP || socketData.status == auctionStatusList.PA || socketData.status == auctionStatusList.CO"
+                                [ngClass]="{
+                                'open-color': socketData.status == auctionStatusList.OP,
+                                'yellowbg': socketData.status == auctionStatusList.PA,
+                                'redbg': socketData.status == auctionStatusList.CO
+                              }">
+                               <div class="font13 text-center bold">
+                                    {{socketData.status | uppercase}} </div>
+                                <div class="font16 bold">
+                                    <countdown [config]="{leftTime: socketData.seconds}"
+                                        *ngIf="(socketData.seconds > 86400)">$!d!d:$!h!h:$!m!m:$!s!s</countdown>
+                                    <countdown [config]="{leftTime: socketData.seconds}"
+                                        *ngIf="(socketData.seconds <= 86400)">$!h!h:$!m!m:$!s!s</countdown>
+                                </div>
+
+                                <div class="text-center"
+                                    *ngIf="!common.auctionLeader.host && socketData.status !== auctionStatusList.CO">
+                                    <button class="header-sm-btn mr-2" *ngIf="pauseButt" matTooltip="Resume"
+                                        (click)="confirmPopup('playButt')" [disabled]="playPauseDis">
+                                        <i class="fas fa-play"> </i>
+                                    </button>
+                                    <button class="header-sm-btn mr-2" style="color:white;" *ngIf="playButt"
+                                        matTooltip="Pause" (click)="confirmPopup('pauseButt')"
+                                        [disabled]="playPauseDis">
+                                        <i class="fas fa-pause"> </i>
+                                    </button>
+                                    <button class="header-sm-btn redfont"
+                                        [disabled]="socketData.status !== auctionStatusList.OP"
+                                        (click)="confirmPopup('')" matTooltip="Close"> <i class="fas fa-stop"> </i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mr-2" *ngIf="aucStatus == auctionStatusList.PB.toLowerCase()">
+                                <div class="font13 grayfont "> 'Will open in' </div>
+                                <div class="font16  bluefont bold">
+                                    <countdown
+                                        [config]="{leftTime: -1*timeRemainingToOpen}">$!d!d:$!h!h:$!m!m:$!s!s
+                                    </countdown>
+                                </div>
+                            </div>
+                            <div class="mr-2"  *ngIf="aucStatus == 'suspended'">
+                                <div class="font16 bold"> 
+                                    <h5 style="color: red;">Under</h5></div>
+                                <div class="font16 bold">
+                                    <h5 style="color: red;">Amendment</h5>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <!-- List portion ENDS-->
+        <app-item-view *ngIf="(viewFlag=='item')" [auctionID]="auctionID" [viewFlag]="viewFlag"
+            [selectedSavings]="selectedSavings" [select_sav_bid]="buyer_savings?.key" [auctionData]="auctionData"
+            (sendAuctionData)="getAucDataFromParent($event)" [issealedBidDis1]="sealedBidDis"></app-item-view>
+        
+        <app-supplier-matrix-view *ngIf="(viewFlag=='supplier')" [auctionID]="auctionID" [auctionData]="auctionData" [issealedBidDis]="sealedBidDis">
+        </app-supplier-matrix-view>
+
+        <div class="showAuditlog" *ngIf="(viewFlag=='bid' && primaryCurrency && supplierListForCurrency)">
+            <app-bidhistory *ngIf="(viewFlag=='bid' && primaryCurrency && supplierListForCurrency)"
+                [currencyDecimalPlace]="auctionData.currencyDecimalPlace" [primaryCurrency]="primaryCurrency"
+                [supplierListForCurrency]="supplierListForCurrency" [auctionID]="auctionID" [auctionData]="socketData" [issealedBidDis]="sealedBidDis"  [allSupplierInviteList]="supplierInviteList">
+            </app-bidhistory>
+        </div>
+
+        <div class="showAuditlog" *ngIf="viewFlag=='auditLog'">
+            <app-live-audit-log *ngIf="viewFlag=='auditLog'" [issealedBidDis2]="sealedBidDis" [auctionData]="auctionData" [allSupplierList]="supplierInviteList"></app-live-audit-log>
+        </div>
+
+    </div>
+    <!-- Auction Page blocking ENDS -->
+
+
+
+
+    <div *ngIf="chatDisplay" class="chatpop" cdkDragBoundary="mat-drawer-content" cdkDrag>
+        <app-chat-bot [auctionID]="auctionID" [chatNotification]="chatNotification" (closeMethod)="closeChat();"
+            [supplierList]="supplierList" [buyerauctionData]="socketData" [issealedBidDis]="sealedBidDis"></app-chat-bot>
+    </div>
+</div>
+
+
+<div id="footer-slider" class="footer-slider">
+    <div class="footer-slider-body relative" *ngIf="viewFlag=='item'">
+        <span class="activity-status-reposition">
+            <button (click)="openActivityComponent();" class="bluebg" mat-raised-button color="primary">
+                <i class="fas fa-users whitefont font16"></i>
+            </button>
+        </span>
+        <span class="activity-status-reposition" *ngIf="openActivity">
+            <button class="header-sm-btn-ico greenbg mr-2 part_refresh" matTooltip="Refresh" mat-raised-button
+                (click)="getparticipateSupplierList(auctionID)" *ngIf="socketData?.status != auctionStatusList.CO">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </span>
+        <app-activity [auctionID]="auctionID" [auctionData]="socketData" (ifRemoveSupplier)="getRemoveSupplier($event)" [issealedBidDis]="sealedBidDis">
+        </app-activity>
+        
+    </div>
+    <span class="chatbot-btn" [ngClass]="{'bounce repeat-animation':(common.commonStatus==auctionStatusList.OP)}"
+        matTooltip="Chat"
+        *ngIf="!chatDisplay  && (common.commonStatus==auctionStatusList.OP || common.commonStatus==auctionStatusList.CO) "
+        (click)="chatDisplay=true;">
+        <span *ngIf="chatMessage" class="chat-notification repeat-animation heartBeat"> </span>
+
+        <div *ngIf="chatMessage" class="pyro">
+            <div class="before"></div>
+            <div class="after"></div>
+        </div>
+
+    </span>
+</div>

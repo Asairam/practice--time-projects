@@ -1,0 +1,22 @@
+<ng-container>
+  <!-- <div class="filter-checkbox" *ngFor="let item of buyerBidService.columnNames; let i = index" >
+    <mat-checkbox  [checked]="item.selected" (change)="onSelect($event.checked,i)">
+      {{item.item_text}}
+    </mat-checkbox>
+  </div> -->
+
+  <div class="container-fluid py-3">
+    <div class="row">
+
+      <div class="col-md-6"  *ngFor="let item of buyerBidService.columnNames; let i = index"  [hidden]="item.item_id == 'HistoricalCost'">
+        <div class="p-1">        
+          <mat-checkbox class="cust-checkbox" [disabled]="item.disable"  [checked]="item.selected" (change)="onSelect($event.checked,i)" >
+            {{item.item_text}}
+          </mat-checkbox>
+        </div>  
+      </div>
+
+    </div>
+  </div>
+</ng-container>
+

@@ -1,0 +1,61 @@
+<span *ngIf="colName == 'Price Per Unit'">
+    <span>{{getPricePerUnitPrimary() | number: '.0-'+decimalplace}}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getPricePerUnit() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Total Purchase Cost'">
+    <span>{{getTotalBaseCostPrimary() | number: '.0-'+decimalplace}}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getTotalBaseCost() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Price Per Unit Advance Summary'">
+    <span>{{getPricePerUnitPrimaryAdvance() | number: '.0-'+decimalplace}}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getPricePerUnitAdvance() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Total Purchase Cost Advance Summary'">
+    <span>{{getTotalBaseCostPrimaryAdvance() | number: '.0-'+decimalplace}}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getTotalBaseCostAdvance() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Best Bid Savings Revenue'">
+    <span>{{getBestBidRevenuePrimary()  | number: '.0-'+decimalplace }}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getBestBidRevenue() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Initial Bid Savings Revenue'">
+    <span>{{getInitialBidRevenuePrimary()  | number: '.0-'+decimalplace }}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getInitialBidRevenue() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Total Best Bid Savings Revenue'">
+    <span>{{getTotalBestBidRevenuePrimary()  | number: '.0-'+decimalplace }}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getTotalBestBidRevenue() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Total Initial Bid Savings Revenue'">
+    <span>{{getTotalInitialBidRevenuePrimary()  | number: '.0-'+decimalplace }}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getTotalInitialBidRevenue() | number: '.0-'+decimalplace}}</span>
+</span>
+
+<span *ngIf="colName == 'Savings Amount Savings Revenue'">
+    <span>{{getSavingsAmountPrimary()  | number: '.0-'+decimalplace }}</span>
+    <br *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">
+    <span style="color: brown;" *ngIf="supplier.supplierCurrency?.currencyCode && auctionDetails.primaryCurrency != supplier.supplierCurrency.currencyCode">{{ supplier.supplierCurrency.currencyCode}} {{getSavingsAmountRevenue() | number: '.0-'+decimalplace}}</span>
+</span>
+
+
+
+
+
+
+
+

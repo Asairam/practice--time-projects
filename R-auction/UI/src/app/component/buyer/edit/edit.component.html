@@ -1,0 +1,132 @@
+<div>
+  <div class="container-body ">
+    <!-- Page Alt Header -->
+    <div class="container-fluid  alt-header-fix">
+      <div class="alt-header pad-block font14">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item" (click)="onrou()"> Home </li>
+            <li class="breadcrumb-item" (click)="goBack()" *ngIf="aucStatus"> Auctions List</li>
+            <li class="breadcrumb-item active" aria-current="page">Data</li>
+            <!-- <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus"> {{aucStatus}} </span> -->
+            <span class="custom-chip red-chip ml-2" *ngIf="aucStatus?.toLowerCase() === 'closed'">
+              {{translateStatus?.CLOSED}}
+            </span>
+            <span class="custom-chip darkgraybg ml-2" *ngIf="aucStatus?.toLowerCase() === 'cancelled'">
+                Cancelled
+            </span>
+            <span class="custom-chip green-chip ml-2" *ngIf="aucStatus?.toLowerCase() === 'open'">
+              {{translateStatus?.OPEN}}
+            </span>
+            <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus?.toLowerCase() === 'paused'">
+              {{translateStatus?.PAUSED}}
+            </span>
+            <span class="custom-chip blue-chip ml-2" *ngIf="aucStatus?.toLowerCase() === 'published'">
+              {{translateStatus?.PUBLISHED}}
+            </span>
+            <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus?.toLowerCase() === 'draft'">
+              Draft
+            </span>
+            <span class="custom-chip red-chip ml-2" *ngIf="aucStatus?.toLowerCase() === 'suspended'">
+              Under Amendment
+            </span>
+          </ol>
+        </nav>
+        <marquee *ngIf="aucStatus?.toLowerCase() == 'paused'" style=" max-width: 57%;font-size: 20px;font-weight: 800; color: #0d5bd0; font-family: sans-serif;">
+          Auction in paused state can only have following fields changed.
+          A) Bidding rules.
+          B) End date and time.
+          C) Minimum Bid Change & Start Price at item level.
+        </marquee>
+
+        <div class="col-md-3" *ngIf="!buyerService.auctionData.auctionIdData && !templateAuction && !participantAdditionOn">
+          <mat-form-field class="full-width">
+            <mat-label>Template</mat-label>
+            <mat-select disableOptionCentering (selectionChange)="onTextClickData($event)">
+              <mat-option>
+                <ngx-mat-select-search [placeholderLabel]="'Search Template'" [noEntriesFoundLabel]="'no record found'"
+                  ngModel (ngModelChange)="filterBanks($event)"></ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let temp of listTemplate" [value]="temp">
+                {{temp.auctionName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="buyerService.auctionData.auctionIdData">
+          <span class="font18 bluefont bold uppercase" *ngIf="ifSealedBid"> {{translateCommon?.SEALED_BID}} / </span>  
+          <span class="font18 bluefont bold">
+            {{(!templateAuction)?buyerService.auctionData.auctionIdData:'T-'+buyerService.auctionData.auctionIdData}}
+          </span>
+          <span class="font18 bluefont bold" *ngIf="buyerService.auctionData && buyerService.auctionData.roundData">
+            / {{buyerService.auctionData.roundData}}
+          </span>
+          <button class="header-sm-btn-alt ml-2" *ngIf="aucStatus?.toLowerCase() !== 'draft' && aucStatus?.toLowerCase() !== 'cancelled'" routerLink="/livebidding/{{auctionID}}">
+            <i class="fas fa-caret-right font16"></i> Live
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="alt-header-filler"></div>
+    <!-- Page Alt Header END -->
+
+    <!-- Create Page blocking  -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- NOTE: [hidden] is used insteadof *ngIf to prevent supplier addition in live auction from failing -->
+          <BASIC-INFO #basic [roundsAuction]="roundsAuction" [hidden]="participantAdditionOn" (orgList)="getOrganization($event);" (loadStatus)="loadStatus($event)"></BASIC-INFO>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <CUSTOM-FIELD-HOLDER (onNewCustomList)="newCustomList($event)" *ngIf="auctionID && !participantAdditionOn"></CUSTOM-FIELD-HOLDER>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <ITEM-CARD-HOLDER [customFieldList]="customFieldList" *ngIf="auctionID && !participantAdditionOn"></ITEM-CARD-HOLDER>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <SUPPLIER-CARD-HOLDER (openPreBid)="preliminaryBidFunction($event)"(mailTemplate)="mailTemplateOpen($event);"  *ngIf="auctionID"></SUPPLIER-CARD-HOLDER>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <HOST-COHOST-CARD-HOLDER  [hidden]="participantAdditionOn" *ngIf="auctionID && orgList" [orgList]="orgList" (mailTemplate)="mailTemplateOpen($event);"></HOST-COHOST-CARD-HOLDER>
+        </div>
+      </div>
+
+    </div>
+    <!-- Create Page blocking ENDS -->
+  </div>
+  <div class="actions-area-height"></div>
+  <div *ngIf="participantAdditionOn" class="actions-area px-3 py-2 text-right whitebg">
+    <button class="btn btn-success btn-sm mr-2" (click)="saveParticipant()">
+      Save </button>
+  </div>
+  <div *ngIf="!participantAdditionOn" class="actions-area px-3 py-2 text-right whitebg">
+    <span *ngIf="!common.auctionLeader.host">
+      <button class="btn btn-danger btn-sm mr-2" *ngIf="templateAuction != 'true' && aucStatus?.toLowerCase() == 'draft'" (click)="auctionClose('delete')">
+        Delete </button>
+      <button class="btn btn-danger btn-sm mr-2" *ngIf="templateAuction != 'true' && aucStatus?.toLowerCase() == 'published'" [disabled]="auctionReadOnly" (click)="auctionClose('cancel')">
+        Cancel </button>
+      <button class="btn btn-primary btn-sm mr-2" *ngIf="!templateAuction && aucStatus?.toLowerCase() != 'published'  && aucStatus?.toLowerCase() != 'suspended' && aucStatus?.toLowerCase() != 'open'" [disabled]="!(aucStatus?.toLowerCase() == 'draft' && auctionID) && !roundsAuction"
+        (click)="publishAuction()"> Publish </button>
+      <button class="btn btn-primary btn-sm mr-2" *ngIf="aucStatus?.toLowerCase() == 'suspended'" [disabled]="auctionReadOnly" (click)="publishAuction()">
+        Re-Publish </button>
+      <button class="btn btn-success btn-sm mr-2" *ngIf="aucStatus?.toLowerCase() != 'published' && aucStatus?.toLowerCase() != 'paused' && aucStatus?.toLowerCase() != 'suspended'" [disabled]="!(aucStatus?.toLowerCase() == 'draft' && auctionID)"
+        (click)="saveAuctionData()">Save </button>
+      <button class="btn btn-success btn-sm mr-2" *ngIf="aucStatus?.toLowerCase() == 'paused'" (click)="saveAuctionDataOnPause()">
+        Save </button>
+    </span>
+    <button class="btn btn-primary btn-sm mr-2" (click)="downloadPDF();" *ngIf="!common.isMobile"> Print Preview
+    </button>
+    <button class="btn btn-primary btn-sm " *ngIf="templateAuction != 'true' && !common.isMobile" (click)="openAuditLog()">
+      Audit Log </button>
+  </div>
+</div>

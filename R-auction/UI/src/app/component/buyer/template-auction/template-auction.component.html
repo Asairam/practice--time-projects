@@ -1,0 +1,187 @@
+<div>
+  <div class="container-body">
+    <!-- Page Alt Header -->   
+     <!-- Page Alt Header -->
+     <div class="container-fluid alt-header-fix">
+      <div class="alt-header pad-block">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item" (click)="onCli()"> Home </li>
+            <li class="breadcrumb-item active" aria-current="page">Auctions List</li>
+          </ol>
+        </nav>
+        <div class="header-buttons mobile-scroll">
+          <button class="header-sm-btn-ico darkgraybg no-mobile" matTooltip="List" (click)="viewType('list')" [ngClass]="{'active' : view === 'list'}"
+            *ngIf="auctionList && auctionList.length > 0" style="border-radius: 50% 0 0 50%;">
+            <i class="fas fa-list-ul "></i> 
+          </button>
+          <button class="header-sm-btn-ico darkgraybg mr-2 no-mobile" matTooltip="Card" (click)="viewType('card')" [ngClass]="{'active' : view === 'card'}"
+            *ngIf="auctionList && auctionList.length > 0" style="border-radius:0 50% 50% 0;">
+            <i class="fas fa-th-large "></i> 
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="alt-header-filler pad-header-filler"></div>
+    <!-- Page Alt Header END -->
+
+    <!-- Auction Page blocking  -->
+    <div class="container-fluid">
+      <!-- card portion -->
+
+      <div class="search-results" infinite-scroll [infiniteScrollDistance]="scrollDistance" [infiniteScrollUpDistance]="scrollUpDistance"
+      [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()">
+        <ngx-masonry>
+          <div class="row" *ngIf="view === 'card'">
+            <div class=" col-lg-4 col-md-4 col-sm-6" ngxMasonryItem *ngFor="let list of auctionList;let i = index;">
+              <div class="border-card mb-3 darkfont card-radius" [class.border-yellow]="list.status == 'Draft'"
+                [class.border-green]="list.status == 'Open'">
+                <div class="card-content font14">
+                  <div class="flex-ends p-3 graybg">
+                    <div class="pr-3">
+                      <span *ngIf="list.auctionName.length>80">
+                        {{list.auctionName | slice:0:80}} <span matTooltip="{{list.auctionName}}">...</span>
+                      </span>
+                      <span *ngIf="list.auctionName.length<=80">
+                        {{list.auctionName}}
+                      </span>
+                    </div>
+                    <div class="bold font15">T - {{list.auctionID}} / {{list.type | aucType}}</div>
+                    
+                  </div>
+                  <div class="text-center px-3 py-2" *ngIf="list.status === 'Draft'">
+                    Created by - {{list.auctionLeader.name}}
+                </div>
+                  <div *ngIf="list.status === 'Open'"></div>
+                  <div class="make-relative py-2 ">
+                    <div class="line darkgraybg"></div>
+                    <div class="pos-right pr-3 whitebg">
+                     <span class="custom-chip bluebg" *ngIf="list.status === 'Published'">
+                        {{translateSer?.PUBLISHED}} </span>
+                      <span class="custom-chip green-chip" *ngIf="list.status === 'Open'"> {{translateSer?.OPEN}}
+                      </span>
+                      <span class="custom-chip darkgraybg" *ngIf="list.status === 'Closed'"> {{translateSer?.CLOSED}}
+                      </span>
+                      <span class="custom-chip yellow-chip" *ngIf="list.status === 'Paused'"> {{translateSer?.PAUSED}}
+                      </span>
+                    </div>
+                    <div class="pos-left whitebg pl-3">
+                      <span class="font13 bluefont" style="cursor: pointer;" (click)="seleAtt(list)">
+                        <i class="fas fa-paperclip orangefont"></i> ({{ list.attachmentList ?
+                        list.attachmentList.length
+                        : '0' }})
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div>
+                    <div class="text-center darkgrayfont font14 mt-1 "> {{translateSer?.SUPPLIERS}} </div>
+                    <div class="flex-between grayfont pt-1 pb-2 font13">
+                      <div> Invited <span class="bold font16 darkfont"> {{list.supplierInvited + list.supplierAccepted
+                          +
+                          list.supplierBidded}} </span></div>
+                      <div> Accepted <span class="bold font16 darkfont"> {{list.supplierAccepted +
+                          list.supplierBidded}}</span></div>
+                      <div> Bidded <span class="bold font16 darkfont"> {{list.supplierBidded}} </span></div>
+                    </div>
+                  </div> -->
+                 
+                </div>
+               
+                <div class="p-2 graybg text-right" style="border-radius: 0px 0 5px 5px;">
+                  <button class="header-sm-btn mr-2" (click)="editTemplate(list.auctionID)">
+                    <i class="fas fa-pen"> </i> Edit
+                  </button>
+                
+                 
+                </div>
+              </div>
+            </div>
+          </div>
+        </ngx-masonry>
+      </div>
+      <!-- card portion ENDS -->
+
+
+      <!-- List portion -->
+      <div class="row" *ngIf="view === 'list'">
+        <div class="col-md-12">
+          <div class="border-card  mb-3 darkfont make-relative" *ngFor="let list of auctionList" [class.border-yellow]="list.status == 'Draft'"
+            [class.border-green]="list.status == 'Open'">
+            <div class="flex-ends px-2 py-1 font14 block992">
+              <div class="flex-ends make25">
+                <!-- <div class="list-img-container">
+                  <img src="../../../../assets/images/img.png" *ngIf="!list.profilePicture">
+                  <img [src]="list.profilePicture" *ngIf="list.profilePicture" alt="" style="height: 75px;
+                width: 100px;">
+                </div> -->
+                <div>
+                  <div class="font16 bold"> {{list.auctionID}} <span class="font13 bluefont ml-2" *ngIf="list.status !== 'Draft'">
+                      Top Supplier: RAJ
+                      ENTERPRISES</span>
+                  </div>
+                  <div class="font13" (click)="list.status != 'Draft' ? openLiveBidding(list.auctionID) : return;" [ngClass]="{'breadcrumb-item' : list.status != 'Draft'}">
+                    <span *ngIf="list.auctionName.length>80">
+                      {{list.auctionName | slice:0:80}} <span matTooltip="{{list.auctionName}}">...</span>
+                    </span>
+                    <span *ngIf="list.auctionName.length<=80">
+                      {{list.auctionName}}
+                    </span>
+                  </div>
+                  <div class="font13 grayfont"> {{list.auctionLeader.name}} </div>
+                </div>
+              </div>
+              <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+              <div class="flex-ends make45">
+
+                <!-- <div class="flex-ends">
+                  <div class="mx-2">
+                    <div class="font14 text-center "> {{translateSer?.SUPPLIERS}} </div>
+                    <div class="flex-ends">
+                      <div class="mr-2">
+                        <div class="font13 grayfont"> {{translateSer?.INVITED}} </div>
+                        <div class="font16 bold "> {{list.supplierInvited + list.supplierAccepted +
+                          list.supplierBidded}} </div>
+                      </div>
+                      <div class="mx-2">
+                        <div class="font13 grayfont"> {{translateSer?.ACCEPTED}} </div>
+                        <div class="font16 bold "> {{list.supplierAccepted + list.supplierBidded}} </div>
+                      </div>
+                      <div class="ml-2">
+                        <div class="font13 grayfont"> {{translateSer?.BIDDED}} </div>
+                        <div class="font16 bold "> {{list.supplierBidded}} </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div> -->
+                
+              </div>
+              <div class="flex-between make25">  
+                <div class="mx-2">
+                  <span class="custom-chip yellow-chip ml-2" *ngIf="list.status === 'Draft'"> {{translateSer?.DRAFT}}
+                  </span>
+                  
+                </div>
+                <div class="mx-2">
+                  <button class="header-sm-btn mr-2" (click)="editTemplate(list.auctionID)">
+                    <i class="fas fa-pen font13"> </i> Edit
+                  </button>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- List portion ENDS-->
+
+      <!-- List portion -->
+
+      <!-- List Template portion ENDS-->
+      <div [hidden]="auctionList.length > 0" style="text-align: center;">
+        {{translateSerCommon?.NO_REC_FOU}}
+      </div>
+    </div>
+  </div>
+</div>      

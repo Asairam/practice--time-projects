@@ -1,0 +1,121 @@
+<!-- HEADER-->
+<div class="dialog-header p-2" >
+    <!-- <i class="fas fa-plus"> </i> -->
+    <span class="dialog-header-txt"> View Item details </span>
+    <i class="dialog-closex fas fa-times"  (click)="MatDialogRef.close()" *ngIf="common.internetConn"> </i>
+</div>
+
+<!-- BODY -->
+<div class="dialog-content" style="padding-right: 10px;">
+    <div class="container-fluid">
+        <div class="row font14" style="margin-top: 20px;">
+            <div class="col-sm-2 lightFont">Lot : </div>
+            <div class="col-sm-3 fieldStyle">{{popupData.selectedItem.lotName}}</div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2 lightFont">Item Code : </div>
+            <div class="col-sm-4 fieldStyle">{{popupData.selectedItem.itemCode}}</div>
+        </div>        
+        <div class="row font14"  style="margin-top: 20px;">
+            <div class="col-sm-2 lightFont">Name : </div>
+            <div class="col-sm-3 fieldStyle">{{popupData.selectedItem.itemName}}</div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2 lightFont">Description : </div>
+            <div class="col-sm-4 fieldStyle">{{popupData.selectedItem.description}}</div>
+        </div>       
+        <div class="row font14"  style="margin-top: 20px;">
+            <div class="col-sm-2 lightFont">Reliance Quantity : </div>
+            <div class="col-sm-3 fieldStyle">{{popupData.selectedItem.minimumDesiredQuantity}}</div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2 lightFont">Unit of Measure : </div>
+            <div class="col-sm-4 fieldStyle">{{popupData.selectedItem.unitOfMeasure}}</div>
+        </div>       
+        <div class="row font14"  style="margin-top: 20px;">
+            <div class="col-sm-2 lightFont">Start Price : </div>
+            <div class="col-sm-3 fieldStyle" style="display: flex; justify-content: space-between;">
+                <span>
+                    {{popupData.selectedItem.startPrice}}
+                </span>
+                <span>
+                    ({{primaryCurrency.currencyCode}})
+                </span>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2 lightFont">Minimum Bid Change : </div>
+            <div class="col-sm-4 fieldStyle" >
+                {{popupData.selectedItem.minimumChangeValue}}
+            </div>
+        </div>      
+        <div class="row font14"  style="margin-top: 20px;">
+            <div class="col-sm-2 lightFont">Remark : </div>
+            <div class="col-sm-3 fieldStyle">{{popupData.selectedItem.remarks}}</div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2 lightFont">Amount/Percentage : </div>
+            <div class="col-sm-4 fieldStyle">{{popupData.selectedItem.minChangeType}}</div>
+        </div>
+        <ng-container *ngFor="let custom of customfieldList; let i = index">
+            <div *ngIf="i == 0 || (i)%2 == 0" class="row font14"  style="margin-top: 20px;">
+                <div *ngIf="customfieldList[i]" class="col-sm-2 lightFont">{{customfieldList[i].fieldName}} : </div>
+                <div *ngIf="customfieldList[i]" class="col-sm-3 fieldStyle">{{popupData.selectedItem[customfieldList[i].fieldName]}}</div>
+                <div *ngIf="customfieldList[i]" class="col-sm-1"></div>
+                <div *ngIf="customfieldList[i+1]" class="col-sm-2 lightFont">{{customfieldList[i+1].fieldName}} : </div>
+                <div *ngIf="customfieldList[i+1]" class="col-sm-4 fieldStyle">{{popupData.selectedItem[customfieldList[i+1].fieldName]}}</div>
+            </div>
+        </ng-container>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-sm-6">
+                <button mat-stroked-button color="primary" class="attbut" type="button" (click)="showAttachDocument()">
+                    <i class="fa fa-paperclip" aria-hidden="true"></i> Attach Document ({{popupData.selectedItem.attachmentList? popupData.selectedItem.attachmentList.length : 0}})
+                </button>
+            </div>
+        </div>
+
+        <ng-container *ngIf="showAttachments && popupData.selectedItem.attachmentList.length>0">
+            <div  class="border-card border-blue mb-3" *ngFor="let doc of popupData.selectedItem.attachmentList;let i=index;">
+                <div class=" d-flex justify-content-between align-items-center px-3 py-2 ">
+                  <div class="font13">
+                    <div class="bold"> {{commonheader.ATTACH_DOC.DOC_NAME}}</div>
+                    <div class="bluefont text-dotdot">
+                      <a [href]="common.downloadAttachmentData(doc)" download>{{doc.fileName}}</a>
+                    </div>
+                  </div>
+                 
+                </div>
+                <div class=" d-flex justify-content-between align-items-center px-3 py-2 graybg">
+                  <div class="font13">
+                    <mat-form-field class="full-width">
+                      <mat-label>{{commonheader.ATTACH_DOC.ATTACH_TY}}</mat-label>
+                      <mat-select [(ngModel)]="doc.docDesc" disabled>
+                        <mat-option *ngFor="let item of attachment_type_options" [value]="item.value">
+                          {{item.value}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div>
+            
+                  </div>
+                  <div>
+                    <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                    <div class="del-size">
+                      <mat-slide-toggle [(ngModel)]="doc.isExternal" [checked]="doc.isExternal" disabled></mat-slide-toggle>
+                      <div class="font13" *ngIf="doc.isExternal">
+                        {{commonheader.ATTACH_DOC.EXTERNAL}} </div>
+                      <div class="font13" *ngIf="!doc.isExternal"> {{commonheader.ATTACH_DOC.INTERNAL}} </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </ng-container>
+        
+    </div>    
+</div>
+
+
+<!-- FOOTER -->
+<div class="dialog-footer" style="margin-top: 20px;">
+    <div class="col-md-12 mb-2 mt-2 text-right">
+        <button mat-flat-button class="mr-2 btn-blue"  (click)="MatDialogRef.close()">
+            Close
+        </button>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="dialog-header" [ngClass]="{'p-2':popupFlag}">
+  <span class="dialog-header-txt" >{{((popupFlag)?'Confirm ':'')+((supplier)?'Participant Mail Body':'Co-Host Mail Body')}}</span>
+  <div class="float-right">
+    <i class="fas fa-times dialog-closex" (click)="closeClick();"></i>
+  </div>
+</div>
+<div [ngClass]="{'dialog-content-popup':popupFlag,'dialog-content':!popupFlag}">
+  <!-- [ngClass]="{'  ':popupFlag,'dialog-content':!popupFlag}" -->
+    <div *ngIf="supplier" style="width: 100%;">
+      <app-add-chip [disabled]="auctionReadOnly"  [emailList]="mailList"></app-add-chip>
+    </div>
+    <div *ngIf="!supplier" style="width: 100%;">
+      <app-add-chip [disabled]="auctionReadOnly" [emailList]="mailList"></app-add-chip>
+    </div>
+ 
+  <div class="container-fluid py-3 item-detail-height">
+    <div *ngIf="supplier" id="supplierBody">
+      <angular-editor *ngIf="editorConfig" [config]="editorConfig" [(ngModel)]="supplierMailBody">
+      </angular-editor>
+    </div>
+    <div *ngIf="!supplier" id="hostBody">
+      <angular-editor *ngIf="editorConfig" [config]="editorConfig" [(ngModel)]="hostMailBody">
+      </angular-editor>
+    </div>
+  </div>
+</div>
+<div class="dialog-footer">
+  <div class="col-md-12 mb-2 mt-2 text-right">
+    <!-- *ngIf="(buyerService.auctionData.auctionStatus==auctionStatus.DR || buyerService.auctionData.auctionStatus==auctionStatus.PB)" [disabled]="(supplier)?(buyerService.supplierMail==supplierMailBody):(buyerService.hostMail==hostMailBody)" -->
+    <button [disabled]="auctionReadOnly" mat-flat-button class="mr-2 btn-blue" *ngIf="(buyerService.auctionData.auctionStatus==auctionStatus.DR || buyerService.auctionData.auctionStatus==auctionStatus.PB) && !common.auctionLeader.host"
+      (click)="resetMail()">{{common_btn.RESETMAIL}}
+    </button>
+    <button  [disabled]="auctionReadOnly" mat-flat-button type="submit" class="mr-2 btn-blue" *ngIf="(buyerService.auctionData.auctionStatus==auctionStatus.DR || buyerService.auctionData.auctionStatus==auctionStatus.PB) && !common.auctionLeader.host"
+      (click)="saveMailBody()"> {{popupFlag?common_btn.CONFIRM:common_btn.SAVE}}
+    </button>
+    <button mat-flat-button color="warn" type="button" (click)="closeClick()">
+      {{common_btn.CLOSE}}
+    </button>
+
+  </div>
+</div>

@@ -1,0 +1,32 @@
+.dropdown-togglealt::after {
+    content: initial !important;
+}
+.date-height{
+    min-height: 24px;
+}
+.card-radius{
+    border-radius: 5px;
+}
+
+
+.redFont {
+    color: red
+}
+
+/* .sealedbid-img img{
+    width:40px;
+} */
+/* .sealedbid_card {
+    background-image: url("../../../../assets/images/sealedbid.png");
+    background-size: 35px;
+    background-position: 20px 60px;
+    background-repeat: no-repeat;
+    z-index: 0;
+} */
+.sealedbid_list {
+    background-image: url("../../../../assets/images/sealedbid.png");
+    background-size: 35px;
+    background-position: 23% 10px;
+    background-repeat: no-repeat;
+    z-index: 0;
+}

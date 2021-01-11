@@ -1,0 +1,255 @@
+<div [ngStyle]="participantAdditionOn ? {'visibility': 'visible'} : '' " class="border-card border-blue p-3 mb-3 wow bounceInUp animationdelay" data-wow-delay=".60s">
+    <div class="border-card-header mb-3 d-flex justify-content-between align-items-center">
+        <div class="bold"> Participants ({{supplierDetails.length}})</div>
+        <div>
+            <ng-container *ngIf="!common.isMobile && supplierDetails.length > 0 && !this.common.auctionLeader.host && (auctionStatus=='Draft' || auctionStatus =='Published') && buyerService.itemDetails.length>0 && !auctionReadOnly">
+            <button  class="header-sm-btn  mr-2" (click)="supplierExportAsXLSX('Preliminary');" [disabled]="preExcelDowButt">
+                <i class="fas fa-download"> </i> Preliminary Template
+              </button>
+              <span class="header-sm-btn  mr-2">
+                <label  for="file-uploadpri"> <i class="fas fa-upload"> </i>Upload Preliminary</label>
+                <input type="file" id="file-uploadpri" placeholder="Upload file" accept=".xlsx"
+                  style="display: none;"(change)="incomingfilePri($event)">
+              </span>
+            </ng-container>
+            <button *ngIf="supplierButt && !this.common.auctionLeader.host" class="header-sm-btn"
+                [style.pointer-events]="buyerService.auctionData.auctionID  ? 'inherit' : 'none'" (click)="auctionReadOnly ? return : vendorCreation();">
+                <i class="fas fa-plus"> </i> Unregister Participant
+            </button>
+            <button class="header-sm-btn" *ngIf="(auctionStatus=='Draft' || auctionStatus =='Published')"
+                [style.pointer-events]="buyerService.auctionData.auctionID  ? 'inherit' : 'none'" (click)="mailBodyOpen();">
+                <i class="fa fa-envelope"> </i> Mail Template
+            </button>
+        </div>
+    </div>
+    <div class=" border-card-header d-flex justify-content-between align-items-center mb-3" *ngIf="supplierDetails.length > 0">
+        <div>
+            <span class="custom-sort mr-2">
+                <select class="custom-sort-input" [(ngModel)]="selectedValue" (change)="participantSorting(2)">
+                    <option *ngFor="let filter of supplierFilter"> {{filter.value}} </option>
+                </select>
+                <button class="ascending" [ngClass]="{'disabled':sorting}" matTooltip="Ascending Sort" (click)="participantSorting(0)">
+                    <i class="fas fa-long-arrow-alt-up"></i> </button>
+                <button class="descending" [ngClass]="{'disabled':!sorting}" matTooltip="Descending Sort" (click)="participantSorting(1)">
+                    <i class="fas fa-long-arrow-alt-down"></i> </button>
+            </span>
+        </div>
+        <div class="text-right" *ngIf="(auctionStatus=='Draft' || auctionStatus =='Published') && supplierButt && !common.auctionLeader.host">
+            <mat-checkbox [disabled]="auctionReadOnly" class="mr-3 font13 mb-0" [(ngModel)]="allchecked" (change)="selectCheckbox($event.checked,'all','')">
+                Select All</mat-checkbox>
+            <button  [disabled]="auctionReadOnly" class="header-sm-btn redfont" (click)="selectDelete()"><i class="far fa-trash-alt"></i> Delete
+            </button>
+        </div>
+    </div>
+<!-- CARD CONTENT-->
+    <div class="card-content">
+
+        <div class="row">
+
+            <div [ngClass]="((auctionStatus=='Draft' || auctionStatus =='Published') && !this.common.auctionLeader.host) || participantAdditionOn?'col-md-11 col-sm-9 mb-2':'col-md-12 col-sm-12 mb-2'">
+                <swiper [config]="config">
+
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" *ngFor="let supplier of supplierDetails;let i=index;">
+                            <div class="flat-tile tealbg p-2" style="cursor: initial;">
+                                <div class=" d-flex justify-content-between align-items-center " [ngStyle]="{'text-decoration':supplier.status === 'Suspended' ? 'line-through' : 'inherit',
+                                'text-decoration-color':supplier.status === 'Suspended' ? 'black' : 'inherit'}">
+                                    <div class="bold">
+                                        <mat-checkbox [disabled]="auctionReadOnly" [checked]="supplier.checked" (change)="selectCheckbox($event.checked,'',i)"
+                                            *ngIf="(auctionStatus=='Draft' || auctionStatus =='Published') && supplierButt && !this.common.auctionLeader.host"></mat-checkbox>
+                                        {{i+1}}. {{(supplier.isNewVendor)?('Unregister
+                                        Participant'):supplier.supplierID}}
+                                    </div>
+                                    <div>
+                                        <div class="dropdown par-slider" ngbDropdown>
+                                            <button *ngIf="supplier.supplierCurrency" type="button" class="flat-tile-dd dropdown-toggle no-dropdown-icon"
+                                                ngbDropdownToggle>
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right font13">
+                                                <span *ngFor="let butt of preCrud">
+                                                    <a class="dropdown-item" href="javascript:void(0)" *ngIf="butt.bol"
+                                                        (click)="seleDrop(butt,item,i,supplier,index)">
+                                                        {{butt.name}}
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 text-left font13" style="display: flex; justify-content: space-between;">
+                                    <span [ngStyle]="{'text-decoration':supplier.status === 'Suspended' ? 'line-through' : 'inherit',
+                                    'text-decoration-color':supplier.status === 'Suspended' ? 'black' : 'inherit'}">{{supplier.supplierName1}}</span>
+                                    <span *ngIf="supplier.supplierCurrency">({{supplier.supplierCurrency?.currencyCode}})</span>
+                                </div>
+                                <div class="line  my-1"></div>
+                                <div class=" font13 bold border-bottom supplier-table">
+                                    <div class="">
+                                        Name
+                                    </div>
+                                    <div class="px-2">
+                                        Email
+                                    </div>
+                                    <div class="px-2">
+                                        Mobile No.
+                                    </div>
+                                    <div class="">
+                                        Actions
+                                        <button class="header-sm-btn mr-2 whitefont" (click)="showMobileNo()"
+                                            matTooltip="Show Mobile Number">
+                                            <i class="fas fa-eye"> </i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="supplier-height">
+
+                                    <div class="font13 border-bottom supplier-table" *ngFor="let contact of supplier.contactperson;let i = index;">
+                                        <div class="">
+                                            {{(contact.firstname)?(contact.firstname+'
+                                            '+contact.lastname):'No Name'}}
+                                        </div>
+                                        <div class="px-2">
+                                            {{contact.useremail1}}
+                                        </div>
+                                        <div class="px-2">
+                                            {{contact.mobileno}}
+                                        </div>
+                                        <div class="" *ngIf="!this.common.auctionLeader.host">
+                                            <!-- <button class="header-sm-btn mr-1 whitefont" matTooltip="Edit" (click)="vendorModification(supplier,contact)">
+                                                <i class="fas fa-pen"> </i>
+                                            </button> -->
+                                            <button class="header-sm-btn mr-1 whitefont" matTooltip="View" (click)="vendorModification(supplier,contact)">
+                                                <i class="fas fa-eye"> </i>
+                                            </button>
+                                            <button [disabled]="auctionReadOnly" class="header-sm-btn mr-1 whitefont" matTooltip="Delete" (click)="participantAdditionOn ? return : onRowSupplierDelete(supplier,contact,i)">
+                                                <i class="far fa-trash-alt"> </i>
+                                            </button>
+                                            <button class="header-sm-btn redfont" *ngIf="(errorFlag || supplier.errorFlag) && contact.toolTip"
+                                                [matTooltip]="contact.toolTip">
+                                                <i class="fas fa-info-circle"> </i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </swiper>
+            </div>
+            <div *ngIf="((auctionStatus=='Draft' || auctionStatus =='Published') && supplierButt && !this.common.auctionLeader.host)  || participantAdditionOn"
+                [ngClass]="(auctionStatus=='Draft' || auctionStatus =='Published' || participantAdditionOn)?'col-md-1 col-sm-3 add-supp mb-2':''"
+                (click)="onAddClick($event.target)">
+                <div class="whitefont p-2 bluebg pointer d-flex flex-column justify-content-center font16" style="height: 100%;  border-radius: 5px;">
+                    <div class="text-center font20"> <i [class]="(!IsHidden1)?'fas fa-plus':'fas fa-minus'"> </i></div>
+                    <div class="bold text-center"> {{(!IsHidden1)?('Add'):'Close'}} </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="border-card p-3 mb-3 top-tri make-relative" *ngIf="IsHidden1 " style="border-color: #293790 !important;">
+    <div class="px-3">
+        <div class="row">
+            <div class="col-md-4 bold"> Search {{selectSearch}}</div>
+            <div ngbDropdown class="col-md-8 mb-2 d-inline-block">
+                <button class="header-sm-btn dropdown-togglealt px-2" id="dropdownBasic1" ngbDropdownToggle style="float: right;">
+                    <i class="fas fa-ellipsis-v"></i> Search From {{selectSearch}}
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu dropdown-menu-right font13">
+                    <!-- <a class="dropdown-item px-2 py-1 font13" > <i class="far fa-envelope"> </i> Customer </a> -->
+                    <a class="dropdown-item px-2 py-1 font13" *ngFor="let typeName of searchSupplierFrom" (click)="searchSupplier(typeName)"
+                        [ngClass]="{'active' : typeName.ID === searchSupplierValue}"><i class="far fa-envelope"> </i>
+                        {{typeName.name}}</a>
+                </div>
+            </div>
+            <div class=" col-sm-12 p-0 search-box1">
+                <button class="search-slide-icon">
+                    <i class="fas fa-search "></i>
+                </button>
+                <input class="header-search-input" [placeholder]="searchHere" type="text" autocomplete="off"
+                    [ngModelOptions]="{standalone: true}" [(ngModel)]="searchName" (ngModelChange)="this.searchParDetails.next($event)">
+                <button class="search-slide-close" (click)="clearSearch()"><i class="fas fa-times "></i>
+                </button>
+
+            </div>
+
+            <div class=" col-sm-12 pt-1 mt-2 search-participant-height">
+                <div class="spinner-border text-primary" *ngIf="loadStatus" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <mat-accordion class="full-width" *ngIf="!loadStatus">
+                    <mat-expansion-panel *ngFor="let addSupplier of supplierSource">
+                        <mat-expansion-panel-header class="font14 darkgrayfont">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="bold darkfont">
+                                        <i class="far fa-building"></i>
+                                        {{(isRegister)?(addSupplier.name!=undefined)?addSupplier.name.firstname:''
+                                        :addSupplier.user_name1}}{{addSupplier.vendorcode?'('+addSupplier.vendorcode+')':''}}
+                                    </div>
+                                    <div class="">
+                                        <span *ngIf="searchSupplierValue == 1">{{addSupplier.email}}</span>
+                                        <span *ngIf="searchSupplierValue != 1 && addSupplier.address && addSupplier.address.length>80">
+                                            {{addSupplier.address | slice:0:80}} <span matTooltip="{{addSupplier.address}}">...</span>
+                                        </span>
+                                        <span *ngIf="searchSupplierValue != 1 && addSupplier.address && addSupplier.address.length<80">
+                                            {{addSupplier.address}}
+                                        </span>
+                                    </div>
+                                    <!-- <div class="">
+                                        ({{(searchSupplierValue == 1)?addSupplier.email
+                                        :(addSupplier.city+','+addSupplier.country)}})
+                                    </div> -->
+                                </div>
+                                <div class="mr-4">
+                                    <div [matTooltip]="(!addSupplier.addflag)?'Add All Contact Person':'Delete All Contact Person'"
+                                        (click)="(!addSupplier.addflag)?onRowSupplierAdd(addSupplier):onRowSupplierDelete(addSupplier,null,null,'search')">
+                                        <i class="fas fa-plus greenfont icon-btn ml-3" *ngIf="!addSupplier.addflag">
+                                        </i>
+                                        <i class="fas fa-minus redfont icon-btn ml-3" *ngIf="addSupplier.addflag"> </i>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </mat-expansion-panel-header>
+                        <div>
+                            <div class="row font14 darkgrayfont py-2 participant-border " *ngFor="let contact of addSupplier.contactPerson;let i=index;">
+                                <div class="col-sm-3 bold darkfont">
+                                    <i class="fa fa-{{contact.companyDetails ? 'industry' : 'user'}}"></i>
+                                    {{(contact.firstname)?(contact.firstname+'
+                                    '+contact.lastname):'No Name'}}
+                                </div>
+                                <div class="col-sm-4">
+                                    {{contact.useremail1}}
+                                </div>
+                                <div class="col-sm-3">
+                                    {{contact.mobileno}}
+                                </div>
+                                <div class="col-sm-2 text-center">
+                                    <!-- <i class="fas fa-pen bluefont icon-btn mr-2"> </i> -->
+                                    <span (click)="(!contact.flag)?onRowSupplierAdd(addSupplier,contact):onRowSupplierDelete(addSupplier,contact,i,'search')">
+                                        <i class="fas fa-plus greenfont icon-btn " *ngIf="!contact.flag"> </i>
+                                        <i class="fas fa-minus redfont icon-btn" *ngIf="contact.flag"> </i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+
+                </mat-accordion>
+            </div>
+        </div>
+    </div>
+</div>
+<div #target></div>

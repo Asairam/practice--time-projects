@@ -1,0 +1,336 @@
+<div class="border-card border-blue p-3 mb-3 wow bounceInUp animationdelay" data-wow-delay=".30s">
+	<div class="border-card-header mb-2 d-flex justify-content-between align-items-center">
+		<div class="bold"> Header
+			<!-- <span *ngIf="basicForm.get('isSealedBidAuction').value" style="color:red;">(SEALED BID)</span> -->
+		</div>
+		<div *ngIf="success" style="color:green;">{{success}}</div>
+		<!-- <div>
+      <button class="header-sm-btn active mr-2">
+        <i class="fas fa-filter"> </i> Filter
+      </button>
+      <button class="header-sm-btn  active mr-2">
+        <i class="fas fa-plus"> </i> Card
+      </button>
+      <button class="header-sm-btn active ">
+        <i class="fas fa-plus"> </i> List
+      </button>
+    </div> -->
+	</div>
+	
+	
+	<div class="card-content font14" style="height:auto;">
+		<form #basicFormRef="ngForm" [formGroup]="basicForm" autocomplete="off" (ngSubmit)="submitForm()">
+			<!-- Row 1-->
+			<div class="row">
+				<div class="col-md-12 ">
+					<div class="row">
+						<!-- ACTUION NAME -->
+						<div class="col-md-6">
+							<mat-form-field class="full-width">
+								<input [readonly]="auctionReadOnly" matInput (keyup)="onTextSaveData(1);" placeholder="{{translateSer?.AUC_NAME}}" formControlName="aucName"
+								 required (input)="aucCapitalize($event.target.value)">
+							</mat-form-field>
+							<div *ngIf="(aucNameError!='')" class="invalid">
+								{{aucNameError}}
+							</div>
+						</div>
+						<!-- AUCTION TYPE -->
+						<div class="col-md-2">
+							<mat-form-field class="full-width">
+								<mat-label>{{translateSer?.AUC_TYPE}}</mat-label>
+								<mat-select disableOptionCentering formControlName="aucType" [disabled]="aucType || auctionReadOnly" (selectionChange)="onTextSaveData(1);"
+								 required>
+									<mat-option *ngFor="let type of auctionType" [value]="type.value">
+										{{type.name}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+
+					    <!-- PRIMARY CURRENCY -->
+						<div class="col-md-2">
+							<mat-form-field class="full-width">
+								<mat-label>{{translateSer?.PRIMARY_CURRENCY}}</mat-label>
+								<mat-select [disabled]="auctionReadOnly" disableOptionCentering formControlName="primaryCurrency" (selectionChange)="resetBiddingCurrency()" required>
+									<mat-option>
+										<ngx-mat-select-search [placeholderLabel]="'search currency'" [noEntriesFoundLabel]="'no record found'" [formControl]="CurrFilterCtrl"></ngx-mat-select-search>
+									</mat-option>
+									<mat-option *ngFor="let primary of listPrimaryCurrency" [value]="primary">
+										{{primary.currencyName}}({{primary.currencyCode}})
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<!-- CURRENCY -->
+						<div class="col-md-2">
+							<mat-form-field class="full-width">
+								<mat-label>{{translateSer?.CURRENCY}}</mat-label>
+								<mat-select panelClass="bidCur" [disabled]="auctionReadOnly" disableOptionCentering [formControl]="biddingCurrency" required (selectionChange)="selectBiddingCurrency(biddingCurrency.value,1);" 
+								 multiple>
+									<mat-select-trigger>
+										Selected Currency(+{{(biddingCurrency.value)?biddingCurrency.value.length:'0'}})
+									</mat-select-trigger>
+									<mat-option >
+										<ngx-mat-select-search [placeholderLabel]="'search currency'" [noEntriesFoundLabel]="'no record found'"
+										 [formControl]="BiddCurrFilterCtrl"></ngx-mat-select-search>
+									</mat-option>
+									<mat-option style="padding: 0 10px;" *ngFor="let bidding of listBiddingCurrency" [value]="bidding" [disabled]="bidding.selected">
+										{{bidding.currencyName}}({{bidding.currencyCode}})
+									</mat-option>
+								</mat-select>							
+							</mat-form-field>
+						</div>
+						<!-- RFQ NO -->	
+						<div class="col-md-3" *ngIf="rfqNo">
+							<mat-form-field class="full-width">
+								<input matInput disabled placeholder="{{translateSer?.RFQ}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="rfqNo">
+							</mat-form-field>
+						</div>
+						<!-- BUSINESS UNIT -->
+						<div [class]="(rfqNo)?'col-md-3':'col-md-6'">
+							<mat-form-field class="full-width">
+								<input matInput [readonly]="auctionReadOnly" formControlName="businessUnit" placeholder="{{translateSer?.BUSINESS}}">
+							</mat-form-field>
+						</div>
+						<!-- COMPANY CODE -->
+						<div [class]="(rfqNo)?'col-md-3':'col-md-3'">
+							<mat-form-field class="full-width">
+								<mat-label>{{translateSer?.COMPANY}}</mat-label>
+								<mat-select [disabled]="auctionReadOnly" disableOptionCentering formControlName="company">
+									<mat-option>
+										<ngx-mat-select-search [placeholderLabel]="'search company code'" [noEntriesFoundLabel]="'no record found'"
+										 [formControl]="FilterCtrl"></ngx-mat-select-search>
+									</mat-option>
+									<mat-option *ngFor="let org of listOrganisation" [value]="org.name">
+										{{org.name}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<!-- CURRENCY DECIMAL PLACES -->
+						<div [class]="(rfqNo)?'col-md-3':'col-md-3'">
+							<mat-form-field class="full-width">
+								<mat-label>{{translateSer?.DECIMAL_PLACE}}</mat-label>
+								<mat-select [disabled]="auctionReadOnly" disableOptionCentering formControlName="decimalPlace" (selectionChange)="onTextSaveData(1);"
+								 required>
+									<mat-option *ngFor="let decimal of decimalPlace" [value]="decimal">
+										{{decimal}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<!-- DESCRIPTION ---->
+						<div class="col-md-12">
+							<mat-form-field class="full-width">
+								<mat-label>{{translateSer?.DESC}}</mat-label>
+								<textarea [readonly]="auctionReadOnly" matInput formControlName="description"></textarea>
+							</mat-form-field>
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+			<!-- Row 2-->
+			<div class="row">
+				<!-- OPEN DATE -->
+				<div class="col-md-3" *ngIf="templateAuction != 'true'">
+					<mat-form-field class="full-width">
+						<input [readonly]="auctionReadOnly" matInput id="basicOpenDate" [matDatepicker]="dtStart" (dateChange)="datechnage($event)" placeholder="Open Date(MM/DD/YYYY)" [min]="today" formControlName="openDate"
+						 required  style="color:rgba(0,0,0,1)" (keypress)="onlyNumberKey($event)">
+						<mat-datepicker-toggle matSuffix [for]="dtStart" [disabled]="OpenDateDisabled || auctionReadOnly" ></mat-datepicker-toggle>
+						<mat-datepicker #dtStart disabled="false"></mat-datepicker>
+						<mat-hint *ngIf="error.startDateError" style="color:red;">Open date must be a future date</mat-hint>
+					</mat-form-field>
+
+				</div>
+				<!-- OPEN TIME -->
+				<div class="col-md-3 make-relative" *ngIf="templateAuction != 'true'">
+					<div class="fake-input-group-button" [ngClass]="{'invalid2': (basicFormRef.submitted && f.opent.invalid) }" style="position: relative" [owlDateTimeTrigger]="Opentime">
+						<span> {{ basicForm.get('opent').value | date: 'HH:mm' }}</span>
+						<i class="fa fa-calendar" style="float:right;" aria-hidden="true"></i>
+						<span *ngIf="basicForm.controls.opent.value" class="mat-form-field-label-wrapper">
+							<label style="display: block; transform: translateY(-1.28125em) scale(.75) perspective(100px) translateZ(.001px)"
+							 class="mat-form-field-label ng-tns-c16-11 ng-star-inserted" id="mat-form-field-label-8888" for="start-time"
+							 aria-owns="start-time">
+								Open Time
+								<span aria-hidden="true" class="mat-placeholder-required mat-form-field-required-marker ng-tns-c16-11 ng-star-inserted">*</span>
+							</label>
+						</span>
+						<span style="opacity: .7" *ngIf="!basicForm.controls.opent.value">Start Time * </span>
+					</div>
+					<input placeholder="Open Time" id="start-time" class="hidden-date" matInput hour12Timer="timeformat"
+					 [owlDateTimeTrigger]="Opentime" [owlDateTime]="Opentime" formControlName="opent" required>
+					<owl-date-time [disabled]="auctionReadOnly"  [pickerType]="'timer'" #Opentime></owl-date-time>
+				</div>
+				<!-- CLOSE DATE -->
+				<div class="col-md-3" *ngIf="templateAuction != 'true'">
+					<mat-form-field class="full-width">
+						<input matInput [readonly]="auctionReadOnly"  id="basicCloseDate"   [matDatepicker]="dtEnd" placeholder="Close Date(MM/DD/YYYY)" [min]="edo" 
+						formControlName="endDate" required style="color:rgba(0,0,0,1)" (keypress)="onlyNumberKey($event)">
+						<mat-datepicker-toggle matSuffix [for]="dtEnd" [disabled]="auctionReadOnly"></mat-datepicker-toggle>
+						<mat-datepicker #dtEnd  disabled="false"></mat-datepicker>
+						<mat-hint *ngIf="error.endDateError" style="color:red;">Close date must be a future date from open date</mat-hint>
+					</mat-form-field>
+				</div>   
+				<!-- CLOSE TIME -->
+				<div class="col-md-3 make-relative" *ngIf="templateAuction != 'true'">
+					<div class="fake-input-group-button" [ngClass]="{'invalid2': (basicFormRef.submitted && f.endt.invalid) }" [owlDateTimeTrigger]="dt2">
+						<span> {{ basicForm.get('endt').value | date: 'HH:mm' }}</span>
+						<i class="fa fa-calendar" style="float:right;" aria-hidden="true"></i>
+						<span *ngIf="basicForm.controls.endt.value" class="mat-form-field-label-wrapper">
+							<label style="display: block; transform: translateY(-1.28125em) scale(.75) perspective(100px) translateZ(.001px)"
+							 class="mat-form-field-label ng-tns-c16-11 ng-star-inserted" id="mat-form-field-label-9999" for="end-time"
+							 aria-owns="end-time">
+								Close Time
+								<span aria-hidden="true" class="mat-placeholder-required mat-form-field-required-marker ng-tns-c16-11 ng-star-inserted">*</span>
+							</label>
+						</span>
+						<span style="opacity: .7" *ngIf="!basicForm.controls.endt.value">End Time *</span>
+					</div>
+					<input placeholder="Close Time" id="end-time" class="hidden-date" matInput hour12Timer="timeformat"
+					 [owlDateTimeTrigger]="dt2" [owlDateTime]="dt2" formControlName="endt" required>
+					<owl-date-time [disabled]="auctionReadOnly" [pickerType]="'timer'" #dt2></owl-date-time>
+				</div>
+				<!-- Extended AUCTION TIME -->    
+				<div class="col-md-3">
+					<mat-form-field class="full-width">
+						<input [readonly]="auctionReadOnly"  formControlName="extensionSeconds" matInput placeholder="{{translateSer?.EXTEND_AUC}}" maxlength="5"
+						 numberFlag="true" numberDecimal>
+						<span *ngIf="(f.extensionSeconds)" matSuffix>Mins.</span>
+					</mat-form-field>
+				</div>
+				<!-- GRACE PERIOD -->
+				<div class="col-md-3">
+					<mat-form-field class="full-width">
+						<input [readonly]="auctionReadOnly"  matInput formControlName="gracePeriod" placeholder="{{translateSer?.GRACE}}" maxlength="5" numberFlag="true"
+						 numberDecimal>
+						<span *ngIf="(f.gracePeriod)" matSuffix>Mins.</span>
+					</mat-form-field>
+				</div>
+				<!-- EXTENDED AUCTION IF A NEW BID IS -->
+				<div class="col-md-3">
+					<mat-form-field class="full-width">
+						<mat-label>{{translateSer?.EXTEND_TYPE_AUC}}</mat-label>
+						<mat-select [disabled]="auctionReadOnly"  disableOptionCentering [value]="f.extensionType" formControlName="extensionType" placeholder="">
+							<mat-option *ngFor="let extend of extensionType" [value]="extend">
+								{{extend.value}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+				<!-- BID INFORMATION SHOWN TO SUPPLIER -->
+				<div class="col-md-3">
+					<mat-form-field class="full-width">
+						<mat-label>{{translateSer?.BID_INFO}}</mat-label>
+						<mat-select [disabled]="auctionReadOnly"  disableOptionCentering formControlName="bidInfoSupplier" (selectionChange)="selectedBidInfoSupplier($event.value)">
+							<mat-option *ngFor="let bid of bidInfoSupplier" [value]="bid" [hidden]="!showtopRankOnlyDrop && bid.value == 'Top Rank Only'">
+								{{bid.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+				<!-- MINIMUM BID CHANGE -->
+				<div class="col-md-3">
+					<mat-form-field class="full-width mat-form-field-invalid" >
+						<input [readonly]="auctionReadOnly" matInput formControlName="minBidChangeValue" maxlength="14" min="0" decimalValue="2"  placeholder="{{translateSer?.MINBID_VAL}}"
+						 decimalValue="2" numberDecimal>
+					</mat-form-field>
+					<div *ngIf="f.minBidChangeValue.errors" class="invalid">
+						<div *ngIf="f.minBidChangeValue.errors.error">The Percentage Value shall be less than 100</div>
+					</div>
+				</div>
+				<!-- MINIMUM BID CHANGE TYPE-->
+				<div class="col-md-3 pt-3">
+					<mat-radio-group [disabled]="auctionReadOnly"  formControlName="minBidChangeType">
+						<mat-radio-button *ngFor="let op of minBidRange" [value]="op.ID">{{op.name}}
+						</mat-radio-button>
+					</mat-radio-group>
+				</div>
+				<!-- BID CUSHION LIMIT -->
+				<div class="col-md-3">
+					<mat-form-field class="full-width">
+						<input matInput [readonly]="auctionReadOnly"  formControlName="bidCushionTypeLimit" maxlength="14" min="0" decimalValue="2" placeholder="{{translateSer?.BID_CUSHION}}"
+						 decimalValue="2" numberDecimal>
+					</mat-form-field>
+					<div *ngIf="f.bidCushionTypeLimit.errors" class="invalid">
+						<div *ngIf="f.bidCushionTypeLimit.errors.error">Total percentage of benefits to be paid is greater than 100%</div>
+					</div>
+				</div>
+				<!-- BID CUSHION LIMIT TYPE-->
+				<div class="col-md-3 pt-3">
+					<mat-radio-group [disabled]="auctionReadOnly"  formControlName="bidCushionType">
+						<mat-radio-button *ngFor="let op of minBidRange" [value]="op.ID">{{op.name}}
+						</mat-radio-button>
+					</mat-radio-group>
+				</div>
+				<!-- BEST BID INFO SHOWN BASED ON -->
+				<div class="col-md-3">
+					<mat-form-field class="full-width">
+						<mat-label>{{translateSer?.BESTBID_INFO}}</mat-label>
+						<mat-select [disabled]="auctionReadOnly"  disableOptionCentering formControlName="bestBidInfo" placeholder="">
+							<mat-option *ngFor="let bid of bestBidInfo" [value]="bid">
+								{{bid.value}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+				
+				<!-- TIE ALLOWED -->
+				<div class="col-md-3 pt-3">
+					<mat-checkbox [disabled]="auctionReadOnly"  class="example-margin" formControlName="allowties">Tie Allowed</mat-checkbox>
+				</div>
+
+				<!-- remark -->
+				<div class="col-md-3">
+					<mat-form-field class="full-width">
+						<mat-label>Remark</mat-label>
+						<textarea [readonly]="auctionReadOnly"  matInput formControlName="remark"></textarea>
+					</mat-form-field>
+				</div> 
+
+				<!-- Test Use -->
+				<div class="col-md-3 pt-3" *ngIf='admin_settings'>
+					<mat-checkbox [disabled]="auctionReadOnly"  class="example-margin" formControlName="testUse">Test Use</mat-checkbox>
+				</div>
+				
+			</div>
+			<button #submitElement type="submit" style="visibility: hidden;"></button>
+		</form>
+
+
+			<div class="text-right ">
+				<button *ngIf="buyerService.auctionData && buyerService.auctionData.auctionID && buyerService.auctionData.isTemplate" class="header-sm-btn-ico greenbg whitefont mr-2" (click)="setRawDataReportHeaderInTemplate()">
+					<i class="far fa-chart-bar"></i>
+				</button>
+				<button class="header-sm-btn greenfont mr-2" [disabled]="openDisabled" [hidden]="this.common.auctionLeader.host" (click)="updateStatus('startAuction', config.AUCTIONSTATUS.OP)">
+					<i class="fas fa-play"> </i> Open Now
+				</button>
+				<button class="header-sm-btn redfont mr-2" [disabled]="closeDisabled" [hidden]="this.common.auctionLeader.host" (click)="updateStatus('closeAuction', config.AUCTIONSTATUS.CO)">
+					<i class="fas fa-stop"> </i> Close Now
+				</button>
+				<button class="header-sm-btn mr-2" (click)="onAttachDocument();">
+					<i class="fas fa-paperclip"> </i> Attachment ({{this.basicForm.value.attachmentList ?
+					this.basicForm.value.attachmentList.length : '0'}})
+				</button>			
+				<div ngbDropdown class="d-inline-block">
+					<button [disabled]="resendDisabled || auctionReadOnly" class="header-sm-btn dropdown-togglealt px-2 resend" id="dropdownBasic1" ngbDropdownToggle>
+						<i class="far fa-envelope"></i> Resend
+					</button>
+					<div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu dropdown-menu-right font13">
+						<a class="dropdown-item px-2 py-1 font13" (click)="resendMailToHost()">
+							Invitations to Co-Hosts </a>
+						<a class="dropdown-item px-2 py-1 font13" (click)="resendMailToSupplier()">
+							Invitations to Participants</a>
+					</div>
+				</div>
+				<button class="header-sm-btn "  *ngIf="roundsAuction || buyerService.auctionData.roundData" (click)="openRoundPopup();">
+					<i class="fas fa-plus"> </i> Rounds
+				</button>
+				<button class="header-sm-btn " (click)="openMore();">
+					<i class="fas fa-plus"> </i> More Options
+				</button>
+				
+			</div>
+	</div>
+</div>

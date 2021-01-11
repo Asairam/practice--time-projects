@@ -1,0 +1,25 @@
+<div class="table-ofh table-responsive fixtable-height my-2">
+    <table class="table table-bordered font14 whitebg mb-0 "  [ngClass]="tableClass" >
+        <thead  style="font-size: 13px;">
+            <tr class="fixed-header">
+                <th>S.No</th>
+                <th *ngFor="let titleInstance of crService.titleDefaultItem"> {{titleInstance.label}}</th>
+            </tr>
+        </thead>
+        <tbody  style="font-size: 13px;">
+            <ng-container *ngFor="let itemObj of itemLevelData; let i = index">
+                <tr>
+                    <td>{{i+1}}</td>
+                    <td *ngFor="let titleInstance of crService.titleDefaultItem">
+                        {{ crService.isADate(titleInstance.fieldName) ? reportsService.dateAndTime2(itemObj[titleInstance.fieldName]) : itemObj[titleInstance.fieldName]}}
+                    </td>
+                </tr>
+            </ng-container>
+            <tr *ngIf="itemLevelData.length == 0">
+                <td [attr.colspan]="crService.titleDefaultItem.length + 1" style="text-align: center;">
+                No records found
+                </td>
+            </tr>                    
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,150 @@
+<div class="row font14">
+    <!-- start Suppliers -->
+    <div class="col-md-3" *ngIf="!issealedBidDis2">
+        <mat-form-field class="full-width">
+            <mat-label>Participants</mat-label>
+            <mat-select [(ngModel)]="selectedSupplier" (selectionChange)="onOptionsSelected()">
+                <mat-option>
+                    <ngx-mat-select-search [placeholderLabel]="'search participants'" [noEntriesFoundLabel]="'no record found'"
+                        [formControl]="supplierFilterCtrl">
+                        <i class="fas fa-times dialog-closex" ngxMatSelectSearchClear></i>
+                    </ngx-mat-select-search>
+                </mat-option>
+                <mat-option value="">Select All</mat-option>              
+            <mat-option *ngFor="let suppName of supplierDrop" [value]="suppName">
+                    {{suppName.supplierName1}}
+                </mat-option>
+
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <!-- end Suppliers -->
+
+    <!-- start event type -->
+    <div class="col-md-3">
+        <mat-form-field class="full-width">
+            <mat-label>Event Type</mat-label>
+            <mat-select [(ngModel)]="selectedevent" (selectionChange)="onOptionsSelected()">
+                     <mat-option value="socketEvent"> Internet Connection </mat-option>
+                    <mat-option value="bidSave">Bid Saving Message</mat-option>
+                    <mat-option value="buyerChanges">Buyer Changes</mat-option>
+                 </mat-select>
+        </mat-form-field>
+    </div>
+    <!-- end event type -->
+
+    <!-- start -->
+    <div class="col-md-3 make-relative">
+        <div class="mockLabel">
+            Start Time 
+        </div>
+        <div class="fake-input-group-button">
+            <span> {{ bothStartDate | date: 'dd MMM yyyy HH:mm' }}</span>
+            <span style="float:right;">
+                <i class="fa fa-calendar fakeBtn" aria-hidden="true" matTooltip="calendar" [owlDateTimeTrigger]="Opentime"></i>
+                &nbsp;
+                <i class="fa fa-clock fakeBtn" aria-hidden="true" matTooltip="clock" [owlDateTimeTrigger]="Opentime_1"></i>
+            </span>
+
+        </div>
+        <!-- calendar start -->
+        <input placeholder="Open Date" id="start-time" class="hidden-date" matInput [owlDateTimeTrigger]="Opentime"
+            [owlDateTime]="Opentime" [(ngModel)]="startDate" [min]="auctionstartDate" [max]="auctionendDate">
+        <owl-date-time #Opentime [pickerType]="'calendar'" (afterPickerClosed)="onOptionsSelected('start')"></owl-date-time>
+        <!-- calendar end -->
+        <!-- time start -->
+        <input placeholder="Open Time" id="start-time" class="hidden-date" matInput hour12Timer="timeformat"
+            [owlDateTimeTrigger]="Opentime_1" [owlDateTime]="Opentime_1" [(ngModel)]="startTime">
+        <owl-date-time #Opentime_1 [pickerType]="'timer'" (afterPickerClosed)="onOptionsSelected('start')"></owl-date-time>
+        <!-- time end -->
+    </div>
+
+    <div class="col-md-3 make-relative">
+        <div class="mockLabel">
+                End Time 
+        </div>
+        <div class="fake-input-group-button"  [owlDateTimeTrigger]="Endtime">
+            <span> {{ bothEndDate | date: 'dd MMM yyyy HH:mm' }}</span>
+            <span style="float:right;">
+                <i class="fa fa-calendar fakeBtn" matTooltip="calendar" aria-hidden="true" [owlDateTimeTrigger]="Endtime"></i>
+                &nbsp;
+                <i class="fa fa-clock fakeBtn" matTooltip="clock" aria-hidden="true" [owlDateTimeTrigger]="Endtime_1"></i>
+            </span>
+          
+        </div>
+        <!-- calendar start -->
+        <input placeholder="End Time" id="end-time" class="hidden-date" matInput hour12Timer="timeformat"
+            [owlDateTimeTrigger]="Endtime" [owlDateTime]="Endtime" [(ngModel)]="endDate" [max]="auctionendDate" [min]="auctionstartDate">
+        <owl-date-time #Endtime [pickerType]="'calendar'" (afterPickerClosed)="onOptionsSelected('end')"></owl-date-time>
+        <!-- calendar end -->
+        <!-- time start -->
+        <input placeholder="End Time" id="end-time" class="hidden-date" matInput hour12Timer="timeformat"
+            [owlDateTimeTrigger]="Endtime_1" [owlDateTime]="Endtime_1" [(ngModel)]="endTime">
+        <owl-date-time #Endtime_1 [pickerType]="'timer'" (afterPickerClosed)="onOptionsSelected('end')"></owl-date-time>
+        <!-- time end -->
+    </div>
+    <!-- end -->
+    <div class="col-md-12" >
+        <table mat-table [dataSource]="auditLogList" *ngIf="show && auditLogList.data.length>0" class="full-width">
+            <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef> Sr.No. </th>
+                <td mat-cell *matCellDef="let element;let i = index;">{{(auditLogList.filteredData.indexOf(element) +
+                    1)+(pageNo*20)}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="item">
+                <th mat-header-cell *matHeaderCellDef> Item Name </th>
+                <td mat-cell *matCellDef="let element">{{element.mixData?.itemName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="messageType">
+                <th mat-header-cell *matHeaderCellDef> Message Type </th>
+                <td mat-cell *matCellDef="let element">{{element.activityType}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="activityType">
+                <th mat-header-cell *matHeaderCellDef> Activity Type </th>
+                <td mat-cell *matCellDef="let element">{{element.activityType}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef> Value </th>
+                <td mat-cell *matCellDef="let element">{{element.newValue}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="message">
+                <th mat-header-cell *matHeaderCellDef> Message </th>
+                <td mat-cell *matCellDef="let element">{{element.oldValue}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="newValue">
+                <th mat-header-cell *matHeaderCellDef> {{selectedevent === "buyerChanges" ? 'Bid Value' : 'New Value'}} </th>
+                <td mat-cell *matCellDef="let element">{{element.newValue}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="oldValue">
+                <th mat-header-cell *matHeaderCellDef>  {{selectedevent === "buyerChanges" ? 'Vendor Name': 'Old Value' }} </th>
+                <td mat-cell *matCellDef="let element">{{element.oldValue}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdBy">
+                <th mat-header-cell *matHeaderCellDef> {{selectedevent === "buyerChanges" ? 'Vendor Code' : 'Participant Name'}} </th>
+                <td mat-cell *matCellDef="let element">{{selectedSupplier?selectedSupplier.supplierName1:element.createdBy}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdAt">
+                <th mat-header-cell *matHeaderCellDef> Created Date </th>
+                <td mat-cell *matCellDef="let element">{{element.createdAt|date: 'dd-MM-yyyy HH:mm:ss'}}</td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <div *ngIf="show && auditLogList.data.length === 0" style="color:red;">No records found</div>
+        <!-- <mat-paginator showFirstLastButtons (page)="pageEvent = $event"></mat-paginator> -->
+        <mat-paginator [length]="length" [pageSize]="pageSize" (page)="pageEvent = $event" (click)="pageFilter()">
+        </mat-paginator>
+    </div>
+</div>

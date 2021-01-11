@@ -1,0 +1,236 @@
+<div class="table-responsive item-table-height" *ngIf="view === 'list'">
+    <table class="table cust-table spacer-table footable">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <img [src]="imageURL+'assets/images/switch-lot-item.svg'" class="breadcrumb-item no-mobile" (click)="switchView()"
+                        *ngIf="!common.isMobile" />
+                    Lot/Item
+                </th>
+                <th scope="col"><i class="fas fa-eye breadcrumb-item" (click)="aucView()"></i></th>
+                <ng-container *ngFor="let col of bidService.columnNames">
+                    <th scope="col" data-hide="phone,tablet" *ngIf="col.selected && !col.disable">
+                        {{col.item_text}}
+                    </th>
+                </ng-container>
+                <!-- <i class="fas fa-ellipsis-v item-btn" (click)="onclickMenu()"></i> -->
+            </tr>
+
+        </thead>
+
+        <!-- table view start -->
+        <tbody [hidden]="!typeView">
+            <tr [@summaryAnimations]="getAnimateIndex(item)"
+                    *ngFor="let item of bidList; trackBy: itemID"
+                    [ngClass]="decideColor(item)" style="border-spacing: 0 6px;"
+                    >
+                <td>{{item.lotName}}/{{item.itemName}} </td>
+                <td><i class="fas fa-eye" (click)="onclickItem(item)" style="cursor: pointer; color: #3f51b5;"></i></td>
+                <ng-container *ngFor="let lotfil of bidService.columnNames;let i =index">
+                    <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: lotfil, control: item }">
+                    </ng-container>
+                </ng-container>
+            </tr>
+        </tbody>
+
+        <!-- table view end -->
+
+        <!-- tree view start -->
+        <tbody [hidden]="typeView" *ngFor="let lot of itemListData;let i = index;">
+            <tr class="">
+                <td class="bold" style="cursor: pointer;" (click)="lotclick(i)"> {{lot.lotName}} </td>
+                <td><i class="fas fa-eye" style="cursor: pointer; color: #3f51b5;" (click)="onclickLot(lot)"></i></td>
+                <ng-container *ngFor="let col of bidService.columnNames">
+                    <td *ngIf="col.selected && !col.disable">
+                        <span *ngIf="col.item_id === 'CurrentBid'">
+                            <span *ngIf="bidService.BestBidInformationShownBasedOn.key">
+                                <best-bid-col [columnName]="'Best Bid Total Value Lot Level'" [exchangeRate]="exchangeRate" [itemData]="lot" [auctionData]="auctionData"  [decimalPlace]="decimalPlace" ></best-bid-col>
+                            </span>
+                            <!-- <span *ngIf="!bidService.BestBidInformationShownBasedOn.key">{{lot.bestBidLotCost|number:decimalplace}}</span> -->
+                        </span>
+                        <span *ngIf="col.item_id === 'SupplierOrganization'">
+                            <span *ngIf="bidService.BestBidInformationShownBasedOn.key">{{lot.singleSourceBestBidder}}</span>
+                        </span>
+                    </td>
+                </ng-container>
+            </tr>
+            <tr [hidden]="lot.dis" *ngFor="let item of lot.items">
+                <td style="padding-left: 20px;">
+                    <div title="{{item.itemName}}">
+                        {{item.itemName}}
+                    </div>
+                </td>
+                <td><i class="fas fa-eye" style="cursor: pointer; color: #3f51b5;" (click)="onclickItem(item)"></i></td>
+                <ng-container *ngFor="let lotfil of bidService.columnNames;let i =index">
+                    <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: lotfil, control: item }">
+                    </ng-container>
+                </ng-container>
+            </tr>
+        </tbody>
+        <!-- tree view end -->
+    </table>
+</div>
+<div class="row mt-3" *ngIf="view === 'card'">
+    <div class=" col-lg-4 col-md-4 col-sm-6" *ngFor="let item of itemSource" [ngClass]="item.flag">
+        <div class="border-card border-green mb-3 darkfont" style="cursor: pointer;">
+            <div class="card-content font14">
+                <div class="flex-ends p-3 graybg">
+                    <div class="pr-3 bold font16"> {{item.lotName+' / '+item.itemName}} <i class="fas fa-eye" (click)="onclickItem(item)"
+                            style="cursor: pointer; color: #3f51b5;"></i></div>
+                </div>
+                <!-- <div class="px-3 py-2 bluefont bold">
+                    Top Supplier: Some Name Here
+                </div> -->
+
+                <div class="flex-between pb-2 font13 mobile-scroll">
+                    <div class="mx-2" *ngIf="cardViewDisCol('quantity')?.selected">
+                        <div class="font13 grayfont "> {{cardViewDisCol('quantity').item_text}}</div>
+                        <div class="font15 bold ">
+                            <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('quantity'), control: item }">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="mx-2" *ngIf="cardViewDisCol('CurrentBidUnitCost')?.selected">
+                        <div class="font13 grayfont "> {{cardViewDisCol('CurrentBidUnitCost').item_text}}</div>
+                        <div class="font15 bold ">
+                            <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('CurrentBidUnitCost'), control: item }">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="mx-2" *ngIf="cardViewDisCol('CurrentBid')?.selected">
+                        <div class="font13 grayfont "> {{cardViewDisCol('CurrentBid').item_text}}</div>
+                        <div class="font15 bold ">
+                            <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('CurrentBid'), control: item }">
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="line darkgraybg"></div>
+                <div *ngIf="cardViewDisCol('LandedUnit')?.selected && cardViewDisCol('TotalLanded')?.selected" class="flex-between pb-2 font13 mobile-scroll">
+                    <div class="mx-2" *ngIf="cardViewDisCol('LandedUnit')?.selected">
+                        <div class="font13 grayfont "> {{cardViewDisCol('LandedUnit').item_text}}</div>
+                        <div class="font15 bold ">
+                            <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('LandedUnit'), control: item }">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="mx-2" *ngIf="cardViewDisCol('TotalLanded')?.selected">
+                        <div class="font13 grayfont "> {{cardViewDisCol('TotalLanded').item_text}}</div>
+                        <div class="font15 bold ">
+                            <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('TotalLanded'), control: item }">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="mx-2"></div>
+                </div>
+                <div *ngIf="!(cardViewDisCol('LandedUnit')?.selected && cardViewDisCol('TotalLanded')?.selected)" class="flex-between pb-2 font13">
+                    <div class="mx-2" *ngIf="cardViewDisCol('BaselineSavingsP')?.selected">
+                        <div class="font13 grayfont "> {{cardViewDisCol('BaselineSavingsP').item_text}}</div>
+                        <div class="font15 bold ">
+                            <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('BaselineSavingsP'), control: item }">
+                            </ng-container>
+                        </div>
+                        <div class="mx-2" *ngIf="cardViewDisCol('BaselineSavings')?.selected">
+                            <div class="font13 grayfont "> {{cardViewDisCol('BaselineSavings').item_text}}</div>
+                            <div class="font15 bold ">
+                                <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: cardViewDisCol('BaselineSavings'), control: item }">
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="mx-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #stringTemplateRequired let-field="field" let-control="control">
+    <ng-container [ngSwitch]="field.item_id" *ngIf="field.selected && !field.disable">
+        <td *ngSwitchCase="'quantity'">{{control.minimumDesiredQuantity}} </td>
+        <td *ngSwitchCase="'uom'">{{control.unitOfMeasure === "m" ?
+        "Meter":(control.unitOfMeasure === "kg" ?
+        "KiloGram" : (control.unitOfMeasure === "EA" ? "Each" : control.unitOfMeasure))}}</td>
+        <td *ngSwitchCase="'BaselineUnitCost'">
+            <span *ngIf="control.historicalCost">{{control.historicalCost |
+                filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}}</span>
+            <span *ngIf="!control.historicalCost" matTooltip="Not Applicable">NA</span>
+            <span *ngIf="control.currency[0].exchangeRate" style="color: brown;">
+              <br>
+              {{control.historicalCost/control.currency[0].exchangeRate |
+                filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}} {{control.currency[0].currencyCode}}
+            </span>
+        </td>
+        <td *ngSwitchCase="'Baseline'">
+            <span *ngIf="control.historicalTotalVal">{{control.historicalTotalVal |
+                filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}}</span>
+            <span *ngIf="!control.historicalTotalVal" matTooltip="Not Applicable">NA</span>
+            <span *ngIf="control.currency[0].exchangeRate" style="color: brown;">
+              <br>
+                {{control.historicalTotalVal / control.currency[0].exchangeRate |
+                  filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}} {{control.currency[0].currencyCode}}
+            </span>
+        </td>
+        <td *ngSwitchCase="'Currency'"> {{auctionData?.primaryCurrency}} </td>
+
+        <td *ngSwitchCase="'CurrentBidUnitCost'">
+            <best-bid-col [columnName]="'Best Bid Unit Rate'" [exchangeRate]="exchangeRate" [itemData]="control" [auctionData]="auctionData" [decimalPlace]="decimalPlace"></best-bid-col>
+       </td>
+
+        <td *ngSwitchCase="'CurrentBid'">
+            <best-bid-col [columnName]="'Best Bid Total Value'" [exchangeRate]="exchangeRate" [itemData]="control" [auctionData]="auctionData" [decimalPlace]="decimalPlace"></best-bid-col>
+        </td>
+
+        <td *ngSwitchCase="'LandedUnit'">{{((auctionData.primaryCurrency)?(auctionData.primaryCurrency+'
+            '):'')+(control.landedUnitRate |
+            filter:[]:0:null:null:null:null:null:auctionData.decimalPlace)}} </td>
+        <td *ngSwitchCase="'TotalLanded'">
+            {{((auctionData.primaryCurrency)?(auctionData.primaryCurrency+' '):'')+(control.totalLandedCost |
+            filter:[]:0:null:null:null:null:null:auctionData.decimalPlace)}} </td>
+        <td *ngSwitchCase="'BaselineSavingsP'">
+            <ng-container *ngIf="!issealedBidDis1; else seVal">
+            {{control.savingsPercentageDisplay }}
+           </ng-container>
+           <ng-template  #seVal>
+            {{control.savingsPercentageRangeDisplay}}
+           </ng-template>
+            <!-- <span [matTooltip]="!(control|baselineSavings:type:select_sav_bid:'per') ?'Not Applicable':''">
+                {{(!(control|baselineSavings:type:select_sav_bid:'per') ?'NA':
+                control|baselineSavings:type:select_sav_bid:'per'|filter:[]:0:null:null:null:null:null:auctionData.decimalPlace)}}
+            </span> -->
+        </td>
+        <td *ngSwitchCase="'BaselineSavings'">
+            {{control.savingsDisplay }}
+            <!-- <span [matTooltip]="!(control|baselineSavings:type:select_sav_bid:'') ?'Not Applicable':''">
+                {{(!(control|baselineSavings:type:select_sav_bid:'') ? 'NA'
+                :control|baselineSavings:type:select_sav_bid:''
+                |filter:[]:0:null:null:null:null:null:auctionData.decimalPlace)}}
+            </span> -->
+        </td>
+        <td *ngSwitchCase="'SupplierOrganization'">{{control.bids|supplierName:bidService.supplierDetails:''}}</td>
+        <td *ngSwitchCase="'ItemCode'">{{control.itemCode}}</td>
+        <td *ngSwitchCase="'StartPrice'">{{control.startPrice
+            |filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}}</td>
+        <td *ngSwitchCase="'PreliminaryBidCost'">{{control.preliminaryVal
+            |filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}}</td>
+        <td *ngSwitchCase="'IntialBidCost'">{{control.initialVal
+            |filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}}</td>
+        <td *ngSwitchCase="'PreliminaryBidCostTotalValue'">{{control.preliminaryTotalVal
+            |filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}}</td>
+        <td *ngSwitchCase="'IntialBidCostTotalValue'">{{control.initialTotalVal
+            |filter:[]:0:null:null:null:null:null:auctionData.decimalPlace}}</td>
+        <td *ngSwitchCase="'minimumChangeValue'">
+            <ng-container *ngIf="control.minimumChangeValue; else noVal">
+            {{control.minimumChangeValue}}<span *ngIf="control.minChangeType.toLowerCase() === 'percentage'">%</span>
+            </ng-container>
+            <ng-template  #noVal>
+                {{auctionData.minBidChangeValue}}<span *ngIf="auctionData.minBidChangeType.toLowerCase() === 'percentage'">%</span>
+            </ng-template>
+        </td>
+        <td *ngIf="field.item_id == 'numberOfBids'">{{control.numberOfBids}}</td>
+        <ng-container *ngIf="field.customField">
+            <td>{{control[field.item_id]}}</td>
+        </ng-container>
+    </ng-container>
+</ng-template>

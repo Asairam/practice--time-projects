@@ -1,0 +1,49 @@
+<!-- Header-->
+<!-- <div class="dialog-header p-2">
+    <span class="dialog-header-txt"> {{dialogMessage}} </span>
+    <i class="dialog-closex fas fa-times"  (click)="MatDialogRef.close()" > </i>
+</div> -->
+
+  
+<!-- Body -->
+<div class=" p-2" *ngIf="cohostList.length > 0">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">            
+            <mat-checkbox class="cust-checkbox"
+            [disabled]="readOnly" [checked]="selectAllFlag" (change)="selectAllCohost($event)">
+            Select All Co-Host
+            </mat-checkbox>
+            </div>
+        </div>        
+        <hr>
+        <div class="row">
+            <div class="col-md-4" *ngFor="let coHost of cohostList; let i = index">
+                <div [ngClass]="{'cohost-selected': coHost.selected, 'cohost-not-selected': !coHost.selected }">                    
+                    <div class="p-1">
+                        <mat-checkbox class="cust-checkbox" 
+                            [checked]="coHost.selected"
+                            [disabled]="readOnly"
+                            (change)="selectCohost($event, coHost)">
+                                {{coHost.employeeName}}
+                        </mat-checkbox>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.78rem;">Employee Id : {{coHost.employeeID}}</span><br>
+                        <span style="font-size: 0.78rem;">Email : {{coHost.employeeMail}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<!-- <div class="dialog-footer">
+    <div class="col-md-12 mb-2 mt-2 text-right">
+    <button mat-flat-button class="mr-2 btn-blue" (click)="onPositiveBtn()">
+        {{dialogPositiveBtn}}
+    </button>
+    </div>
+</div> -->

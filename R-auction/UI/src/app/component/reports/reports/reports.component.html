@@ -1,0 +1,40 @@
+<div class="container-fluid" style=" margin-top: 3.75rem;">
+  <div class="font14">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item" (click)="oncli()"> Home </li>
+        <li class="breadcrumb-item" (click)="onClickRoute()"> Auctions List</li>
+        <li class="breadcrumb-item"
+          [routerLink]="['/livebidding/' + auctionID, {breadCrumbStatus: route.snapshot.params.breadCrumbStatus} ]">
+          Auction {{auctionID}}</li>
+        <li class="breadcrumb-item active" aria-current="page">Report</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="text-left" style="display: flex">
+    <mat-form-field class="font14 report-width">
+      <mat-label>Select Report</mat-label>
+      <mat-select [(ngModel)]="report" (selectionChange)="changeReport()">
+        <mat-option *ngFor="let item of reportList" [value]="item.value">
+          {{item.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- Report Geneartion Status-->
+    <div class="col-sm-1">
+      <div style="float: left; height: 100%;" class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+      <div class="text-right">
+        <button style="margin-top: .5em;margin-bottom: 1.05em;" type="button" class="btn btn-sm btn-primary ml-2"
+          matTooltip="Report Generation Status" (click)="checkReportStatus()">
+          <i class="fa fa-file"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<app-report1 *ngIf="report == 'portrait'" [displayType]="displayType" [auctionID]="auctionID"></app-report1>
+<app-report1 *ngIf="report == 'landscape'" [displayType]="displayType" [auctionID]="auctionID"></app-report1>
+<app-report2 *ngIf="report == 'analyseRaw'" [auctionID]="auctionID"></app-report2>
+<app-chat-thread *ngIf="report == 'auctionchat'" [auctionID]="auctionID"></app-chat-thread>

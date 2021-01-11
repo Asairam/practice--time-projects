@@ -1,0 +1,13 @@
+<form [formGroup]="rulesForm">
+  <mat-form-field class="full-width px-3 pt-2">
+    <mat-chip-list #chipList formArrayName="emails">
+      <mat-chip [disabled]="disabled" [color]="(item.invalid)?'warn':''" selected *ngFor="let item of emailList; let i=index" [selectable]="true"
+        [removable]="removable" (removed)="removeEmail(item)" required name="chips">{{item.value}}
+        <i matChipRemove class="fas fa-times" *ngIf="removable && !common.auctionLeader.host"></i>
+      </mat-chip>
+      <input matInput placeholder="CC" [readonly]="disabled" [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes "
+        [matChipInputAddOnBlur]="true " (matChipInputTokenEnd)="add($event) " [disabled]="common.auctionLeader.host"/>
+    </mat-chip-list>
+  </mat-form-field>
+  <mat-error style="margin-top: -15px" class="font14 px-3" *ngIf="rulesForm.get('emails').hasError('incorrectEmail')">Invalid email ID</mat-error>
+</form>

@@ -1,0 +1,185 @@
+<div>
+  <div class="container-body">
+    
+      <div class="whitebg pt-4">
+          <div class="cust-container">
+            <div class="row cust-row-margin" >
+                <div class="col-md-6">
+                    <h6 class="label label-success">Organization Name</h6>
+                    <p>
+                        <!-- <span *ngFor="let org of list_organization"> {{org.name}} </span> -->
+                        {{orgName?.name}}
+                    </p>
+                </div>
+              </div>
+            <div class="tabbable-panel">
+				<div class="tabbable-line">
+                    <ul class="nav nav-tabs " style="border-bottom:0;">
+                        <ng-container *ngIf='isAdmin'>
+						<li class="active ">
+							<a href="#tab_default_1" data-toggle="tab" class="btn btn-info">Basic Settings </a>
+						</li>
+						<!-- <li>
+							<a href="#tab_default_2" data-toggle="tab"  class="btn btn-info">Rule Engine Settings </a>
+                        </li> -->
+                        <!-- <li>
+							<a href="#tab_default_4" data-toggle="tab" class="btn btn-info">Rules</a>
+                        </li> -->
+                       </ng-container>
+                        <li  *ngIf='isItAdmin'>
+							<a href="#tab_default_3" data-toggle="tab"  class="btn btn-info">Reset Password </a>
+                        </li>
+                        
+				
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane mt-2 active" id="tab_default_1">
+							<form  [formGroup]='settings' (submit)='changeSettingConfig(settings, "normal")'>
+                               
+                                <div class="row cust-row-margin" formGroupName='features'>
+                                    <!-- Tabs -->
+                                    <!-- <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".45s">
+                                        <div class="flat-tile d-flex align-items-left redbg" style="min-height: 40px;" [ngClass]="{'greenbg': buyerData?.pastDetails?.percentage > 50, 'redbg': buyerData?.pastDetails?.percentage < 50}">
+                                            <div class="text-center full-width "> 
+                                                <div style="font-size:17px">Currency</div>
+                                                <div style="font-size:12px">(Administrator can delete any user from the list)</div>
+                                                <input type="checkbox" name="currency" formControlName='currency' id="">
+                                            </div> 
+                                        </div> 
+                                    </div> -->
+                                    <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay"  data-wow-delay=".48s">
+                                        <div class="flat-tile d-flex align-items-left greenbg" style="min-height: 40px;">
+                                            <div class="text-center full-width ">
+                                                <!-- <div class="flat-tile-content-big1"><i class="fa fa-thumbs-up"></i></div> -->
+                                                <div style="font-size:17px">Take Lead</div>
+                                                <div style="font-size:12px">(Allows autobid  calculation by Bidder for L1/H1 rank)</div>
+                                                <input type="checkbox" name="takeLead" formControlName='takeLead' id="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div  class="col-md-12 cust-col-pad wow bounceInUp animationdelay"  data-wow-delay=".55s">
+                                        <div class="flat-tile d-flex align-items-left yellowbg" style="min-height: 40px;">
+                                            <div class="text-center full-width ">
+                                                <div style="font-size:17px">Participant Suspend</div>
+                                                <div style="font-size:12px">(Allows suspend of participant data during live auction)</div>
+                                                <input type="checkbox" name="suspendSupplier" formControlName='suspendSupplier' id="">
+                                            </div>
+                                        </div>
+                                  </div>
+                                      <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".60s">
+                                      <div class="flat-tile d-flex align-items-left redbg" style="min-height: 40px;" >
+                                          <div class="text-center full-width "> 
+                                              <div style="font-size:17px">{{translateSerCommon?.SEALED_BID}}</div>
+                                              <!-- <div style="font-size:12px">(Administrator can delete any user from the list)</div> -->
+                                              <input type="checkbox" name="sealedBid" formControlName='sealedBid' id="">
+                                          </div>
+                                          
+                                      </div> 
+                                  </div>
+                                  
+                                  <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay"  data-wow-delay=".65s">
+                                      <div class="flat-tile d-flex align-items-left yellowbg" style="min-height: 40px;">
+                                          <div class="text-center full-width ">
+                                              <div style="font-size:17px">Participant Live</div>
+                                              <div style="font-size:12px">(Allow addition of participant during live auction)</div>
+                                              <input type="checkbox" name="participantLive" formControlName='participantLive' id="">
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay"  data-wow-delay=".65s">
+                                    <div class="flat-tile d-flex align-items-left redbg" style="min-height: 40px;">
+                                        <div class="text-center full-width ">
+                                            <div style="font-size:17px">Test Auction</div>
+                                            <div style="font-size:12px">(Allow auction testing)</div>
+                                            <input type="checkbox" name="testAuction" formControlName='testAuction' id="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay"  data-wow-delay=".65s">
+                                    <div class="flat-tile d-flex align-items-left redbg" style="min-height: 40px;">
+                                        <div class="text-center full-width ">
+                                            <div style="font-size:17px">Enable Cumulative Report</div>
+                                            <div style="font-size:12px">(Displays cumulative reports for admins)</div>
+                                            <input type="checkbox" name="cumulativeReport" formControlName='cumulativeReport' id="">
+                                        </div>
+                                    </div>
+                                </div>                                
+                                <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay"  data-wow-delay=".65s">
+                                    <div class="flat-tile d-flex align-items-left redbg" style="min-height: 40px;">
+                                        <div class="text-center full-width ">
+                                            <div style="font-size:17px">Import/Export Currency logic(AF/MF)</div>
+                                            <div style="font-size:12px">(Enables fields to enter Additional Factor and Multiplication Factor for Preliminary Bids)</div>
+                                            <input type="checkbox" name="currency" formControlName='currency' id="">
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="col-md-12"  data-wow-delay=".65s">
+                                      <button class="btn btn-success btn-sm mr-2" type="submit">
+                                          Save </button>
+                                      <!-- <button class="btn btn-danger btn-sm mr-2">
+                                          Cancel </button> -->
+                                    </div>
+                                    <!-- LANDING REPORT END-->
+                                  </div>
+                              </form>
+						</div>
+						<div class="tab-pane mt-2" id="tab_default_2">
+							<form  [formGroup]='settings' (submit)='changeSettingConfig(settings, "rules")'>
+                               
+                                <div class="row cust-row-margin" formGroupName='features'>
+                                    <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay"  data-wow-delay=".65s">
+                                        <div class="flat-tile d-flex align-items-left greenbg" style="min-height: 40px;">
+                                            <div class="text-center full-width ">
+                                                <!-- <div class="flat-tile-content-big1"><i class="fa fa-users"></i></div> -->
+                                                <div style="font-size:17px">Cumulative Total</div>
+                                                <!-- <div style="font-size:12px">(Administrator can add new participant)</div> -->
+                                              <input type="checkbox" name="cumulativeTotal" formControlName='cumulativeTotal' id="">
+                                          </div>
+                                      </div>
+                                  </div>
+                                    <div class="col-md-12"  data-wow-delay=".65s">
+                                      <button class="btn btn-success btn-sm mr-2" type="submit">
+                                          Save </button>
+                                      <!-- <button class="btn btn-danger btn-sm mr-2">
+                                          Cancel </button> -->
+                                    </div>
+                                    <!-- LANDING REPORT END-->
+                                  </div>
+                              </form>
+                        </div>
+                        
+                        <!-- reset password -->
+						<div class="tab-pane mt-2" id="tab_default_3">
+							<app-reset-password></app-reset-password>
+                        </div>
+                        
+                         <!-- rules start -->
+                        <!-- <div class="tab-pane mt-2" id="tab_default_4">
+                            <form [formGroup]='settings' (submit)='changeSettingConfig(settings, "rules")'>
+                                <div class="row cust-row-margin" formGroupName='features'>
+                                    <div class="col-md-12 cust-col-pad wow bounceInUp animationdelay" data-wow-delay=".65s">
+                                        <div class="flat-tile d-flex align-items-left greenbg" style="min-height: 40px;">
+                                            <div class="text-center full-width ">
+                                                <div style="font-size:17px">Top Rank</div>
+                                                <input type="checkbox" name="topRankOnly" formControlName='topRankOnly'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" data-wow-delay=".65s">
+                                        <button class="btn btn-success btn-sm mr-2" type="submit">
+                                            Save </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div> -->
+                        <!-- rules end -->
+
+					</div>
+				</div>
+			</div>
+            
+            </div> 
+      </div>
+    </div>
+</div>

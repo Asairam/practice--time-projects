@@ -1,0 +1,21 @@
+.background-green {
+    background-color: rgb(50, 153, 64) !important;
+    color:white !important;
+}
+
+.background-red {
+    background-color: rgb(153, 50, 50) !important;
+    color:white !important;
+ }
+
+ .background-yellow {
+    background-color: #ffc107!important;;
+    color:white !important;
+}
+
+.mat-radio-label:first-child {
+    margin-right: 10px;
+}
+.no-dropdown-icon.dropdown-toggle::after{
+    content: initial !important;
+}

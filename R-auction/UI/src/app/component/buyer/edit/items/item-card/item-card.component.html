@@ -1,0 +1,101 @@
+
+        <div class="flat-tile p-2" style="cursor: initial;" [ngClass]="{'bluebg': !item.error, 'redbg': item.error}">
+            <div class=" d-flex justify-content-between align-items-center ">
+                <div class="bold mb-2">
+                    <!-- to be enabled in future-->
+                    <mat-checkbox [disabled]="auctionReadOnly" [checked]="item.checked" (change)="selectCard($event.checked)" *ngIf="(aucStatus === 'draft' || aucStatus === 'suspended' || !aucStatus) && !common.auctionLeader.host"></mat-checkbox>
+                    {{index+1}}. {{item.lotID | lotName:buyerService.lotList}}
+                </div>
+                <div>
+                    <!-- <div class="dropdown " ngbDropdown>
+                        <button type="button" class="flat-tile-dd dropdown-toggle no-dropdown-icon" ngbDropdownToggle>
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right font13">
+                            <span *ngFor="let butt of crud">
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="butt.bol" (click)="seleDrop(butt.name,item,index)">
+                                    {{butt.name}}
+                                </a>
+                            </span>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="mb-1 text-left font13">
+                <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: block; " *ngIf="item.itemName">
+                  {{item.itemName}}
+                </span>
+                <span *ngIf="!item.itemName">
+                    <span style="color:#E34646!important">Blank</span>
+                </span>
+            </div>
+            <div class="mb-1 text-left font13">
+                <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: block; " *ngIf="item.itemName || item.itemCode">
+                   Item Code : {{(item.itemCode)?item.itemCode:'NA'}}
+                </span>
+            </div>
+            <div class="line  my-1"></div>
+            <!-- <div class="text-center py-1 font15">
+                Min bid change
+                <span *ngIf="item.minimumChangeValue">
+                    {{item.minimumChangeValue}}{{(item.minChangeType === 'percentage') ? '%' : ''}}
+                </span>
+                <span *ngIf="!item.minimumChangeValue">
+                    {{buyerService.auctionData.minimumChangeValue}}{{(buyerService.auctionData.minimumChangeType ===
+                    'percentage') ? '%' : ''}}
+                </span>
+            </div> -->
+            <div class=" d-flex justify-content-between align-items-center font12 mobile-scroll">
+                <div class="pr-2">
+                    <div class="mt-1">  Min bid change </div>
+                    <div class="font15 bold"> 
+                        <span *ngIf="item.minimumChangeValue">
+                                {{item.minimumChangeValue}}{{(item.minChangeType === 'percentage') ? '%' : ''}}
+                        </span>
+                        <span *ngIf="!item.minimumChangeValue">
+                            {{buyerService.auctionData.minimumChangeValue}}{{(buyerService.auctionData.minimumChangeType ===
+                            'percentage') ? '%' : ''}}
+                        </span>
+                    </div>
+                </div>
+                <div class="vertical-line align-self-stretch"></div>
+                <div class="pr-2">
+                    <div class="mt-1"> Reliance Quantity  </div> 
+                    <div class="font15 bold"> {{ item.minimumDesiredQuantity }} </div>
+                </div>
+            </div>
+            <div class=" d-flex justify-content-between align-items-center font12 mobile-scroll">
+                <!-- <div class="pr-2">
+                    <div class="mt-1"> Quantity </div>
+                    <div class="font15 bold"> {{ item.minimumDesiredQuantity }} </div>
+                </div>
+                <div class="vertical-line align-self-stretch"></div> -->
+                <div class="px-2">
+                    <div class="mt-1"> Start Price </div>
+                    <div class="font15 bold"> {{ formatDigits(item.startPrice) }} </div>
+                </div>
+                <div class="vertical-line align-self-stretch"></div>
+                <div class="pl-2 ">
+                    <div class="mt-1"> Historical Price </div>
+                    <div class="font15 bold"> {{ formatDigits(item.historicalCost) }}</div> 
+                    <!-- {{item.primaryHistoricalCost}} -->
+                </div>
+            </div>
+            <!-- {{item | json}} -->
+            <div class="d-flex justify-content-end align-items-center mt-1">
+                <!-- <div class="mb-1 text-right font13">
+                    <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: block; ">
+                        UOM : {{ item.unitOfMeasure }}
+                    </span>
+                </div> -->
+                <span class="font13 mr-2" style="text-align: start;">
+                     UOM : {{ item.unitOfMeasure }}
+                </span>
+                <span class="font13 mr-2" style="cursor: pointer;" (click)="seleDrop('Edit',item,index)">
+                    <i class="fas fa-pen font13"> </i> Edit
+                </span>
+                <span class="font13" style="cursor: pointer;" (click)="seleDrop('attachmentlist',item,index)">
+                    <i class="fas fa-paperclip"></i> ({{item.attachmentList.length}})
+                </span> 
+            </div>
+        </div>

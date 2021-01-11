@@ -1,0 +1,11 @@
+.vendorcode-selected {
+    border: 1px solid rgb(9, 202, 5);
+    padding: 10px;
+    margin-bottom: 13px;
+}
+
+.vendorcode-not-selected {
+    border: 1px solid rgb(160, 161, 162);
+    padding: 10px;
+    margin-bottom: 13px;
+}

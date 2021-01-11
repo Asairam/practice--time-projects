@@ -1,0 +1,69 @@
+<div class=" make-relative">
+  <div class="flex-ends p-3 graybg">
+    <div class="pr-3">
+      <span *ngIf="aucDetails.auctionName.length>40">
+        {{aucDetails.auctionName | slice:0:40}} <span matTooltip="{{aucDetails.auctionName}}">...</span>
+      </span>
+      <span *ngIf="aucDetails.auctionName.length<40">
+        {{aucDetails.auctionName}}
+      </span>
+    </div>
+    <div class="bold font16">{{aucDetails.auctionID}} / {{aucDetails.type | aucType}} </div>
+  </div>
+  <div class="card-content font14 p-1">
+    <table class="table cust-table mb-2">
+      <thead>
+        <tr>
+          <th scope="col"> Lot/Item </th>
+          <th scope="col"> Quantity </th>
+          <th scope="col"> Best Rate </th>
+          <th scope="col"> Total Value </th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let lot of lotList">
+        <tr *ngFor="let item of lot.items">
+          <td>
+            <b style="font-weight: 500;">{{lot.lotName}}</b>/{{item.itemName}}</td>
+          <td> {{item.minimumDesiredQuantity}} </td>
+          <td> {{(item.itemsBestBidUnitCost |
+            filter:[]:0:null:null:null:null:null:itemListData.currencyDecimalPlace)}}</td>
+          <td> {{(item.itemsBestBid | filter:[]:0:null:null:null:null:null:itemListData.currencyDecimalPlace)}} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="text-right p-2 graybg " style="position: relative;">
+    <span class="sealedbid-img" matTooltip="{{translateSerCommon?.SEALED_BID}}" *ngIf="aucDetails.isSealedBidAuction">
+      <img [src]="imageURLLive+'assets/images/sealed-bid-icon.png'">
+    </span>
+    <button class="header-sm-btn-ico greenbg mr-2" matTooltip="Detailed View" (click)="showSummaryView(aucDetails)">
+      <i class="fas fa-desktop"></i>
+    </button>
+    <button class="header-sm-btn-ico mr-2 yellowbg" (click)="onBack()" matTooltip="Back">
+      <i class="fas fa-arrow-left"> </i>
+    </button>
+  </div>
+
+</div>
+
+
+<ng-template #modalContent let-close="close">
+  <div class="modal-header dialog-header p-2">
+    <div class="container-fluid">
+      <div class="row font16">
+        <div class="col-md-10">
+          {{aucDetails.auctionName}}
+        </div>
+        <div class="bold col-md-2" style="text-align: end;">{{aucDetails.auctionID}} / {{aucDetails.type | aucType}} </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button mat-flat-button color="warn" (click)="close()">Close </button>
+  </div>
+</ng-template>

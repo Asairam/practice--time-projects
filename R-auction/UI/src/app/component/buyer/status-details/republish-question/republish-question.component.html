@@ -1,0 +1,48 @@
+<!-- header message start-->
+<div class="dialog-header p-2">
+    <!-- <i class="fas fa-plus"> </i> -->
+    <span class="dialog-header-txt"> {{dialogMessage}} </span>
+    <i class="dialog-closex fas fa-times" (click)="MatDialogRef.close('cancel')"> </i>
+</div>
+<!-- header message end-->
+
+<!-- confirm message start-->
+<span>
+    <div class="dialog-content p-2">
+
+    <div *ngIf="tab === 'askRepubQuest'">
+        <div class="container-fluid py-3">
+            <div class="row">
+
+                <div class="col-md-12">
+                    Are you sure you want to open Auction Setting Page?
+                    <br><br>
+                    <button class="header-sm-btn-ico mr-2"  ><span matTooltip="Edit"> <i class="fas fa-pen"> </i> </span></button>
+                    Please click on this icon for Auction Amendment. However the Auction needs to be republished mandatorily to confirm the changes. Auction will remain in HOLD mode until republish.
+                    <br><br>
+
+                    <button class="header-sm-btn-ico mr-2" (click)="onNegativeReply()"> <span matTooltip="View"><i class="fas fa-eye"></i></span> </button> 
+                    Please click on this icon to review the Auction in Read Only mode.
+                    <br><br>
+                    Kindly click any one of the Icon.
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="dialog-footer">
+        <div class="col-md-12 mb-2 mt-2 text-right">
+            <button class="header-sm-btn-ico mr-2"  (click)="onPositiveReply()" >
+                <span matTooltip="Edit">
+                    <i class="fas fa-pen"> </i> 
+                </span>
+            </button>
+            <button class="header-sm-btn-ico mr-2" (click)="onNegativeReply()"  >
+                <span matTooltip="View">
+                    <i class="fas fa-eye"></i>
+                </span>                  
+            </button>
+        </div>
+    </div>
+</span>

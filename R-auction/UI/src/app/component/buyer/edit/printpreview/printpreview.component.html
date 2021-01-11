@@ -1,0 +1,472 @@
+<div class="modal-content" >
+    <div class="modal-body">
+        <div id="contentData" #contentData class="printPreview" *ngIf="basicInfoData">
+            <div id="print-section" class="">
+                <div class="logo-rauction"><img id="myImg" style="width: 335px;" [src]="imageURL+'assets/images/rauction_logo.png'"></div>
+                <h5>Basic Information</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-print-3">
+                        <div class="printViewBox">
+                            <strong>Auction name</strong>
+                            <span>{{basicInfoData.auctionName?basicInfoData.auctionName:''}}</span>
+                        </div>
+                    </div> 
+
+                    <div class="col-md-3 col-print-3">
+                        <div class="printViewBox">
+                            <strong>Auction Id</strong>
+                            <span>{{basicInfoData.auctionID?basicInfoData.auctionID:''}}</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-print-3">
+                        <div class="printViewBox">
+                            <strong>Auction Type</strong>
+                            <span>{{camelToTitle(basicInfoData.type?basicInfoData.type:'')}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-print-3">
+                        <div class="printViewBox">
+                            <strong>Primary Currency</strong>
+                            <span>{{basicInfoData.primaryCurrencyNew?.currencyCode}}</span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-print-12">
+                        <div class="printViewBox">
+                            <strong>Bidding Currency</strong>
+                                <span *ngFor= "let currencycode1 of basicInfoData.currency;let i=index">
+                                    {{currencycode1.currencyCode?currencycode1.currencyCode:''}}{{(basicInfoData.currency.length!=i+1)?',':''}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-print-12">
+                        <div class="printViewBox">
+                            <strong>Description</strong>
+                            <span>{{basicInfoData.description?basicInfoData.description:''}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-print-12">
+                        <div class="printViewBox">
+                            <strong>Company Code</strong>
+                            <span>{{basicInfoData.company?basicInfoData.company:''}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-print-12">
+                        <div class="printViewBox" *ngIf="basicInfoData.allowties?basicInfoData.allowties:false">
+                            <strong>Company Code</strong>
+                            <mat-checkbox class="example-margin" checked="true">Tie Allowed</mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3 col-print-12">
+                         <div class="printViewBox">
+                            <strong>Auction Remark</strong>
+                            <span>{{basicInfoData.remark?basicInfoData.remark:''}}</span>
+                         </div>
+                    </div>
+                    <div class="col-md-3 col-print-12" *ngIf="basicInfoData && basicInfoData.rfqNo">
+                        <div class="printViewBox">
+                           <strong>RFQ No</strong>
+                           <span>{{basicInfoData.rfqNo}}</span>
+                        </div>
+                   </div>
+                </div>
+
+                <br>
+
+                <h5>Contact Information</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 col-print-4">
+                        <div class="printViewBox">
+                            <strong>Name</strong>
+                            <span>{{viewData.flag == "supplier" ?  viewData.basicInformation.auctionLeader.name : viewData.contactperson.name}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-print-4">
+                        <div class="printViewBox">
+                            <strong>Email</strong>
+                            <span>{{viewData.flag == "supplier" ?  viewData.basicInformation.auctionLeader.email : viewData.contactperson.email}} </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-print-4">
+                        <div class="printViewBox">
+                            <strong>Contact Number</strong>
+                            <span>{{viewData.flag == "supplier" ?  viewData.basicInformation.auctionLeader.number : viewData.contactperson.number}}</span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <br>
+
+                <h5>Auction Bidding Rules</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 col-print-3">
+                        <div class="printViewBox">
+                            <strong>Extend Auction if a new bid is</strong>
+                            <span>{{ camelToTitle(basicInfoData.extensionType)}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-print-3">    
+                        <div class="printViewBox">
+                            <strong>Grace Period</strong>
+                            <span>{{viewData.biddingRules.gracePeriod/60 + ' mins'}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-print-3">
+                        <div class="printViewBox">
+                            <strong>Extension Time</strong>
+                            <span>{{viewData.biddingRules.extentionTime/60 + ' mins'}}</span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 col-print-3">
+                        <div class="printViewBox">
+                            <strong  *ngIf="!(viewData.biddingRules.minBidChangeType=='percentage')">Minimum Bid Change &nbsp;&nbsp;&nbsp; </strong>
+                                <strong  *ngIf="(viewData.biddingRules.minBidChangeType=='percentage')">Minimum Bid Change(%)</strong>
+                            <span>{{viewData.biddingRules.minBidChange}}</span>
+                            <!-- <pre>{{viewData.biddingRules | json}}</pre> -->
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-print-3">
+                        <div class="printViewBox">
+                            <strong  *ngIf="(viewData.biddingRules.bidCushionTypeLimit !== 'percentage')"> Bid Cushion Limit &nbsp;&nbsp;&nbsp;</strong>
+                            <strong  *ngIf="(viewData.biddingRules.bidCushionTypeLimit=='percentage')">Bid Cushion Limit(%)</strong>
+                            <span>{{viewData.biddingRules.bidCusionLimit ? viewData.biddingRules.bidCusionLimit :  '' }}</span>      
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <br>
+                
+                <h5>Item Details</h5>
+                <div class="mt-1">
+                    <div class="table-sb">
+                        <table id="my-table" class="table table-bordered "  >
+                            <thead>
+                                <tr>
+                                    <th>Sr.no</th>
+                                    <th>Item Code</th>
+                                    <th>Lot Name/Item Name</th>
+                                    <th>Start Price</th>
+                                    <th>Reliance Quantity</th>
+                                    <th>Minimum Bid Change</th>
+                                    <th>UOM</th>
+                                    <th>Remarks</th>
+                                    <!-- <th>Attachment</th> -->
+                                    
+                                </tr>
+                            </thead>
+
+                            <!-- style="border: 2px solid #d2ab66" -->
+                            <tbody *ngFor="let item of itemData; let i = index">
+                                <tr class="parent"> 
+                                    <td>{{ i + 1}}</td>
+                                    <td><span style="cursor:pointer">{{item.itemCode}}</span></td>
+                                    <td>{{item.lotType?item.lotType:item.lotName}}/{{item.itemName}}</td>
+                                    <td>{{item.startPrice?item.startPrice:0}}</td>
+                                    <td>{{item.minimumDesiredQuantity}}</td>
+                                    <td>{{item.minimumChangeValue?item.minimumChangeValue: viewData.biddingRules.minBidChange ? viewData.biddingRules.minBidChange : 0 }}</td>
+                                    <td>{{item.unitOfMeasure}}</td>
+                                    <td>{{item.remarks}}</td>
+                                    
+                                    <!-- <td><span *ngFor= "let file of item.attachmentList;let i=index"><a [href]="common.downloadAttachmentData(file)" download>
+                                        {{file.fileName?file.fileName:''}}{{(item.attachmentList.length!=i+1)?',':''}}</a></span></td> -->
+                                </tr>
+                                <tr *ngIf='item.customFieldData'>
+                                   <td colspan="8">
+                                       <table class="table table-bordered ">
+                                           <tr>
+                                               <ng-container *ngFor='let field of customFields'>
+                                                    <th  *ngIf='viewData.flag && field.vendorLevelDisplay'>
+                                                        {{field.fieldName}}
+                                                    </th>
+                                                    <th  *ngIf='!viewData.flag'>
+                                                        {{field.fieldName}}
+                                                    </th>
+                                                </ng-container>
+                                           </tr>
+                                           <tr>
+                                               <!-- {{customFields | json}}----------{{item.customFieldData | json}} -->
+                                             <ng-container *ngFor='let field of item.customFieldData'>
+                                                <ng-container *ngFor='let field1 of customFields'>
+                                                    <ng-container *ngIf='field1.fieldName ==  field.name'>
+                                                        <th  *ngIf='viewData.flag && field1.vendorLevelDisplay'>
+                                                            {{field.value}}
+                                                        </th>
+                                                        <th *ngIf='!viewData.flag'>
+                                                            {{field.value}}
+                                                        </th>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </ng-container>
+                                           </tr>
+                                       </table>
+                                   </td>
+                                </tr>
+                                <tr *ngIf="item.longTextChar">                                    
+                                    <td colspan="6">
+                                        <div class="p-2 darkgrayfont font13" >
+                                            <div class="" *ngIf="item.longTextChar.mmcsLongDesc">
+                                                <div class="bold"> Long Description : </div>
+                                                <div class="mb-2">
+                                                    {{item.longTextChar.mmcsLongDesc}}
+                                                </div>
+                                            </div> 
+                                            <div class="more-table font14" *ngIf="item.longTextChar.mmcsCharacteristics && item.longTextChar.mmcsCharacteristics.length>0">
+                                                <div class="bold"> Characteristics :</div>
+                                                <div class="d-flex border full-width graybg">
+                                                    <div class="p-1 bold make25">Sr.no</div>
+                                                    <div class="p-1 bold make45"> Description </div>
+                                                    <div class="p-1 bold make25"> Unit </div>
+                                                    <div class="p-1 bold make25"> Types </div>
+                                                    <div class="p-1 bold make45"> Values </div>
+                                                    <div class="p-1 bold make45">Abbrev Value</div>
+                                                </div>
+                                                <div class="more-table-scroll">
+                                                    <div class="d-flex border full-width" *ngFor="let char of item.longTextChar.mmcsCharacteristics; let i = index">
+                                                        <div class="p-1 make25">
+                                                             {{i+1}}
+                                                         </div>
+                                                        <div class="p-1 make45"> 
+                                                            {{char.nvchcharacteristics}} 
+                                                        </div>
+                                                        <div class="p-1 make25">
+                                                             {{char.nvchuomcode}}
+                                                         </div>
+                                                        <div class="p-1 make25">
+                                                             {{char.charvaluetype}}
+                                                         </div>
+                                                        <div class="p-1 make45"> 
+                                                            {{char.nvchcharvalues}} 
+                                                        </div>
+                                                        <div class="p-1 make45"> 
+                                                            {{char.nvchcharabbrev}} 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="font14 mt-2" *ngIf="(item.longTextChar.companyReferences && item.longTextChar.companyReferences.length > 0)">
+                                                <span *ngFor="let cmpitem of item.longTextChar.companyReferences">            
+                                                    <div class=" border full-width mb-2 p-2" *ngIf="filterIt(cmpitem.referenceType)" >
+                                                        <div class="pb-1"> <span class="bold"> {{getDescForCompanyReferences('companyName')}} </span> : {{cmpitem.companyName}} </div>
+                                                        <div > <span class="bold"> {{getDescForCompanyReferences(cmpitem.referenceType)}} </span> : {{cmpitem.referenceNo}} </div>
+                                                    </div>
+                                                </span>
+                                            </div> -->
+                                        </div>
+                                        <!-- <mmcs-long-desc  
+                                            [companyReferences]="item.longTextChar.companyReferences"
+                                            [mmcsCharacteristics]="item.longTextChar.mmcsCharacteristics" 
+                                            [mmcsLongDesc]="item.longTextChar.mmcsLongDesc"
+                                            style="display: block; margin: 5px 0 25px 0;border: 1px solid #dee2e6;padding: 7px;">
+                                        </mmcs-long-desc> -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <br>
+                <div class="mt-1">
+                    <h5>Participants</h5>
+                    <div class="table-sb">
+                        <table  class="table table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th>Sr.no</th>
+                                    <th>Supplier Code</th>
+                                    <th>Supplier Name</th>
+                                    <th>Address</th>
+                                    <th>Contact Person Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile Number</th>
+                                </tr>
+                            </thead>
+                            <!--  style="border: 2px solid #d2ab66" -->
+                            <tbody *ngFor="let contact of participantList; let ind = index;">
+                                <tr class="parent">
+                                    <td>{{ind+1}}</td>
+                                    <td><span style="cursor:pointer">{{contact.supplierID}}</span></td>
+                                    <td>{{contact.supplierName1}}</td>
+                                    <td>{{contact.supplierState}}</td>
+                                    <!-- <td></td>
+                                    <td></td>
+                                    <td></td> -->
+                                </tr> 
+
+                                <tr *ngFor="let tree of contact.contactperson; let i = index;">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="padding-left: 20px;">{{ tree.vendorfullname }}</td>
+                                    <td>{{ tree.useremail1 }}</td>
+                                    <td>{{ tree.mobileno}}</td>
+                                </tr>
+                                <tr *ngIf="contact.bids?.length>0">
+                                    <td colspan="10">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Lot Name/Item Name</th>
+                                                        <th> Quantity </th>
+                                                        <th> My Unit Cost({{contact.supplierCurrency.currencyCode?contact.supplierCurrency.currencyCode:''}}) </th>
+                                                        <th> My Total Unit Cost({{contact.supplierCurrency.currencyCode?contact.supplierCurrency.currencyCode:''}}) </th>
+                                                        <th *ngIf="basicInfoData.currency.length>1">Landed Cost({{basicInfoData.primaryCurrency?basicInfoData.primaryCurrency:''}})</th>
+                                                        <th  *ngIf="basicInfoData.currency.length>1">Total Landed Cost({{basicInfoData.primaryCurrency?basicInfoData.primaryCurrency:''}})</th>
+                                                </tr>                                                
+                                            </thead>
+                                            <tbody>
+                                                    <tr *ngFor="let item of itemData">
+                                                            <td>{{item.lotType?item.lotType:item.lotName}}/{{item.itemName}}</td>
+                                                            <td> {{item.minimumDesiredQuantity}} </td>
+                                                            <td>{{item?.baseCost|filter:contact.bids:'baseCost':'preItem':null:null:null:null:basicInfoData.currencyDecimalPlaces:item.itemID}} </td>
+                                                            <td>{{item?.variableCost|filter:contact.bids:'variableCost':'preItem':null:null:null:null:basicInfoData.currencyDecimalPlaces:item.itemID}}</td>
+                                                            <td  *ngIf="basicInfoData.currency.length>1">{{item.landedCost|filter:contact.bids:'landedCost':'preItem':null:null:null:null:basicInfoData.currencyDecimalPlaces:item.itemID}} </td>
+                                                            <td  *ngIf="basicInfoData.currency.length>1">{{item.totalLandedCost|filter:contact.bids:'totalLandedCost':'preItem':null:null:null:null:basicInfoData.currencyDecimalPlaces:item.itemID}} </td>
+                                                    </tr>  
+                                                    <tr>
+                                                        <td colspan="2"> Total </td>
+                                                        <td><span *ngIf="false">{{contact?.baseCost|filter:[]:0:null:null:null:null:null:basicInfoData.currencyDecimalPlaces}}</span></td>
+                                                        <td>{{contact?.variableCost|filter:[]:0:null:null:null:null:null:basicInfoData.currencyDecimalPlaces}}</td>
+                                                        <td *ngIf="basicInfoData.currency.length>1">{{contact?.landedCost|filter:[]:0:null:null:null:null:null:basicInfoData.currencyDecimalPlaces}}
+                                                        </td>
+                                                        <td *ngIf="basicInfoData.currency.length>1">{{contact?.totalLandedCost|filter:[]:0:null:null:null:null:null:basicInfoData.currencyDecimalPlaces}}
+                                                        </td>
+                                                    </tr>
+                                                    
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody> 
+                        </table>
+                    </div>
+                    
+
+                    <h5 *ngIf="(hostList.length>0)">Hosts/Co-Hosts</h5>
+                    <div *ngIf="(hostList.length>0)">
+                        <div class="table-sb">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Sr.no</th>
+                                        <th>Employee ID</th>
+                                        <th>Employee Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile Number</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let hostdata of hostList; let i=index">
+                                        <td>{{i+1}}</td>
+                                        <td><span style="cursor:pointer">{{hostdata.employeeID}}</span></td>
+                                        <td>{{hostdata.employeeName}}</td>
+                                        <td>{{hostdata.employeeMail}}</td>
+                                        <td>{{hostdata.employeeMobileNo}}</td>
+                                    </tr>
+                                    <tr *ngIf="hostList.length == 0">
+                                        <td colspan="4" style="text-align: center;"> Not Applicable</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+               
+                <h5 align="center">Summary Of Attachments</h5>
+                <h5>Header Level Attachment Documents</h5>
+                <div class="mt-1">
+                    <div class="table-sb">
+                        <table class="table table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th>Sr.no</th>
+                                    <th>Attachment</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let item of basicInfoData.attachmentList; let i = index">
+                                <tr class="parent">
+                                    <td>{{i + 1}}</td>
+                                    <td><a [href]="common.downloadAttachmentData(item)" download>{{item.fileName}}</a>
+                                    </td>
+                                    <!-- <span *ngIf="item && attachmentList.isInternal===false && attachmentList.isExternal===true"></span>  -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- <span *ngIf="items && items.isInternal===false && items.isExternal===true"></span> -->
+
+                <br>  
+
+               
+
+                
+                 <h5>LineItem Attachment Documents</h5>
+                <div class="mt-1">
+                    <div class="table-sb">
+                        <table class="table table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th>Sr.no</th>
+                                    <th>Item Code</th>
+                                    <th>Item/Material Description</th>
+                                    <th>Attachment</th>                                    
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let item of itemData; let i = index" >
+                                <tr class="parent">
+                                    <td>{{ i + 1}}</td>
+                                    <td><span style="cursor:pointer">{{item.itemCode}}</span></td>
+                                    <td>{{item.itemName}}</td>
+                                    <td><span *ngFor= "let file of item.attachmentList;let i=index"><a [href]="common.downloadAttachmentData(file)" download>
+                                        {{file.fileName?file.fileName:''}}{{(item.attachmentList.length!=i+1)?',':''}}</a></span></td>
+                                    <!-- <span *ngIf="attatchFile && attatchFile.isInternal===false && attatchFile.isExternal===true"></span> -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <br> 
+
+                <h5>Schedule</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 col-print-6">
+                        <div class="printViewBox">
+                            <strong>Start Date/Time</strong>
+                            <span>{{basicInfoData.startDate?dateAndTime(basicInfoData.startDate):''}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-print-6">
+                        <div class="printViewBox">
+                            <strong>End Date/Time</strong>
+                            <span>{{basicInfoData.endDate? dateAndTime(basicInfoData.endDate):''}}</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Print Section Ends -->
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)="printfun()"><i class="fas fa-print"></i> Print</button>
+        <button class="btn btn-primary" (click)="downloadPDF();"> Download</button>
+    </div>
+</div>

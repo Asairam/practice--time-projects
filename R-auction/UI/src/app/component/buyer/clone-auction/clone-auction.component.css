@@ -1,0 +1,19 @@
+.dropdown-togglealt::after {
+    content: initial !important;
+}
+.date-height{
+    min-height: 24px;
+}
+.card-radius{
+    border-radius: 5px;
+}
+/* .live-animate{
+    position: absolute;
+    top: 5px;
+    right: 30px;
+    font-size: 10px;
+    font-weight: 500;
+    color:red;
+    animation: blink 1.5s ease-in-out;
+    animation-iteration-count: infinite;
+} */

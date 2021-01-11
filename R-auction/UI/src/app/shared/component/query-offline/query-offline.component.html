@@ -1,0 +1,229 @@
+<div class="chat-main-container">
+  <header class="chat-header flex-ends">
+    <div class="bold font15 text-dotdot" *ngIf="!auctionData && supplierData">
+      <span class="darkgrayfont mr-2 participant-menu" title="Participants" (click)="seeParticipants()"> <i class="fas fa-bars"></i>
+      </span>
+      <span class="" [matTooltip]="supplierData.supplierName1"> Auction
+        Id:{{auctionID}} | {{supplierData.supplierName1}}</span>
+
+    </div>
+    <div class="bold font15 text-dotdot" *ngIf="auctionData">
+      <span class="" [matTooltip]="auctionData.auctionLeader.name+ '(Buyer)'"> Auction
+        Id:{{auctionID}} | {{auctionData.auctionLeader.name}}(Buyer)</span>
+    </div>
+    <div>
+      <span class="font16 darkgrayfont ml-3">
+        <i class="fas  fa-times" style="cursor:pointer;" (click)="closeChat()"> </i>
+      </span>
+    </div>
+  </header>
+  <div class="chat-participants participant-slide" *ngIf="!auctionData">
+    <div class="p-2">
+      <input type="text" class="full-width form-control form-control-sm" [(ngModel)]="textSearch" placeholder="Search Participants"
+        (keyup)="onTextSearch()">
+    </div>
+    <div class="chat-participants-list">
+      <div class="chat-participant" *ngFor="let supplier of supplierList" (click)="(supplier.supplierID==supplierData.supplierID)?seeParticipants():getSupplierQueryByID(supplier)"
+        [ngClass]="{'selected': (supplier.supplierID==supplierData.supplierID)}">
+        <div> <img [src]="imageURL+'assets/images/person.png'" class="chat-participant-img"> </div>
+        <div class="">
+          <div class="bold"> {{supplier.supplierName1}} </div>
+          <!-- <div class="font13"> arun.nayak@ril.com</div> -->
+        </div>
+        <!-- <div class="chat-participants-unread" *ngIf="(supplier.notifyFlag && !checked)"> 20 </div> -->
+      </div>
+    </div>
+  </div>
+  <div class="chat-overlay hide" (click)="seeParticipants()" *ngIf="!auctionData"></div>
+
+  <div  *ngIf="!attachPage">
+    <div class="offline-query-section test1 p-1" *ngIf="maindiv">
+      <div class="chatting-interface" *ngIf="showQueryData">
+        <div class="botBody">
+          <div class="chatText">
+            <div class="chatTextArea scrollbar-outer" [scrollTop]="myScrollVariable" #scrollMe>
+              <div *ngFor="let query of queryList">
+                <div *ngIf="query.sendFlag=='to'" class="botReply">
+                  <div class="botImg">
+                    <span>
+                      <img [src]="imageURL+'assets/images/person.png'" />
+                    </span>
+
+                  </div>
+                  <div class="clear"></div>
+                  <div class="reply">
+                    <div class="botReplyText">
+                      <span class="bold"> {{query.createdBy }}: </span>
+                      {{query.longDesc}}
+                    </div>
+                    <div *ngIf="query.attachmentList.length>0">
+                      <span class="attachment_icon" *ngFor="let attach of query.attachmentList" (click)="downloadAttachment(query.attachmentList)">
+                        <i class="fa fa-cloud-download"></i>
+                        {{attach.fileName}}
+                      </span>
+                    </div>
+                    <div class="botReplyTime">
+                      {{query.createdAt | date:'medium'}}
+                    </div>
+                  </div>
+
+                  <div class="clear"></div>
+                </div>
+                <div *ngIf="query.sendFlag=='from'" class="perReply">
+                  <div class="perImg">
+                    <span>
+                      <img [src]="imageURL+'assets/images/person.png'" />
+                    </span>
+
+                  </div>
+                  <div class="clear"></div>
+                  <div class="ask">
+                    <div class="perAskText">
+                      <span class="bold"> {{query.createdBy }}: </span>
+                      {{query.longDesc}}
+                    </div>
+                    <div *ngIf="query.attachmentList.length>0">
+                      <span class="attachment_icon" *ngFor="let attach of query.attachmentList" (click)="downloadAttachment(query.attachmentList)">
+                        <i class="fa fa-cloud-download"></i>
+                        {{attach.fileName}}
+                      </span>
+                    </div>
+                    <div class="perReplyTime">
+                      {{query.createdAt | date:'medium'}}
+                    </div>
+                  </div>
+                  <div class="clear"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clear"></div>
+          <div class="MsgArea">
+
+            <div class="msgTestArea">
+              <form [formGroup]="collabrationForm" novalidate>
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let attach of imageData" [selectable]="selectable" [removable]="removable"
+                    (removed)="remove(attach)">
+                    {{attach.fileName}}
+                    <i matChipRemove class="fas fa-times" *ngIf="removable"></i>
+                  </mat-chip>
+                </mat-chip-list>
+                <input class="inputArea enterText" (keyup.enter)="updateQueryData()" formControlName="longDesc"
+                  placeholder="Type your text here.">
+                
+                  <i class="fa fa-paperclip chat-upload" (click)="uploadImage()"></i>
+                  <i class="fa fa-paper-plane chat-send" (click)="updateQueryData()"></i>
+                
+              </form>
+
+            </div>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <div class="p-2">
+        <table *ngIf="(querySource.data.length > 0)" mat-table [dataSource]="querySource" class="full-width">
+          <ng-container matColumnDef="srno">
+            <th mat-header-cell *matHeaderCellDef> Sr.no </th>
+            <td mat-cell *matCellDef="let element"> {{element.queryNo}} </td>
+          </ng-container>
+          <ng-container matColumnDef="subject">
+            <th mat-header-cell *matHeaderCellDef> Subject </th>
+            <td mat-cell *matCellDef="let element"> {{element.shortDesc}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="raisedDate">
+            <th mat-header-cell *matHeaderCellDef> Raised date </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdAt|date}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="raisedBy">
+            <th mat-header-cell *matHeaderCellDef> Raised by </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdBy}} </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element" style="text-align: center;">
+              <!-- <mat-icon style="cursor:pointer; color: #646464" (click)="openChat(element)">chat</mat-icon> -->
+              <i class="fas fa-comment-alt" style="cursor:pointer; color: #254298" matTooltip="View Chat" (click)="openChat(element)"></i>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <div *ngIf="!(querySource.data.length > 0)">
+          No Query Added
+        </div>
+      </div>
+
+    </div>
+    <div class="offline-query-section test2" *ngIf="sideDiv">
+      <div>
+        <form [formGroup]="collabrationForm">
+          <div class="dialog-header">
+            <span class="dialog-header-txt">Raise New Query
+            </span>
+          </div>
+          <div class="dialog-content">
+            <div class="row mx-0 mt-2 font14">
+              <div class="col-md-12">
+                <mat-form-field class="full-width">
+                  <mat-label>Mention Subject</mat-label>
+                  <input matInput autocomplete="off" formControlName="sort_desc"  required />
+                  <mat-error *ngIf="collabrationForm['controls'].sort_desc.invalid">{{getSubjectError()}}</mat-error>
+
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-12">
+                <mat-form-field class="full-width">
+                  <mat-label>Write Query</mat-label>
+                  <textarea rows="4" autocomplete="off" formControlName="longDesc" matInput 
+                    required></textarea>
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-12 ">
+                <button mat-stroked-button color="primary" class="attbut mb-2" (click)="uploadImage()" type="button">
+                  <i class="fas fa-paperclip"></i>Attach Document({{imageData.length}})
+                </button>
+
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="dialog-footer">
+      <div class="col-md-12 mb-2 mt-2 text-right">
+        <span *ngIf="!sideDiv">
+          <button mat-flat-button class="mr-2 btn-blue" (click)="sideDivShow()">
+            Create New Query
+          </button>
+          <button mat-flat-button class="mr-2 btn-red" *ngIf="querySource.data.length > 0 && showQueryData" (click)="closeQueryData()">
+            Close Query
+          </button>
+        </span>
+        <span *ngIf="sideDiv">
+          <button mat-flat-button class="mr-2 btn-blue" (click)="onSubmitQuery()" [disabled]="!collabrationForm.valid">
+            Submit
+          </button>
+          <button mat-flat-button class="mr-2 btn-red" (click)="closesideDivShow()">
+            Cancel
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="attachPage">
+    <app-attach-document (sendData)="getAttachData($event);" [selectedMMCSArr]="" [page]="sendData.pageFrom" [viewData]="sendData.data"></app-attach-document>
+  </div>
+
+</div>

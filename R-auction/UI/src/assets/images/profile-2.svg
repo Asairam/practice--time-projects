@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30.931 30.931">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: 0.184;
+      }
+
+      .cls-2 {
+        opacity: 0.332;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </defs>
+  <g id="Symbol_127_1" transform="translate(-335 -38)">
+    <circle id="Ellipse_5" class="cls-1" cx="15.465" cy="15.465" r="15.465" transform="translate(335 38)"/>
+    <g id="Group_244" class="cls-2" transform="translate(343.699 44.766)">
+      <g id="Group_233" transform="translate(0)">
+        <path id="Path_82" class="cls-3" d="M92.568,86.042a6.7,6.7,0,0,0-13.407,0c0,.6-.128,1.52,2.349,1.54l9.378-.046C92.733,87.527,92.568,86.62,92.568,86.042ZM85.917,77.5a3.689,3.689,0,1,0-3.695-3.689A3.692,3.692,0,0,0,85.917,77.5Z" transform="translate(-79.16 -70.119)"/>
+      </g>
+    </g>
+  </g>
+</svg>

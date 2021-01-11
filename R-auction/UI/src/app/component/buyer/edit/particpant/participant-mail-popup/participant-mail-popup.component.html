@@ -1,0 +1,54 @@
+<!-- Header-->
+<!-- <div class="dialog-header p-2">
+    <span class="dialog-header-txt"> {{dialogMessage}} </span>
+    <i class="dialog-closex fas fa-times"  (click)="MatDialogRef.close()" > </i>
+</div> -->
+
+
+
+  
+<!-- Body -->
+<div class=" p-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">            
+            <mat-checkbox class="cust-checkbox"
+            [disabled]="readOnly" [checked]="selectAllFlag" (change)="selectAllSupplier($event)">
+            Select All Participant
+            </mat-checkbox>
+            </div>
+        </div>        
+        <hr>
+        <div class="row">
+            <div class="col-md-4" *ngFor="let supplier of supplierList; let i = index">
+                <div [ngClass]="{'supplier-selected': supplier.selected, 'supplier-not-selected': !supplier.selected }">
+                    <div class="p-1">
+                        <mat-checkbox class="cust-checkbox" 
+                            [disabled]="readOnly"
+                            [checked]="supplier.selected"
+                            (change)="selectSupplier($event, supplier)">
+                                {{ supplier.supplierName1 }}
+                        </mat-checkbox>
+                    </div>
+                    <div *ngFor="let contact of supplier.contactperson">
+                        <span style="font-size: 0.78rem;">Vendor Code : {{contact.vendorcode}}</span><br>
+                        <span style="font-size: 0.78rem;">Email : {{contact.useremail1}}</span><br>
+                        <span style="font-size: 0.78rem;">Contact no: {{contact.mobileno}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Footer -->
+<!-- <div class="dialog-footer">
+    <div class="col-md-12 mb-2 mt-2 text-right">
+    <button mat-flat-button class="mr-2 btn-blue" (click)="onPositiveBtn()">
+        {{dialogPositiveBtn}}
+    </button>
+    </div>
+</div> -->

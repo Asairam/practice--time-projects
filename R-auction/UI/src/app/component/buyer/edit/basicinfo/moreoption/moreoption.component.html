@@ -1,0 +1,78 @@
+<div class="dialog-header">
+  <span class="dialog-header-txt">More Details</span>
+  <div class="float-right">
+    <i class="fas fa-times dialog-closex" (click)="closeClick();"></i>
+  </div>
+</div>
+<div class="dialog-content">
+  <!-- custom fields Section  -->
+  <div class="hide">
+    <div class="container-fluid pt-3">
+      <div class="row font14">
+        <div class="col-md-12">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Name">
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Description">
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <mat-form-field class="full-width">
+            <mat-label>Field Type</mat-label>
+            <mat-select>
+              <mat-option>
+                String
+              </mat-option>
+              <mat-option>
+                Number
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-12">
+          <section class="">
+            <mat-checkbox class="mr-3"> Is Internal </mat-checkbox>
+            <mat-checkbox class=""> Mandatory </mat-checkbox>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- custom fields Ends -->
+
+  <mat-tab-group (selectedTabChange)="selectTab($event)" [selectedIndex]="selectedIndex">
+    <mat-tab label="Remark" *ngIf="remarks.length>0">
+      <app-remark  [allRemarks]="remarks"></app-remark>
+    </mat-tab>
+    <mat-tab label="Currency">
+      <div class="">
+        <div class="container-fluid pt-3">
+          <div class="row font14">
+            <div class="col-md-4 col-sm-6 mb-3" *ngFor="let cur of currency">
+              <div class="currency-block">
+                <div class="foreign-currency"> 1 {{cur.currencyName}} ({{cur.currencyCode}}) </div>
+                <div class="inr"> {{cur.exchangeRate+' '+cur.exchangeName}} ({{cur.exchangeCurrency}})
+                </div>
+                <div class="inr">Exchange Date: {{((cur.exchangeRateDate)?cur.exchangeRateDate:currentDate) |
+                  date:'dd-MM-yyyy'}} </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+   
+  </mat-tab-group>
+</div>
+
+<div class="dialog-footer">
+  <div class="col-md-12 mb-2 mt-2 text-right">
+    <button mat-flat-button class="ml-2" color="warn" type="button" (click)="closeClick()">
+      Close
+    </button>
+  </div>
+</div>

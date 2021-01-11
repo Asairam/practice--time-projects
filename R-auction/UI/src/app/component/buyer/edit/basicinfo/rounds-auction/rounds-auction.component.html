@@ -1,0 +1,146 @@
+<div class="dialog-header">
+    <span class="dialog-header-txt"> Rounds Auction </span>
+    <div class="float-right">
+        <i class="fas fa-times dialog-closex" (click)="onClose();"></i>
+    </div>
+</div>
+<div *ngIf="roundsActiveRoute">
+    <div class="container-fluid py-3">
+        <form [formGroup]="createRoundForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <mat-form-field class="full-width">
+                        <mat-label>Round Name</mat-label>
+                        <input matInput formControlName="roundName" autocomplete="off">
+
+                    </mat-form-field>
+                </div>
+                <div class="col-md-12">
+                    <mat-form-field class="full-width">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+                            formControlName="roundDescription" autocomplete="off"></textarea>
+                    </mat-form-field>
+                </div>
+                <!-- start date and time -->
+                <div class="col-md-6">
+                    <mat-form-field class="full-width">
+                        <input matInput [matDatepicker]="dtStart01" placeholder="Start Date(MM/DD/YYYY)"
+                            formControlName="startDate" style="color:rgba(0,0,0,1)" [min]="today">
+                        <mat-datepicker-toggle matSuffix [for]="dtStart01"></mat-datepicker-toggle>
+                        <mat-datepicker #dtStart01 disabled="false"></mat-datepicker>
+                        <mat-hint *ngIf="error.startDateError" style="color:red;">Start date must be a future date
+                        </mat-hint>
+                    </mat-form-field>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="fake-input-group-button" style="position: relative" [owlDateTimeTrigger]="Opentime01">
+                        <span> {{ createRoundForm.get('startTime').value | date: 'HH:mm' }}</span>
+                        <i class="fa fa-calendar" style="float:right;" aria-hidden="true"></i>
+                        <span *ngIf="createRoundForm.controls.startTime.value" class="mat-form-field-label-wrapper">
+                            <label
+                                style="display: block; transform: translateY(-1.28125em) scale(.75) perspective(100px) translateZ(.001px)"
+                                class="mat-form-field-label ng-tns-c16-11 ng-star-inserted"
+                                id="mat-form-field-label-8888" for="start-time01" aria-owns="start-time01">
+                                Start Time
+                                <span aria-hidden="true"
+                                    class="mat-placeholder-required mat-form-field-required-marker ng-tns-c16-11 ng-star-inserted">*</span>
+                            </label>
+                        </span>
+                        <span style="opacity: .7" *ngIf="!createRoundForm.controls.startTime.value">Start Time * </span>
+                    </div>
+                    <input id="start-time01" class="hidden-date" matInput hour12Timer="timeformat"
+                        [owlDateTimeTrigger]="Opentime01" [owlDateTime]="Opentime01" formControlName="startTime">
+                    <owl-date-time [pickerType]="'timer'" #Opentime01></owl-date-time>
+                </div>
+
+                <!-- end date and time -->
+                <div class="col-md-6">
+                    <mat-form-field class="full-width">
+                        <input matInput [matDatepicker]="dtend01" placeholder="End Date(MM/DD/YYYY)"
+                            formControlName="endDate" style="color:rgba(0,0,0,1)" [min]="today">
+                        <mat-datepicker-toggle matSuffix [for]="dtend01"></mat-datepicker-toggle>
+                        <mat-datepicker #dtend01 disabled="false"></mat-datepicker>
+                        <mat-hint *ngIf="error.endDateError1" style="color:red;">End date must be a future date from
+                            start date</mat-hint>
+                    </mat-form-field>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="fake-input-group-button" style="position: relative" [owlDateTimeTrigger]="endtime02">
+                        <span> {{ createRoundForm.get('endTime').value | date: 'HH:mm' }}</span>
+                        <i class="fa fa-calendar" style="float:right;" aria-hidden="true"></i>
+                        <span *ngIf="createRoundForm.controls.endTime.value" class="mat-form-field-label-wrapper">
+                            <label
+                                style="display: block; transform: translateY(-1.28125em) scale(.75) perspective(100px) translateZ(.001px)"
+                                class="mat-form-field-label ng-tns-c16-11 ng-star-inserted"
+                                id="mat-form-field-label-8888" for="End-time01" aria-owns="End-time01">
+                                End Time
+                                <span aria-hidden="true"
+                                    class="mat-placeholder-required mat-form-field-required-marker ng-tns-c16-11 ng-star-inserted">*</span>
+                            </label>
+                        </span>
+                        <span style="opacity: .7" *ngIf="!createRoundForm.controls.endTime.value">End Time * </span>
+                    </div>
+                    <input id="End-time01" class="hidden-date" matInput hour12Timer="timeformat"
+                        [owlDateTimeTrigger]="endtime02" [owlDateTime]="endtime02" formControlName="endTime">
+                    <owl-date-time [pickerType]="'timer'" #endtime02></owl-date-time>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="dialog-footer">
+        <div class="col-md-12 mb-2 mt-2 text-right">
+            <button mat-flat-button class="mr-2 btn-blue" [disabled]="createRoundForm.invalid" (click)="roundFormSub()">
+                {{headcoloum.SAVE}}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div>
+    <!--table 1-->
+    <div class="" *ngIf="roundList.length != 0">
+        <table class="table cust-table">
+            <thead>
+                <tr>
+                    <th>Sr.</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let lis of roundList;let i=index;">
+                    <td>{{i+1}}</td>
+                    <td>{{lis.roundName}}</td>
+                    <td>{{lis.roundDescription}}</td>
+                    <td>{{lis.startDate | date:'MM/dd/yyyy HH:mm'}}</td>
+                    <td>{{lis.endDate | date:'MM/dd/yyyy HH:mm'}}</td>
+                    <td>
+                        <span *ngIf="!lis.status && buyerService.auctionData.auctionStatus == 'Closed'">
+                            <i class="fas fa-pen font15 pointer" (click)="onAction('edit',lis)"> </i> &nbsp;&nbsp;
+                            <i class="far fa-trash-alt font15 pointer redfont" (click)="onAction('delete',lis)"></i>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<ng-template #modalContent2 let-close="close">
+    <div class="modal-header dialog-header p-2">
+        <span class="dialog-header-txt">Please confirm..</span>
+        <i class="dialog-closex fas fa-times" (click)="modalReference2.close()"> </i>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete.
+    </div>
+    <div class="modal-footer" style="border-radius: 0px 0 5px 5px; position: relative;">
+        <button mat-flat-button class="mr-2" color="primary" (click)="deleteSub()">Yes</button>
+        <button mat-flat-button color="warn" (click)="modalReference2.close()">No</button>
+    </div>
+</ng-template>

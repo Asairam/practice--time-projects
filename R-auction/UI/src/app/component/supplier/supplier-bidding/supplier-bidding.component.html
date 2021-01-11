@@ -1,0 +1,295 @@
+<div class="container-body" (click)="ClickedOut($event)">
+    <!-- Page Alt Header -->
+    <div class="container-fluid alt-header-fix">
+        <div class="alt-header pad-block font14">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" (click)="backButton(auctionID);oncli()"> Home </li>
+                    <li class="breadcrumb-item" (click)="backButton(auctionID);goBack()">
+                        Auctions List
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Auction</li>
+                    <span class="custom-chip red-chip ml-2" *ngIf="aucStatus === 'closed'">
+                        {{translateSer?.CLOSED}}
+                    </span>
+                    <span class="custom-chip green-chip ml-2" *ngIf="aucStatus === 'open'">
+                        {{translateSer?.OPEN}}
+                    </span>
+                    <span class="custom-chip yellow-chip ml-2" *ngIf="aucStatus === 'paused'">
+                        {{translateSer?.PAUSED}}
+                    </span>
+                    <span class="custom-chip blue-chip ml-2" *ngIf="aucStatus === 'published'">
+                        {{translateSer?.PUBLISHED}}
+                    </span>
+                    <span class="custom-chip red-chip ml-2" *ngIf="aucStatus === 'suspended'">
+                        Under Amendment
+                    </span>
+                </ol>
+            </nav>
+            <div *ngIf="aucStatus == 'suspended'" style="width: 45%">
+                <marquee style="color: #0e31da;">You cannot bid as the Auction is being Amended – Please Contact the Auction Author "{{auctionLeader.name}}" </marquee>
+            </div>
+            <div class="header-buttons mobile-scroll">
+
+                <span class="custom-sort mr-2">
+                    <select class="custom-sort-input" [(ngModel)]="viewFlag" (click)="socketService.callUserInfo = false;changeRoute()">
+                        <option value="item"> Summary View </option>
+                        <option value="bid"> Bid History </option>
+                    </select>
+                </span>
+                <span *ngIf="viewFlag === 'item'">
+                    <button class="header-sm-btn-ico darkgraybg no-mobile" matTooltip="List" [ngClass]="{'active':viewTyp=='list'}" 
+                    (click)="viewType('list')" style="border-radius: 50% 0 0 50%;">
+                        <i class="fas fa-list-ul"></i> 
+                    </button>
+                    <button class="header-sm-btn-ico darkgraybg no-mobile mr-2" matTooltip="Card" [ngClass]="{'active':viewTyp=='card'}" 
+                    (click)="viewType('card')" style="border-radius:0 50% 50% 0;">
+                        <i class="fas fa-th-large "></i> 
+                    </button>
+                </span>
+                <button class="header-sm-btn-ico greenbg mr-2" matTooltip="Refresh" (click)="refreshButt()" *ngIf="auctionData?.status === 'Open'">
+                    <i class="fas fa-sync-alt"></i> 
+                </button>
+                <!-- Filter columns -->
+                <div class="filter-dropdown" *ngIf="viewFlag === 'item'">
+                   <app-custom-dis-columns [auctionID]="auctionID" [columnNames]="supplierservice.suppFilCol" [viewPageFlag]="viewFlag"></app-custom-dis-columns>
+                </div>
+                <!-- Analyse Report -->
+                <button class="header-sm-btn-ico greenbg mr-2" matTooltip="Analyse" (click)="viewSummaryDialog()"> 
+                    <i class="far fa-chart-bar font18"></i>
+                </button>
+                <button  class="header-sm-btn-ico" [matMenuTriggerFor]="menu" matTooltip="More">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <mat-menu class="cust-menuList" #menu="matMenu">
+                    <button class="dropdown-item" mat-menu-item (click)="queryDialog();"> Query History </button>
+                    <button (click)="viewSummaryDialog()" class="dropdown-item" mat-menu-item> Summary Report</button>
+                </mat-menu>
+            </div>
+        </div>
+    </div>
+    <div class="alt-header-filler pad-header-filler"></div>
+    <!-- Page Alt Header END -->
+
+    <!-- Auction Page blocking  -->
+    <div class="container-fluid">
+
+        <!-- List portion -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="border-card border-blue darkfont" style="box-shadow:none;" [class.border-yellow]="socketData?.status.toLowerCase() == 'paused'"
+                    [class.border-green]="socketData?.status.toLowerCase() == 'open'" [class.border-red]="socketData?.status.toLowerCase() == 'closed'">
+                    <div class="flex-ends p-2 font14 pad-block">
+                        <!-- Auction Id and Name-->
+                        <div class="flex-ends">
+                            <div>
+                                <div class="font16 bold"> {{auctionData.auctionID}} / {{auctionData.type |
+                                    aucType}} <span  *ngIf="auctionData?.isSealedBidAuction" class="uppercase"> / {{common_btn?.SEALED_BID}} </span>  
+                                    <span *ngIf="auctionData?.roundData" class="uppercase"> / {{auctionData?.roundData}} </span>
+                                </div>
+                                <div class="font13 greenfont aucName bold" style="max-width: 150px;" >
+                                    <span *ngIf="auctionData.auctionName && auctionData.auctionName.length>50">
+                                        {{auctionData.auctionName | slice:0:40}} <span matTooltip="{{auctionData.auctionName}}">...</span>
+                                    </span>
+                                    <span *ngIf="auctionData.auctionName && auctionData.auctionName.length<=50">
+                                        {{auctionData.auctionName}}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+                        </div>
+                        <!-- Currency and Exchange Rate & AF and MF-->
+                        <ng-container>
+                            <div class="flex-ends" >
+                                <div>
+                                    <div *ngIf="supplierData && supplierData.supplierCurrency && (auctionData.primaryCurrency!=supplierData.supplierCurrency.currencyCode)" class="font13 bold" style="color: #186FBA;"> 
+                                        Currency : <span style="color: #000000;">{{supplierData.supplierCurrency.currencyName}} </span>
+                                    </div>
+                                    <div *ngIf="supplierData && supplierData.supplierCurrency && selectBidCurrency && (auctionData.primaryCurrency!=supplierData.supplierCurrency.currencyCode)" class="font13 bold" style="color: #186FBA;">
+                                        Xch Rate : <span style="color: #000000;">{{selectBidCurrency.exchangeRate}} {{auctionData.primaryCurrency}}</span>
+                                    </div>
+                                    <div *ngIf=" supplierData && (supplierData.supplierAF || supplierData.supplierMF)" style="display: flex;flex-direction: column;" >
+                                        <div class="font13 bold" style="color: #186FBA;"> 
+                                            <button  matTooltip="Addition Factor" style="border: 0; color: #186FBA;font-weight: 500;" > AF
+                                            </button> : 
+                                            <span style="color: #000000;">{{auctionData.primaryCurrency}} {{supplierData.supplierAF}} </span>
+                                        </div>
+                                        <div  class="font13 bold" style="color: #186FBA; margin-left: 3px;">
+                                            <button  matTooltip="Multiplication Factor" style="border: 0; color: #186FBA;font-weight: 500;" > MF
+                                            </button> : 
+                                            <span style="color: #000000;">{{supplierData.supplierMF}}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+                            </div>
+                        </ng-container>
+                        
+                        <!-- Initial bid , Best bid, Total value -->
+                        <div class="mobile-scroll">
+                            <ng-container >
+                                <div class="flex-ends mr-2" *ngIf="auctionData?.initialBid" >
+                                    <div class="font13 grayfont "> Initial Bid Value :  &nbsp;&nbsp;</div>
+                                    <div class="font14 bold ">
+                                        {{auctionData.initialBid |number:decimalplace}}
+                                    </div>
+                                </div>
+                                <div class="flex-ends mr-2"  *ngIf="['rank','top rank only','top rank'].indexOf(auctionData?.infoShownToSupplier) == -1 && auctionData.initialBid">
+                                    <div class="font13 grayfont "> {{common_btn?.BEST_BID_VAL}} :  &nbsp;&nbsp;</div>
+                                    <div class="font14 bold ">
+                                        <ng-container *ngIf="auctionData?.bestBidInfoShownBy == 'best cost outcome'">
+                                            {{auctionData.currentBidBestCost |number:decimalplace}}
+                                        </ng-container>
+                                        <ng-container *ngIf="auctionData?.bestBidInfoShownBy != 'best cost outcome'">                                            
+                                            <span *ngIf="selectBidCurrency && selectBidCurrency.exchangeRate">
+                                                {{ (auctionData.currentBidSingleSource/selectBidCurrency.exchangeRate)  | number: '.0-'+auctionData.currencyDecimalPlace}}
+                                            </span>
+                                        </ng-container>                                        
+                                    </div>
+                                </div>
+                                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                            </ng-container>
+                        </div>
+                        <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                        <div class="mobile-scroll">
+                            <ng-container >
+                                <div class="flex-ends mr-2"  *ngIf="auctionData?.myTotalValue">
+                                    <div class="font13 grayfont "> {{common_btn?.MY_BID_VAL}} :  &nbsp;&nbsp;</div>
+                                    <div class="font14 bold ">
+                                        <span *ngIf="selectBidCurrency && selectBidCurrency.exchangeRate">
+                                            {{ (auctionData.myTotalValue/selectBidCurrency.exchangeRate)  | number: '.0-'+auctionData.currencyDecimalPlace}}                                            
+                                        </span>    
+                                   </div>
+                                </div>
+                                <div class="flex-ends mr-2"  *ngIf="auctionData?.myTotalLandedValue && additionMultiplicationFactor">
+                                    <div class="font13 grayfont "> My Landed Total Bid Value :  &nbsp;&nbsp;</div>
+                                    <div class="font14 bold ">
+                                        <span *ngIf="selectBidCurrency && selectBidCurrency.exchangeRate">
+                                            {{ (auctionData.myTotalLandedValue/selectBidCurrency.exchangeRate)  | number: '.0-'+auctionData.currencyDecimalPlace}}                                          
+                                        </span>    
+                                   </div>
+                                </div>
+                                <div class="flex-ends mr-2" *ngIf="auctionData?.bestBidInfoShownBy == 'single source at every level' && auctionData?.myRank && auctionData?.infoShownToSupplier != 'price'">
+                                    <div class="font13 grayfont "> {{common_btn?.MY_RANK}} :  &nbsp;&nbsp;</div>
+                                    <div class="font16 bold ">
+                                        <ng-container
+                                            *ngIf="((auctionData?.infoShownToSupplier == 'top rank only' || auctionData?.infoShownToSupplier == 'top rank') && ['Open','Paused'].indexOf(socketData?.status) !== -1); else notheadTopRank">
+                                            <ng-container *ngIf="auctionData.myRank <=1; else notheadOne">
+                                                <ng-container *ngTemplateOutlet="infoShown2"></ng-container>
+                                            </ng-container>
+                                            <ng-template #notheadOne>NON L1</ng-template>
+                                        </ng-container>
+                                        <ng-template #notheadTopRank>
+                                            <ng-container *ngTemplateOutlet="infoShown2"></ng-container>
+                                        </ng-template>
+                                        <ng-template #infoShown2>{{auctionData.myRank}}</ng-template>
+                                    </div>
+                                </div>
+                                <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                            </ng-container>
+                        </div>
+                            <div class="flex-ends mobile-scroll">
+                            <!-- <div class="mr-2" *ngIf="auctionData?.status === 'Open'">
+                                <button class="header-sm-btn" (click)="refreshButt()" matTooltip="Refresh">
+                                    <i class="fas fa-sync refresh-butt"></i>
+                                </button>
+                            </div>
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div> -->
+                            
+                            <div class="mr-2" *ngIf="viewFlag === 'item' && socketData?.status == auctionStatusList.OP">
+                                <button (click)="biddingDialog()" [disabled]="!(status==auctionStatusList.AC || status==auctionStatusList.BD )"
+                                    class="btn btn-primary btn-sm mr-2">
+                                    {{discountText}}</button>
+                            </div>
+                            <!-- <div class="m-2">
+                                <button class="dashboard-btn" (click)="viewSummaryDialog()"> </button>
+                            </div> -->
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+                            <div class="mr-2" *ngIf="status">
+                                <button (click)="acceptDetails()" [disabled]="aucStatus == 'suspended' || viewFlag == 'bid' || participate || (status==auctionStatusList.RJ || status==auctionStatusList.AC || status==auctionStatusList.BD )"
+                                    class="btn btn-primary btn-sm mr-2" [ngClass]="{'btn-blue-faded':(status==auctionStatusList.AC || status==auctionStatusList.BD),'btn-red-bg':status==auctionStatusList.RJ} ">
+                                    {{supplierData?.republishStatus?'Re-Accept':'Accept'}}</button>
+                            </div>
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide"></div>
+                            <div class="mr-2">
+                                <div class="font13 grayfont ">
+                                    <table>
+                                        <tr>
+                                            <td>Open Time:</td>
+                                            <td class="bold blackfont">{{socketData?.startDate | date:'dd-MM-yyyy
+                                                HH:mm'}} IST</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Close Time:</td>
+                                            <td class="bold blackfont">{{socketData?.endDate | date:'dd-MM-yyyy
+                                                HH:mm'}} IST</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Live Time:</td>
+                                            <td class="bold blackfont">
+                                                <app-clock></app-clock>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                            <div class="mr-2 p-1 whitefont auc-clock" *ngIf="socketData?.status == auctionStatusList.OP || socketData?.status == auctionStatusList.PA || socketData?.status == auctionStatusList.CO"
+                                [ngClass]="{
+                                'open-color': socketData?.status == auctionStatusList.OP,
+                                'yellowbg': socketData?.status == auctionStatusList.PA,
+                                'redbg': socketData?.status == auctionStatusList.CO
+                              }">
+                                <!-- <div class="font13 live-animate-monitor" *ngIf="socketData?.status == auctionStatusList.OP">
+                                    Time Remaining </div> -->
+                                <div class="font13 text-center bold">
+                                    {{socketData.status | uppercase}} </div>
+                                <div class="font16  bold">
+                                    <countdown [config]="{leftTime: socketData?.seconds}" *ngIf="(socketData?.seconds > 86400)">$!d!d:$!h!h:$!m!m:$!s!s</countdown>
+                                    <countdown [config]="{leftTime: socketData?.seconds}" *ngIf="(socketData?.seconds <= 86400)">$!h!h:$!m!m:$!s!s</countdown>
+                                </div>
+                            </div>
+                            <!-- <div class="vertical-line align-self-stretch darkgraybg mx-2 pad-hide" *ngIf="socketData?.status == auctionStatusList.PB"></div> -->
+                            <div class="mr-2" *ngIf="aucStatus == auctionStatusList.PB.toLowerCase()">
+                                <div class="font13 grayfont "> Will open in </div>
+                                <div class="font16  bluefont bold">
+                                    <countdown [config]="{leftTime: -1*timeRemainingToOpen}">$!d!d:$!h!h:$!m!m:$!s!s</countdown>
+                                </div>
+                            </div>
+                            <div class="mr-2" *ngIf="aucStatus == 'suspended'">
+                                <div class="font16 bold" style="color: red;"><h5> Under </h5> </div>
+                                <div class="font16  bold" style="color: red;">
+                                    <h5 >Amendment</h5>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <!-- List portion ENDS-->
+        <app-supplier-item-view [socketendpoint]="socketendpoint" *ngIf="loadCom() === 'item' && supplierData" [supplierData]="supplierData" [preBid]="prelimianryData"
+        (sendSocketData)="showSocketDataFromParent($event)" (acceptData)="acceptStatus($event)" (sendAuctionData)="getAucDataFromParent($event)" (headerApiRef)="headerApiRefresh($event)" (aucCloseShowPopup)="aucClosePopup($event)"></app-supplier-item-view>
+        <app-supplier-bid-history *ngIf="loadCom() === 'bid'" (sendAuctionData)="getAucDataFromParent($event)" 
+        (sendSocketData1)="showSocketDataFromParent($event)" [socketendpoint]="socketendpoint" [exchangeRate]="selectBidCurrency?.exchangeRate" [auctionID]="auctionID" (headerApiRef1)="headerApiRefresh($event)" (aucCloseShowPopup1)="aucClosePopup($event)"></app-supplier-bid-history>
+    </div>
+    <!-- Auction Page blocking ENDS -->
+    <div *ngIf="chatDisplay" class="chatpop" cdkDragBoundary="mat-drawer-content" cdkDrag>
+        <app-chat-bot [auctionID]="auctionID" [auctionData]="auctionData" (closeMethod)="closeChat();"></app-chat-bot>
+    </div>
+</div>
+
+<div id="footer-slider" class="footer-slider">
+    <span class="chatbot-btn bounce repeat-animation" matTooltip="Chat" *ngIf="!chatDisplay && (auctionData.supplierStatus==auctionStatusList.AC  || auctionData.supplierStatus==auctionStatusList.BD) && (commonservice.commonStatus==auctionStatusList.OP || commonservice.commonStatus==auctionStatusList.CO) "
+        (click)="chatDisplay=true;">
+        <span *ngIf="chatMessage" class="chat-notification repeat-animation heartBeat"> </span>
+
+        <div *ngIf="chatMessage" class="pyro">
+            <div class="before"></div>
+            <div class="after"></div>
+        </div>
+    </span>
+</div>

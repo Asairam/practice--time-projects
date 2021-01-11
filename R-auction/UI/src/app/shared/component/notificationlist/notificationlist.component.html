@@ -1,0 +1,105 @@
+<div>
+  <div class="container-body">
+    <!-- Page Alt Header -->
+    <div class="container-fluid alt-header-fix" *ngIf="pageLoc">
+      <div class="alt-header pad-block font14">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item" routerLink="{{routerconfig?.buyer_router_links.BUYER_DASHBOARD}}"> Home </li>
+            <li class="breadcrumb-item active" aria-current="page">Notifications List</li>
+          </ol>
+        </nav>
+      <div class="header-buttons mobile-scroll">
+        </div>
+      </div>
+    </div>
+    <div class="alt-header-filler pad-header-filler"></div>
+    <!-- Page Alt Header END -->
+
+    <!-- Auction Page blocking  -->
+    <div class="container-fluid" infinite-scroll  (scrolled)="onScrollDown()">
+      <!-- List portion -->   
+      <div class="row" *ngIf="view === 'list'">
+        <div class="col-md-12">
+          <div class="border-card  mb-3 darkfont make-relative" *ngFor="let list of auctionList"
+             [class.border-yellow]="checkStatus(list.message, 'republished')"
+            [class.border-green]="checkStatus(list.message, 'accepted')"
+            [class.border-blue]="checkStatus(list.message, 'published')"  
+             [class.border-red]="checkStatus(list.message, 'declined')" [hidden]="!list.auction?.status">    
+            <div class="live-animate" *ngIf="list.status == 'Open'"> LIVE </div>
+            <div class="flex-ends px-2 py-1 font14 block992">
+              <div class="flex-ends make45" >
+                <div>
+                  <div class="font16 bold bluefont"> {{list.message}} <span class="font13 bluefont ml-2">
+                     
+                    </span>
+                  </div>
+                  <div class="font14 bold">
+                    <span class="font14 grayfont"> Auction Name: </span>
+                    <span class="font14 bold capitalize">  {{list.auction.auctionName}}  </span>
+                  </div>
+                   <div class="font14 bold">
+                    <span class="font13 grayfont " > Auction Leader: </span>  
+                    <span class="font13 bold capitalize" *ngIf='!isBuyer'> {{list.info.name}} </span>
+                    <span class="font13 bold capitalize" *ngIf='isBuyer'> {{uData.name.firstname}} {{uData.name.lastname}} </span>
+                  
+                  </div>
+                </div>
+              </div>
+              <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+              <div class="flex-ends make45" style="display: block;">
+                <div class="make55" style="margin: 0 auto;">
+                  <!-- <div class="mx-2"> -->
+                  <div class="flex-ends text-center">
+                    <div class="mr-2">
+                      <div class="font13 grayfont"> Start Date & Time </div> 
+                      <div class="font16 bold" style="min-height: 25px;">
+                        <span *ngIf="!list.auction.startDate"></span>
+                        <span *ngIf="list.auction.startDate">{{list.auction.startDate | date:'dd/MMM/yyyy HH:mm'}}</span>
+                      </div>
+                    </div>
+                    <div class="mx-2">
+                      <div class="font13 grayfont"> Close Date & Time </div>
+                      <div class="font16 bold " style="min-height: 25px;">
+                        <span *ngIf="!list.auction.endDate"></span>
+                        <span *ngIf="list.auction.endDate">{{list.auction.endDate | date:'dd/MMM/yyyy HH:mm'}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+                <div class="flex-ends make15">
+                  <div class="make55">
+                    <!-- <div class="mx-2"> -->
+                    <div class="flex-ends text-center">
+                      <div class="mr-2">
+                        <!-- <div class="font13 grayfont"> Status </div> -->
+                        <div class="font16 bold" style="min-height: 25px;" *ngIf="list.auction?.status">
+                          <span class="custom-chip green-chip " *ngIf="list.auction.status.toLowerCase() === 'accepted'">Accepted</span>
+                          <span class="custom-chip green-chip " *ngIf="list.auction.status.toLowerCase() === 'reaccepted'" style="min-width: 90px;">Re-Accepted</span>
+                          <span class="custom-chip red-chip " *ngIf="list.auction.status.toLowerCase() === 'declined'">Declined</span>
+                          <span class="custom-chip yellow-chip " *ngIf="list.auction.status.toLowerCase() === 'republished'">Republished</span>
+                          <span class="custom-chip blue-chip " *ngIf="list.auction.status.toLowerCase() === 'published'">Published</span>
+                          <span class="custom-chip green-chip " *ngIf="list.auction.status.toLowerCase() === 'open'">Open</span>
+                          <span class="custom-chip red-chip " *ngIf="list.auction.status.toLowerCase() === 'closed'">Closed</span>
+                          <span class="custom-chip red-chip " *ngIf="list.auction.status.toLowerCase() === 'cancelled'">Cancelled</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- List portion ENDS-->
+      <!-- List Template portion ENDS-->
+      <div [hidden]="auctionList.length > 0" style="text-align: center;">
+        {{translateSerCommon?.NO_REC_FOU}}
+      </div>
+    </div>
+    <!-- Auction Page blocking ENDS -->
+  </div>
+
+</div>

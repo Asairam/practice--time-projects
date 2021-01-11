@@ -1,0 +1,21 @@
+<ul class="notificationList">
+  <li class="headNotice" >
+       <span class="listBell">
+           <mat-icon _ngcontent-c1="" aria-label="" class="far fa-bell mat-badge mat-icon material-icons mat-badge-overlap mat-badge-above mat-badge-after mat-badge-medium" role="img" style="color:red;" aria-hidden="true">                   
+           </mat-icon>
+       </span>
+       <span class="noticeTxt">Notification</span>
+   </li>   
+   <span style='max-height:260px;overflow:auto;display:block;' infinite-scroll [scrollWindow]="false" (scrolled)="onScrollDown()"> 
+   
+    <li class="listContent" [hidden]="!item.auction?.status"  (click)='readNotifAndRedirectToViewDetails(item)' [ngClass]='item.isRead?"read":""' *ngFor="let item of itemList" > 
+        {{item.message}}
+        <div class="notifDate">{{item.createdAt | date:'dd/MM/yyyy HH:mm'}}</div></li>  
+        <li class="listContent" *ngIf='itemList.length == 0'>
+            Notification not found!
+        </li>
+   </span>
+</ul>
+<div class="notiViewAll"  style="text-align: center;" 
+   (click)="viewAllList($event)">View All</div>
+

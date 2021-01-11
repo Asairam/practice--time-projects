@@ -1,0 +1,120 @@
+<div>
+  <div class="">
+    <mat-tab-group (selectedTabChange)="getTabIndexData($event)">
+      <mat-tab label="Buyer">
+
+        <div class="">
+          <table mat-table [dataSource]="auditLogArray" matSort class="full-width">
+
+            <ng-container matColumnDef="Activity">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity </th>
+              <td mat-cell *matCellDef="let element"> {{element.activity}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="Field">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Field </th>
+              <td mat-cell *matCellDef="let element">{{element.field}}</td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="OldValue">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Old Value </th>
+              <td mat-cell *matCellDef="let element">
+                <div *ngIf='!((element.oldVal)?isDataType(element.oldVal):true)'>
+                  <ng-container *ngFor="let currency of element.oldVal">
+                    {{currency.currencyName}}
+                  </ng-container>
+                </div>
+                <div *ngIf='((element.oldVal)?isDataType(element.oldVal):false)'>
+                  {{element.oldVal}}
+                </div>
+              </td>
+            </ng-container>   
+
+            <ng-container matColumnDef="NewValue">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> New Value </th>
+              <td mat-cell *matCellDef="let element">
+                  <div *ngIf='!((element.newVal)?isDataType(element.newVal):true)'>
+                    <ng-container *ngFor="let currency of element.newVal">
+                      {{currency.currencyName}}
+                    </ng-container>
+                  </div>
+                  <div *ngIf='((element.newVal)?isDataType(element.newVal):false)'>
+                    {{element.newVal}}
+                  </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="CreatedBy">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+              <td mat-cell *matCellDef="let element">{{element.createdBy}}</td>>
+            </ng-container>
+
+            <ng-container matColumnDef="UpdatedAt">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Updated At 123 </th>
+              <td mat-cell *matCellDef="let element">{{element.updatedAt | date:'dd-MM-yyyy HH:mm'}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="AuctionStatus">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Auction Status </th>
+              <td mat-cell *matCellDef="let element">{{element.auctionStatus}}</td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+        </div>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </mat-tab>
+      <mat-tab label="SUPPLIER">
+        <div class="">
+          <table mat-table [dataSource]="auditLogBuyerArray" matSort class="full-width">
+
+            <ng-container matColumnDef="Activity">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity </th>
+              <td mat-cell *matCellDef="let element"> {{element.activity}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="Field">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Field </th>
+              <td mat-cell *matCellDef="let element">{{element.field}}</td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="OldValue">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Old Value </th>
+              <td mat-cell *matCellDef="let element">{{element.oldVal}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="NewValue">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> New Value </th>
+              <td mat-cell *matCellDef="let element">{{element.newVal}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="CreatedBy">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Created By </th>
+              <td mat-cell *matCellDef="let element">{{element.createdBy}}</td>>
+            </ng-container>
+
+            <ng-container matColumnDef="UpdatedAt">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Updated At </th>
+              <td mat-cell *matCellDef="let element">{{element.updatedAt | date:'dd-MM-yyyy HH:mm'}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="AuctionStatus">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Auction Status </th>
+              <td mat-cell *matCellDef="let element">{{element.auctionStatus}}</td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedSupplierColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedSupplierColumns;"></tr>
+          </table>
+        </div>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

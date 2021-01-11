@@ -1,0 +1,50 @@
+<div class="dialog-header">
+  <span class="dialog-header-txt"> Edit Profile </span>
+  <div class="float-right">
+    <i class="fas fa-times dialog-closex" (click)="onClose();"></i>
+  </div>
+</div>
+
+
+<div>
+  <!-- Section one-->
+  <div class="user-profile whitebg container-fluid pt-3">
+    <div class="row">
+      <div class="col-lg-2 col-md-3">
+        <div class="profile-img-cnt mb-1">
+          <img class="profile-img" [src]="imageURL+'assets/images/profile-2.svg'" *ngIf="!objUserProfile?.profilePic">
+          <img class="profile-img" src="{{objUserProfile?.profilePic}}" (error)="errorHandler($event)" *ngIf="objUserProfile?.profilePic">
+        </div>
+      </div>
+      <div class="col-lg-10 col-md-9">
+        <div class="row">
+          <div class="col-md-4 col-sm-6">
+            <div class="profile-label"> First Name </div>
+            <div class="profile-text text-dotdot"> {{objUserProfile?.name.firstname}} </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="profile-label"> Last Name </div>
+            <div class="profile-text text-dotdot"> {{objUserProfile?.name.lastname}} </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="profile-label"> Organisation </div>
+            <div class="profile-text text-dotdot"> {{user_org_description}} </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="profile-label"> Email ID </div>
+            <div class="profile-text text-dotdot"> {{objUserProfile?.email}} </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <mat-form-field>
+              <input matInput onkeydown="javascript: return event.keyCode == 69 ? false : true" type="number" placeholder="Mobile Number" [(ngModel)]="objUserProfile.mobile" [disabled]="!mobileNumberEdit">
+              <i class="fas fa-pen font13 pointer" style="float:right" (click)="editDetails()" *ngIf="!mobileNumberEdit">
+              </i>
+              <i class="fas fa-check font13 pointer" style="float:right" (click)="saveUserDetails()" *ngIf="mobileNumberEdit">
+              </i>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

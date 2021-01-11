@@ -1,0 +1,241 @@
+
+<div class="container-fluid" style=" margin-top: -3.5rem;">
+	<div class="text-right">
+		<button  style="margin-bottom: 25px;" type="button" class="btn btn-sm btn-primary ml-2" matTooltip="Download Report" (click)="downloadPDF()"
+		 [disabled]="downButt">
+			<i class="fa fa-download"></i>
+		</button>
+		</div>
+</div>
+
+<div class="whitebg" id="printContainer">
+	<div class="container-fluid pt-4" id='basicInfo'>
+		<div class="row font14">
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Run By: </strong>
+					<span>{{auctionDetails.runBy}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Report Date: </strong>
+					<span>{{auctionDetails.reportDate | date:'dd-MM-yyyy hh:mm'}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Auction Name: </strong>
+					<span>{{auctionDetails.auctionName}}</span>
+				</div>
+			</div>
+		</div>
+		<hr> <!--  HR -->
+		<div class="row font14">
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Auction Id: </strong>
+					<span>{{auctionIdData}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Auction Type: </strong>
+					<span>{{auctionDetails.auctionType}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Auction Status: </strong>
+					<span>{{auctionDetails.auctionStatus}}</span>
+				</div>
+			</div>
+		</div>
+		<hr> <!--  HR -->
+		<div class="row font14">
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Primary Currency: </strong>
+					<span>{{auctionDetails.primaryCurrency}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Auction Open Date: </strong>
+					<span>{{auctionDetails.auctionOpen | date:'dd-MM-yyyy HH:mm'}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Auction Close Date: </strong>
+					<span>{{auctionDetails.auctionClose | date:'dd-MM-yyyy HH:mm'}}</span>
+				</div>
+			</div>
+		</div>
+		<hr> <!--  HR -->
+		<div class="row font14">
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Participants Invited for the Auction:</strong>
+					<span>{{ supplierDetails.length  }}</span>  <!--auctionDetails.inviteSupplier + auctionDetails.acceptSupplier-->
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Participants Accepted Auction Invitation: </strong>
+					<span>{{auctionDetails.acceptSupplier + auctionDetails.bidSupplier}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Participants Bidded for the Auction: </strong>
+					<span>{{auctionDetails.bidSupplier}}</span>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<div class="row font14">
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Participants Suspended for the Auction: </strong>
+					<span>{{auctionDetails.suspendedUserCount}}</span>
+					<!--suspendSupplier  -->
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Preliminary Bids for the Auction : </strong>
+					<span>{{auctionDetails.preBidCount}}</span>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<!--  HR -->
+		<!-- <div class="row font14">
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Preliminary Bids for the Auction: </strong>
+					<span>{{auctionDetails.preBidCount}}</span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="printViewBox">
+					<strong>Live Bids During the Auction: </strong>
+					<span>{{auctionDetails.liveBidCount}}</span>
+				</div>
+			</div>
+
+		</div> -->
+	</div>
+	<div class="container-fluid ">
+		<!-- SUPPLIER INFORMATION -->
+		<div class="mt-4">
+			<h4 class="bold " style="color:#000;"> Supplier Information</h4>
+			<div class="analyze-sb table-ofh table-responsive fix-header">
+				<table [@routeAnimations]="{value: supplierDetails.length>0?'afterTableLoad' : '', params:{ index: '2000ms'} }"
+				class="table table-bordered table-striped font14">
+					<thead>
+						<th>Participant</th>
+						<th>Participant's Mail Id</th>
+						<th>Contact Phone</th>
+						<th>Status</th>
+						<!-- <th>No. of Preliminary Bids</th>
+						<th>No. of Live Bids</th> -->
+					</thead>
+					<tbody>
+						<tr *ngFor="let supplier of suppliersDtls">
+							<td>
+								<span *ngFor="let contact of supplier.contactperson;let i=index">
+									{{contact.firstname }} - ({{supplier.supplierID}}) - {{ supplier.supplierName1}}
+									<br *ngIf="!(i==(contact.length-1))" />
+								</span>
+							</td>
+							<td>
+								<span *ngFor="let contact of supplier.contactperson;let i=index">
+									{{contact.useremail1}}
+									<br *ngIf="!(i==(contact.length-1))" />
+								</span>
+							</td>
+							<td>
+								<span *ngFor="let contact of supplier.contactperson">
+									{{contact.mobileno}}
+									<br *ngIf="!(i==(contact.length-1))" />
+								</span>
+							</td>
+							<td>{{supplier.status}}</td>
+							<!-- <td>{{supplier.preBidCount}}</td>
+							<td>{{supplier.liveBidCount}}</td> -->
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid ">
+	<div class="mt-4 pb-3 mb-5">
+		<h4 class="bold " style="color:#000;">Chat History</h4>
+		<!--Accordion wrapper-->
+	<div class="accordion md-accordion" *ngIf='queryList.length'  id="accordionEx" role="tablist" aria-multiselectable="true">
+
+		<!-- Accordion card -->
+		<div class="card" *ngFor="let chat of queryList; let i=index">
+
+		<!-- Card header -->
+		<div class="card-header" role="tab" id="headingOne-{{chat.supplierID}}">
+			<a data-toggle="collapse" class="collapsed" data-parent="#accordionEx" href="#collapseOne-{{chat.supplierID}}" aria-expanded="false"
+			>
+			<h5 class="mb-0 font15 bold">
+				{{chat.firstName}}-({{chat.supplierID}})-{{chat.userName}}   <i class="fas fa-angle-down rotate-icon"></i>
+			</h5>
+			</a>
+			<b *ngIf='chat.status.toLowerCase() == "suspended"' style="position: absolute;
+			right: 8px;
+			top: 8px;">({{chat.status}})</b>
+		</div>
+
+		<!-- Card body -->
+		<div id="collapseOne-{{chat.supplierID}}" class="collapse" role="tabpanel"
+			data-parent="#accordionEx">
+			<div class="card-body border-bottom">
+				<div class="text-center py-4" *ngIf='!chat.chatList.length'>
+					<b>No chat history found</b>
+				</div>
+				<ng-container *ngFor='let item of chat.chatList;let i=index;'>
+
+
+				<div class="clearfix" *ngIf="(item.rollAssign == 'supplier')">
+					<div class="reply">
+						<div class="botReplyText">
+							<span class="bold"> {{item.createdBy }}: </span>
+							<span style="color:#000;"> {{item.longDesc}} </span>
+						</div>
+						<div class="botReplyTime">	{{item.createdAt | date:'medium'}}	</div>
+					</div>
+				</div>
+
+				<div class="clearfix" *ngIf="(item.rollAssign == 'buyer')">
+					<div class="reply1">
+						<div class="botReplyText">
+							<span class="bold"> {{item.createdBy }}: </span>
+							<span class="replyTxt"> {{item.longDesc}} </span>
+						</div>
+						<div class="botReplyTime">	{{item.createdAt | date:'medium'}}	</div>
+					</div>
+				</div>
+			<!-- </tr> -->
+
+	</ng-container>
+			</div>
+		</div>
+
+		</div>
+		<!-- Accordion card -->
+
+
+	</div>
+	<!-- Accordion wrapper -->
+
+	</div>
+	</div>
+</div>

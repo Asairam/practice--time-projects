@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"> 
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"> 
+    <meta content="width=device-width,initial-scale=1" name="viewport">    
+    <title> eAuction </title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="js/bootstrap.js" type="text/javascript"></script>
+    <script src="js/core.js" type="text/javascript"> </script>
+
+</head>
+<body> 
+    <header class="text-center fixed-top appheader">
+        <div class="pos-left logoImg">
+            <img src="img/logo.png">
+        </div> 
+        <h1 class="header-title"> Customer Enquiry Form </h1>
+        <div class="pos-right text-right">
+            <div class="header-search inline-block">
+                <button type="button" class="header-search-btn ">
+                    <i class="fas fa-search"> </i>
+                </button> 
+            </div>
+            <div class="dropdown inline-block">
+                <button type="button" class="user-dd-btn " data-toggle="dropdown">
+                    <span class="user-dd-name no-mobile" > Welcome Arun Nayak </span>
+                    <span class="user-dd-img"> <img src="img/user.png"/></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <div class="header-dropdown-content px-3 py-2">
+                        <div class="">
+                            <div class="text-center font13">
+                                <img class="header-profile-img" src="img/user.png" >
+                                <div class="bold mt-2">
+                                    Chetan Shirbhate
+                                </div>
+                                <div class="">
+                                    <a class="mailto" href="mailto:Chetan.Shirbhate@ril.com "> Chetan.Shirbhate@ril.com </a>
+                                </div>
+                            </div>
+                            <div class="line darkgraybg my-3"></div>
+                            <div class="mx-2">
+                                <button class="header-sm-btn make-block mb-2 full-width text-left"> 
+                                        <i class="fas fa-pen"> </i> Edit Profile
+                                </button>
+                                <button class="header-sm-btn make-block mb-2 full-width text-left"> 
+                                        <i class="fas fa-cog"> </i> Settings
+                                </button>
+                                <button class="redfont header-sm-btn make-block mb-2 full-width text-left"> 
+                                        <i class="fas fa-power-off"> </i> Logout
+                                </button>
+                            </div>
+      
+                        </div>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div class="search-slide" style="width:0">
+            <button class="search-slide-icon">  
+                <i class="fas fa-search "></i>
+            </button>
+            <input type="text" class="header-search-input" placeholder="Search Text Here">
+            <button class="search-slide-close">  
+                <i class="fas fa-times "> </i>
+            </button>
+           
+        </div> 
+    </header>
+    <div>
+        <div class="container-body">
+            <div class="container-fluid ">
+                <div class="home-search py-4">
+                    <div class="input-group ">
+                        <input type="text" class="form-control" placeholder="Search" >
+                        <div class="input-group-append">
+                            <button class="btn search-btn" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="whitebg py-4">
+                <div class="cust-container">
+                    <div class="row cust-row-margin">
+                        <div class="col-md-6 cust-col-pad">
+                            <div class="flat-tile greenbg">
+                                <div class="flat-tile-header ">
+                                    Live Forward Auction
+                                    <div class="pos-right">
+                                            <div class="dropdown ">
+                                                <button type="button" class="flat-tile-dd dropdown-toggle " data-toggle="dropdown">
+                                                    Last Week
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right font13">
+                                                    <a class="dropdown-item" href="#">Link 1</a>
+                                                    <a class="dropdown-item" href="#">Link 2</a>
+                                                    <a class="dropdown-item" href="#">Link 3</a>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="pos-left">
+                                        <div class="dropdown ">
+                                            <button type="button" class="flat-tile-dd  " data-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>                                                 
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-left font13">
+                                                <a class="dropdown-item" href="#">Forward Auction</a>
+                                                <a class="dropdown-item" href="#">Backward Auction</a>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flat-tile-content d-flex justify-content-between">
+                                    <div class="text-center blockA" >
+                                        <div class=" "> Savings </div>
+                                        <div class="flat-tile-content-big"> +500<span class="font15">%</span></div>
+                                    </div>
+                                    <div class=" d-flex justify-content-center align-items-center blockB" >
+                                        <div class="" > 
+                                            <div class="mt-2"> Baseline </div>
+                                            <div class="flat-tile-content-med bold"> INR 33400 Cr</div>
+                                        </div>
+                                        <div class="vertical-line align-self-stretch mx-3 my-2"></div>
+                                        <div class=" " > 
+                                            <div class="mt-2"> Current </div>
+                                            <div class="flat-tile-content-med bold"> INR 33400 Cr</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 cust-col-pad">
+                            <div class="flat-tile redbg">
+                                <div class="flat-tile-header ">
+                                    Live Auction
+                                    <div class="pos-right">
+                                            Last Week
+                                    </div>
+                                </div>
+                                <div class="flat-tile-content d-flex justify-content-between">
+                                    <div class="text-center" style="min-width:40%; ">
+                                        <div class=" "> Savings </div>
+                                        <div class="flat-tile-content-big"> + 50%</div>
+                                    </div>
+                                    <div class=" d-flex justify-content-center align-items-center" style="min-width:55%">
+                                        <div class="" > 
+                                            <div class="mt-2"> Baseline </div>
+                                            <div class="flat-tile-content-med"> INR 334 Cr</div>
+                                        </div>
+                                        <div class="vertical-line align-self-stretch mx-3 my-2"></div>
+                                        <div class=" " style="min-width:46%"> 
+                                            <div class="mt-2"> Current </div>
+                                            <div class="flat-tile-content-med"> INR 334 Cr</div>
+                                        </div>
+                                        </div>
+
+                                </div>    
+                            </div> 
+                        </div>
+                        <div class="col-md-3  col-6 cust-col-pad">
+                        <div class="flat-tile d-flex align-items-center orangebg" style="min-height: 120px;">
+                                <div class=" text-center full-width "> 
+                                    <div class="flat-tile-content-big1"> 20 </div>
+                                    <div class=""> Pending</div>
+                                </div>
+                        </div>
+                        </div>
+                        <div class="col-md-3 col-6 cust-col-pad">
+                            <div class="flat-tile d-flex align-items-center bluebg" style="min-height: 120px;">
+                                    <div class=" text-center full-width "> 
+                                        <div class="flat-tile-content-big1"> 20 </div>
+                                        <div class=""> Pending</div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3  col-6 cust-col-pad">
+                            <div class="flat-tile d-flex align-items-center yellowbg" style="min-height: 120px;" data-toggle="modal" data-target="#createModal">
+                                    <div class=" text-center full-width "> 
+                                        <div class="flat-tile-content-big1"> <i class="fas fa-plus"> </i> </div>
+                                        <div class=""> Pending</div>
+                                    </div>
+                            </div> 
+                        </div>
+                        <div class="col-md-3  col-6 cust-col-pad">
+                            <div class="flat-tile d-flex align-items-center greenbg" style="min-height: 120px;">
+                                    <div class=" text-center full-width "> 
+                                        <div class="flat-tile-content-big1"> 20 </div>
+                                        <div class=""> Pending</div>
+                                    </div>
+                            </div>
+                        </div>
+                
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div id="footer-slider" class="footer-slider">
+        <div class="footer-slider-body relative">
+            <button class="btn message-btn" onclick="openMessage()"> Message </button>
+        </div>
+    </div>
+
+
+<!-- modal here -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModal1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="pos-right">
+            <button type="button" class="close p-2" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="text-center font16 grayfont p-3 mr-4">
+            HOW WOULD YOU LIKE TO CREATE YOUR AUCTION
+        </div>
+        <div class="modal-body flex-between text-center py-2 px-3 mx-4">
+            <div class="createAuctionBtn" > 
+                <div class="createImg"> 
+                    <img src="img/createContract.png"> 
+                </div>
+                <div class="bold ">
+                    Create Auction
+                </div>
+            </div>
+            <div class="createAuctionBtn"> 
+                <div class="createImg"> 
+                    <img src="img/template.png"> 
+                </div>
+                <div class="bold">
+                    Save Template
+                </div>
+            </div>
+            <div class="createAuctionBtn mr-0"> 
+                <div class="createImg"> 
+                    <img src="img/clone.png"> 
+                </div>
+                <div class="bold">
+                        Use clone
+                </div>
+            </div>
+            
+        </div>
+        <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div> -->
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+

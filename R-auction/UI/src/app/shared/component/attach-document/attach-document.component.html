@@ -1,0 +1,102 @@
+<div class="item-detail-height">
+  <item-detail-attachment *ngIf="page && page.pageFrom=='item'" [formObj]="formObj"></item-detail-attachment>
+  <mmcs-attach  *ngIf="selectedMMCSArr && selectedMMCSArr.length>0" (attach)="attachMMCS($event)" [sapcode]="sapcode"></mmcs-attach>
+  
+  <div ng2FileDrop class="file-attachment m-3" (fileOver)="dropped($event)" [uploader]="uploader" [ngClass]="{'hide': !dis}">
+    <input [disabled]="auctionReadOnly" class="attachment-input " type="file" ng2FileSelect [uploader]="uploader" id="inputGroupFile02" (change)="dropped($event)"
+      multiple />
+
+    <div class="attachment-txt-block">
+      <span class="dndtext"> {{common_btn.DRAG_DROP}} </span>
+      <span class="dndtxtalt"> your files, or <span class="bluefont"> browse </span>.</span>
+    </div>
+
+    <div class="mt-2">
+      <span class="font12 grayfont">Upload
+        File({{uploadFormatText}} files are allowed | Max Size: 40MB)</span>
+    </div>
+
+  </div>
+  <div *ngIf="!dis && attArr && attArr.length == 0" style="text-align: center;" class="mt-5">
+    {{common_btn?.NO_REC_FOU}}
+  </div>
+  <div>
+    <div class="col-md-12 mb-3" *ngIf="(imageUrlArray.length>0)"  #myDiv>
+        <ng-image-slider *ngIf="displayFlag" [infinite]="true" [showArrow]="true"
+            [autoSlide]="(displayFlag && imageUrlArray.length>3  && !common.isMobile)?3:((displayFlag && common.isMobile && imageUrlArray.length>1)?1:0)" 
+            [images]="imageUrlArray">
+        </ng-image-slider>
+        <ng-image-slider *ngIf="!displayFlag"  [showArrow]="true"
+             [images]="imageUrlArray">
+        </ng-image-slider>
+    </div>
+  </div>
+  <div class="attached-file-location m-3">
+    <div class="col-md-12 text-right" *ngIf="dis && attArr && attArr.length > 0">
+      <mat-checkbox [disabled]="auctionReadOnly" class="example-margin" [(ngModel)]="checkedAll"> {{common_btn.ATTACH_DOC.ATTACH_TY}}</mat-checkbox>
+    </div>
+    <!-- loop here -->
+    <div class="border-card border-blue mb-3" *ngFor="let doc of attArr;let i=index;">
+      <div class=" d-flex justify-content-between align-items-center px-3 py-2 ">
+        <div class="font13">
+          <div class="bold"> {{common_btn.ATTACH_DOC.DOC_NAME}}</div>
+          <div class="bluefont text-dotdot">
+            <a [href]="common.downloadAttachmentData(doc)" download>{{doc.fileName}}</a>
+            <span> ( {{(doc.fileSize / (1024*1024)).toFixed(2)}}MB )</span>
+          </div>
+        </div>
+        <div *ngIf="dis">
+          <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+          <div class="del-size">
+            <button [disabled]="auctionReadOnly" class="header-sm-btn redfont mt-1" (click)="onRowDelete(i,doc)">
+              <i class="far fa-trash-alt"></i> {{common_btn.DELETE}}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class=" d-flex justify-content-between align-items-center px-3 py-2 graybg">
+        <div class="font13">
+          <mat-form-field class="full-width">
+            <mat-label>{{common_btn.ATTACH_DOC.ATTACH_TY}}</mat-label>
+            <mat-select [(ngModel)]="doc.docDesc" [disabled]="!dis || auctionReadOnly" (selectionChange)="onAttachmentTypeChange(i,doc.docDesc)">
+              <mat-option *ngFor="let item of attachment_type_options" [value]="item.value">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          
+        </div>
+        <div>
+          <div class="vertical-line align-self-stretch darkgraybg mx-2"></div>
+          <div class="del-size">
+            <mat-slide-toggle [(ngModel)]="doc.isExternal" [checked]="doc.isExternal" (change)="toggleInternalExternal(doc)"  [disabled]="!dis  || auctionReadOnly"></mat-slide-toggle>
+            <div class="font13" *ngIf="doc.isExternal && page.pageFrom == 'header_attachment'">
+              <i class="fas fa-envelope" [ngClass]="{'greenMail': doc.forMailing, 'greyMail': !doc.forMailing }" ></i>
+              <mat-checkbox [disabled]="!dis || auctionReadOnly" [(ngModel)]="doc.forMailing" (change)="totalSelectedFileSize()"> {{common_btn.ATTACH_DOC.EXTERNAL}} </mat-checkbox>  
+            </div>
+            <div class="font13" *ngIf="doc.isExternal && page.pageFrom != 'header_attachment'"> {{common_btn.ATTACH_DOC.EXTERNAL}} </div>
+            <div class="font13" *ngIf="!doc.isExternal"> {{common_btn.ATTACH_DOC.INTERNAL}} </div>            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- loop here ends -->
+  </div>
+</div>
+
+<div class="dialog-footer">
+  <div class="col-md-12 mb-2 mt-2 text-right">
+    <button mat-flat-button class="mr-2 btn-blue" [disabled]="uploadButton || auctionReadOnly" (click)="saveAtt()" *ngIf="dis">
+      {{common_btn.UPLOAD}}
+    </button>
+    <button mat-flat-button color="warn" type="button" *ngIf="showClose" (click)="onClose()">
+      {{common_btn.CLOSE}}
+    </button>
+    <button mat-flat-button class="btn-blue" *ngIf="showContinue" [disabled]="(uploadButton  && attArr.length==0 )|| (!uploadButton && attArr.length>0)" (click)="continue()">
+      {{common_btn.CONTINUE}}
+    </button>
+    
+  </div>
+</div>

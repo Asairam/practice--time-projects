@@ -1,0 +1,249 @@
+
+
+<div class="container-fluid py-3 item-detail-height">
+    <!-- MMCS -->
+    <mmcs *ngIf="viewData?.pageFrom != 'readonly'" [showSearch]="showSearch" (itemSearched)="itemSearched($event)"></mmcs>
+    <!-- ITEM FORM-->
+    <form [formGroup]="createItemForm" *ngIf="enableForm" (ngSubmit)="submitForm()">
+        <div class="row font14">
+            <div class="col-md-6">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.LOT}}</mat-label>
+                    <mat-select formControlName="lotID" [disabled]="!buttShow || auctionReadOnly" required (selectionChange)="setLotType($event.value)">
+                        <mat-option *ngFor="let lot of buyerService.lotList" [value]="lot.lotID">{{lot.lotName}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.ITEM_CODE}}</mat-label>
+                    <input [readonly] ="auctionReadOnly" matInput formControlName="itemCode" (keyup)="setItemCode($event)" autocomplete="off" (keydown.enter)="onKeyUp($event)">
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-12">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.NAME}}</mat-label>
+                    <input [readonly] ="auctionReadOnly" matInput formControlName="itemName" maxlength="1000" *ngIf="!displayFlag" required
+                        autocomplete="off">
+                    <input matInput formControlName="itemName" *ngIf="displayFlag">
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-12">
+                <mat-form-field class="full-width" *ngIf="mmcsCharacteristics.length == 0">
+                    <mat-label>{{COLUMN.DESCRIPTION}}</mat-label>
+                    <textarea [readonly] ="auctionReadOnly" matInput formControlName="description" style="height: 70px;"></textarea>
+                </mat-form-field>
+                <!--  Long description -->
+                <mmcs-long-desc *ngIf="mmcsCharacteristics.length > 0 || mmcsLongDesc" [companyReferences]="companyReferences"
+                    [mmcsCharacteristics]="mmcsCharacteristics" [mmcsLongDesc]="mmcsLongDesc" style="display: block;max-height: 200px;overflow: auto;margin: 5px 0 25px 0;border: 1px solid #dee2e6;padding: 7px;">
+                </mmcs-long-desc>
+            </div>
+
+            <div class="col-md-6">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.MINIMUM_DESIRED_QUANTITY}}</mat-label>
+                    <!-- <mat-label>Reliance Quantity</mat-label> -->
+                    <input [readonly] ="auctionReadOnly" matInput formControlName="minimumDesiredQuantity" *ngIf="!displayFlag" numberDecimal
+                        required autocomplete="off" maxlength="13" min="0" decimalValue="2">
+                    <input [readonly] ="auctionReadOnly" matInput formControlName="minimumDesiredQuantity" *ngIf="displayFlag" maxlength="13" min="0"
+                        numberDecimal decimalValue="2">
+                    <mat-error *ngIf="createItemForm.controls.minimumDesiredQuantity.invalid">
+                        {{createItemForm.controls.minimumDesiredQuantity.errors.maxLengthExceded }}
+                        {{createItemForm.controls.minimumDesiredQuantity.errors.onlyNumberAllowed}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-6">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.UNIT_OF_MEASURE}}</mat-label>
+                    <mat-select [disabled] ="auctionReadOnly" formControlName="unitOfMeasure" [disabled]="!buttShow" required>
+                        <mat-option>
+                            <ngx-mat-select-search [placeholderLabel]="'search unit of measure'"
+                                [noEntriesFoundLabel]="'no record found'" [formControl]="FilterCtrl"></ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option value="" *ngIf="!FilterCtrl.value">Please Select</mat-option>
+                        <mat-option *ngFor="let item of UomList" value="{{item.name}}">{{item.description}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row font14"> 
+            <div class="col-md-6 d-flex"  *ngIf="historical_hide">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.HISTORICAL_COST}} <span *ngIf='primaryHistoricalCost'>/ ({{primaryHistoricalCost}} {{primaryHistoricalCurrecy}})</span></mat-label>
+                    <input [readonly] ="auctionReadOnly" matInput numberDecimal decimalValue="2" maxlength="14" min="0" formControlName="historicalCost"
+                        autocomplete="off">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" style="color: #a3a3a3;">
+                        {{primaryCurrency.currencyCode}}
+                    </button>
+                    <mat-error *ngIf="createItemForm.controls.historicalCost.invalid">
+                        {{createItemForm.controls.historicalCost.errors.maxLengthExceded }}
+                        {{createItemForm.controls.historicalCost.errors.onlyNumberAllowed}}
+                    </mat-error>
+                </mat-form-field>
+                <button  class="header-sm-btn-ico ml-2 mt-2" (click)='showPODetails()'>
+                    <i class="fa fa-info" > </i>
+                </button>
+            </div> 
+            <div class="col-md-6" *ngIf="historical_hide" >
+                <!-- <button *ngIf='haveItemCode' class="btn btn-small eyeBtn" (click)='showPODetails()'>
+                    <i class="fa fa-info" > </i>
+                </button> -->
+                <mat-form-field class="full-width">
+                    
+                    <mat-label>{{COLUMN.HISTORICAL_COST_DATE}}</mat-label>
+                    <input [readonly] ="auctionReadOnly" matInput [max]="maxDate" [matDatepicker]="historicalToDate" formControlName="historicalCostDate"
+                        autocomplete="off" (keypress)="onlyNumberKey($event)">
+                    <mat-datepicker-toggle matSuffix [for]="historicalToDate" [disabled]="displayFlag || auctionReadOnly">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #historicalToDate [disabled]="displayFlag || auctionReadOnly"></mat-datepicker>
+                </mat-form-field>
+                <div *ngIf="f.historicalCostDate.errors">
+                    <div *ngIf="f.historicalCostDate.errors.error" class="redfont">{{COLUMN.HISTORICAL_COST_MAX_DATE}}</div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.START_PRICE}}</mat-label>
+                    <input [readonly] ="auctionReadOnly" matInput numberDecimal decimalValue="2" maxlength="14" min="0" formControlName="startPrice"
+                        autocomplete="off">
+                    <button *ngIf="!displayFlag" mat-button matSuffix mat-icon-button aria-label="Clear" style="color: #a3a3a3;">
+                        {{primaryCurrency.currencyCode}}
+                    </button>
+                    <mat-error *ngIf="createItemForm.controls.startPrice.invalid">
+                        {{createItemForm.controls.startPrice.errors.maxLengthExceded }}
+                        {{createItemForm.controls.startPrice.errors.onlyNumberAllowed}}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.REMARKS}}</mat-label>
+                    <textarea [readonly] ="auctionReadOnly" matInput formControlName="remarks" style="height: 70px;"></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="full-width">
+                    <mat-label>{{COLUMN.MINIMUM_BID_CHANGE}}</mat-label>
+                    <input [readonly] ="auctionReadOnly" matInput formControlName="minimumChangeValue" maxlength="14" min="0" decimalValue="2"
+                        numberDecimal autocomplete="off">
+                    <!-- <button *ngIf="!displayFlag" mat-button matSuffix mat-icon-button aria-label="Clear" style="color: #a3a3a3;">
+                        INR
+                    </button> -->
+                    <span matSuffix *ngIf="createItemForm.get('minimumChangeValue').value">{{primaryCurrency.currencyCode}}</span>
+                    <mat-error *ngIf="createItemForm.controls.minimumChangeValue.invalid">
+                        {{createItemForm.controls.minimumChangeValue.errors.maxLengthExceded}}
+                        {{createItemForm.controls.minimumChangeValue.errors.onlyNumberAllowed}}
+                    </mat-error>
+                </mat-form-field>
+                <div *ngIf="f.minimumChangeValue.errors" class="invalid">
+                    <div *ngIf="f.minimumChangeValue.errors.error" class="redfont">{{COLUMN.TOTAL_PER}}</div>
+                </div>
+                <mat-radio-group formControlName="minChangeType" [disabled]="!buttShow || auctionReadOnly">
+                    <mat-radio-button *ngFor="let op of itemminList" [value]="op.ID">{{op.name}}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+        <!-- CUSTOM FIELD-->
+        <div class="row font14">
+            <div class="col-md-6" *ngFor="let field of customFieldList">
+                <span *ngIf="field.dataType == 'string' && field.isMandatory">
+                    <ng-container *ngTemplateOutlet="stringTemplateRequired;context:{field: field, control:createItemForm.controls[field.fieldName] }"></ng-container>
+                </span>
+                <span *ngIf="field.dataType == 'string' && !field.isMandatory">
+                    <ng-container *ngTemplateOutlet="stringTemplateNotRequired;context:{field: field,  control:createItemForm.controls[field.fieldName] }"></ng-container>
+                </span>
+                <span *ngIf="field.dataType == 'number' && field.isMandatory">
+                    <ng-container *ngTemplateOutlet="numberTemplateRequired;context:{field: field, control:createItemForm.controls[field.fieldName] }"></ng-container>
+                </span>
+                <span *ngIf="field.dataType == 'number' && !field.isMandatory">
+                    <ng-container *ngTemplateOutlet="numberTemplateNotRequired;context:{field: field,  control:createItemForm.controls[field.fieldName] }"></ng-container>
+                </span>
+            </div>
+        </div>
+        <button #submitElementItem type="submit" style="visibility: hidden;"></button>
+    </form>
+</div>
+<!-- FOOTER -->
+<div class="dialog-footer">
+    <div class="col-md-12 mb-2 mt-2 text-right" >
+        <button mat-flat-button class="mr-2 btn-blue" (click)="reset()">
+            <!--  *ngIf="createItemForm && createItemForm.controls['fromMMCS'].value && viewData?.pageFrom != 'readonly'" -->
+            Reset
+        </button>
+        <span *ngIf="buttShow">
+            <button mat-flat-button class="mr-2 btn-blue" (click)="itemformSubmit('')" [disabled]="saveDisabled || auctionReadOnly" *ngIf="viewData?.pageFrom != 'readonly'">
+                {{COMMON_BTN.SAVE}}
+            </button>
+        </span>
+        <button mat-flat-button color="warn" type="button" (click)="onClose()">
+            {{COMMON_BTN.CLOSE}}
+        </button>
+        <span>
+            <button *ngIf="viewData?.pageFrom != 'readonly'" mat-flat-button class="ml-2 btn-blue" (click)="onMMCSnext()"
+                [disabled]="nextDisabled">
+                {{COMMON_BTN.NEXT}}
+            </button>
+        </span>
+        <button mat-flat-button class="ml-2 btn-blue" (click)="itemformSubmit('addNext')"  [disabled]="saveAndNextDisabled"
+            *ngIf="viewData?.pageFrom != 'readonly' && viewData?.type !== 'update'">
+            {{COMMON_BTN.SAVE_AND_ADD_NEXT}}
+        </button>
+    </div>
+</div>
+<!--   -->
+    <!-- <div class="poDialog" *ngIf="isShowPo">
+        <div class="potable">
+            <p style="background: #eaeaea;
+            color: #383838;
+            font-weight: bold;
+            padding: 10px;">PO historical Data</p>
+        <div style="float: right;
+        margin-top: -53px;
+        margin-right: 10px" class="text-right">
+            
+        <button (click)='showPODetails()' style="cursor:pointer">&times;</button>
+        </div>
+        <app-po-history (selectedReport)="setSelectedReport($event)" [itemCode]="itemCode"></app-po-history>
+        </div>
+
+    </div> -->
+<ng-template #stringTemplateRequired let-field="field" let-control="control">
+    <mat-form-field class="full-width" [ngClass]="{'submitted' : submited}">
+        <mat-label>{{field.fieldName}}</mat-label>
+        <input [readonly] ="auctionReadOnly" matInput [formControl]="control" required autocomplete="off">
+        <mat-error *ngIf="control.invalid">
+            {{control.errors.error}}
+        </mat-error>
+        <mat-error *ngIf="control.invalid && control.errors.required">
+            Field is required
+        </mat-error>
+    </mat-form-field>
+</ng-template>
+<ng-template #stringTemplateNotRequired let-field="field" let-control="control">
+    <mat-form-field class="full-width" [ngClass]="{'submitted' : submited}">
+        <mat-label>{{field.fieldName}}</mat-label>
+        <input [readonly] ="auctionReadOnly" matInput [formControl]="control" autocomplete="off">
+    </mat-form-field>
+</ng-template>
+<ng-template #numberTemplateRequired let-field="field" let-control="control">
+    <mat-form-field class="full-width" [ngClass]="{'submitted' : submited}">
+        <mat-label>{{field.fieldName}}</mat-label>
+        <input [readonly] ="auctionReadOnly" matInput [formControl]="control" numberDecimal required autocomplete="off">
+        <mat-error *ngIf="control.invalid">
+            Number is required
+        </mat-error>
+    </mat-form-field>
+</ng-template>
+<ng-template #numberTemplateNotRequired let-field="field" let-control="control">
+    <mat-form-field class="full-width" [ngClass]="{'submitted' : submited}">
+        <mat-label>{{field.fieldName}}</mat-label>
+        <input [readonly] ="auctionReadOnly" matInput [formControl]="control" numberDecimal autocomplete="off">
+        <mat-error *ngIf="control.invalid">
+            {{control.errors.error}}
+        </mat-error>
+    </mat-form-field>
+</ng-template>

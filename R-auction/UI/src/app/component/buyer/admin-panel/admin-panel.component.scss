@@ -1,0 +1,48 @@
+
+    .animationdelay{
+        visibility: visible;
+        animation-delay: 0.5s;
+        animation-name: fadeInUp;
+    }
+    .cust-container{
+        min-height: calc(100vh - 200px) !important;
+        padding-top: 20px;
+    }
+    .select-filter{
+        // background: #596698;
+        // color: #fff;
+        flex: 0.45;
+        padding-left: 5px;
+        font-size: 13px;
+        height: 38px;
+        font-weight: 500;
+    }
+    .dashboard-btn{
+        width:45px;
+        height: 45px;
+        background: #e7f268 url('../../../../assets/images/chart.png') no-repeat 0 0;
+        background-size: 40px;
+        border: none;
+        border-radius: 50%;
+        position: absolute;
+        top: 165px;
+        right: 20px;
+    }
+    
+    .tabbable-panel .btn-info {
+        margin-right:10px;
+        border-radius:0px !important;
+        margin-bottom:10px;
+    }
+    
+    
+    
+    @media (max-width: 768px) { 
+    
+     .dashboard-btn{
+            top: 125px !important;
+            right: 5px !important;
+        }
+    
+    
+    }

@@ -1,9 +1,0 @@
-.table thead th{
-    position: sticky !important;
-    top: 0px;
-    background: #ffffff;
-    z-index: 1;
-}
-.item-table-height{
-    max-height: 420px;
-}

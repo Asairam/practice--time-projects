@@ -25,7 +25,7 @@
         "rxjs": "^5.5.0",
         "systemjs": "^0.19.47",
         "zone.js": "^0.8.5",
-        "underscore": "^1.8.3"
+        "underscore": "^1.12.1"
     },
     "devDependencies": {
         "@types/node": "^8.0.53",
